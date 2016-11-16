@@ -23,10 +23,10 @@ Abraham Alcantara, Sergio Gonzalez, Sergei Uversky.
 - Multi Process Garbage Collector (MPGC)
 
 
-NB: MDS does not compile on Windows - we tried compiling it on Windows 
-- we tried really quite hard - but there are compilation problems with 
-libraries we use - so don't waste your time trying to compile on Windows 
-- just compile on Linux!
+NB: MDS does not compile on Windows.  We tried compiling it on Windows 
+(we tried really quite hard) but there are compilation problems with 
+libraries we use. So don't waste your time trying to compile on Windows;
+just compile on Linux!
 
 
 Installations tested: 
@@ -43,12 +43,9 @@ Installations tested:
   Installed from: 
   http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 
+- MDS: https://github.com/HewlettPackard/mds
 
-- MDS 
-  https://github.com/HewlettPackard/mds
-
-- MPGC
-  https://github.com/HewlettPackard/mpgc
+- MPGC: https://github.com/HewlettPackard/mpgc
 
 
 ## Command-line compilation: 
@@ -57,22 +54,18 @@ We typically do commandline compilation,
 for flexibility in supporting multiple compilation targets,
 and ease of compilation over the network.
 
+We assume builds have two repositories at top level: mds and mpgc.
+
 To compile MDS from the command line: 
 
-We assume: 
-- Builds external to HPE will likely have two repositories at top level: 
-  mds and mpgc. 
-
-- At a command prompt:
-
-  1. cd mds/java-api 
+1. cd mds/java-api 
 
      Run "ant -f build-all.xml"
 
      - this will build all the Java classes under the java-api and the
        JNI shared library.
 
-     For more information you can open README file under java-api
+     For more information see the README file under java-api
      directory, but
 
      - to speed up the compilation of the shared library
@@ -84,12 +77,12 @@ We assume:
        contains the include dir.
 
 
-  2. cd mpgc/build/intel-opt (or gc/build/intel-opt)
+2. cd mpgc/build/intel-opt
 
      Run "make tools/createheap"
 
 
-  3. cd to {demo repo}/inventory/
+3. cd mds/demo/inventory/
 
      mkdir libs
      cd libs
@@ -103,19 +96,19 @@ We assume:
         ln -s {java-api repo}/jars/mds-annotations-processor.jar
 
         ln -s {java-api repo}/external/log4j-1.2.15.jar
-
-	ln -s {java-api repo}/external/commons-compress-1.1.jar
+        
+        ln -s {java-api repo}/external/commons-compress-1.1.jar
 
         ln -s {mpgc repo}/build/intel-opt/tools/createheap
 
     Finally, create the symbolic link to the MDS Library inside of the native folder, if not exist create one:
 
-        cd to demo/inventory/libs/native
+        cd demo/inventory/libs/native
 
         ln -s {java-api repo}/build/intel-opt/libs/libmds-jni.so
 
 
-  4. cd to demo/inventory
+4. cd mds/demo/inventory
 
      Run "ant build"
      - this will build all the Java classes under demo/inventory
@@ -133,7 +126,8 @@ Run demo3-multithread
 - runs three processes in parallel to generate tasks working on inventory
 
   cd mds/demo/inventory/run/demo3-multithread/demo
-  ../../../libs/createheap <size>
+  
+  ../../../libs/createheap \<size\>
     - creates a heap of the specified size in GBs e.g. 30 for a 30GB heap
 
   ../rundemo3init
