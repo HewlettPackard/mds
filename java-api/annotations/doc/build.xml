@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="private" author="true" classpath="../external/junit-4.12.jar:../external/javaparser-core-2.2.2.jar:../jars/mds-java-api.jar:../../external/ST-4.0.8.jar:../external/hamcrest-core-1.3.jar:../external/commons-io-2.4.jar" destdir="" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="com.hpl.mds.annotations.processor.generator,com.hpl.mds.annotations.processor.parser,com.hpl.mds.annotations.processor" source="1.8" sourcepath="../test/generated:../test/resources:../test/java:../src" splitindex="true" use="true" version="true"/>
+    </target>
+</project>

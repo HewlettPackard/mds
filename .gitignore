@@ -1,0 +1,18 @@
+#*
+*~
+**/#*
+**/.#*
+/Debug/
+/heaps/
+/MDS - Core.exe.stackdump
+gdb.exe.stackdump
+/Release/
+LinuxDebug/**/*.o
+LinuxDebug/**/**/*.o
+LinuxDebug/*.exe
+LinuxDebug/*.a
+*.swp
+test/create_array_core
+build/*/dependencies
+build/*/objs
+build/*/libs

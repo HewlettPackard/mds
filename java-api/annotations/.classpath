@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test/generated"/>
+	<classpathentry kind="src" path="test/resources"/>
+	<classpathentry kind="src" path="test/java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="external/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="external/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="external/javaparser-core-2.2.2.jar"/>
+	<classpathentry kind="lib" path="jars/mds-java-api.jar"/>
+	<classpathentry kind="lib" path="external/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="external/ST-4.0.8.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

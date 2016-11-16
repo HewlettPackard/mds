@@ -1,0 +1,296 @@
+
+===============================================================================
+      Managed Data Structures
+      Copyright © 2016 Hewlett Packard Enterprise Development Company LP.
+===============================================================================
+
+
+
+
+Inventory Demo 
+
+
+-------------------------------------------------------------------------
+Prerequisites:
+
+
+64-bit, Linux, C++ 14, JDK1.8, pthreads
+
+- g++ 4.9.2
+- jdk 1.8
+- eclipse luna - with both Java and C++ support
+
+- MDS Core
+- MDS Java API
+- MDS Demo
+
+
+NB: MDS does not compile on Windows - we tried compiling it on Windows 
+- we tried really quite hard - but there are compilation problems with 
+libraries we use - so don't waste your time trying to compile on Windows 
+- just compile on Linux!
+
+
+Installed on mds development machines (mds[1-5].labs.hpecorp.net):
+
+- g++ 4.9.2
+  /usr/local/gcc-4.9.2/bin/gcc
+
+  Compiled from:
+  source downloaded from mirror via https://gcc.gnu.org/ 
+
+- jdk 1.8
+  /opt/jdk/jdk1.8.0_25/bin/java
+
+  Installed from: 
+  http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+
+- eclipse luna
+  /opt/eclipse/eclipse-luna-c++/eclipse
+
+  Installed from: 
+  Eclipse Luna IDE for Automotive Software Developers, Linux 64-bit
+  http://www.eclipse.org/downloads/packages/eclipse-ide-automotive-software-developers-includes-incubating-components/lunasr1a
+
+
+GIT Checkouts:
+
+- MDS Core
+  git clone gitolite@git-pa1.hpl.hp.com:mds/core.git
+
+- MDS Java API
+  git clone gitolite@git-pa1.hpl.hp.com:mds/java-api.git
+
+- MDS Demo
+  git clone gitolite@git-pa1.hpl.hp.com:mds/demo.git
+
+- MDS C++ API
+  git clone gitolite@git-pa1.hpl.hp.com:mds/c++-api.git
+
+  Usually, Evan's branch (ek-working) should not be broken, but no guarantees.
+
+
+-------------------------------------------------------------------------
+Command-line compilation: 
+
+In March 2016, we migrated from Eclipse compilation to commandline compilation, 
+for greater flexibility in supporting multiple compilation targets,
+and ease of compilation over the network (e.g. from home!).
+
+To compile MDS from the command line: 
+
+- We assume one of two configurations:
+
+  - Builds internal to HPE will likely have five repositories at top
+    level: core, java-api, demo, gc, and common.
+
+  - Builds external to HPE will likely have two repositories at top
+    level: mds and mpgc.  Within mds are java-api and demo, and within
+    mpgc is ruts.
+
+- At a command prompt:
+
+  1. cd java-api (either at top-level or underneath mds).
+
+     Run "ant -f build-all.xml"
+
+     - this will build all the Java classes under the java-api and the
+       JNI shared library.
+
+     For more information you can open README file under java-api
+     directory, but
+
+     - to speed up the compilation of the shared library
+       (dramatically) add "-Dthreads=8" (or some other number).
+
+     - The shared library build expects to find JNI header files at
+       "/opt/jdk1.8.0_51" in the "include" directory.  If this is not
+       the case on your system, set "$(JDKHOME)" to the directory that
+       contains the include dir.
+
+       - Yes, this will be changed.
+       
+
+  2. cd mpgc/build/intel-opt (or gc/build/intel-opt)
+
+     Run "make tools/createheap"
+
+
+  3. cd to {demo repo}/inventory/libs
+
+     In order to compile the project you will need to create some symbolic links the MDS dependencies and libraries.
+
+     Use ln command to create links to this files.
+
+        ln -s {java-api repo}/jars/mds-java-api.jar
+
+        ln -s {java-api repo}/jars/mds-annotations-processor.jar
+
+        ln -s {java-api repo}/external/log4j-1.2.15.jar
+
+	ln -s {java-api repo}/external/commons-compress-1.1.jar
+
+        ln -s {mpgc repo}/build/intel-opt/tools/createheap
+
+    Finally, create the symbolic link to the MDS Library inside of the native folder, if not exist create one:
+
+        cd to demo/inventory/libs/native
+
+        ln -s {java-api repo}/build/intel-opt/libs/libmds-jni.so
+
+
+  3. cd to demo/inventory
+
+     Run "ant -f build.xml"
+     - this will build all the Java classes under demo/inventory
+
+
+If you change configs, run 'make install' to ensure that the
+correct library is in the directory for the demo.
+
+
+-------------------------------------------------------------------------
+Eclipse: 
+
+If you are happy with commandline compilation of C++ and Java sources, 
+and code development outside of Eclipse, 
+then skip the next sections on using Eclipse.
+Otherwise ...
+
+ 
+-------------------------------------------------------------------------
+Eclipse for compilation:
+
+You can use Eclipse for code development and Java compilation.
+
+To run Eclipse on the mds server and display it on your Windows laptop, see:
+    git/doc/Notes/eclipse-setup-xserver.txt
+
+
+To import the existing MDS projects (the ones you've just checked out using git)
+into Eclipse, see:
+    git/doc/Notes/eclipse-setup-existingprojects.txt
+
+#-------------------------------------------------------------------------
+#
+# NOTE: The following information on building under Eclipse is out of date
+#       and may no longer work!
+#
+#-------------------------------------------------------------------------
+Eclipse Configuration and Compilation:
+
+Configure:
+
+Eclipse settings are included in existing projects.
+They assume installation of the prerequisites as described above.
+
+If you have problems with settings and/or your setup is different,
+check/adapt the following:
+ 
+- eclipse : make sure the correct version of eclipse is on your $PATH:
+    export PATH=/opt/eclipse/eclipse-luna-c++:$PATH
+- g++: for Eclipse to pick up the correct g++ version, add it to $PATH:
+    export PATH=/usr/local/gcc-4.9.2/bin:$PATH
+- gcc libraries and dependent libraries have been added to /etc/ld.so.conf.d
+  so should be picked up automatically
+
+- jdk: 
+  - configure Eclipse to pick up /opt/jdk/java1.8.0_25
+      Window -> Preferences -> Java -> Installed JREs
+  - ensure JNI makefile has JAVA_HOME set to this jdk version too
+      check: MDS Java API/jni/makefile
+  - ensure the following compilation options and classpaths are set:
+      - set compilation classpath to include src and java-api/bin
+      - set compilation destination to bin 
+      - bin should be included in Java application runtime classpath
+
+
+Compile:
+
+Compile MDS core / MDS Java API JNI library:
+
+    See instructions above for Command-line compilation.
+
+Compile MDS Java API Java sources:
+    build MDS Java API to generate .class files for all MDS Java API sources
+    Java builds automatically in Eclipse when build path set up correctly.
+
+    When you import java-api as an existing project, settings are included.
+    If you have problems with Java build in Eclipse, check the following: 
+
+      Eclipse: MDS - Java API > Properties > Java Build Path 
+        > Source:
+            MDS - Java API/generated-src  
+            MDS - Java API/generator-src  
+            MDS - Java API/src  
+              Native library location: MDS - Java API/lib
+        > Libraries: 
+            ErkUtils.jar - MDS - Java API/external
+            log4j-1.2.15.jar - MDS - Java API/external
+            ST-4.0.8.jar - MDS - Java API/external/StringTemplate
+            JavaSE-1.8
+
+Compile Inventory demo sources: 
+    build Inventory to generate .class files for all Inventory demo sources:
+      src/com/hpl/inventory/*.java
+    Java builds automatically in Eclipse when build path set up correctly.
+
+-------------------------------------------------------------------------
+
+Troubleshooting
+
+  1.  Make sure you are working in the right configuration with the right 
+      toolchain.
+
+  2.  Make sure you are up to date on all of the repos - if you have
+      git pulled core and recompiled it, most likely it is no longer
+      compatible with your old version of the APIs, so pull and recompile
+      those as well.
+
+  3.  ???
+
+  4.  If you're still stuck, ask Evan.  (Just not too much.)
+
+-------------------------------------------------------------------------
+
+
+Run demo inventory demos
+    
+
+1. Run demo1-persist:
+- creates store
+- populates store and registers inventory by name
+- looks up inventory by name and prints report on inventory contents
+
+  cd git/demo/inventory/run/demo1-persist
+follow execution instructions in: 
+  git/demo/inventory/run/demo1-persist/README
+
+
+2. Run demo2-conflict:
+- creates store, populates with inventory, demonstrates conflict
+
+  cd git/demo/inventory/run/demo2-conflict
+follow execution instructions in: 
+  git/demo/inventory/run/demo2-conflict/README
+
+
+3. Run demo3-multithread
+- creates store and populates it with an inventory (with gaps in product naming)
+- runs three processes in parallel to generate tasks working on inventory
+
+  cd git/demo/inventory/run/demo3-multithread
+follow execution instructions in: 
+  git/demo/inventory/run/demo3-multithread/README
+(also check out the other demo3 tests that are not explicitly mentioned in the
+  demo3 readme)
+
+Notes:
+
+  Persistent memory is currently simulated through the use of files.  You will
+    most likely need to rerun the create_heap script in each demo after changes
+    have been made to the demos, to "clear the NVM".
+
+-------------------------------------------------------------------------
+
+

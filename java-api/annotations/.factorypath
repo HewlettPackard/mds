@@ -1,0 +1,5 @@
+<factorypath>
+    <factorypathentry kind="PLUGIN" id="org.eclipse.jst.ws.annotations.core" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="WKSPJAR" id="/MDS - Annotations/jars/mds-annotations-processor.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="WKSPJAR" id="/MDS - Annotations/jars/mds-java-api.jar" enabled="true" runInBatchMode="false"/>
+</factorypath>
