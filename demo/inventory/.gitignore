@@ -1,0 +1,11 @@
+bin
+heaps
+hs_err*
+log4j/
+log/
+run/*/log/
+\#*
+.\#*
+*~
+/generated-src/
+/.apt_generated/
