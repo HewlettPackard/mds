@@ -238,6 +238,8 @@ MDS runs and has been tested on x86 and ARM architectures.
 To compile a Java application that uses MDS, the programmer uses the
 JAR files for the MDS Java API.
 
+Details for compiling MDS can be found in [INSTALL.md](INSTALL.md). The basics are as follows...
+
 Assuming MDS and its dependency MPGC have been cloned to the same 
 top-level directory, to compile sources for MDS: 
 
