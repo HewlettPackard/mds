@@ -11,15 +11,19 @@ Author: Susan Spence (susan.spence@hpe.com)
 
 64-bit, Linux, C++ 14, JDK1.8, pthreads
 
-- g++ 4.9.2
+- g++ 4.9.2, or g++ 5.4.0 or later   
+  Note that MDS is known **not** to work with gcc 5.0, because of bugs in that version related to compilation of templates, which we use extensively.
 
-- jdk 1.8
+- Java JDK 1.8   
+  Note that you must use a Java JDK, not a more minimal Java installation.  This is needed for use of the JNI code.
 
 - Managed Data Structures (MDS)
 
 - Multi Process Garbage Collector (MPGC)
 
 ## Installations tested
+
+* Linux: Debian Jessie (8.6), Ubuntu Xenial Xerus (16.04.1 LTS) on x86_64 architecture, [https://github.com/FabricAttachedMemory/linux-l4fame](linux-l4fame)
 
 * g++ 4.9.2 /usr/local/gcc-4.9.2/bin/gcc
 
@@ -39,12 +43,21 @@ MDS runs on 64-bit Linux; it has been tested on x86 and ARM architectures.
 really quite hard) but there are compilation problems with libraries we use. So
 don't waste your time trying to compile on Windows; just compile on Linux!
 
+**NB**: MDS won't run on a virtual machine, if the virtual machine doesn't support a shared mmap file.
+
 ## Build process
+
+Set environment variable JDKHOME to point to the top-level directory of your JDK 1.8 installation.
+
+Ensure the top-level MDS directory is called "mds".  (If you downloaded the zip file, it will be called mds-master and you will need to move it to mds instead.)
 
 Assuming MDS and its dependency MPGC have been cloned to the same top-level directory, to compile sources for MDS:
 
     cd mds/java-api
     ant -f build-all.xml
+
+The build will take about 30-40 minutes to complete on an average Linux server.
+
     
 ## Build details
 
@@ -64,12 +77,27 @@ The code common to both MDS and MPGC is compiled to libruts.a:
 where "ruts" stands for "Really Useful ToolS".
 
 The MDS library libmds-jni.so can be built either optimised or debug.
+By default it is built optimised; to build debug instead: 
+    cd mds/java-api
+    ant -f build-all.xml -Dbuild=debug
 
-When built optimized, the .so library is created under
-    mds/java-api/build/intel-opt/libs
+To see if the build has completed successfully, 
+check for the existence of the following files: 
 
-When built debug, the .so library is created under
-    mds/java-api/build/intel-debug/libs
+- when built optimized: 
+
+    mds/java-api/build/intel-opt/libs/libmds-jni.so
+    mds-annotations-processor.jar
+    mds-java-api.jar
+
+- when built debug:
+    mds/java-api/build/intel-debug/libmds-jni.so
+    mds-annotations-processor.jar
+    mds-java-api.jar
+
+If you have a problem, and need to clean the build and start again: 
+    cd mds/java-api
+    ant -f build-all.xml clean
 
 
 ## Using the MDS library
@@ -81,6 +109,9 @@ See the Usage section of [README.md](README.md) for a few simple code examples t
 For more detailed information on the MDS API, see the documentation:
   https://github.com/HewlettPackard/mds/blob/master/doc/MDS%20Java%20API.pdf
 
-To see an example program using MDS, have a look at the MDS Inventory Demo in: [demo/inventory](demo/inventory).  
-Follow the instructions in [demo/inventory/README.md](demo/inventory/README.md) to compile the demo sources and run the MDS Inventory demo.  
+
+## Demo using MDS
+
+To see an example program using MDS, have a look at the MDS Inventory Demo in: [https://github.com/HewlettPackard/mds/blob/master/demo/inventory](demo/inventory).  
+Follow the instructions in [demo/inventory/INSTALL.md](demo/inventory/INSTALL.md) to compile the demo sources and run the MDS Inventory demo.  
 
