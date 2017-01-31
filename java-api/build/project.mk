@@ -40,8 +40,8 @@ project_dir := $(real_project_dir)/jni
 lib_name = mds-jni
 lib_targets = $(shared_lib)
 
-JDKHOME ?= /opt/jdk1.8.0_51
-extra_incl_dirs = $(src_dirs) $(JDKHOME)/include $(JDKHOME)/include/linux
+JAVA_HOME ?= /opt/jdk1.8.0_51
+extra_incl_dirs = $(src_dirs) $(JAVA_HOME)/include $(JAVA_HOME)/include/linux
 
 include ../build.mk
 
