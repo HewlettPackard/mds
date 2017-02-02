@@ -49,14 +49,29 @@ project_name ?= $(notdir $(project_dir))
 
 config := $(notdir $(CURDIR))
 
-# The git base dir will be the first ancestor of the build dir that
-# doesn't itself have a build dir.  This allows projects to be nested
-# within one another.  This function does the necessary recursion
+# The highest ancestor that has a build dir.  This will be taken to be the broadest repository.
 
-ancestor_without_build = $(if $(wildcard $1/../build),$(call ancestor_without_build,$1/..),$(abspath $1/..))
+highest_with_build = $(if $(wildcard $1/../build),$(call highest_with_build,$1/..),$(abspath $1))
 
-# The dir above this project and any project it's nested in.
+top_level_repo := $(call highest_with_build,$(project_dir))
 
-git_base_dir := $(call ancestor_without_build,$(project_dir))
+git_base_dir := $(abspath $(top_level_repo)/..)
+
+# true if this repo follows the exported repo structure
+
+is_exported_repo := $(if $(wildcard $(project_dir)/HPE_internal_repo.txt),,1)
+
+# $(call repo_dir,name,default,var) finds the repo directory off of
+# $(get_base_dir) that has $($(name)_repo.txt) in it.  If there's more
+# than one, prefers the one named $(default) and warns.  If $(default)
+# isn't there, prints message about setting $(var).
+
+repos_for = $(notdir $(realpath $(dir $(wildcard $(git_base_dir)/*/$1_repo.txt))))
+
+pick_best_repo = $(if $(filter $3,$1),$(warning Multiple possibilities for $2 repo: $1.  Assuming $3.  Use $$$4 to specify.)$3,$(error Multiple possibilities for $2 repo: $1.  Use $$$4 to specify))
+
+pick_repo = $(if $1,$(git_base_dir)/$(if $(word 2,$1),$(call pick_best_repo,$1,$2,$3,$4),$1),$(error Could not find $2 repo.  Please set $$$4))
+
+repo_dir = $(call pick_repo,$(call repos_for,$1),$1,$2,$3)
 
 

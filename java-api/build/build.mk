@@ -563,18 +563,34 @@ clean-installed-html:
 #
 ####
 
-autobuild_project_dirs ?= gc common core java-api
-autobuild_files ?= build.mk defs.mk BUILDING.md
-autobuild_paths ?= $(addprefix $(build_dir)/,$(autobuild_files))
+MDS_CRD := Managed Data Structures
+MPGC_CRD := Multi Process Garbage Collector
 
+autobuild_project_dirs ?= gc:MPGC common:MPGC core:MDS java-api:MDS
+
+define dist_copy_file
+-sed '$(3)s/.*/$(4)/' $(build_dir)/$(1) >$(git_base_dir)/$(2)/build/$(notdir $(1))
+endef
 define distribute_to
 distribute-to-$(1): FORCE
 ifneq ($$(build_dir),$$(git_base_dir)/$(1)/build)
-	-cp $$(autobuild_paths) $$(git_base_dir)/$(1)/build
+	$(call dist_copy_file,build.mk,$(1),3,#  $(2))
+	$(call dist_copy_file,defs.mk,$(1),3,#  $(2))
+	$(call dist_copy_file,BUILDING.md,$(1),2,      $(2))
 endif
 endef
 
-$(foreach p,$(autobuild_project_dirs),$(eval $(call distribute_to,$(p))))
+nullstring :=
+space := $(nullstring) $(nullstring)
+auto_build_dir_name = $(word 1,$(subst :,$(space),$(1)))
+auto_build_crd = $($(word 2,$(subst :,$(space),$(1)))_CRD)
 
-distribute-autobuild: $(foreach p,$(autobuild_project_dirs),distribute-to-$(p))
+define dist_to_aux
+$(eval $(call distribute_to,$(call auto_build_dir_name,$(1)),$(call auto_build_crd,$(1))))
+endef
+
+$(foreach p,$(autobuild_project_dirs),$(eval $(call dist_to_aux,$(p))))
+
+distribute-autobuild: $(foreach p,$(autobuild_project_dirs),distribute-to-$(call auto_build_dir_name,$(p)))
+
 

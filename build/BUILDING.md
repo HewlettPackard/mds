@@ -1,5 +1,5 @@
 ===============================================================================
-      Multi Process Garbage Collector
+      Managed Data Structures
       Copyright © 2016 Hewlett Packard Enterprise Development Company LP.
 ===============================================================================
 

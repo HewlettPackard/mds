@@ -30,9 +30,9 @@ include ../defs.mk
 project_name = mds_java_api
 projects_used = mds_core mpgc ruts
 
-mpgc_project_dir ?= $(if $(wildcard $(git_base_dir)/mpgc/build),$(git_base_dir)/mpgc,$(git_base_dir)/gc)
-ruts_project_dir ?= $(if $(wildcard $(mpgc_project_dir)/ruts/build),$(mpgc_project_dir)/ruts,$(git_base_dir)/common)
-mds_core_project_dir ?= $(if $(wildcard $(git_base_dir)/mds/build),$(git_base_dir)/mds,$(git_base_dir)/core)
+mpgc_project_dir ?= $(if $(is_exported_repo),$(call repo_dir,MPGC,mpgc,mpgc_project_dir),$(call repo_dir,MPGC,gc,mpgc_project_dir))
+ruts_project_dir ?= $(if $(is_exported_repo),$(mpgc_project_dir)/ruts,$(call repo_dir,RUTS,common,ruts_project_dir))
+mds_core_project_dir ?= $(if $(is_exported_repo),$(top_level_repo),$(call repo_dir,MDS,core,mds_core_project_dir))
 
 real_project_dir := $(project_dir)
 project_dir := $(real_project_dir)/jni

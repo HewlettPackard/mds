@@ -30,8 +30,7 @@ project_name = mds_core
 
 projects_used = mpgc ruts
 
-mpgc_project_dir ?= $(if $(wildcard $(git_base_dir)/mpgc/build),$(git_base_dir)/mpgc,$(git_base_dir)/gc)
-ruts_project_dir ?= $(if $(wildcard $(mpgc_project_dir)/ruts/build),$(mpgc_project_dir)/ruts,$(git_base_dir)/common)
-
+mpgc_project_dir ?= $(if $(is_exported_repo),$(call repo_dir,MPGC,mpgc,mpgc_project_dir),$(call repo_dir,MPGC,gc,mpgc_project_dir))
+ruts_project_dir ?= $(if $(is_exported_repo),$(mpgc_project_dir)/ruts,$(call repo_dir,RUTS,common,ruts_project_dir))
 
 include ../build.mk
