@@ -62,42 +62,7 @@ contents(prims, masked, types) ::= <<
 package $package()$;
 
 import java.util.List;
-import com.hpl.mds.string.ManagedMapFromString;
-import com.hpl.mds.naming.HName;
-import com.hpl.mds.naming.Namespace;
-import com.hpl.mds.naming.Prior;
 
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.$elseif(type.string)$string.$endif$$type.managedName$;
-} 
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.set.$elseif(type.string)$string.$endif$Managed$type.shortName$Set;
-}
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.list.$elseif(type.string)$string.$endif$Managed$type.shortName$List;
-}
-$
-
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.array.$elseif(type.string)$string.$endif$Managed$type.shortName$Array;
-}
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.map.$elseif(type.string)$string.$endif$ManagedStringTo$type.shortName$Map;
-}
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.map.$elseif(type.string)$string.$endif$ManagedMapTo$type.shortName$;
-}
-$
 
 public interface $class()$<T extends ManagedObject> {
 $masked: { type |

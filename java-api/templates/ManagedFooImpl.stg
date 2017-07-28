@@ -62,8 +62,7 @@ $body(class(type), type, type.managedName, type.boxedName, type.primName, type.f
 body(class, type, managed, boxed, prim, field, short, impl, types) ::= <<
 package $package(type)$;
 
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.prim.$managed$;
+import com.hpl.mds.*;
 
 public class $class$ implements $managed$ {
 	
@@ -169,8 +168,6 @@ $endif$
 		return value;
 	}
 	
-import com.hpl.mds.naming.Namespace;    
-import com.hpl.mds.naming.Prior;    
 	@Override
     public $managed$ bindName(Prior prior, Namespace ns, CharSequence name) {
       return type().bindIn(ns, name, this, prior);

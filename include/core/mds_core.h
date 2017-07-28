@@ -45,6 +45,8 @@
 #include "core/core_array.h"
 #include "core/core_record.h"
 #include "core/core_msv.h"
+#include "core/core_task.h"
+#include "core/core_typed_msv.h"
 #include "core/core_conflict.h"
 
 #endif /* MDS_H_ */

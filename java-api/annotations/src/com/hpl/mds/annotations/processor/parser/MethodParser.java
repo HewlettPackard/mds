@@ -156,13 +156,13 @@ public class MethodParser {
         } else if (TypeKind.VOID.equals(typeMirror.getKind())) {
             varInfo.setType(DataType.VOID);
         } else {
-            try {
-                if (dataTypeParser.parse(typeMirror, varInfo, element, schemaContext.getPkg(),
-                        schemaContext.getRecordSimpleName())) {
-                    return varInfo;
-                }
-            } catch (ProcessingException e) {
-            }
+            // try {
+            //     if (dataTypeParser.parse(typeMirror, varInfo, element, schemaContext.getPkg(),
+            //             schemaContext.getRecordSimpleName())) {
+            //         return varInfo;
+            //     }
+            // } catch (ProcessingException e) {
+            // }
             varInfo.setType(null);
             varInfo.setComplexType(typeMirror.toString());
             LOGGER.info("parsed as complex type: " + typeMirror.toString());

@@ -26,7 +26,7 @@
 
 package com.hpl.mds.impl;
 
-import com.hpl.mds.ManagedPrimitive;
+import com.hpl.mds.*;
 
 public abstract class ManagedPrimImpl<RepT> implements ManagedPrimitive<RepT> {
 

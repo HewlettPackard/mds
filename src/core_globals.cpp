@@ -39,11 +39,13 @@ namespace mds {
     bool process_registered = false;
 
     current_version_t *current_version;
-    external_gc_ptr<branch> top_level_branch;
+    external_gc_ptr<view> top_level_view;
     external_gc_ptr<iso_context> global_context;
     external_gc_ptr<string_table_t> string_table;
     external_gc_ptr<record_type_table_t> record_type_table;
     external_gc_ptr<name_space> global_namespace;
+    std::size_t *next_task_number;
+    
     external_gc_ptr<const managed_type<kind::BOOL>> managed_bool_type;
     external_gc_ptr<const managed_type<kind::BYTE>> managed_byte_type;
     external_gc_ptr<const managed_type<kind::UBYTE>> managed_ubyte_type;
@@ -63,10 +65,12 @@ namespace mds {
 
       current_version_t _current_version { 0 };
       gc_ptr<iso_context> _global_context = make_gc<iso_context>(iso_context::private_ctor{}, iso_context::global);
-      gc_ptr<branch> _top_level_branch = make_gc<branch>(_global_context, nullptr);
+      gc_ptr<view> _top_level_view = make_gc<view>(_global_context, nullptr);
       gc_ptr<string_table_t> _string_table = make_gc<string_table_t>(initial_string_table_capacity);
       gc_ptr<record_type_table_t> _record_type_table = make_gc<record_type_table_t>(initial_record_type_table_capacity);
       gc_ptr<name_space> _global_namespace = make_gc<name_space>();
+      std::size_t _next_task_number;
+
       gc_ptr<const managed_type<kind::BOOL>> _mtype_bool = make_gc<managed_type<kind::BOOL>>();
       gc_ptr<const managed_type<kind::BYTE>> _mtype_byte = make_gc<managed_type<kind::BYTE>>();
       gc_ptr<const managed_type<kind::UBYTE>> _mtype_ubyte = make_gc<managed_type<kind::UBYTE>>();
@@ -90,10 +94,11 @@ namespace mds {
 	  GC_DESC(control)
 	  .WITH_FIELD(&control::_current_version)
 	  .WITH_FIELD(&control::_global_context)
-	  .WITH_FIELD(&control::_top_level_branch)
+	  .WITH_FIELD(&control::_top_level_view)
 	  .WITH_FIELD(&control::_string_table)
 	  .WITH_FIELD(&control::_record_type_table)
 	  .WITH_FIELD(&control::_global_namespace)
+	  .WITH_FIELD(&control::_next_task_number)
 	  .WITH_FIELD(&control::_mtype_bool)
 	  .WITH_FIELD(&control::_mtype_byte)
 	  .WITH_FIELD(&control::_mtype_ubyte)
@@ -105,7 +110,8 @@ namespace mds {
 	  .WITH_FIELD(&control::_mtype_ulong)
 	  .WITH_FIELD(&control::_mtype_double)
 	  .WITH_FIELD(&control::_mtype_float)
-	  .WITH_FIELD(&control::_mtype_string);
+	  .WITH_FIELD(&control::_mtype_string)
+          ;
         return d;
       }
 
@@ -125,8 +131,8 @@ namespace mds {
         control &cb = *control_block;
 	
         current_version = &cb._current_version;
-        top_level_branch = cb._top_level_branch;
-	assert(top_level_branch.value().is_valid());
+        top_level_view = cb._top_level_view;
+	assert(top_level_view.value().is_valid());
         global_context = cb._global_context;
 	assert(global_context.value().is_valid());
         string_table = cb._string_table;
@@ -135,6 +141,7 @@ namespace mds {
 	assert(record_type_table.value().is_valid());
         global_namespace = cb._global_namespace;
 	assert(global_namespace.value().is_valid());
+        next_task_number = &cb._next_task_number;
         managed_bool_type = cb._mtype_bool;
 	assert(managed_bool_type.value().is_valid());
         managed_byte_type = cb._mtype_byte;

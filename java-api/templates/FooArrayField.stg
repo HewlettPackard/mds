@@ -26,7 +26,7 @@
 
 delimiters "$", "$"
 import "string.stg"
-package(type) ::= "com.hpl.mds.$ifString({string},{prim.field})$"
+package(type) ::= "com.hpl.mds"
 class(type) ::= "$type.arrayFieldName$"
 
 code(type,types) ::= <<
@@ -66,14 +66,7 @@ body(class, type, managed, boxed, prim, field, short, types) ::= <<
 package $package(type)$;
 
 
-import com.hpl.mds.ArrayField;
-import com.hpl.mds.ManagedArray;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.RecordType;
-import com.hpl.mds.$ifString({string},{prim})$.$managed$;
 import com.hpl.mds.impl.$short$ArrayType;
-import com.hpl.mds.impl.$short$ArrayType;
-import com.hpl.mds.$ifString({string},{prim.container.array})$.$managed$Array;
 
 public interface $class$<RT extends ManagedRecord> extends ArrayField<RT, $managed$> {
 
@@ -86,7 +79,21 @@ public interface $class$<RT extends ManagedRecord> extends ArrayField<RT, $manag
   $class$<RT> findIn(RecordType<RT> recType, CharSequence name) {
     return $short$ArrayType.INSTANCE.findFieldIn(recType, name);
   }
-  
+
+  @Override
+  public $managed$Array get(RT record);
+
+  @Override
+  public $managed$Array peek(RT record);
+
+  @Override
+  public $managed$Array getAndSet(RT rec, ManagedArray<$managed$> val);
+
+  @Override
+  public $managed$Array set(RT rec, ManagedArray<$managed$> val);
+
+
+
 
 
 }

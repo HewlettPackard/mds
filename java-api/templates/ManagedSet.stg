@@ -67,20 +67,9 @@ package $package()$;
 import java.util.Collection;
 import java.util.Set;
 
-import com.hpl.mds.ManagedCollection;
-import com.hpl.mds.ManagedContainer;
 import com.hpl.mds.usage.UsageBase;
 
 
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.$elseif(type.string)$string.$endif$$type.managedName$;
-} 
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.set.$elseif(type.string)$string.$endif$Managed$type.shortName$Set;
-}
-$
 
 public interface ManagedSet<T extends ManagedObject> extends ManagedCollection<T>, Set<T> {
 $masked: { type |

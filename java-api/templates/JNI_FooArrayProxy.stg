@@ -90,6 +90,7 @@ Java_com_hpl_mds_impl_$class$_isIdentical
    jlong aHIndex,
    jlong bHIndex)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, is_same_as<$kind$>, aHIndex, bHIndex);
 }
 
@@ -101,6 +102,7 @@ Java_com_hpl_mds_impl_$class$_isSameObject
    jlong aHIndex,
    jlong bHIndex)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, is_same_object<$kind$>, aHIndex, bHIndex);
 }
 
@@ -110,10 +112,10 @@ JNICALL
 Java_com_hpl_mds_impl_$class$_isSameViewOfSameObject
   (JNIEnv *jEnv, jclass,
    jlong aHIndex,
-   jlong bHIndex,
-   jlong ctxtHIndex)
+   jlong bHIndex)
 {
-  return exception_handler_wr(jEnv, is_same_view_same_object<$kind$>, aHIndex, bHIndex, ctxtHIndex);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, is_same_view_same_object<$kind$>, aHIndex, bHIndex);
 }
 
 JNIEXPORT
@@ -121,36 +123,66 @@ jlong
 JNICALL
 Java_com_hpl_mds_impl_$class$_createArray
   (JNIEnv *jEnv, jclass,
-   jlong ctxtHIndex,
    jlong size)
 {
-  return exception_handler_wr(jEnv, create_array<$kind$>, ctxtHIndex, size);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, create_array<$kind$>, size);
 }
 
 JNIEXPORT
 $jni$
 JNICALL
-Java_com_hpl_mds_impl_$class$_read$whenString({Handle})$
+Java_com_hpl_mds_impl_$class$_get$whenString({Handle})$
   (JNIEnv *jEnv, jclass,
    jlong handleIndex,
-   jlong ctxtHIndex,
    jlong index)
 {
-  return exception_handler_wr(jEnv, read_value<$kind$>, handleIndex, ctxtHIndex, index);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, read_value<$kind$>, handleIndex, index);
+}
+
+JNIEXPORT
+$jni$
+JNICALL
+Java_com_hpl_mds_impl_$class$_peek$whenString({Handle})$
+  (JNIEnv *jEnv, jclass,
+   jlong handleIndex,
+   jlong index)
+{
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, peek_value<$kind$>, handleIndex, index);
 }
 
 
 JNIEXPORT
 $jni$
 JNICALL
-Java_com_hpl_mds_impl_$class$_write$whenString({Handle})$
+Java_com_hpl_mds_impl_$class$_set$whenString({Handle})$
   (JNIEnv *jEnv, jclass,
    jlong handleIndex,
-   jlong ctxtHIndex,
    jlong index,
    $jni$ valArg)
 {
-  return exception_handler_wr(jEnv, write_value<$kind$>, handleIndex, ctxtHIndex, index, valArg);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, [=] {
+      return write_value<$kind$>(handleIndex, index, valArg);
+    });
+}
+
+JNIEXPORT
+$jni$
+JNICALL
+Java_com_hpl_mds_impl_$class$_getAndSet$whenString({Handle})$
+  (JNIEnv *jEnv, jclass,
+   jlong handleIndex,
+   jlong index,
+   $jni$ valArg)
+{
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, [=] {
+      return write_value<$kind$>(handleIndex, index, valArg,
+                                 ret_mode::prior_val);
+    });
 }
 
 JNIEXPORT
@@ -160,54 +192,51 @@ Java_com_hpl_mds_impl_$class$_size
   (JNIEnv *jEnv, jclass,
    jlong handleIndex)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, size<$kind$>, handleIndex);
-}
-
-JNIEXPORT
-void
-JNICALL
-Java_com_hpl_mds_impl_$class$_setToParent
-  (JNIEnv *jEnv, jobject,
-   jlong hIndex,
-   jlong ctxtHIndex,
-   jlong i)
-{
-  exception_handler(jEnv, set_to_parent<$kind$>, hIndex, ctxtHIndex, i);
-}
-
-
-JNIEXPORT
-void
-JNICALL
-Java_com_hpl_mds_impl_$class$_rollback
-  (JNIEnv *jEnv, jobject,
-   jlong hIndex,
-   jlong ctxtHIndex,
-   jlong i)
-{
-  exception_handler(jEnv, rollback<$kind$>, hIndex, ctxtHIndex, i);
 }
 
 
 $if(type.numeric)$
-$["add","sub","mul","div"]:{ func |
+$["add","sub","mul","div"],
+ ["inc","dec","mul","div"],
+ ["getAndInc","getAndDec","getAndMult","getAndDiv"]:{ op,func,getAndFunc |
 JNIEXPORT 
-$jni$
+jboolean
 JNICALL 
 Java_com_hpl_mds_impl_$class$_$func$Value
   (JNIEnv *jEnv, jobject, 
    jlong hIndex,
-   jlong ctxtHIndex,
    jlong index,
-   $jni$ amt)
+   $jni$ valArg)
 {
-  return exception_handler_wr(jEnv, modify_value<$kind$, ARITH_OP::$func$>, hIndex, ctxtHIndex, index, amt);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, [=] {
+      return modify_value<$kind$, ARITH_OP::$op$>(hIndex, index, valArg);
+    \});
 \}
 
+JNIEXPORT 
+jboolean
+JNICALL 
+Java_com_hpl_mds_impl_$class$_$getAndFunc$Value
+  (JNIEnv *jEnv, jobject, 
+   jlong hIndex,
+   jlong index,
+   $jni$ valArg)
+{
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, [=] {
+      return modify_value<$kind$, ARITH_OP::$op$>(hIndex, index, valArg,
+          ret_mode::prior_val);
+    \});
+\}
 
 }
 $
 $endif$
+
+
 
 }
 

@@ -30,369 +30,344 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
+import java.util.function.Consumer;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import org.apache.log4j.Logger;
 
-import com.hpl.mds.InContext;
-import com.hpl.mds.IsolationContext;
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.MergeReport;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.PubOption;
-import com.hpl.mds.PubResult;
-import com.hpl.mds.exceptions.FailedTransactionException;
-import com.hpl.mds.impl.PubOptionImpl.KeepGoing;
-import com.hpl.mds.impl.PubOptionImpl.ReRunOption;
-import com.hpl.mds.task.IsoContextTasks;
-import com.hpl.mds.task.Task;
-//import com.hpl.mds.task.Task;
-//import com.hpl.mds.task.TaskIterator;
-//import com.hpl.mds.task.TaskNode;
+import com.hpl.erk.util.CollUtils;
+
+import com.hpl.mds.*;
 
 
 public class IsoContextProxy extends Proxy implements IsolationContext {
 	
-	private static final NativeLibraryLoader NATIVE_LIB_LOADER = NativeLibraryLoader.getInstance();
+  private static final NativeLibraryLoader NATIVE_LIB_LOADER = NativeLibraryLoader.getInstance();
 	
-	private static final Logger log = Logger.getLogger(IsoContextProxy.class);
+  private static final Logger log = Logger.getLogger(IsoContextProxy.class);
 
-	private static final Proxy.Table<IsoContextProxy> 
-	proxyTable = new Proxy.Table<>(IsoContextProxy::release);
+  private static final Proxy.Table<IsoContextProxy> 
+    proxyTable = new Proxy.Table<>(IsoContextProxy::release);
+
+  private IsoContextProxy parent_ = null;
+  private Boolean isPublishable_ = null;
+  private TaskProxy topLevelTask_ = null;
+  private TaskProxy creationTask_ = null;
+  private List<Consumer<? super IsoContextProxy>> successfulPublishHooks_ = null;
+  private List<Consumer<? super IsoContextProxy>> failedPublishHooks_ = null;
+  
+  /*
+   * We increment this on successful publish.  It is used by
+   * TaskComputed to determine whether a dependency should be added.
+   */
+  AtomicInteger successfulPublishCount = new AtomicInteger(0);
+
+  /*
+   * We need to hold onto all contexts we may try to publish and all
+   * of their potentially redoable tasks.  As soon as we successfully
+   * publish or we call giveUp() on a context, we can clear its entry.
+   * (If we try to publish again and see any tasks we dropped, we
+   * won't be able to do it and will give up the redo.)
+   */
+  static final ConcurrentMap<IsoContextProxy, ConcurrentMap<TaskProxy, Runnable>>
+    redoableTasks = new ConcurrentHashMap<>();
 	
-
-	private IsoContextProxy parent_ = null;
-
-	static InheritableThreadLocal<IsoContextProxy> current_ 
-	= new InheritableThreadLocal<IsoContextProxy>() {
-		protected IsoContextProxy childValue(IsoContextProxy parentValue) {
-			return parentValue == null ? global() : parentValue;
-		};
-		protected IsoContextProxy initialValue() {
-			return global();
-		};
-	};
-
-	static final IsoContextProxy global_ = fromHandle(globalHandle());
-	static IsoContextProxy forProcess_ = null;
+  static final IsoContextProxy global_ = fromHandle(globalHandle());
+  static IsoContextProxy forProcess_ = null;
 	
-	private IsoContextTasks tasks;
-	
-//	/** List<Task> tasks
-//	 *  tasks added to tasks list before their initial run
-//	 *  synchronizedList necessary where multiple threads running in same IsolationContext add tasks
-//	 *  List intended to capture some ordering of their execution (sufficiently correct?)
-//	 *  - assumption being that those tasks reexecuted in the same order will have correct results
-//	 */
-//	private List<com.hpl.mds.task.Task> tasks = Collections.synchronizedList(new ArrayList<Task>());
-//	
-//	/** List<Task> rerunTasks
-//	 *  tasks added to rerunTasks list for rerunning to resolve conflicts on IC.publish
-//	 *  - conflicted Tasks: reads/writes conflicted fields itself
-//	 *  - dependent Tasks: dependent on a conflicted Task
-//	 */
-//	private List<Task> rerunTasks = Collections.synchronizedList(new ArrayList<Task>());
-//	
-//	/** TaskNode taskGraph
-//	 *  Graph capturing correct ordering of tasks to be rerun, taking account of all dependencies
-//	 *  - conflicted Tasks: reads/writes conflicted fields itself
-//	 *  - dependent Tasks: dependent on a conflicted Task  
-//	 */
-//	TaskNode taskGraph;
-//	
-//	/** Map<> taskWrites // ex: changes
-//	 *  
-//	 */
-//	private Map<Long,Map<String,Set<Task>>> taskWrites = Collections.synchronizedMap(new HashMap<>());
-//	
-//	/**
-//	 * taskConflicts
-//	 * - conflicts identified when IsolationContext.publish called, obtained from PubResult
-//	 * - the Java level representation of Core merge_result.conflicts
-//	 * - to be resolved by rerunning conflicted tasks
-//	 */
-//	private Conflicts conflicts = null;
-	
-	
+  private IsoContextProxy(long h) {
+    super(h, proxyTable);
+  }
 
-	private IsoContextProxy(long h) {
-		super(h);
-	}
+  long getHandle() {
+    return handleIndex_;
+  }
 
-	long getHandle() {
-		return handleIndex_;
-	}
+  private static native void release(long h);
+  private static native long parentHandle(long h);
+  private static native long topLevelTaskHandle(long h);
+  private static native long creationTaskHandle(long h);
+  private static native long newChild(long h, int viewType, int modType);
+  private static native long globalHandle();
+  private static native long processHandle();
+  private static native boolean isPublishable(long h);
+  private static native boolean isSnapshot(long h);
+  private static native boolean isReadOnly(long h);
+  private static native boolean hasConflicts(long h);
+  private static native long publish(long h);
+  /*
+   * Returns the task handle that's already been established.
+   */
+  private static native long push(long h);
 
-	private static native void release(long h);
-	private static native long parentHandle(long h);
-	private static native long newChild(long h, int viewType, int modType);
-	private static native long globalHandle();
-	private static native long processHandle();
-	private static native boolean isMergeable(long h);
-	private static native boolean isSnapshot(long h);
-	private static native boolean isReadOnly(long h);
-	private static native void publish(long h, long pubResHandle);
-	private static native void clearConflicts(long h);
-	// private static native int  numConflicts(long h);
+  public static IsoContextProxy current() {
+    return TaskProxy.current().getContext();
+  }
 
-	protected void finalize() {
-		/*
-		 * We should take the handle out of the store, but we don't know if another thread might
-		 * be using it, so for now I'm going to let it leak.
-		 */
-	}
+  public static IsoContextProxy global() {
+    return global_;
+  }
 
-	public static IsoContextProxy current() {
-		return current_.get();
-	}
-
-	public static IsoContextProxy global() {
-		return global_;
-	}
-
-	public static IsolationContext forProcess() {
-		if (forProcess_ == null) {
-			forProcess_ = fromHandle(processHandle());
-		}
-		return forProcess_;
-	}
-
-	@Override
-	public IsolationContext parent() {
-		if (parent_ == null) {
-			parent_ = fromHandle(parentHandle(handleIndex_));
-		}
-		return parent_;
-	}
-
-	@Override
-	public IsoContextProxy createNested(ViewType vt, ModificationType mt) {
-		return fromHandle(newChild(handleIndex_, vt.ordinal(), mt.ordinal()));
-	}
-	class UseImpl implements Use {
-		final IsoContextProxy ctxt_;
-		final IsoContextProxy priorCtxt_;
-
-		UseImpl(IsoContextProxy ctxt) {
-			ctxt_ = ctxt;
-			priorCtxt_ = current();
-			current_.set(ctxt);
-		}
-
-		@Override
-		public void close() {
-			// We only go back to the prior one if we're in this one.
-			if (current() == ctxt_) {
-				current_.set(priorCtxt_);
-			}
-		}
-	}
-
-	@Override
-	public Use use() {
-		return new UseImpl(this);
-	}
-
-	class PublishControl {
-		PublishControl(Collection<? extends PubOption>options) {
-			// TODO
-		}
-
-		public boolean tryResolve() {
-			// TODO Auto-generated method stub
-			return false;
-		}
-	}
-
-	@Override
-	public PubResultProxy publish(PubOption... options) {
-		return publish(Arrays.asList(options));
-	}
-
-	public PubResultProxy tryPublish() {
-		PubResultProxy pRes = new PubResultProxy();
-		pRes.initialize(pRes.handleIndex()); // associate new PubResultProxy java object with pr_merge_result
-		publish(handleIndex_, pRes.handleIndex());
-		return pRes;
-	}
-
-	@Override
-	public PubResultProxy publish(Collection<? extends PubOption> options) {
-		PubResultProxy pRes = tryPublish();
-		if (!pRes.succeeded()) {
-			PublishControl pControl = new PublishControl(options);
-			while (pControl.tryResolve() && pRes.resolve()) {
-				pRes = tryPublish();
-			}
-		}
-		return pRes;
-	}
-
-	@Override
-	public boolean isPublished() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public IsolationContext reset() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T extends ManagedObject> InContext<T> viewOf(T val) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public <T extends ManagedObject> InContext<T> viewOf(Supplier<? extends T> gen) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public boolean isMergeable() {
-		return isMergeable(handleIndex_);
-	}
-
-	@Override
-	public boolean isReadOnly() {
-		return isReadOnly(handleIndex_);
-	}
-
-	@Override
-	public boolean isSnapshot() {
-		return isSnapshot(handleIndex_);
-	}
-
-	public static IsoContextProxy fromHandle(long handleIndex) {
-	  return proxyTable.fromIndex(handleIndex, IsoContextProxy::new);
-	}
-
-	@Override
-	public <R> R callIsolated(Supplier<? extends R> func, MergeReport mr, Collection<? extends PubOption> options) {
-		// log.debug("IsoContextProxy: callIsolated");
-		if (mr != null) {
-			mr.reset();
-		}
-		List<ReRunOption.Control> reRunControls = new ArrayList<>(options.size());
-		for (PubOption option : options) {
-			if (option instanceof ReRunOption) {
-				ReRunOption o = (ReRunOption)option;
-				reRunControls.add(o.start());
-			}
-		}
-		PubResult pr;
-		KeepGoing cont = KeepGoing.YES;
-		while (cont == KeepGoing.YES) {
-			if (mr != null) {
-				mr.beforeRun();
-			}
-			IsolationContext child = createNested();
-			R val = child.call(func);
-			pr = child.publish(options);
-			if (pr.succeeded()) {
-				if (mr != null) {
-					mr.noteSuccess();
-				}
-				return val;
-			}
-			cont = reRunControls.stream()
-					.map(ReRunOption.Control::tryAgain)
-					.reduce(KeepGoing.OKAY, KeepGoing::havingSeen);
-		}
-		if (mr != null) {
-			mr.noteFailure();
-		}
-		throw new FailedTransactionException();
-	}
-
-
-	@Override
-	void releaseHandleIndex(long index) {
-	  proxyTable.release(index);
-	}
-	
-	
-//	public void examineConflictedState(PubResult pubResult) {
-//		// compare number of conflicts in merge_result with number of conflicts in isolation context:
-//		// PubResult conflicts:
-//		int pubResultConflicts = pubResult.numConflictsRemaining();
-//		// IsoContext conflicts:
-//		int isoContextConflicts = numConflicts(handleIndex_);
-//	}
-	
-	
-	// Task management
-	
-	public void rerunConflictedTasks(PubResult pubResult) {
-		if (tasks != null) {
-                        log.debug("IsoContextProxy.rerunConflictedTasks: context: " + this);
-			tasks.rerunConflictedTasks(pubResult);
-		}
-                // tmp:
-                else 
-                    log.debug("IsoContextProxy.rerunConflictedTasks: context: " + this + " tasks == null");
-	}
-		  
-	public void add(Task task) {
-		if (tasks == null) {
-			tasks = new IsoContextTasks();
-		}
-		tasks.add(task);
-	}
-
-
-	public void addWrite(Task task, ChangeBase write) {
-		if (tasks != null) {
-			tasks.addWrite(task, write);
-		}
-	}
-
-	public void addRead(Task task, ChangeBase read) {
-		if (tasks != null) {
-			tasks.addRead(task, read);
-		}
-	}
-
-    public Task lastWriter(ChangeBase change) {
-		if (tasks != null) {
-			return tasks.lastWriter(change);
-		}
-		else {
-			return null;
-		}
+  public static IsoContextProxy forProcess() {
+    if (forProcess_ == null) {
+      forProcess_ = fromHandle(processHandle());
     }
-    
-    // IsoContextTasks.currentTask replaced with multi-thread safe Task.currentTask
-    // - current task determined directly via Task.current()
-    //   rather than via IsolationContext.currentTask() now
-	// public void setCurrentTask(Task task) {
-	// 	if (tasks != null) {
-	// 		tasks.setCurrentTask(task);
-	// 	}
-	// }
-	// 
-	// public Task currentTask() {
-	// 	if (tasks != null) {
-	// 		return tasks.currentTask();
-	// 	}
-	// 	else {
-	// 		return null;
-	// 	}
-	// }
-	
-	public void clearConflicts() {
-		clearConflicts(handleIndex_);
-	}
-	
-//	public void add(Task task) {
-//		tasks.add(task);
-//	}
-//	
+    return forProcess_;
+  }
+
+  @Override
+  public IsoContextProxy parent() {
+    if (parent_ == null) {
+      parent_ = fromHandle(parentHandle(handleIndex_));
+    }
+    return parent_;
+  }
+
+  @Override
+  public TaskProxy topLevelTask() {
+    if (topLevelTask_ == null) {
+      topLevelTask_ = TaskProxy.fromHandle(topLevelTaskHandle(handleIndex_));
+    }
+    return topLevelTask_;
+  }
+
+  @Override
+  public TaskProxy creationTask() {
+    if (creationTask_ == null) {
+      creationTask_ = TaskProxy.fromHandle(creationTaskHandle(handleIndex_));
+    }
+    return creationTask_;
+  }
+
+  @Override
+  public IsoContextProxy createNested(ViewType vt, ModificationType mt) {
+    return fromHandle(newChild(handleIndex_, vt.ordinal(), mt.ordinal()));
+  }
+  class UseImpl implements Use {
+    final TaskProxy task_;
+
+    UseImpl(IsoContextProxy ctxt) {
+      long th = push(ctxt.getHandle());
+      //      System.out.format("UseImpl got task handle %d%n", th);
+      task_ = TaskProxy.fromHandle(th);
+      task_.setContext(ctxt);
+      TaskProxy.noteCurrent(task_);
+    }
+
+    @Override
+    public void close() {
+      if (TaskProxy.current() != task_) {
+        /*
+         * We've blown stack discipline!
+         */
+        throw new ImproperStackDisciplineException();
+      }
+      TaskProxy.pop();
+    }
+  }
+
+  @Override
+  public Use use() {
+    return new UseImpl(this);
+  }
+
+  @Override
+  public PubResultProxy publish(PubOption options) {
+    PubOptionImpl opts = (PubOptionImpl)options;
+    PubOptionImpl.Control control = opts.getControl();
+    return publish(control.reports(), control.forResolve());
+  }
+
+  public PubResultProxy tryPublish() {
+    // System.out.format("Calling tryPublish() on %s%n", this);
+    long h = publish(handleIndex_);
+    PubResultProxy res = PubResultProxy.fromHandle(h);
+    if (res.succeeded()) {
+      // System.out.format("tryPublish() succeeded%n");
+      successfulPublishCount.incrementAndGet();
+      giveUp();
+    }
+    return res;
+  }
+
+  public PubResultProxy publish(Collection<PublishReport> reports,
+                                Collection<Supplier<Predicate<PubResult>>> resolveControlSup)
+  {
+    // System.out.format("Trying Java publish%n");
+    PubResultProxy pRes = tryPublish();
+    if (!pRes.succeeded()) {
+      List<Predicate<PubResult>> resolveControl = resolveControlSup.stream()
+        .map(Supplier::get)
+        .collect(Collectors.toList());
+      while (!pRes.succeeded()) {
+        // System.out.format("tryPublish() failed%n");
+        PubResultProxy pr2 = pRes;
+        if (!(resolveControl.stream().allMatch(p -> p.test(pr2))
+              && pRes.resolve(reports))) {
+          // System.out.format("Resolution failed%n");
+          break;
+        }
+        // System.out.format("Resolution succeeded%n");
+        // System.out.format("Calling tryPublish() again%n");
+        pRes = tryPublish();
+      }
+    }
+    if (pRes.succeeded()) {
+      runSuccessfulPublishHooks();
+    } else {
+      runFailedPublishHooks();
+    }
+    return pRes;
+  }
+
+  @Override
+  public void giveUp() {
+    redoableTasks.remove(this);
+  }
+
+
+  @Override
+  public <T extends ManagedObject> InContext<T> viewOf(T val) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public <T extends ManagedObject> InContext<T> viewOf(Supplier<? extends T> gen) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+
+  @Override
+  public boolean isPublishable() {
+    if (isPublishable_ == null) {
+      isPublishable_ = isPublishable(handleIndex_);
+    }
+    return isPublishable_;
+  }
+
+  @Override
+  public boolean isReadOnly() {
+    return isReadOnly(handleIndex_);
+  }
+
+  @Override
+  public boolean isSnapshot() {
+    return isSnapshot(handleIndex_);
+  }
+
+  @Override
+  public boolean hasConflicts() {
+    return hasConflicts(handleIndex_);
+  }
+
+  public static IsoContextProxy fromHandle(long handleIndex) {
+    return proxyTable.fromIndex(handleIndex, IsoContextProxy::new);
+  }
+
+  @Override
+  public <R> R callIsolated(PubOption options, Supplier<? extends R> func) {
+    // System.out.format("In isolated block.  Context is %s%n", this);
+    PubOptionImpl opts = (PubOptionImpl)options;
+    PubOptionImpl.Control control = opts.getControl();
+
+    final ViewType vt = control.viewType();
+    final ModificationType mt = control.modType();
+
+    if (mt != ModificationType.Full) {
+      // System.out.format("Context is not publishable.  Just calling%n");
+      IsoContextProxy child = createNested(vt, mt);
+      R val = child.call(func);
+      return val;
+    }
+
+    // System.out.format("Context is publishable.%n");
+
+    Collection<PublishReport> reports = control.reports();
+
+    reports.forEach(PublishReport::reset);
+
+    List<BooleanSupplier> reRunControls = control.forReRun().stream()
+      .map(Supplier::get).collect(Collectors.toList());
+    Collection<Supplier<Predicate<PubResult>>> resolveControls = control.forResolve();
+
+    PubResult pr;
+    boolean cont = true;
+    while (cont) {
+      IsoContextProxy child = createNested(vt, mt);
+      reports.forEach(r -> r.beforeRun(child));
+      
+      // System.out.format("Child context is %s%n", child);
+      R val = child.call(func);
+      // System.out.format("Isolated call returned %s%n", val);
+      pr = child.publish(reports, resolveControls);
+      // System.out.format("Java publish call returned%n");
+      if (pr.succeeded()) {
+        // System.out.format("Publish succeeded%n");
+        reports.forEach(PublishReport::noteSuccess);
+        return val;
+      }
+      // System.out.format("Publish failed%n");
+      cont = reRunControls.stream().allMatch(BooleanSupplier::getAsBoolean);
+      child.giveUp();
+    }
+    // System.out.format("Giving up on isolated block.%n");
+    reports.forEach(PublishReport::noteFailure);
+    throw new FailedTransactionException();
+  }
+
+  @Override
+  public String toString() {
+    return String.format("IsoContext[%,d]",
+                         handleIndex_);
+  }
+
+
+
+  @Override
+  void releaseHandleIndex(long index) {
+    proxyTable.release(index);
+  }
+
+  private void runSuccessfulPublishHooks() {
+    runHooks(successfulPublishHooks_);
+  }
+
+  private void runFailedPublishHooks() {
+    runHooks(failedPublishHooks_);
+  }
+
+  private void runHooks(List<Consumer<? super IsoContextProxy>> hooks) {
+    if (hooks != null) {
+      creationTask().establishAndRun(()->hooks.forEach(hook->hook.accept(this)));
+    }
+  }
+
+  @Override
+  synchronized public void afterSuccessfulPublish(Consumer<? super IsoContextProxy> fn) {
+    if (successfulPublishHooks_ == null) {
+      successfulPublishHooks_ = new ArrayList<>();
+    }
+    successfulPublishHooks_.add(fn);
+  }
+
+  @Override
+  synchronized public void afterFailedPublish(Consumer<? super IsoContextProxy> fn) {
+    if (failedPublishHooks_ == null) {
+      failedPublishHooks_ = new ArrayList<>();
+    }
+    failedPublishHooks_.add(fn);
+  }
+
+
 
 
 }

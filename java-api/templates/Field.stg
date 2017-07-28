@@ -69,21 +69,6 @@ import com.hpl.mds.callbacks.ChangeHandlerRemovalHook;
 import com.hpl.mds.callbacks.ChangeHandler;
 import com.hpl.mds.callbacks.FieldChange;
 
-import com.hpl.mds.impl.ChangeBase;
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.$elseif(type.string)$string.$endif$$type.managedName$;
-} 
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.field.$elseif(type.string)$string.$endif$$type.fieldName$;
-} 
-$
-
-
-
-
 public interface Field<RT extends ManagedRecord, FT extends ManagedObject> 
 extends Function<RT, FT>
 {
@@ -93,9 +78,10 @@ extends Function<RT, FT>
    
   public FT set(RT rec, FT val);
   public FT getAndSet(RT rec, FT val);
+
+  public void initFinal(RT rec, FT val);
   
   public boolean change(RT rec, FT expected, FT val);
-  
   public boolean change(RT rec, Holder<FT> holdsExpected, FT val);
   
   public ManagedString name();
@@ -210,8 +196,6 @@ $
   default ChangeHandlerRemovalHook afterChange(Consumer<? super FieldChange<? super RT, ? super FT>\> handler) {
     return afterChange((change, changeSet) -> handler.accept(change));
   }  
-  
-  ChangeBase createChange(RT record);
   
 }
 >>

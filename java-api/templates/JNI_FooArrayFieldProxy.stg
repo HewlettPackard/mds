@@ -89,6 +89,7 @@ Java_com_hpl_mds_impl_$class$_getNameHandle
   (JNIEnv *jEnv, jobject, 
    jlong hIndex)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, get_name_handle<kind::ARRAY>, hIndex);
 }
 
@@ -99,6 +100,7 @@ Java_com_hpl_mds_impl_$class$_getRecTypeHandle
   (JNIEnv *jEnv, jobject, 
    jlong hIndex)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, get_rec_type_handle<kind::ARRAY>, hIndex);
 }
 
@@ -112,6 +114,7 @@ Java_com_hpl_mds_impl_$class$_createFieldIn
    jlong recTypeHIndex, 
    jlong nameHIndex)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, create_array_field_in<$kind$>, recTypeHIndex, nameHIndex);
 }
 
@@ -121,10 +124,10 @@ JNICALL
 Java_com_hpl_mds_impl_$class$_getValueHandle
   (JNIEnv *jEnv, jobject, 
    jlong hIndex,
-   jlong ctxtHIndex,
    jlong recHIndex)
 {
-  return exception_handler_wr(jEnv, get_array_value_handle<$kind$>, hIndex, ctxtHIndex, recHIndex);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, get_array_value_handle<$kind$>, hIndex, recHIndex);
 }
   
 JNIEXPORT 
@@ -133,10 +136,10 @@ JNICALL
 Java_com_hpl_mds_impl_$class$_peekValueHandle
   (JNIEnv *jEnv, jobject, 
    jlong hIndex,
-   jlong ctxtHIndex,
    jlong recHIndex)
 {
-  return exception_handler_wr(jEnv, peek_array_value_handle<$kind$>, hIndex, ctxtHIndex, recHIndex);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, peek_array_value_handle<$kind$>, hIndex, recHIndex);
 }
   
 JNIEXPORT 
@@ -145,11 +148,44 @@ JNICALL
 Java_com_hpl_mds_impl_$class$_setValueHandle
   (JNIEnv *jEnv, jobject, 
    jlong hIndex,
-   jlong ctxtHIndex,
    jlong recHIndex,
    jlong valArg)
 {
-  return exception_handler_wr(jEnv, set_array_value_handle<$kind$>, hIndex, ctxtHIndex, recHIndex, valArg);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, [=] {
+      return set_array_value_handle<$kind$>(hIndex, recHIndex, valArg);
+    });
+}
+
+JNIEXPORT 
+jlong
+JNICALL 
+Java_com_hpl_mds_impl_$class$_initFinal
+  (JNIEnv *jEnv, jobject, 
+   jlong hIndex,
+   jlong recHIndex,
+   jlong valArg)
+{
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, [=] {
+      return init_final_array<$kind$>(hIndex, recHIndex, valArg);
+    });
+}
+
+JNIEXPORT 
+jlong
+JNICALL 
+Java_com_hpl_mds_impl_$class$_getAndSetValueHandle
+  (JNIEnv *jEnv, jobject, 
+   jlong hIndex,
+   jlong recHIndex,
+   jlong valArg)
+{
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, [=] {
+      return set_array_value_handle<$kind$>(hIndex, recHIndex, valArg,
+                                            ret_mode::prior_val);
+    });
 }
 
 }

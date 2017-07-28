@@ -47,6 +47,7 @@ extern "C"
       JNIEnv *jEnv, jclass, jlong recTypeHIndex, jlong nameHIndex,
       jlong valTypeHIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<record_type_handle> rec_type
@@ -68,6 +69,7 @@ extern "C"
 							     jclass,
 							     jlong hIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (
 	jEnv, [=]
 	  {
@@ -88,64 +90,60 @@ extern "C"
   Java_com_hpl_mds_impl_RecordArrayFieldProxy_getValueHandle (JNIEnv *jEnv,
 							      jclass,
 							      jlong hIndex,
-							      jlong ctxtHIndex,
 							      jlong recHIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (
 	jEnv, [=]
 	  {
 	    indexed<record_field_handle<kind::ARRAY>> h
 	      { hIndex};
-	    indexed<iso_context_handle> ctxt
-	      { ctxtHIndex};
 	    indexed<managed_record_handle> rec
 	      { recHIndex};
 	    // TODO: move downcast into handler
-            auto v = h->read_frozen(*ctxt, *rec);
-	managed_array_handle<kind::RECORD> vdc;
-	if (v != nullptr)
-	  {
-	    managed_array_handle<kind::RECORD> vdc2(v.pointer()->downcast<kind::RECORD>(),
-		v.branch());
-	    vdc = vdc2;
-	  }
-	indexed<managed_array_handle<kind::RECORD>> val(vdc);
+            auto v = h->frozen_read(*rec);
+            managed_array_handle<kind::RECORD> vdc;
+            if (v != nullptr)
+              {
+                managed_array_handle<kind::RECORD> vdc2(v.pointer()->downcast<kind::RECORD>(),
+                                                        v.view());
+                vdc = vdc2;
+              }
+            indexed<managed_array_handle<kind::RECORD>> val(vdc);
         
-	return val.return_index();
-      });
+            return val.return_index();
+          });
   }
 
   JNIEXPORT
   jlong
   JNICALL
   Java_com_hpl_mds_impl_RecordArrayFieldProxy_peekValueHandle (JNIEnv *jEnv,
-							      jclass,
-							      jlong hIndex,
-							      jlong ctxtHIndex,
-							      jlong recHIndex)
+                                                               jclass,
+                                                               jlong hIndex,
+                                                               jlong recHIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (
 	jEnv, [=]
 	  {
 	    indexed<record_field_handle<kind::ARRAY>> h
 	      { hIndex};
-	    indexed<iso_context_handle> ctxt
-	      { ctxtHIndex};
 	    indexed<managed_record_handle> rec
 	      { recHIndex};
 	    // TODO: move downcast into handler
-	auto v = h->read(*ctxt, *rec);
-	managed_array_handle<kind::RECORD> vdc;
-	if (v != nullptr)
-	  {
-	    managed_array_handle<kind::RECORD> vdc2(v.pointer()->downcast<kind::RECORD>(),
-		v.branch());
-	    vdc = vdc2;
-	  }
-	indexed<managed_array_handle<kind::RECORD>> val(vdc);
+            auto v = h->free_read(*rec);
+            managed_array_handle<kind::RECORD> vdc;
+            if (v != nullptr)
+              {
+                managed_array_handle<kind::RECORD> vdc2(v.pointer()->downcast<kind::RECORD>(),
+                                                        v.view());
+                vdc = vdc2;
+              }
+            indexed<managed_array_handle<kind::RECORD>> val(vdc);
         
-	return val.return_index();
-      });
+            return val.return_index();
+          });
   }
 
   JNIEXPORT
@@ -154,28 +152,26 @@ extern "C"
   Java_com_hpl_mds_impl_RecordArrayFieldProxy_setValueHandle (JNIEnv *jEnv,
 							      jclass,
 							      jlong hIndex,
-							      jlong ctxtHIndex,
 							      jlong recHIndex,
 							      jlong valArg)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (
 	jEnv,
 	[=]
 	  {
 	    indexed<record_field_handle<kind::ARRAY>> h
 	      { hIndex};
-	    indexed<iso_context_handle> ctxt
-	      { ctxtHIndex};
 	    indexed<managed_record_handle> rec
 	      { recHIndex};
 	    indexed<managed_array_handle<kind::RECORD>> val
 	      { valArg};
-	    auto v = h->write(*ctxt, *rec, *val);
+	    auto v = h->write(*rec, *val);
 	    managed_array_handle<kind::RECORD> vdc;
 	    if (v != nullptr)
 	      {
 		managed_array_handle<kind::RECORD> vdc2(v.pointer()->downcast<kind::RECORD>(),
-		    v.branch());
+		    v.view());
 		vdc = vdc2;
 	      }
 	    indexed<managed_array_handle<kind::RECORD>> old(vdc);
@@ -183,5 +179,68 @@ extern "C"
 	  });
   }
 
+  JNIEXPORT
+  jboolean
+  JNICALL
+  Java_com_hpl_mds_impl_RecordArrayFieldProxy_initFinal (JNIEnv *jEnv,
+                                                         jclass,
+                                                         jlong hIndex,
+                                                         jlong recHIndex,
+                                                         jlong valArg)
+  {
+    ensure_thread_initialized(jEnv);
+    return exception_handler_wr (
+	jEnv,
+	[=]
+	  {
+	    indexed<record_field_handle<kind::ARRAY>> h
+	      { hIndex};
+	    indexed<managed_record_handle> rec
+	      { recHIndex};
+	    indexed<managed_array_handle<kind::RECORD>> val
+	      { valArg};
+	    return h->write_initial(*rec, *val);
+	  });
+  }
+
+  JNIEXPORT
+  jlong
+  JNICALL
+  Java_com_hpl_mds_impl_RecordArrayFieldProxy_getAndSetValueHandle (JNIEnv *jEnv,
+                                                                    jclass,
+                                                                    jlong hIndex,
+                                                                    jlong recHIndex,
+                                                                    jlong valArg)
+  {
+    ensure_thread_initialized(jEnv);
+    return exception_handler_wr (
+	jEnv,
+	[=]
+	  {
+	    indexed<record_field_handle<kind::ARRAY>> h
+	      { hIndex};
+	    indexed<managed_record_handle> rec
+	      { recHIndex};
+	    indexed<managed_array_handle<kind::RECORD>> val
+	      { valArg};
+	    auto v = h->write(*rec, *val, ret_mode::prior_val);
+	    managed_array_handle<kind::RECORD> vdc;
+	    if (v != nullptr)
+	      {
+		managed_array_handle<kind::RECORD> vdc2(v.pointer()->downcast<kind::RECORD>(),
+		    v.view());
+		vdc = vdc2;
+	      }
+	    indexed<managed_array_handle<kind::RECORD>> old(vdc);
+	    return old.return_index();
+	  });
+  }
+
+  JNIEXPORT jboolean JNICALL
+  Java_com_hpl_mds_impl_RecordArrayFieldProxy_changeValueHandle (JNIEnv *jEnv,
+								 jclass, jlong,
+                                                                 jlong,
+								 jlong, jlong,
+								 jobject);
 
 }

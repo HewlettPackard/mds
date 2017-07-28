@@ -508,6 +508,7 @@ install-progs: $(foreach i,$($(project_name)_installed_progs),install-$(i))
 
 install-includes: FORCE
 	@echo Syncing include dirs
+	@-mkdir -p $($(project_name)_install_includes_dir)
 	$(if $(wildcard $(incl_dir)/*.h),cp $(incl_dir)/*.h $($(project_name)_install_includes_dir))
 	$(if $(addprefix $(incl_dir)/,$($(project_name)_installed_include_subdirs)),\
 	rsync -rvui --include '*/' --include '*.h' --exclude '*' --delete-excluded \
@@ -566,7 +567,7 @@ clean-installed-html:
 MDS_CRD := Managed Data Structures
 MPGC_CRD := Multi Process Garbage Collector
 
-autobuild_project_dirs ?= gc:MPGC common:MPGC core:MDS java-api:MDS
+autobuild_project_dirs ?= gc:MPGC common:MPGC core:MDS java-api:MDS c++-api:MDS
 
 define dist_copy_file
 -sed '$(3)s/.*/$(4)/' $(build_dir)/$(1) >$(git_base_dir)/$(2)/build/$(notdir $(1))

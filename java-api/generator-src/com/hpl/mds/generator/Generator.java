@@ -109,7 +109,6 @@ public class Generator {
     generate("ManagedMapFromString");
     generate("RecordType");
     generate("Field");
-//    generate("NameService");
     generate("Namespace");
     generate("HName");
     generateTypeSpecific("JNI_FooArrayProxy", Types.maskedTypes);

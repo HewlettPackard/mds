@@ -28,7 +28,7 @@ delimiters "$", "$"
 import "usage.stg"
 import "type.stg"
 import "covariant.stg"
-package() ::= "com.hpl.mds.string"
+package() ::= "com.hpl.mds"
 class() ::= "ManagedMapFromString"
 
 code(types) ::= <<
@@ -70,21 +70,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import com.hpl.mds.ManagedContainer;
-import com.hpl.mds.ManagedMap;
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.ManagedType;
 import com.hpl.mds.usage.UsageBase;
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.$elseif(type.string)$string.$endif$$type.managedName$;
-} 
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.map.$elseif(type.string)$string.$endif$ManagedStringTo$type.shortName$Map;
-} 
-$
 
 
 public interface ManagedMapFromString<V extends ManagedObject> extends ManagedMap<ManagedString, V> {

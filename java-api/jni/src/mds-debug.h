@@ -43,12 +43,10 @@
 
 #include <iostream>
 
-using namespace std;
-
 #ifdef MDSDEBUG
-#define dout cout << __FILE__ << ":" << __LINE__ << ": "
+#define dout std::cout << __FILE__ << ":" << __LINE__ << ": "
 #else
-#define dout 0 && cout
+#define dout if (false) std::cout
 #endif
 
 

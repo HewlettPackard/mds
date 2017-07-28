@@ -29,7 +29,7 @@ import "usage.stg"
 import "type.stg"
 import "string.stg"
 import "covariant.stg"
-package(type) ::= "com.hpl.mds.$ifString({string}, {prim.container.set})$"
+package(type) ::= "com.hpl.mds"
 class(type) ::= "$type.managedName$Set"
 
 code(type,types) ::= <<
@@ -72,17 +72,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import com.hpl.mds.ManagedCollection;
-import com.hpl.mds.ManagedContainer;
-$unlessString({
-import com.hpl.mds.ManagedPrimSet;
-})$
-import com.hpl.mds.ManagedSet;
-import com.hpl.mds.$ifString({string},{prim})$.$managed$;
-$unlessString({
-import com.hpl.mds.function.$short$Predicate;
-import com.hpl.mds.function.$short$Consumer;
-})$
 import com.hpl.mds.usage.UsageBase;
 
 

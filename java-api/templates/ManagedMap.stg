@@ -67,28 +67,10 @@ package $package()$;
 import java.util.Map;
 import java.util.function.Function;
 
-import com.hpl.mds.ManagedContainer;
-import com.hpl.mds.string.ManagedMapFromString;
 import com.hpl.mds.usage.Operation;
 import com.hpl.mds.usage.UsageBase;
 
 import com.hpl.mds.impl.Stub;
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.$elseif(type.string)$string.$endif$$type.managedName$;
-}
-$ 
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.map.$elseif(type.string)$string.$endif$ManagedMapTo$type.shortName$;
-} 
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.map.$elseif(type.string)$string.$endif$ManagedStringTo$type.shortName$Map;
-} 
-$
-
 
 public interface ManagedMap<K extends ManagedObject, V extends ManagedObject> 
 extends ManagedContainer, Map<K,V> {

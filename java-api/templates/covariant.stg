@@ -40,9 +40,6 @@ $bind(class, params)$
 >>
 
 bind(class, params) ::= <<
-import com.hpl.mds.naming.HName;
-import com.hpl.mds.naming.Prior;
-import com.hpl.mds.naming.Namespace;
 @Override 
 $ccName()$ bindName(Prior prior, Namespace ns, CharSequence name);
 

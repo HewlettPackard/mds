@@ -78,14 +78,13 @@ $endif$
     return this;
   } 
   
-  default $tvars$ PubResult runThenPublish($ftype$$tbounds$ fn$comma(formals)$$formals$, PubOption...options) {
+  default $tvars$ PubResult runThenPublish(PubOption opts, $ftype$$tbounds$ fn$comma(formals)$$formals$) {
     call(fn$comma(actuals)$$actuals$);
-    return publish(options);
+    return publish(opts);
   } 
   
-  default $tvars$ PubResult runThenPublish($ftype$$tbounds$ fn$comma(formals)$$formals$, Collection<PubOption> options) {
-    call(fn$comma(actuals)$$actuals$);
-    return publish(options);
+  default $tvars$ PubResult runThenPublish($ftype$$tbounds$ fn$comma(formals)$$formals$) {
+    return runThenPublish(PubOption.defaultOpts(), fn$comma(actuals)$$actuals$);
   }
   
   default $tvars$ $ftype$$tvars$ bind($ftype$$tbounds$ fn) {
@@ -96,27 +95,15 @@ $endif$
     return current().bind(fn);
   }
 
-  default $tvars$ $rtype$ callIsolated($ftype$$tbounds$ fn$comma(formals)$$formals$, Collection<? extends PubOption> options) {
-    $return$ callIsolated(fn$comma(actuals)$$actuals$, null, options);
+  default $tvars$ $rtype$ callIsolated($ftype$$tbounds$ fn$comma(formals)$$formals$) {
+    $return$ callIsolated(PubOption.defaultOpts(), fn$comma(actuals)$$actuals$);
   }
-  default $tvars$ $rtype$ callIsolated($ftype$$tbounds$ fn$comma(formals)$$formals$, MergeReport success, PubOption... options) {
-    $return$ callIsolated(fn$comma(actuals)$$actuals$, success, Arrays.asList(options));
+  
+  static $tvars$ $rtype$ isolated(PubOption opts, $ftype$$tbounds$ fn$comma(formals)$$formals$) {
+    $return$ current().callIsolated(opts, fn$comma(actuals)$$actuals$);
   }
-  default $tvars$ $rtype$ callIsolated($ftype$$tbounds$ fn$comma(formals)$$formals$, PubOption... options) {
-    $return$ callIsolated(fn$comma(actuals)$$actuals$, null, options);
-  }
-
-  static $tvars$ $rtype$ isolated($ftype$$tbounds$ fn$comma(formals)$$formals$, MergeReport success, Collection<? extends PubOption> options) {
-    $return$ current().callIsolated(fn$comma(actuals)$$actuals$, success, options);
-  }
-  static $tvars$ $rtype$ isolated($ftype$$tbounds$ fn$comma(formals)$$formals$, Collection<? extends PubOption> options) {
-    $return$ current().callIsolated(fn$comma(actuals)$$actuals$, null, options);
-  }
-  static $tvars$ $rtype$ isolated($ftype$$tbounds$ fn$comma(formals)$$formals$, MergeReport success, PubOption... options) {
-    $return$ current().callIsolated(fn$comma(actuals)$$actuals$, success, options);
-  }
-  static $tvars$ $rtype$ isolated($ftype$$tbounds$ fn$comma(formals)$$formals$, PubOption... options) {
-    $return$ current().callIsolated(fn$comma(actuals)$$actuals$, null, options);
+  static $tvars$ $rtype$ isolated($ftype$$tbounds$ fn$comma(formals)$$formals$) {
+    $return$ isolated(PubOption.defaultOpts(), fn$comma(actuals)$$actuals$);
   }
 
 
@@ -125,13 +112,6 @@ $endif$
   }
   static $tvars$ $rtype$ detached($ftype$$tbounds$ fn$comma(formals)$$formals$) {
     $return$ current().callDetached(fn$comma(actuals)$$actuals$);
-  }
-
-  default $tvars$ $rtype$ callInSnapshot($ftype$$tbounds$ fn$comma(formals)$$formals$) {
-    $return$ createSnapshot().call(fn$comma(actuals)$$actuals$);
-  }
-  static $tvars$ $rtype$ inSnapshot($ftype$$tbounds$ fn$comma(formals)$$formals$) {
-    $return$ current().callInSnapshot(fn$comma(actuals)$$actuals$);
   }
 
   default $tvars$ $rtype$ callInReadOnlySnapshot($ftype$$tbounds$ fn$comma(formals)$$formals$) {
@@ -154,11 +134,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import com.hpl.mds.impl.ChangeBase;
 import com.hpl.mds.impl.IsoContextProxy;
 import com.hpl.mds.impl.Stub;
-
-import com.hpl.mds.task.Task;
 
 
 public interface IsolationContext {
@@ -174,9 +151,10 @@ public interface IsolationContext {
       Full, Detached, ReadOnly
   }
   
-  boolean isMergeable();
+  boolean isPublishable();
   boolean isReadOnly();
   boolean isSnapshot();
+  boolean hasConflicts();
   
   static IsolationContext current() {
     return IsoContextProxy.current();
@@ -246,82 +224,90 @@ public interface IsolationContext {
   }
   
   IsolationContext parent();
+  Task topLevelTask();
+  Task creationTask();
   
   Use use();
   
-  PubResult publish(PubOption...options);
-  PubResult publish(Collection<? extends PubOption> options);
-
-  static PubResult publishCurrent(PubOption...options) {
-    return current().publish(options);
-  }
-  static PubResult publishCurrent(Collection<? extends PubOption> options) {
-    return current().publish(options);
+  PubResult publish(PubOption opts);
+  default PubResult publish() {
+    return publish(PubOption.defaultOpts());
   }
 
+  static PubResult publishCurrent(PubOption opts) {
+    return current().publish(opts);
+  }
+  static PubResult publishCurrent() {
+    return current().publish();
+  }
+
+
+  void giveUp();
+  static void giveUpCurrent() {
+    current().giveUp();
+  }
 
 
 $functionals({java.util.function.Supplier}, {<R>}, {R}, {Supplier}, {<? extends R>}, [], [], {get()}, {return})$    
-  <R> R callIsolated(Supplier<? extends R> func, MergeReport success, Collection<? extends PubOption> options);
+  <R> R callIsolated(PubOption opts, Supplier<? extends R> func);
 
 $functionals({java.util.function.Consumer}, {<T>}, {void}, {Consumer}, {<? super T>}, {T arg}, {arg}, {accept(arg)}, { })$    
-  default <T> boolean callIsolated(Consumer<? super T> func, T arg, MergeReport success, Collection<? extends PubOption> options) {
-      return callIsolated(()->func.accept(arg), success, options);
+  default <T> boolean callIsolated(PubOption opts, Consumer<? super T> func, T arg) {
+      return callIsolated(opts, ()->func.accept(arg));
   }
 
 $functionals({java.util.function.BiConsumer}, {<T1,T2>}, {void}, {BiConsumer}, {<? super T1, ? super T2>}, {T1 arg1, T2 arg2}, {arg1, arg2}, {accept(arg1, arg2)}, { })$    
-  default <T1,T2> boolean callIsolated(BiConsumer<? super T1, ? super T2> func, T1 arg1, T2 arg2, MergeReport success, Collection<? extends PubOption> options) {
-      return callIsolated(()->func.accept(arg1, arg2), success, options);
+  default <T1,T2> boolean callIsolated(PubOption opts, BiConsumer<? super T1, ? super T2> func, T1 arg1, T2 arg2) {
+      return callIsolated(opts, ()->func.accept(arg1, arg2));
   }
 
 $functionals([], [], {void}, {Runnable}, [], [], [], {run()}, { })$
-  default boolean callIsolated(Runnable func, MergeReport success, Collection<? extends PubOption> options) {
-import com.hpl.mds.impl.MergeReportImpl;  
-      MergeReport bh = success == null ? new MergeReportImpl() : success;
-      callIsolated( () -> { func.run(); return null; }, bh, options);
-      return bh.succeeded();
+  default boolean callIsolated(PubOption opts, Runnable func) {
+      PublishReport rep = PublishReport.create();
+      callIsolated(opts.reportTo(rep), () -> { func.run(); return null; });
+      return rep.succeeded();
   }
 
 $functionals({java.util.function.Predicate}, {<T>}, {boolean}, {Predicate}, {<? super T>}, {T arg}, {arg}, {test(arg)}, {return})$    
-  default <T> boolean callIsolated(Predicate<? super T> func, T arg, MergeReport success, Collection<? extends PubOption> options) {
-      return callIsolated(() -> func.test(arg), success, options);
+  default <T> boolean callIsolated(PubOption opts, Predicate<? super T> func, T arg) {
+      return callIsolated(opts, () -> func.test(arg));
   }
 
 $functionals({java.util.function.Function}, {<T,R>}, {R}, {Function}, {<? super T, ? extends R>}, {T arg}, {arg}, {apply(arg)}, {return})$    
-  default <T,R> R callIsolated(Function<? super T, ? extends R> func, T arg, MergeReport success, Collection<? extends PubOption> options) {
-      return callIsolated(() -> func.apply(arg), success, options);
+  default <T,R> R callIsolated(PubOption opts, Function<? super T, ? extends R> func, T arg) {
+      return callIsolated(opts, () -> func.apply(arg));
   }
 
 $functionals({java.util.function.BiFunction}, {<T1,T2,R>}, {R}, {BiFunction}, {<? super T1, ? super T2, ? extends R>}, {T1 arg1, T2 arg2}, {arg1, arg2}, 
              {apply(arg1, arg2)}, {return})$    
-  default <T1,T2,R> R callIsolated(BiFunction<? super T1,? super T2, ? extends R> func, T1 arg1, T2 arg2, MergeReport success, Collection<? extends PubOption> options) {
-      return callIsolated(() -> func.apply(arg1, arg2), success, options);
+  default <T1,T2,R> R callIsolated(PubOption opts, BiFunction<? super T1,? super T2, ? extends R> func, T1 arg1, T2 arg2) {
+      return callIsolated(opts, () -> func.apply(arg1, arg2));
   }
   
   
 $prims: { type |
-$functionals({com.hpl.mds.function.To$type.shortName$Function}, {<T>}, {$val()$}, {To$type.shortName$Function}, {<? super T>}, {T arg}, {arg}, {applyAs$type.shortName$(arg)}, {return})$    
-  default <T> $val()$ callIsolated(To$type.shortName$Function<? super T> func, T arg, MergeReport success, Collection<? extends PubOption> options) {
-      return callIsolated(() -> func.applyAs$type.shortName$(arg), success, options);
+$functionals([], {<T>}, {$val()$}, {To$type.shortName$Function}, {<? super T>}, {T arg}, {arg}, {applyAs$type.shortName$(arg)}, {return})$    
+  default <T> $val()$ callIsolated(PubOption opts, To$type.shortName$Function<? super T> func, T arg) {
+      return callIsolated(opts, () -> func.applyAs$type.shortName$(arg));
   \}
   
-$functionals({com.hpl.mds.function.$type.shortName$Modifier}, [], {$val()$}, {$type.shortName$Modifier}, [], {$arg()$ arg}, {arg}, {apply(arg)}, {return})$    
-  default $val()$ callIsolated($type.shortName$Modifier func, $arg()$ arg, MergeReport success, Collection<? extends PubOption> options) {
-      return callIsolated(() -> func.apply(arg), success, options);
+$functionals([], [], {$val()$}, {$type.shortName$Modifier}, [], {$arg()$ arg}, {arg}, {apply(arg)}, {return})$    
+  default $val()$ callIsolated(PubOption opts, $type.shortName$Modifier func, $arg()$ arg) {
+      return callIsolated(opts, () -> func.apply(arg));
   \}
   
-$functionals({com.hpl.mds.function.$type.shortName$Supplier}, [], {$val()$}, {$type.shortName$Supplier}, [], [], [], {get()}, {return})$
+$functionals([], [], {$val()$}, {$type.shortName$Supplier}, [], [], [], {get()}, {return})$
 // No callIsolated for $type.shortName$Supplier.  Just delegate to Supplier<$type.shortName$>.    
   
-$functionals({com.hpl.mds.function.$type.shortName$Predicate}, [], {boolean}, {$type.shortName$Predicate}, [], {$arg()$ arg}, {arg}, {test(arg)}, {return})$    
-  default boolean callIsolated($type.shortName$Predicate func, $arg()$ arg, MergeReport success, Collection<? extends PubOption> options) {
-      return callIsolated(() -> func.test(arg), success, options);
+$functionals([], [], {boolean}, {$type.shortName$Predicate}, [], {$arg()$ arg}, {arg}, {test(arg)}, {return})$    
+  default boolean callIsolated(PubOption opts, $type.shortName$Predicate func, $arg()$ arg) {
+      return callIsolated(opts, () -> func.test(arg));
   \}
   
   
-$functionals({com.hpl.mds.function.$type.shortName$Consumer}, [], {void}, {$type.shortName$Consumer}, [], {$arg()$ arg}, {arg}, {accept(arg)}, { })$    
-  default void callIsolated($type.shortName$Consumer func, $arg()$ arg, MergeReport success, Collection<? extends PubOption> options) {
-      callIsolated(() -> func.accept(arg), success, options);
+$functionals([], [], {void}, {$type.shortName$Consumer}, [], {$arg()$ arg}, {arg}, {accept(arg)}, { })$    
+  default void callIsolated(PubOption opts, $type.shortName$Consumer func, $arg()$ arg) {
+      callIsolated(opts, () -> func.accept(arg));
   \}
   
   
@@ -329,16 +315,121 @@ $functionals({com.hpl.mds.function.$type.shortName$Consumer}, [], {void}, {$type
 }$
 
 
+  default <X,R> R callIsolated(PubOption opts,
+                               Supplier<? extends X> compute,
+                               Function<? super X, ? extends R> get)
+  {
+    X data = callIsolated(opts, compute);
+    return get.apply(data);
+  }
 
-  
+  static <X,R> R isolated(PubOption opts,
+                          Supplier<? extends X> compute,
+                          Function<? super X, ? extends R> get)
+  {
+    return current().callIsolated(opts, compute, get);
+  }
 
-  
+  default <X,R> R callIsolated(Supplier<? extends X> compute,
+                               Function<? super X, ? extends R> get)
+  {
+    return callIsolated(PubOption.defaultOpts(), compute, get);
+  }
+
+  static <X,R> R isolated(Supplier<? extends X> compute, Function<? super X, ? extends R> get) {
+    return current().callIsolated(compute, get);
+  }
+
+  default <R> R callIsolated(PubOption opts, Runnable compute, Supplier<? extends R> get) {
+    return callIsolated(opts,
+                        ()->{
+                          compute.run();
+                          return Boolean.FALSE;
+                        },
+                        b->get.get());
+  }
+
+  static <R> R isolated(PubOption opts, Runnable compute, Supplier<? extends R> get) {
+    return current().callIsolated(opts, compute, get);
+  }
+
+  default <R> R callIsolated(Runnable compute, Supplier<? extends R> get) {
+    return callIsolated(PubOption.defaultOpts(), compute, get);
+  }
+
+  static <R> R isolated(Runnable compute, Supplier<? extends R> get) {
+    return current().callIsolated(compute, get);
+  }
+
+
+  default <X, R> R callIsolated(PubOption opts,
+                                X data,
+                                Consumer<? super X> compute,
+                                Function<? super X, ? extends R> get)
+  {
+    return callIsolated(opts,
+                        ()->{
+                          compute.accept(data);
+                          return data;
+                        },
+                        get::apply);
+  }
+
+  static <X, R> R isolated(PubOption opts,
+                           X data,
+                           Consumer<? super X> compute,
+                           Function<? super X, ? extends R> get)
+  {
+    return current().callIsolated(opts, data, compute, get);
+  }
+
+  default <X, R> R callIsolated(X data,
+                                Consumer<? super X> compute,
+                                Function<? super X, ? extends R> get)
+  {
+    return callIsolated(PubOption.defaultOpts(), data, compute, get);
+  }
+
+  static <X, R> R isolated(X data,
+                           Consumer<? super X> compute,
+                           Function<? super X, ? extends R> get)
+  {
+    return current().callIsolated(data, compute, get);
+  }
+
+  /*
+   * The after-publish hooks are run after, respectively, a successful or failed publication attempt.
+   */
+
+  /*
+   * The after-publish hooks are run after, respectively, a successful
+   * or failed publication attempt, where failure means that conflict
+   * resolution has also been abandoned.  The hooks are run in the
+   * context's "creation task".  That is, the task that was the
+   * current task when the context was created.
+   */
+
+  void afterSuccessfulPublish(Consumer<? super IsoContextProxy> fn);
+  void afterFailedPublish(Consumer<? super IsoContextProxy> fn);
+  default void afterPublishAttempt(Consumer<? super IsoContextProxy> fn) {
+    afterSuccessfulPublish(fn);
+    afterFailedPublish(fn);
+  }
+
+  default void afterSuccessfulPublish(Runnable fn) {
+    afterSuccessfulPublish(c->fn.run());
+  }
+
+  default void afterFailedPublish(Runnable fn) {
+    afterFailedPublish(c->fn.run());
+  }
+
+  default void afterPublishAttempt(Runnable fn) {
+    afterPublishAttempt(c->fn.run());
+  }
+
 // -----  
 // These haven't made it into the document yet.
-  boolean isPublished();
-  
-  IsolationContext reset();
-
   
   <T extends ManagedObject> InContext<T> viewOf(T val);
   
@@ -348,34 +439,6 @@ $functionals({com.hpl.mds.function.$type.shortName$Consumer}, [], {void}, {$type
     // TODO
     return Stub.notImplemented();
   }
-
-  // Task management
-
-  public void rerunConflictedTasks(PubResult pubResult);
-
-  public static void addTask(Task task) {
-    current().add(task);
-  }
-  public void add(Task task);
-  
-  public static void addTaskWrite(Task task, ChangeBase write) {
-    current().addWrite(task, write);
-  }
-  public void addWrite(Task task, ChangeBase write);
-
-  public static void addTaskRead(Task task, ChangeBase read) {
-    current().addRead(task, read);
-  }
-  public void addRead(Task task, ChangeBase read);
-
-
-  public static Task lastWriterTask(ChangeBase change) {
-    return current().lastWriter(change);
-  }
-  public Task lastWriter(ChangeBase change);
-
-
-  public void clearConflicts(); // tmp solution only
 
 }
 >>

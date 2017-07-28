@@ -26,7 +26,7 @@
 
 delimiters "$", "$"
 import "string.stg"
-package() ::= "com.hpl.mds.naming"
+package() ::= "com.hpl.mds"
 class() ::= "Namespace"
 
 code(types) ::= <<
@@ -69,39 +69,7 @@ package $package()$;
 
 import java.util.List;
 
-import com.hpl.mds.ManagedList;
-import com.hpl.mds.ManagedMap;
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.ManagedSet;
-import com.hpl.mds.ManagedType;
-import com.hpl.mds.string.ManagedMapFromString;
-import com.hpl.mds.naming.Prior;
 import com.hpl.mds.impl.NamespaceProxy;
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.$elseif(type.string)$string.$endif$$type.managedName$;
-} 
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.list.$elseif(type.string)$string.$endif$Managed$type.shortName$List;
-}
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.set.$elseif(type.string)$string.$endif$Managed$type.shortName$Set;
-}
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.map.$elseif(type.string)$string.$endif$ManagedMapTo$type.shortName$;
-}
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.map.$elseif(type.string)$string.$endif$ManagedStringTo$type.shortName$Map;
-}
-$
 
 
 

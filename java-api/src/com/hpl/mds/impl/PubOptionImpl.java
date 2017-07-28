@@ -29,83 +29,273 @@ package com.hpl.mds.impl;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.ArrayList;
+import com.hpl.mds.IsolationContext.ViewType;
+import com.hpl.mds.IsolationContext.ModificationType;;
 
-import com.hpl.mds.PubOption;
+import com.hpl.mds.*;
+;
 
-public class PubOptionImpl {
-	// The logic is that we keep going if one says yes and none say no.
-	enum KeepGoing { 
-		YES {
-			@Override
-			KeepGoing havingSeen(KeepGoing other) {
-				return other == NO ? NO : YES;
-			}
-		},
-		NO {
-			@Override
-			KeepGoing havingSeen(KeepGoing other) {
-				return NO;
-			}
-		}, OKAY {
-			@Override
-			KeepGoing havingSeen(KeepGoing other) {
-				return other;
-			}
-		};
-		abstract KeepGoing havingSeen(KeepGoing other);
-		static KeepGoing basedOn(boolean p) {
-			return p ? YES : NO;
-		}
-	};
+abstract public class PubOptionImpl implements PubOption {
+  public static final PubOptionImpl BASE = new PubOptionImpl(null) {
+      @Override
+      void addToControl(FillableControl c) {}
+      @Override
+      Control makeControl() {
+        return new Control();
+      }
+      PubOptionImpl asNext() {
+        return null;
+      }
+        
+    };
 
-  public static PubOption reRunNTimes(int n) {
-    return new ReRunOption(() -> new NTimesControl(n));
+  Control control = null;
+  final PubOptionImpl next;
+  
+  abstract Control makeControl();
+  abstract void addToControl(FillableControl c);
+
+  PubOptionImpl(PubOptionImpl next) {
+    this.next = next;
   }
 
-  public static PubOption reRunFor(Duration time) {
-	  return new ReRunOption(() -> new UntilTimeControl(Instant.now().plus(time)));
+  PubOptionImpl asNext() {
+    return this;
   }
   
-  public static PubOption reRunUntil(Instant time) {
-	  return new ReRunOption(() -> new UntilTimeControl(time));
+  Control getControl() {
+    if (control == null) {
+      if (next == null) {
+        control = makeControl();
+      } else {
+        FillableControl fc = new FillableControl();
+        fillControl(fc);
+        control = fc;
+      }
+    }
+    return control;
   }
+
+  void fillControl(FillableControl c) {
+    if (control == null) {
+      if (next != null) {
+        next.fillControl(c);
+      }
+      addToControl(c);
+    } else {
+      c.add(control);
+    }
+  }
+
   
-  static class ReRunOption implements PubOption {
-    interface Control {
-      KeepGoing tryAgain();
+  class Control {
+    Collection<Supplier<BooleanSupplier>> forReRun() {
+      return Collections.emptySet();
     }
-    private final Supplier<? extends Control> supplier;
-    ReRunOption(Supplier<? extends Control> supplier) {
-      this.supplier = supplier;
+    Collection<Supplier<Predicate<PubResult>>> forResolve() {
+      return Collections.emptySet();
     }
-    Control start() {
-      return supplier.get();
+    Collection<PublishReport> reports() {
+      return Collections.emptySet();
     }
-  }
-
-  static class NTimesControl implements ReRunOption.Control {
-    int timesLeft;
-
-    public NTimesControl(int timesLeft) {
-      this.timesLeft = timesLeft;
+    ViewType viewType() {
+      return ViewType.Live;
     }
-    @Override
-    public KeepGoing tryAgain() {
-      return KeepGoing.basedOn(timesLeft-- > 0);
+    ModificationType modType() {
+      return ModificationType.Full;
     }
   }
 
-  static class UntilTimeControl implements ReRunOption.Control {
-    final Instant end;
+  class FillableControl extends Control {
+    final Collection<Supplier<BooleanSupplier>> rerunList = new ArrayList<>();
+    final Collection<Supplier<Predicate<PubResult>>> resolveList = new ArrayList<>();
+    final Collection<PublishReport> reportList = new ArrayList<>();
+    ViewType vt = ViewType.Live;
+    ModificationType mt = ModificationType.Full;
 
-    public UntilTimeControl(Instant end) {
-      this.end = end;
+    Collection<Supplier<BooleanSupplier>> forReRun() {
+      return rerunList;
     }
-    @Override
-    public KeepGoing tryAgain() {
-      return KeepGoing.basedOn(!end.isBefore(Instant.now()));
+    Collection<Supplier<Predicate<PubResult>>> forResolve() {
+      return resolveList;
     }
+    Collection<PublishReport> reports() {
+      return reportList;
+    }
+    ViewType viewType() {
+      return vt;
+    }
+    ModificationType modType() {
+      return mt;
+    }
+    void add(Control other) {
+      rerunList.addAll(other.forReRun());
+      resolveList.addAll(other.forResolve());
+      reportList.addAll(other.reports());
+      if (vt == null) {
+        vt = other.viewType();
+      }
+      if (mt == null) {
+        mt = other.modType();
+      }
+    }
+    
   }
+
+  @Override
+  public PubOption reRunIf(Supplier<BooleanSupplier> gen) {
+    return new PubOptionImpl(asNext()) {
+      void addToControl(FillableControl c) {
+        c.rerunList.add(gen);
+      }
+      Control makeControl() {
+        return new Control() {
+          Collection<Supplier<BooleanSupplier>> forReRun() {
+            return Collections.singletonList(gen);
+          }
+        };
+      }
+    };
+  }
+  @Override
+  public PubOption reRunIf(BooleanSupplier test) {
+    return reRunIf(() -> test);
+  }
+  @Override
+  public PubOption alwaysReRun() {
+    return reRunIf(() -> true);
+  }
+  @Override
+  public PubOption neverReRun() {
+    return reRunIf(() -> false);
+  }
+  @Override
+  public PubOption reRunNTimes(int n) {
+    return reRunIf(() -> new BooleanSupplier() {
+        int timesLeft = n;
+        public boolean getAsBoolean() {
+          return timesLeft-- > 0;
+        }
+      });
+  }
+  @Override
+  public PubOption reRunFor(Duration time) {
+    return reRunIf(() -> {
+        Instant end = Instant.now().plus(time);
+        return () -> !end.isBefore(Instant.now());
+      });
+  }
+  @Override
+  public PubOption reRunUntil(Instant time) {
+    return reRunIf(() -> !time.isBefore(Instant.now()));
+  }
+
+  @Override
+  public PubOption resolveIf(Supplier<Predicate<PubResult>> gen) {
+    return new PubOptionImpl(asNext()) {
+      void addToControl(FillableControl c) {
+        c.resolveList.add(gen);
+      }
+      Control makeControl() {
+        return new Control() {
+          Collection<Supplier<Predicate<PubResult>>> forResolve() {
+            return Collections.singletonList(gen);
+          }
+        };
+      }
+    };
+  }    
+  @Override
+  public PubOption resolveIf(Predicate<PubResult> test) {
+    return resolveIf(() -> test);
+  }
+  @Override
+  public PubOption alwaysResolve() {
+    return resolveIf((pr) -> true);
+  }
+  @Override
+  public PubOption neverResolve() {
+    return resolveIf((pr) -> false);
+  }
+  @Override
+  public PubOption resolveNTimes(int n) {
+    return resolveIf(() -> new Predicate<PubResult>() {
+        int timesLeft = n;
+        public boolean test(PubResult pr) {
+          return timesLeft-- > 0;
+        }
+      });
+  }
+  @Override
+  public PubOption resolveFor(Duration time) {
+    return resolveIf(() -> {
+        Instant end = Instant.now().plus(time);
+        return (pr) -> !end.isBefore(Instant.now());
+      });
+  }
+  @Override
+  public PubOption resolveUntil(Instant time) {
+    return resolveIf((pr) -> !time.isBefore(Instant.now()));
+  }
+
+  @Override
+  public PubOption reportTo(PublishReport report) {
+    return new PubOptionImpl(asNext()) {
+      void addToControl(FillableControl c) {
+        c.reportList.add(report);
+      }
+      Control makeControl() {
+        return new Control() {
+          Collection<PublishReport> reports() {
+            return Collections.singletonList(report);
+          }
+        };
+      }
+    };
+  }
+
+  @Override
+  public PubOption as(ViewType vt, ModificationType mt) {
+    return new PubOptionImpl(asNext()) {
+      void addToControl(FillableControl c) {
+        if (vt != null) {
+          c.vt = vt;
+        }
+        if (mt != null) {
+          c.mt = mt;
+        }
+      }
+      Control makeControl() {
+        return new Control() {
+          ViewType viewType() {
+            return vt == null ? ViewType.Live : vt;
+          }
+          ModificationType modType() {
+            return mt == null ? ModificationType.Full : mt;
+          }
+        };
+      }
+    };
+  }
+
+  @Override
+  public PubOption and(PubOption other) {
+    PubOptionImpl opt = (PubOptionImpl)other;
+    return new PubOptionImpl(asNext()) {
+      void addToControl(FillableControl c) {
+        opt.fillControl(c);
+      }
+      Control makeControl() {
+        return opt.makeControl();
+      }
+    };
+  }
+
   
 
 }

@@ -72,53 +72,65 @@ namespace mds
       template<kind KIND>
 	inline api_type<kind::BOOL>
 	is_same_view_same_object (api_type<kind::LONG> aHIndex,
-                                  api_type<kind::LONG> bHIndex,
-                                  api_type<kind::LONG> ctxtHIndex)
+                                  api_type<kind::LONG> bHIndex)
 	{
 	  indexed<managed_array_handle<KIND>> a
 	    { aHIndex };
 	  indexed<managed_array_handle<KIND>> b
 	    { bHIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
-          return a->same_in(*ctxt, *b);
+          return a->same_in_prevailing_context(*b);
 	}
 
       template<kind KIND>
 	inline api_type<kind::LONG>
-	create_array (api_type<kind::LONG> ctxtHIndex,
-		      api_type<kind::LONG> size)
+	create_array (api_type<kind::LONG> size)
 	{
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<managed_array_handle<KIND>> a
-	    { managed_array_handle_by_kind<KIND> ().create_array (size, *ctxt) };
+	    { managed_array_handle_by_kind<KIND> ().create_array (size) };
 	  return a.return_index ();
 	}
 
       template<kind KIND>
 	inline typename str_to_long<KIND>::type
 	read_value (api_type<kind::LONG> handleIndex,
-		    api_type<kind::LONG> ctxtHIndex, api_type<kind::LONG> index)
+                    api_type<kind::LONG> index)
 	{
 	  indexed<managed_array_handle<KIND>> a
 	    { handleIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
-	  return a->read (*ctxt, index);
+	  return a->frozen_read (index);
+	}
+
+      template<kind KIND>
+	inline typename str_to_long<KIND>::type
+	peek_value (api_type<kind::LONG> handleIndex,
+                    api_type<kind::LONG> index)
+	{
+	  indexed<managed_array_handle<KIND>> a
+	    { handleIndex };
+	  return a->free_read (index);
 	}
 
       template<>
 	inline typename str_to_long<kind::STRING>::type
 	read_value<kind::STRING> (api_type<kind::LONG> handleIndex,
-				  api_type<kind::LONG> ctxtHIndex,
 				  api_type<kind::LONG> index)
 	{
 	  indexed<managed_array_handle<kind::STRING>> a
 	    { handleIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
-	  api_type<kind::STRING> val = a->read (*ctxt, index);
+	  api_type<kind::STRING> val = a->frozen_read (index);
+	  indexed<interned_string_handle> s
+	    { val };
+	  return s.return_index ();
+	}
+
+      template<>
+	inline typename str_to_long<kind::STRING>::type
+	peek_value<kind::STRING> (api_type<kind::LONG> handleIndex,
+				  api_type<kind::LONG> index)
+	{
+	  indexed<managed_array_handle<kind::STRING>> a
+	    { handleIndex };
+	  api_type<kind::STRING> val = a->free_read (index);
 	  indexed<interned_string_handle> s
 	    { val };
 	  return s.return_index ();
@@ -127,32 +139,28 @@ namespace mds
       template<kind KIND>
 	inline typename str_to_long<KIND>::type
 	write_value (api_type<kind::LONG> handleIndex,
-		     api_type<kind::LONG> ctxtHIndex,
 		     api_type<kind::LONG> index,
-		     typename str_to_long<KIND>::type valArg)
+		     typename str_to_long<KIND>::type valArg,
+                     ret_mode returning = ret_mode::resulting_val)
 	{
 	  indexed<managed_array_handle<KIND>> a
 	    { handleIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
-	  return a->write (*ctxt, index, valArg);
+	  return a->write (index, valArg, returning);
 	}
 
       template<>
 	inline typename str_to_long<kind::STRING>::type
 	write_value<kind::STRING> (api_type<kind::LONG> handleIndex,
-				   api_type<kind::LONG> ctxtHIndex,
 				   api_type<kind::LONG> index,
-				   typename str_to_long<kind::STRING>::type valArg)
+				   typename str_to_long<kind::STRING>::type valArg,
+                                   ret_mode returning)
 	{
 	  indexed<managed_array_handle<kind::STRING>> a
 	    { handleIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<interned_string_handle> s
 	    { valArg };
 	  indexed<interned_string_handle> old
-	    { a->write (*ctxt, index, *s) };
+          { a->write (index, *s, returning) };
 
 	  return old.return_index ();
 	}
@@ -162,27 +170,22 @@ namespace mds
 	{
 	  inline static api_type<KIND>
 	  write_value (api_type<kind::LONG> handleIndex,
-		       api_type<kind::LONG> ctxtHIndex,
-		       api_type<kind::LONG> index, api_type<KIND> valArg)
+		       api_type<kind::LONG> index, api_type<KIND> valArg,
+                       ret_mode returning = ret_mode::resulting_val)
 	  {
 	    indexed<managed_array_handle<KIND>> a
 	      { handleIndex };
-	    indexed<iso_context_handle> ctxt
-	      { ctxtHIndex };
 
-	    return a->write (*ctxt, index, valArg);
+	    return a->write (index, valArg, returning);
 	  }
 
 	  inline static api_type<KIND>
 	  read_value (api_type<kind::LONG> handleIndex,
-		      api_type<kind::LONG> ctxtHIndex,
 		      api_type<kind::LONG> index)
 	  {
 	    indexed<managed_array_handle<KIND>> a
 	      { handleIndex };
-	    indexed<iso_context_handle> ctxt
-	      { ctxtHIndex };
-	    return a->read (*ctxt, index);
+	    return a->frozen_read (index);
 	  }
 	};
 
@@ -191,31 +194,26 @@ namespace mds
 	{
 	  inline static api_type<kind::LONG>
 	  write_value (api_type<kind::LONG> handleIndex,
-		       api_type<kind::LONG> ctxtHIndex,
-		       api_type<kind::LONG> index, api_type<kind::LONG> valArg)
+		       api_type<kind::LONG> index, api_type<kind::LONG> valArg,
+                       ret_mode returning)
 	  {
 	    indexed<managed_array_handle<kind::STRING>> a
 	      { handleIndex };
-	    indexed<iso_context_handle> ctxt
-	      { ctxtHIndex };
 	    indexed<interned_string_handle> s
 	      { valArg };
 	    indexed<interned_string_handle> old
-	      { a->write (*ctxt, index, *s) };
+            { a->write (index, *s, returning) };
 
 	    return old.return_index ();
 	  }
 
 	  inline static api_type<kind::LONG>
 	  read_value (api_type<kind::LONG> handleIndex,
-		      api_type<kind::LONG> ctxtHIndex,
 		      api_type<kind::LONG> index)
 	  {
 	    indexed<managed_array_handle<kind::STRING>> a
 	      { handleIndex };
-	    indexed<iso_context_handle> ctxt
-	      { ctxtHIndex };
-	    api_type<kind::STRING> val = a->read (*ctxt, index);
+	    api_type<kind::STRING> val = a->frozen_read(index);
 	    indexed<interned_string_handle> s
 	      { val };
 	    return s.return_index ();
@@ -227,47 +225,17 @@ namespace mds
 	inline
 	size (api_type<kind::LONG> handleIndex)
 	{
-	  indexed<managed_array_handle<KIND>> a
+          indexed<managed_array_handle<KIND>> a
 	    { handleIndex };
 	  return a->size ();
 	}
 
-      template<kind KIND>
-	void
-	inline
-	set_to_parent (api_type<kind::LONG> hIndex,
-		       api_type<kind::LONG> ctxtHIndex, api_type<kind::LONG> i)
-	{
-	  indexed<managed_array_handle<KIND>> h
-	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
-
-	  // setToParent with resolving set, so conflict is cleared before rerun
-	  h->set_to_parent (*ctxt, i, res_mode::resolving);
-	}
-
-      template<kind KIND>
-	void
-	inline
-	rollback (api_type<kind::LONG> hIndex, api_type<kind::LONG> ctxtHIndex,
-		  api_type<kind::LONG> i)
-	{
-	  indexed<managed_array_handle<KIND>> h
-	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
-
-	  // rollback - resolving not set - since this resets state for rerun,
-	  // not resolving any existing conflict
-	  h->roll_back (*ctxt, i);
-	}
 
       template<kind KIND, ARITH_OP OP>
 	inline api_type<KIND>
 	modify_value (api_type<kind::LONG> hIndex,
-		      api_type<kind::LONG> ctxtHIndex,
-		      api_type<kind::LONG> index, api_type<KIND> amt)
+		      api_type<kind::LONG> index, api_type<KIND> amt,
+                      ret_mode returning = ret_mode::resulting_val)
 	{
 	  // Check if OP is supported by the array proxy type :)
 	  static_assert(OP == ARITH_OP::add || OP == ARITH_OP::sub ||
@@ -277,19 +245,17 @@ namespace mds
 
 	  indexed<managed_array_handle<KIND>> a
 	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 
 	  switch (OP)
 	    {
 	    case ARITH_OP::add:
-	      return a->add (*ctxt, index, amt);
+	      return a->add (index, amt, returning);
 	    case ARITH_OP::sub:
-	      return a->sub (*ctxt, index, amt);
+	      return a->sub (index, amt, returning);
 	    case ARITH_OP::mul:
-	      return a->mul (*ctxt, index, amt);
+	      return a->mul (index, amt, returning);
 	    case ARITH_OP::div:
-	      return a->div (*ctxt, index, amt);
+	      return a->div (index, amt, returning);
 	    }
 	}
     }

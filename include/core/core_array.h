@@ -77,7 +77,7 @@ namespace mds {
     template <kind K>
     class array_type : public array_type_base
     {
-      using atomic_msv      = std::atomic<gc_ptr<msv<K>>>;
+      using atomic_msv      = std::atomic<gc_ptr<typed_msv<K>>>;
       using rep_type        = gc_array<atomic_msv>;
       using arg_type        = typename rep_type::arg_type;
       constexpr static bool 
@@ -120,12 +120,12 @@ namespace mds {
           return ele_type;
         }
 
-        managed_value<managed_array<K>> create_array(const size_type s, const gc_ptr<iso_context> &ctxt) const;
+        managed_value<managed_array<K>> create_array(const size_type s) const;
     };
 
 
     // su - the tricky thing is that arrays only have one kind, kind::ARRAY.
-    //      any time an array is used somewhere, e.g. msv<kind::ARRAY> or
+    //      any time an array is used somewhere, e.g. typed_msv<kind::ARRAY> or
     //      record_field<kind::ARRAY>, you're not actually going to know
     //      what kind the array's elements are.
     class managed_array_base : public managed_composite, public with_uniform_id
@@ -173,7 +173,7 @@ namespace mds {
     {
       // su - the following aliases make finding e.g. the type of the index
       //      a matter of mirroring the types found in gc_array
-      using atomic_msv  = std::atomic<gc_ptr<msv<K>>>;
+      using atomic_msv  = std::atomic<gc_ptr<typed_msv<K>>>;
       using rep_type    = gc_array<atomic_msv>;
 
       public:
@@ -209,148 +209,97 @@ namespace mds {
           return d;
         }
 
-        gc_ptr<msv<K>> lookup(index_type i, bool create_if_null = false) const;
+      template <typename Fn>
+      gc_ptr<typed_msv<K>> lookup(index_type i, Fn&& create_if_null) const;
 
-        // su - need to have analogues of the record_field operations here.
-        //      largely identical, except gc_ptrs to managed_records replaced with indexes
-
-        kind_mv<K> read(index_type i,
-                        const gc_ptr<branch> &b,
-                        const gc_ptr<iso_context> &ctxt) const;
-        kind_mv<K> read_frozen(index_type i,
-                               const gc_ptr<branch> &b,
-                               const gc_ptr<iso_context> &ctxt) const;
-        bool has_value(index_type i,
-                       const gc_ptr<branch> &b,
-                       const gc_ptr<iso_context> &ctxt) const;
+      kind_mv<K> free_read(index_type i, const gc_ptr<view> &v) const;
+      kind_mv<K> frozen_read(index_type i, const gc_ptr<view> &v) const;
+      bool has_value(index_type i, const gc_ptr<view> &v) const;
       kind_mv<K> modify(index_type i,
-                    const gc_ptr<branch> &b,
-                    const gc_ptr<iso_context> &ctxt,
-                    modify_op op,
-                    const kind_mv<K> &arg,
-                    res_mode resolving = res_mode::non_resolving) const;
+                        const gc_ptr<view> &v,
+                        modify_op op,
+                        const kind_mv<K> &arg,
+                        ret_mode returning = ret_mode::resulting_val,
+                        const gc_ptr<mod_condition<K>> &guard = nullptr) const;
       kind_mv<K> write(index_type i,
-                   const gc_ptr<branch> &b,
-                   const gc_ptr<iso_context> &ctxt,
-                   const kind_mv<K> &val,
-                   res_mode resolving = res_mode::non_resolving) const 
-        {
-          return modify(i, b, ctxt, modify_op::set, val, resolving);
-        }
-        template <typename T = kind_mv<K>, 
-                  typename = std::enable_if_t<std::is_arithmetic<T>::value>>
-        kind_mv<K> add(index_type i,
-                 const gc_ptr<branch> &b,
-                 const gc_ptr<iso_context> &ctxt,
-                 const kind_mv<K> &delta,
-                 res_mode resolving = res_mode::non_resolving) const
-        {
-          return modify(i, b, ctxt, modify_op::add, delta, resolving);
-        }
-        template <typename T = kind_mv<K>,
-                  typename = std::enable_if_t<std::is_arithmetic<T>::value>>
-	  kind_mv<K> sub(index_type i,
-                 const gc_ptr<branch> &b,
-                 const gc_ptr<iso_context> &ctxt,
-                 const kind_mv<K> &delta,
-                 res_mode resolving = res_mode::non_resolving) const
-        {
-          return modify(i, b, ctxt, modify_op::sub, delta, resolving);
-        }
-        template <typename T = kind_mv<K>,
-                  typename = std::enable_if_t<std::is_arithmetic<T>::value>>
-	  kind_mv<K> mul(index_type i,
-                 const gc_ptr<branch> &b,
-                 const gc_ptr<iso_context> &ctxt,
-                 const kind_mv<K> &delta,
-                 res_mode resolving = res_mode::non_resolving) const
-        {
-          return modify(i, b, ctxt, modify_op::mul, delta, resolving);
-        }
-        template <typename T = kind_mv<K>,
-                  typename = std::enable_if_t<std::is_arithmetic<T>::value>>
-	  kind_mv<K> div(index_type i,
-                 const gc_ptr<branch> &b,
-                 const gc_ptr<iso_context> &ctxt,
-                 const kind_mv<K> &delta,
-                 res_mode resolving = res_mode::non_resolving) const
-        {
-          return modify(i, b, ctxt, modify_op::div, delta, resolving);
-        }
+                       const gc_ptr<view> &v,
+                       const kind_mv<K> &val,
+                       ret_mode returning = ret_mode::resulting_val,
+                       const gc_ptr<mod_condition<K>> &guard = nullptr) const
+      {
+        return modify(i, v, modify_op::set, val, returning, guard);
+      }
+      template <typename T = kind_mv<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
+	kind_mv<K> add(index_type i,
+                       const gc_ptr<view> &v,
+                       const kind_mv<K> &delta,
+                       ret_mode returning = ret_mode::resulting_val,
+                       const gc_ptr<mod_condition<K>> &guard = nullptr) const
+      {
+        return modify(i, v, modify_op::add, delta, returning, guard);
+      }
+      template <typename T = kind_mv<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
+	kind_mv<K> sub(index_type i,
+                       const gc_ptr<view> &v,
+                       const kind_mv<K> &delta,
+                       ret_mode returning = ret_mode::resulting_val,
+                       const gc_ptr<mod_condition<K>> &guard = nullptr) const
+      {
+        return modify(i, v, modify_op::sub, delta, returning, guard);
+      }
+      template <typename T = kind_mv<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
+	kind_mv<K> mul(index_type i,
+                       const gc_ptr<view> &v,
+                       const kind_mv<K> &delta,
+                       ret_mode returning = ret_mode::resulting_val,
+                       const gc_ptr<mod_condition<K>> &guard = nullptr) const
+      {
+        return modify(i, v, modify_op::mul, delta, returning, guard);
+      }
+      template <typename T = kind_mv<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
+	kind_mv<K> div(index_type i,
+                       const gc_ptr<view> &v,
+                       const kind_mv<K> &delta,
+                       ret_mode returning = ret_mode::resulting_val,
+                       const gc_ptr<mod_condition<K>> &guard = nullptr) const
+      {
+        return modify(i, v, modify_op::div, delta, returning, guard);
+      }
 
-      kind_mv<K> set_to_parent(index_type i,
-                           const gc_ptr<branch> &b,
-                           const gc_ptr<iso_context> &ctxt,
-                           res_mode resolving = res_mode::non_resolving) const
-        {
-          return modify(i, b, ctxt, modify_op::parent_val, kind_mv<K>{}, resolving);
-        }
-      kind_mv<K> resolve_to_parent(index_type i,
-                               const gc_ptr<branch> &b,
-                               const gc_ptr<iso_context> &ctxt) const
-        {
-          return set_to_parent(i, b, ctxt, res_mode::resolving);
-        }
-      kind_mv<K> resolve_to_current(index_type i,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<iso_context> &ctxt) const
-        {
-          return modify(i, b, ctxt, modify_op::current_val, kind_mv<K>{}, res_mode::resolving);
-        }
-      kind_mv<K> roll_back(index_type i,
-                       const gc_ptr<branch> &b,
-                       const gc_ptr<iso_context> &ctxt,
-                       res_mode resolving = res_mode::non_resolving) const
-        {
-          return modify(i, b, ctxt, modify_op::last_stable_val, kind_mv<K>{}, resolving);
-        }
-      kind_mv<K> resolve_by_rollback(index_type i,
-                                 const gc_ptr<branch> &b,
-                                 const gc_ptr<iso_context> &ctxt) const
-        {
-          return roll_back(i, b, ctxt, res_mode::resolving);
-        }
     };
 
     template <kind K> inline
     managed_value<managed_array<K>>
-    array_type<K>::create_array(const size_type s, const gc_ptr<iso_context> &ctxt) const
+    array_type<K>::create_array(const size_type s) const
     {
-      using atomic_msv  = std::atomic<gc_ptr<msv<K>>>;
+      using atomic_msv  = std::atomic<gc_ptr<typed_msv<K>>>;
       using rep_type    = gc_array<atomic_msv>;
 
       // create underlying gc_array
       gc_ptr<rep_type> array_gc = make_gc_array<atomic_msv>(s);
 
       gc_ptr<managed_array<K>> a = make_gc<managed_array<K>>(GC_THIS, s, array_gc);
-      gc_ptr<branch> b = ctxt->shadow(top_level_branch);
-      return managed_value<managed_array<K>>{a, b};
+      gc_ptr<view> v = iso_context::shadowed(top_level_view);
+      return managed_value<managed_array<K>>{a, v};
     }
 
-    template <kind K> inline
-    gc_ptr<msv<K>> 
-    managed_array<K>::lookup(index_type i, bool create_if_null) const {
+    template <kind K> template <typename Fn> inline
+    gc_ptr<typed_msv<K>> 
+    managed_array<K>::lookup(index_type i, Fn &&create_if_null) const {
       atomic_msv &a = array_gc->at(i);
-      gc_ptr<msv_base> vb = a.load();
+      gc_ptr<typed_msv<K>> vb = a.load();
       if (vb != nullptr) {
-        return vb->downcast<K>();
-      } else if (create_if_null) {
+        return vb;
+      } else if (std::forward<Fn>(create_if_null)()) {
         /*
          * Need a non-const version of this in order to create the conflict generator.
          */
-        managed_array *nc_this = const_cast<managed_array *>(this);
-	auto cg = make_gc<typename array_elmt_conflict<K>::generator>(this_as_gc_ptr(nc_this), i);
-        gc_ptr<msv<K>> new_msv = make_gc<msv<K>>(cg);
+        gc_ptr<typed_msv<K>> new_msv = make_gc<typed_msv<K>>();
         auto rr = ruts::try_change_value(a, nullptr, new_msv);
         /*
          * If that didn't work, someone else got there first.
          */
-        if (rr) {
-          return new_msv;
-        } else {
-//          managed_space::destroy(new_msv);
-          return rr.prior_value->template downcast<K>();
-        }
+        return rr.resulting_value()->template downcast<K>();
       } else {
         return nullptr;
       }
@@ -359,61 +308,55 @@ namespace mds {
     // su - TODO - error handling / exceptions for the following
     template <kind K> inline
     kind_mv<K> 
-    managed_array<K>::read(index_type i,
-                           const gc_ptr<branch> &b,
-                           const gc_ptr<iso_context> &ctxt) const {
+    managed_array<K>::free_read(index_type i, const gc_ptr<view> &v) const {
 
-      gc_ptr<msv<K>> val = lookup(i, false);
+      gc_ptr<typed_msv<K>> val = lookup(i, []{ return false; });
       if (val == nullptr) {
         return kind_mv<K>{};
       }
 
-      gc_ptr<branch> sb = ctxt->shadow(b);
-      return val->read(sb, ctxt);
+      gc_ptr<view> sv = iso_context::shadowed(v);
+      return val->free_read(sv);
     }
     
     template <kind K> inline
     kind_mv<K>
-    managed_array<K>::read_frozen(index_type i,
-                                  const gc_ptr<branch> &b,
-                                  const gc_ptr<iso_context> &ctxt) const {
+    managed_array<K>::frozen_read(index_type i, const gc_ptr<view> &v) const {
  
-      gc_ptr<msv<K>> val = lookup(i, false);
+      gc_ptr<view> sv = iso_context::shadowed(v);
+      gc_ptr<typed_msv<K>> val = lookup(i, [&]{ return sv->need_msv_on_initial_read(); });
       if (val == nullptr) {
         return kind_mv<K>{};
       }
 
-      gc_ptr<branch> sb = ctxt->shadow(b);
-      return val->read_frozen(sb, ctxt);
+      return val->frozen_read(sv);
     }
 
     template <kind K> inline
     bool
-    managed_array<K>::has_value(index_type i,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<iso_context> &ctxt) const {
+    managed_array<K>::has_value(index_type i, const gc_ptr<view> &v) const {
  
-      gc_ptr<msv<K>> val = lookup(i, false);
+      gc_ptr<typed_msv<K>> val = lookup(i, []{ return false; });
       if (val == nullptr) {
         return false;
       }
 
-      gc_ptr<branch> sb = ctxt->shadow(b);
-      return val->has_value(sb, ctxt);
+      gc_ptr<view> sv = iso_context::shadowed(v);
+      return val->has_value(sv);
     }
 
     template <kind K> inline
     kind_mv<K>
     managed_array<K>::modify(index_type i,
-                             const gc_ptr<branch> &b,
-                             const gc_ptr<iso_context> &ctxt,
+                             const gc_ptr<view> &v,
                              modify_op op,
                              const kind_mv<K> &arg,
-                             res_mode resolving) const {
- 
-      gc_ptr<msv<K>> val = lookup(i, true);
-      gc_ptr<branch> sb = ctxt->shadow(b);
-      return val->modify(sb, ctxt, op, resolving, arg);
+                             ret_mode returning,
+                             const gc_ptr<mod_condition<K>> &guard) const
+    {
+      gc_ptr<typed_msv<K>> val = lookup(i, []{ return true; });
+      gc_ptr<view> sv = iso_context::shadowed(v);
+      return val->modify(sv, op, arg, returning, guard);
     }
 
     template <kind K>

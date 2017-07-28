@@ -29,7 +29,7 @@ import "usage.stg"
 import "type.stg"
 import "string.stg"
 import "covariant.stg"
-package(type) ::= "com.hpl.mds.$ifString({string},{prim.container.map})$"
+package(type) ::= "com.hpl.mds"
 class(type) ::= "ManagedStringTo$type.shortName$Map"
 
 code(type,types) ::= <<
@@ -70,18 +70,6 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import com.hpl.mds.ManagedContainer;
-import com.hpl.mds.ManagedMap;
-import com.hpl.mds.ManagedType;
-import com.hpl.mds.$ifString({string},{prim})$.$managed$;
-$unlessString({
-import com.hpl.mds.function.To$short$Function;
-import com.hpl.mds.function.$short$KeyedModifier;
-})$
-$unlessString({
-import com.hpl.mds.string.ManagedString;
-})$
-import com.hpl.mds.string.ManagedMapFromString;
 import com.hpl.mds.usage.UsageBase;
 
 

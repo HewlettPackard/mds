@@ -41,34 +41,30 @@ namespace mds
 
       template<kind KIND>
 	inline api_type<kind::LONG>
-	lookup_handle (api_type<kind::LONG> ctxtHIndex, api_type<kind::LONG> nsHIndex, api_type<kind::LONG> nameHIndex)
+	lookup_handle (api_type<kind::LONG> nsHIndex, api_type<kind::LONG> nameHIndex)
 	{
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<namespace_handle> ns
 	    { nsHIndex };
 	  indexed<interned_string_handle> name
 	    { nameHIndex };
 	  indexed<managed_array_handle<KIND>> val
-	    { ns->lookup (*ctxt, *name, managed_array_handle_by_kind<KIND> ()) };
+	    { ns->lookup (*name, managed_array_handle_by_kind<KIND> ()) };
 	  return val.return_index ();
 
 	}
 
       template<kind KIND>
 	inline api_type<kind::BOOL>
-	bind_handle (api_type<kind::LONG> ctxtHIndex, api_type<kind::LONG> nsHIndex, api_type<kind::LONG> nameHIndex,
+	bind_handle (api_type<kind::LONG> nsHIndex, api_type<kind::LONG> nameHIndex,
 		     api_type<kind::LONG> valHandle)
 	{
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<namespace_handle> ns
 	    { nsHIndex };
 	  indexed<interned_string_handle> name
 	    { nameHIndex };
 	  indexed<managed_array_handle<KIND>> val
 	    { valHandle };
-	  return ns->bind<kind::ARRAY> (*ctxt, *name, *val);
+	  return ns->bind<kind::ARRAY> (*name, *val);
 	}
 
       template<kind KIND>
@@ -84,12 +80,10 @@ namespace mds
 
       template<kind KIND>
 	inline api_type<kind::LONG>
-	create_array (api_type<kind::LONG> ctxtHIndex, api_type<kind::LONG> size)
+	create_array (api_type<kind::LONG> size)
 	{
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<managed_array_handle<KIND>> arr
-	    { managed_array_handle_by_kind<KIND> ().create_array (size, *ctxt) };
+	    { managed_array_handle_by_kind<KIND> ().create_array (size) };
 	  return arr.return_index ();
 	}
 

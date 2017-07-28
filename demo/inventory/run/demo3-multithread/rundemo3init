@@ -36,7 +36,7 @@ source "../setup-run"
 ## demo3 uses its own local version of createheap, 
 ## to create heaps larger than the default for other demos
 
-$MDS/createheap 1G
+$MDS/createheap 10G
 
 
 echo 'Populate Inventory'

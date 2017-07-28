@@ -81,6 +81,7 @@ public enum Emitted {
     METHOD,// applies to instance methods
     STATIC_METHOD, // applies to static methods
     CONSTRUCTOR,// applies to constructors
+    CONSTANT, // applies to static final constants
     FIELD_AND_ACCESSORS,
     FIELD, // applies only to the field member.
     ACCESSORS, // applies to all field accessors
@@ -95,7 +96,8 @@ public enum Emitted {
     private Emitted[] children;
 
     static {
-        ALL.children = new Emitted[]{ METHOD, STATIC_METHOD, CONSTRUCTOR, FIELD_AND_ACCESSORS };
+      ALL.children = new Emitted[]{ METHOD, STATIC_METHOD, CONSTRUCTOR,
+                                    CONSTANT, FIELD_AND_ACCESSORS };
         FIELD_AND_ACCESSORS.children = new Emitted[]{ ACCESSORS, FIELD };
         ACCESSORS.children = new Emitted[]{ MODIFIERS, GETTER, SETTER };
         MODIFIERS.children = new Emitted[]{ INC, DEC, MUL, DIV };

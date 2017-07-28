@@ -34,498 +34,472 @@
 #ifndef CORE_CONTEXT_H_
 #define CORE_CONTEXT_H_
 
+#include "mpgc/external_gc_ptr.h"
+#include "mpgc/gc_stack.h"
 #include "core/core_fwd.h"
 #include "core/core_globals.h"
 #include "core/core_conflict.h"
-#include "ruts/packed_word.h"
-#include "ruts/uniform_key.h"
-#include "ruts/versioned_ptr.h"
-#include "core/core_coop.h"
-#include "mpgc/gc_cuckoo_map.h"
+#include "core/core_task.h"
+#include <unordered_map>
 #include <cassert>
 
 namespace mds {
   namespace core {
-
-    /*
-     * Base class for write or merge cooperative tasks.
-     */
-
-    enum class wm_task_disc : unsigned char {
-      write_val_DiscBase,
-	merge_disc = write_val_DiscBase+n_kinds,
-	write_seq_disc
-	
-    };
-
-    class write_or_merge_task : public cooperative_task<wm_task_disc> {
-      using super = cooperative_task<wm_task_disc>;
-      std::atomic<bool> _done{false};
-
-    protected:
-      explicit write_or_merge_task(gc_token &gc, super::discriminator_type d)
-	: super{gc, d}
-      {}
-    public:
-
-      static const auto &descriptor() {
-	static gc_descriptor d =
-	  GC_DESC(write_or_merge_task)
-	  .WITH_SUPER(super)
-	  .WITH_FIELD(&write_or_merge_task::_done);
-	return d;
-      }
-
-	bool is_merge() const {
-	  return _discrim == wm_task_disc::merge_disc;
-	}
-
-	bool is_done() const {
-	  return _done;
-	}
-
-	void set_done() {
-	  _done = true;
-	}
-    };
-
-
-    class merge_blocker : public gc_allocated {
-      using task_type = write_or_merge_task;
-      std::atomic<gc_ptr<task_type>> _task;
-      gc_ptr<merge_blocker> _next = nullptr;
-
-    public:
-      merge_blocker(gc_token &gc,
-		    const gc_ptr<task_type> &task)
-	: gc_allocated{gc}, _task{task}
-      {}
-
-      static const auto &descriptor() {
-	static gc_descriptor d =
-	  GC_DESC(merge_blocker)
-	  .WITH_FIELD(&merge_blocker::_task)
-	  .WITH_FIELD(&merge_blocker::_next);
-	return d;
-      }
-
-      void set_next(const gc_ptr<merge_blocker> &next) {
-	_next = next;
-      }
-
-      bool run(bool only_merge = false) {
-	/*
-	 * It's possible that the task may be cleared while we're
-	 * using it, so we hold a local copy.
-	 */
-	gc_ptr<task_type> task = _task;
-	if (task != nullptr) {
-	  if (!only_merge || task->is_merge()) {
-	    if (!task->is_done()) {
-	      task->run();
-	    }
-	    _task = nullptr;
-	    return true;
-	  } else {
-	    return false;
-	  }
-	} else {
-	  return true;
-	}
-      }
-
-      static gc_ptr<merge_blocker>
-      remove(gc_ptr<merge_blocker> from,
-	     const gc_ptr<task_type> &task) {
-	gc_ptr<merge_blocker> res = nullptr;
-	bool still_dropping = true;
-	bool still_looking = true;
-	for (; from != nullptr; from = from->_next) {
-	  gc_ptr<task_type> t = from->_task;
-	  if (still_looking && t == task) {
-	    from->_task = nullptr;
-	    still_looking = false;
-	    if (!still_dropping) {
-	      return res;
-	    }
-	  } else if (still_dropping) {
-	    if (t != nullptr && !t->is_done()) {
-	      res = from;
-	      still_dropping = false;
-	    }
-	  }
-	}
-	return res;
-      }
-
-      static void run_all(gc_ptr<merge_blocker> from) {
-	for (; from != nullptr; from = from->_next) {
-	  from->run();
-	}
-      }
-
-      static gc_ptr<merge_blocker> run_merge_and_prune(gc_ptr<merge_blocker> from) {
-	if (from != nullptr) {
-	  if (from->run(true)) {
-	    from = from->_next;
-	  }
-	  for (; from != nullptr; from=from->_next) {
-	    gc_ptr<task_type> task = from->_task;
-	    if (task != nullptr && !task->is_done()) {
-	      break;
-	    }
-	  }
-	}
-	return from;
-      }
-
-    };
-
-
-    struct snapshot {
-      gc_ptr<iso_context> context;
-      timestamp_t timestamp;
-
-      static const auto &descriptor() {
-        static gc_descriptor d =
-	  GC_DESC(snapshot)
-	  .WITH_FIELD(&snapshot::context)
-	  .WITH_FIELD(&snapshot::timestamp);
-        return d;
-      }
-
-      snapshot(const gc_ptr<iso_context> &c, timestamp_t ts) : context(c), timestamp(ts) {}
-    };
-
-    /*
-     * This should be inside branch, but it requires a map that needs
-     * to know that branches have uniform keys, and so can't be
-     * defined until branch is done.  Sigh.
-     */
-    class _branch_ancestor_cache;
-
-    class branch : public exportable, public with_uniform_id {
-      /*
-       * TODO: The ancestor cache is held by pointer, because I
-       * haven't figured out how to make a cuckoo_map use GC pointers.
-       * THIS NEEDS TO CHANGE.
-       */
-      mutable std::atomic<gc_ptr<_branch_ancestor_cache >> _ancestor_cache;
+    class view : public gc_allocated, public with_uniform_id {
     public:
       const gc_ptr<iso_context> context;
-      gc_ptr<branch> parent;
+      gc_ptr<view> parent;
+      const gc_array_ptr<view> ancestors;
 
       static const auto &descriptor() {
         static gc_descriptor d =
-	  GC_DESC(branch)
+	  GC_DESC(view)
+	  .WITH_SUPER(gc_allocated)
+	  .WITH_SUPER(with_uniform_id)
+	  .WITH_FIELD(&view::context)
+	  .WITH_FIELD(&view::parent)
+	  .WITH_FIELD(&view::ancestors)
+          ;
+        return d;
+      }
+
+      view(gc_token &gc, const gc_ptr<iso_context> &ctxt, const gc_ptr<view> &p)
+        : gc_allocated{gc}, context(ctxt), parent{p},
+          ancestors((p == nullptr || p->parent == nullptr) ? 0 : p->ancestors.size()+1)
+      {
+        std::size_t n = ancestors.size();
+        if (n > 0) {
+          const auto &parray = p->ancestors;
+          std::copy(parray.begin(), parray.end(), ancestors.begin());
+          ancestors[n-1] = p;
+        }
+        // std::cout << "View "<< GC_THIS << " created"
+        //   //                  << " in " << ctxt
+        //           << " off of " << p
+        //           << std::endl;
+      }
+
+      std::size_t level() const {
+        if (parent == nullptr) {
+          return 0;
+        } else {
+          return ancestors.size()+1;
+        }
+      }
+
+      /* 
+       * If there's no MSV when we do a read, do we need to create
+       * one?  The value of the read is going to be the default value,
+       * but live views will need to do work to freeze and publishable
+       * snapshots will need to do work to see parent values as
+       * inducing conflicts.
+       */
+      bool need_msv_on_initial_read() const;
+    }; // view
+
+    class shadow_cache {
+      using shadow_map = std::unordered_map<external_gc_ptr<view>,
+                                            external_gc_ptr<view>>;
+      using context_map = std::unordered_map<external_gc_ptr<iso_context>,
+                                             shadow_map>;
+      gc_ptr<iso_context> _last_context = nullptr;
+      gc_ptr<view> _last_view = nullptr;
+      gc_ptr<view> _last_shadow = nullptr;
+      shadow_map *_last_shadow_map = nullptr;
+      context_map _context_map;
+    public:
+      gc_ptr<view> lookup(const gc_ptr<iso_context> c,
+                          const gc_ptr<view> v);
+      static shadow_cache &instance() {
+        static thread_local shadow_cache sc;
+        return sc;
+      }
+    }; //shadow_cache
+
+
+    class publication_attempt : public exportable, public with_uniform_id {
+      class redo_graph;
+      
+      const gc_ptr<iso_context> _context;
+      const conflict_list _conflicts;
+      const timestamp_t _at_time;
+      mutable std::atomic<gc_ptr<redo_graph>> _redo_graph{nullptr};
+
+      gc_ptr<redo_graph> get_redo_graph() const;
+      std::vector<gc_ptr<task>> get_redo_task_list() const;
+    public:
+      publication_attempt(gc_token &gc,
+                          const gc_ptr<iso_context> &c,
+                          const conflict_list &conflicts,
+                          timestamp_t ts)
+        : exportable{gc}, _context{c}, _conflicts{conflicts}, _at_time{ts}
+      {}
+      static const auto &descriptor() {
+        static gc_descriptor d =
+	  GC_DESC(publication_attempt)
 	  .WITH_SUPER(exportable)
 	  .WITH_SUPER(with_uniform_id)
-	  .WITH_FIELD(&branch::_ancestor_cache)
-	  .WITH_FIELD(&branch::context)
-	  .WITH_FIELD(&branch::parent);
+	  .WITH_FIELD(&publication_attempt::_context)
+	  .WITH_FIELD(&publication_attempt::_conflicts)
+	  .WITH_FIELD(&publication_attempt::_at_time)
+	  .WITH_FIELD(&publication_attempt::_redo_graph)
+          ;
         return d;
       }
-
-      branch(gc_token &gc, const gc_ptr<iso_context> &ctxt, const gc_ptr<branch> &p)
-      : exportable{gc}, context(ctxt), parent{p}
-      {}
-
-      bool has_ancestor(const gc_ptr<branch> &b) const;
-    };
-
-    struct _branch_ancestor_cache : public mpgc::small_gc_cuckoo_map<gc_ptr<branch>, bool> {
-      using base = mpgc::small_gc_cuckoo_map<gc_ptr<branch>, bool>;
-      constexpr static std::size_t initial_ancestor_cache_size() {
-	return 10;
+      
+      bool succeeded() const {
+        return _conflicts.empty();
       }
-      _branch_ancestor_cache(gc_token &gc) : base(gc, initial_ancestor_cache_size()) {}
-      static const auto &descriptor() {
-        static gc_descriptor d =
-	  GC_DESC(_branch_ancestor_cache)
-	  .WITH_SUPER(base);
-        return d;
-      }
-      template <typename ValFn>
-      bool lookup_and_cache(const gc_ptr<branch> &b, ValFn val_fn) {
-        bool had_value;
-        bool value;
-        std::tie(had_value, value) = lookup(b);
-        if (!had_value) {
-          value = val_fn(b);
-          put_new(b, value);
-          /*
-           * If we find an answer while putting, that's okay.  It will
-           * be the same one.
-           */
-        }
-        return value;
+      gc_ptr<iso_context> context() const {
+        return _context;
       }
 
-    };
+      conflict_list conflicts() const {
+        return _conflicts;
+      }
 
-    inline
-    bool
-    branch::has_ancestor(const gc_ptr<branch> &b) const {
-      /*
-       * a branch is its own ancestor (should it be?)
-       */
-      if (this == b || b == top_level_branch || b == parent) {
-        return true;
+      timestamp_t timestamp() const {
+        return _at_time;
       }
-      if (this == top_level_branch) {
-        return false;
-      }
-      gc_ptr<_branch_ancestor_cache> c = _ancestor_cache;
-      if (c == nullptr) {
-        c = make_gc<_branch_ancestor_cache>();
-        auto rr = ruts::try_change_value(_ancestor_cache, nullptr, c);
-        if (!rr) {
-//          managed_space::destroy(c);
-          c = rr.resulting_value();
-        }
-      }
-//      std::cerr << ">>> Checking if " << b << " is an ancestor of " << this << std::endl;
-      bool value = c->lookup_and_cache(b, [this](const gc_ptr<branch> &b){
-//        std::cerr << "=== Computing whether " << b << " is an ancestor of " << this << std::endl;
-        for (gc_ptr<branch> a = parent; a != top_level_branch; a = a->parent) {
-          if (a == b) {
-            return true;
-          }
-        }
-        return false;
-      });
-//      std::cerr << "<<< " << b << " is" << (value ? "" : "n't") << " an ancestor of " << this << std::endl;
-      return value;
-    }
 
-    struct merge_result {
-      gc_ptr<iso_context> merging_context;
-      timestamp_t merge_timestamp;
-      gc_ptr<conflict_list> conflicts;
-      merge_result(const gc_ptr<iso_context> &c, timestamp_t ts, const gc_ptr<conflict_list> &cs)
-      : merging_context{c}, merge_timestamp{ts}, conflicts{cs}
-      {
-//        std::cerr << "Merge result context = " << c << std::endl;
-      }
-    };
+      std::size_t n_to_redo() const;
+
+      std::vector<gc_ptr<task>> redo_tasks_by_start_time() const;
+
+      bool prepare_for_redo() const;
+
+      void redo(const gc_ptr<task> &) const;
+
+    }; // publication_attempt
 
     class iso_context : public exportable, public with_uniform_id {
-      class state_t : public gc_allocated {
-        /*
-         * Contingent conflicts are conflicts that will be added to
-         * another (sibling) context when this one is merged.
-         */
-        const gc_ptr<conflict_list> _conflicts;
-        mutable gc_ptr<conflict_list> _contingent_conflicts;
-        const timestamp_t _last_merge_time;
-        const gc_ptr<const state_t> _prior_merge_state;
 
-        struct private_ctor {};
+    public:
+      using modified_vc_list = gc_threaded_list<gc_ptr<modified_value_chain>>;
+      using blocking_mod_list = gc_threaded_list<gc_ptr<blocking_mod>>;
 
+      struct in_process_inbound_publish;
+
+      class published_state;
+      class unpublished_state;
+      enum class state_types { PUBLISHED, UNPUBLISHED };
+
+      class state_t : public gc_allocated_with_virtuals<state_t,state_types> {
+        using base = gc_allocated_with_virtuals<state_t,state_types>;
       public:
-        state_t(gc_token &gc,
-                private_ctor,
-                const gc_ptr<conflict_list> &cs,
-                const gc_ptr<conflict_list> &ccs,
-                timestamp_t lmt,
-                const gc_ptr<const state_t> &pms)
-        : gc_allocated{gc},
-          _conflicts{cs}, _contingent_conflicts{ccs}, _last_merge_time{lmt}, _prior_merge_state{pms}
+        static void init_vf_table(typename base::vf_table &);
+        
+        /*
+         * The publish() method returns a pair containing the last
+         * unpublished state processed and the published state to use
+         * as the prior for the new published state.  It throws a
+         * conflict list if it found conflicts.
+         */
+        
+        using publish_return = std::pair<gc_ptr<const unpublished_state>,
+                                         gc_ptr<const published_state>>;
+        
+        
+        
+        gc_ptr<const published_state> prior_published_state;
+
+        struct virtuals : virtuals_base {
+          virtual gc_ptr<const published_state> most_recent_published(const state_t *self) const = 0;
+          
+          virtual conflict_list conflicts(const state_t *self) const = 0;
+          virtual gc_ptr<const state_t>
+          add_conflict(const state_t *self, const gc_ptr<const conflict> &) const = 0;
+          virtual gc_ptr<const state_t>
+          add_modified(const state_t *self, const gc_ptr<modified_value_chain> &) const = 0;
+          virtual gc_ptr<const state_t>
+          add_blocker(const state_t *self, const gc_ptr<blocking_mod> &) const = 0;
+
+          virtual gc_ptr<const state_t>
+          note_resolved(const state_t *self, const conflict_list &conflicts) const = 0;
+          virtual publish_return publish(const state_t *self,
+                                         const gc_ptr<const published_state> &new_state,
+                                         const gc_ptr<const unpublished_state> &last,
+                                         iso_context &c) const = 0;
+
+          /*
+           * Used when rolling forward a snapshot.  Gives the context
+           * a last published time as of the provided time, but leaves
+           * any unpublished stuff in front of it.
+           */
+          virtual gc_ptr<state_t> roll_forward(const state_t *self, timestamp_t as_of) const = 0;
+                                       
+
+        }; // virtuals
+
+        gc_ptr<const published_state> most_recent_published() const {
+          return call_virtual(this, &virtuals::most_recent_published);
+        }
+
+        conflict_list conflicts() const {
+          return call_virtual(this, &virtuals::conflicts);
+        }
+
+        gc_ptr<const state_t>
+        add_conflict(const gc_ptr<const conflict> &c) const {
+          return call_virtual(this, &virtuals::add_conflict, c);
+        }
+
+        gc_ptr<const state_t>
+        add_modified(const gc_ptr<modified_value_chain> &mvc) const {
+          return call_virtual(this, &virtuals::add_modified, mvc);
+        }
+
+        gc_ptr<const state_t>
+        add_blocker(const gc_ptr<blocking_mod> &b) const {
+          return call_virtual(this, &virtuals::add_blocker, b);
+        }
+
+        gc_ptr<const state_t>
+        note_resolved(const conflict_list &conflicts) const {
+          return call_virtual(this, &virtuals::note_resolved, conflicts);
+        }
+
+        publish_return publish(const gc_ptr<const published_state> &new_state,
+                               const gc_ptr<const unpublished_state> &last,
+                               iso_context &c) const
         {
-          //assert(cs == nullptr || cs->get_gc_descriptor().is_valid());
-          //assert(ccs == nullptr || ccs->get_gc_descriptor().is_valid());
-          //assert(pruts == nullptr || pms->get_gc_descriptor().is_valid());
+          return call_virtual(this, &virtuals::publish, new_state, last, c);
+        }
+
+        gc_ptr<state_t> roll_forward(timestamp_t as_of) const {
+          return call_virtual(this, &virtuals::roll_forward, as_of);
+        }
+        
+        state_t(gc_token &gc,
+                const gc_ptr<const published_state> &pps,
+                discriminator_type d)
+          : base{gc, d}, prior_published_state{pps}
+        {
+          if (pps != nullptr) {
+            pps->mark_published();
+          }
         }
 
         static auto &descriptor() {
           static gc_descriptor d =
 	    GC_DESC(state_t)
-	    .WITH_FIELD(&state_t::_conflicts)
-	    .WITH_FIELD(&state_t::_contingent_conflicts)
-	    .WITH_FIELD(&state_t::_last_merge_time)
-	    .WITH_FIELD(&state_t::_prior_merge_state);
+            .WITH_SUPER(base)
+            .WITH_FIELD(&state_t::prior_published_state);
           return d;
         }
 
-        state_t(gc_token &gc, timestamp_t creation_time) : state_t{gc, private_ctor{}, nullptr, nullptr, creation_time, nullptr} {}
+        void set_prior(const gc_ptr<const published_state> &pps) {
+          pps->mark_published();
+          prior_published_state = pps;
+        }
+      }; // state_t
 
-        gc_ptr<state_t> add_conflict(const gc_ptr<conflict> &c) const {
-          return make_gc<state_t>(private_ctor{},
-                                      conflict_list::prepend(c, _conflicts),
-                                      _contingent_conflicts,
-                                      _last_merge_time,
-                                      _prior_merge_state);
+      friend class pending_rollup;
+
+      class published_state : public state_t {
+        friend class pending_rollup;
+      public:
+        enum class status_t { Pending, Published, Failed };
+      private:
+        mutable status_t _status;
+        timestamp_t _timestamp;
+      public:
+
+        static constexpr discriminator_type discrim = state_types::PUBLISHED;
+
+        published_state(gc_token &gc, timestamp_t ts,
+                        const gc_ptr<const published_state> &pps = nullptr,
+                        discriminator_type d = discrim)
+          : state_t{gc, pps, d}, _status{status_t::Published}, _timestamp{ts}
+        {}
+
+        explicit published_state(gc_token &gc,
+                                 discriminator_type d = discrim)
+          : state_t{gc, nullptr, d}, _status{status_t::Pending}
+        {}
+
+        static auto &descriptor() {
+          static gc_descriptor d =
+            GC_DESC(published_state)
+            .WITH_SUPER(state_t)
+            .WITH_FIELD(&published_state::_status)
+            .WITH_FIELD(&published_state::_timestamp);
+          return d;
         }
 
-        gc_ptr<state_t> add_contingent_conflict(const gc_ptr<conflict> &c) const {
-	  // assert(false);
-          return make_gc<state_t>(private_ctor{},
-                                      _conflicts,
-                                      conflict_list::prepend(c, _contingent_conflicts),
-                                      _last_merge_time,
-                                      _prior_merge_state);
-        }
-
-        gc_ptr<state_t> update_conflicts(const gc_ptr<conflict_list> &new_conflicts) const {
-          return make_gc<state_t>(private_ctor{},
-                                      new_conflicts,
-                                      _contingent_conflicts,
-                                      _last_merge_time,
-                                      _prior_merge_state);
-        }
-
-        /*
-         * Installs the merge and returns conflicts.  Returns null if
-         * the timestamp changed, since somebody must've finished
-         */
-        gc_ptr<conflict_list> merge(timestamp_t merge_time, std::atomic<gc_ptr<const state_t>> &holder) const {
-          gc_ptr<const state_t> prior = nullptr;
-          /*
-           * We loop as long as the value keeps changing
-           */
-          for (gc_ptr<const state_t> s = GC_THIS; s != prior; prior = s, s = holder) {
-            /*
-             * If there are conflicts, we return them
-             */
-            if (s->_conflicts != nullptr) {
-              return s->_conflicts;
-            }
-            /*
-             * If there has been a merge, somebody finished the merge
-             * in another thread, so we simply say we succeeded.
-             */
-            if (s != this && s->_last_merge_time >= merge_time) {
-              return nullptr;
-            }
-
-            /*
-             * We run through, adding the conflicts to the other side.
-             * If this overlaps with a merge of the other side, this
-             * will make both merges fail.  At the end, we check to
-             * see that nobody has added any conflicts while we were
-             * going, by checking to see that we are still the current
-             * state in the holder.  If the other side of one of our
-             * contingent conflicts puts a conflict on us in between
-             * the time that we check to make sure that we got through
-             * and the time our new state is installed, we have a
-             * problem, as we will report that there are no conflicts,
-             * but a new state with this merge time will not be
-             * installed.  TODO: *** THIS NEEDS A LOT MORE THOUGHT ***
-             * TODO: Make it so that one succeeds.
-             */
-            if (s->_contingent_conflicts != nullptr) {
-              /*
-               * handle_each() only processes ones not previously
-               * handled, and marks each as handled after it's done.
-               * Note that there is still a window during which two
-               * threads might decide to add the same conflict to a
-               * context, so code processing a context's conflicts
-               * needs to be prepared to deal with duplicates.
-               */
-              // std::cout << "core_context merge: contingent_conflicts non-null in context" << std::endl;
-              s->_contingent_conflicts->handle_each([](const gc_ptr<conflict> &c){
-                const gc_ptr<iso_context> other = c->_branch->context;
-		other->add_conflict(c);
-              });
-              s->_contingent_conflicts = nullptr;
-            }
+        struct virtuals : state_t::virtuals {
+          using impl = published_state;
+          gc_ptr<const published_state> most_recent_published(const state_t *self) const override {
+            return self->call_non_virtual(&impl::most_recent_published_impl);
           }
-          /*
-           * We've gotten through and the value hadn't changed.  We
-           * didn't return any conflicts and the merge time didn't
-           * increase.  prior necessarily is the most recent state in
-           * the holder (or us, and we were the most recent when
-           * called--should make that implicit), and it doesn't have
-           * any conflicts, so we try to install a new state off of it
-           */
-          gc_ptr<state_t> new_state = make_gc<state_t>(private_ctor{}, nullptr, nullptr, merge_time, prior);
-          auto rr = ruts::try_change_value(holder, prior, new_state);
-          if (rr) {
-            return nullptr;
+          conflict_list conflicts(const state_t *self) const override {
+            return self->call_non_virtual(&impl::conflicts_impl);
           }
-          /*
-           * We failed to install.  The best we can do is run the
-           * merge again.  We should probably do this as a loop.
-           */
-          return rr.resulting_value()->merge(merge_time, holder);
-        }
-
-        bool before_merge(timestamp_t ts) const {
-          return ts < _last_merge_time;
-        }
-
-        gc_ptr<conflict_list> conflicts() const {
-          return _conflicts;
-        }
-
-        std::tuple<bool, timestamp_t> merge_after(timestamp_t ts) const {
-          if (!before_merge(ts)) {
-            return std::make_tuple(false, timestamp_t{});
+          gc_ptr<const state_t>
+          add_conflict(const state_t *self,
+                       const gc_ptr<const conflict> &c) const override
+          {
+            return self->call_non_virtual(&impl::add_conflict_impl, c);
           }
-          timestamp_t mt = _last_merge_time;
-          for (gc_ptr<const state_t> s = _prior_merge_state; s != nullptr; s = s->_prior_merge_state) {
-            timestamp_t lmt = s->_last_merge_time;
-            if (ts >= lmt) {
-              /*
-               * It's after this one, so the last one we saw is the right one
-               */
-              break;
+          gc_ptr<const state_t>
+          add_modified(const state_t *self,
+                       const gc_ptr<modified_value_chain> &m) const override
+          {
+            return self->call_non_virtual(&impl::add_modified_impl, m);
+          }
+          gc_ptr<const state_t>
+          add_blocker(const state_t *self,
+                      const gc_ptr<blocking_mod> &b) const override
+          {
+            return self->call_non_virtual(&impl::add_blocker_impl, b);
+          }
+          gc_ptr<const state_t>
+          note_resolved(const state_t *self,
+                        const conflict_list &conflicts) const override
+          {
+            return self->call_non_virtual(&impl::note_resolved_impl, conflicts);
+          }
+          publish_return publish(const state_t *self,
+                                 const gc_ptr<const published_state> &new_state,
+                                 const gc_ptr<const unpublished_state> &last,
+                                 iso_context &c) const override
+          {
+            return self->call_non_virtual(&impl::publish_impl, new_state, last, c);
+          }
+
+          gc_ptr<state_t> roll_forward(const state_t *self,
+                                       timestamp_t as_of)  const override
+          {
+            return self->call_non_virtual(&impl::roll_forward_impl, as_of);
+          }
+                                       
+        }; // virtuals
+
+        gc_ptr<const published_state> most_recent_published_impl() const {
+          return GC_THIS;
+        }
+        conflict_list conflicts_impl() const {
+          return conflict_list{};
+        }
+        gc_ptr<const state_t>
+        add_conflict_impl(const gc_ptr<const conflict> &c) const; 
+        gc_ptr<const state_t>
+        add_modified_impl(const gc_ptr<modified_value_chain> &m) const;
+        gc_ptr<const state_t>
+        add_blocker_impl(const gc_ptr<blocking_mod> &b) const;
+
+        gc_ptr<const state_t>
+        note_resolved_impl(const conflict_list &conflicts) const {
+          return GC_THIS;
+        }
+        publish_return publish_impl(const gc_ptr<const published_state> &new_state,
+                                    const gc_ptr<const unpublished_state> &last,
+                                    iso_context &c) const
+        {
+          return std::make_pair(last, GC_THIS);
+        }
+
+        gc_ptr<state_t> roll_forward_impl(timestamp_t as_of) const {
+          return make_gc<published_state>(as_of, GC_THIS);
+        }
+
+        timestamp_t timestamp() const {
+          return _timestamp;
+        }
+
+        void set_timestamp(timestamp_t ts) {
+          _timestamp = ts;
+        }
+
+        void set_ts_and_prior(timestamp_t ts,
+                              const gc_ptr<const published_state> &pps)
+        {
+          set_timestamp(ts);
+          set_prior(pps);
+        }
+
+        void mark_published() const {
+          _status = status_t::Published;
+        }
+
+        status_t status(const gc_ptr<iso_context> &ctxt) const {
+          if (_status == status_t::
+              Pending && ctxt->current_state() == GC_THIS)
+            {
+              mark_published();
             }
-            mt = lmt;
-          }
-          return std::make_tuple(true, mt);
+          return _status;
         }
 
-        bool merged_after(gc_ptr<const state_t> other) const {
-          return _last_merge_time > other->_last_merge_time;
+      }; // published_state
+
+    private:
+
+      struct shadow_node : public gc_allocated {
+        const gc_ptr<view> base;
+        const gc_ptr<view> shadow;
+        gc_ptr<shadow_node> next;
+        shadow_node(gc_token &gc, const gc_ptr<view> &b,
+                    const gc_ptr<view> &s,
+                    const gc_ptr<shadow_node> &n)
+          : gc_allocated{gc}, base{b}, shadow{s}, next{n}
+        {}
+        static const auto &descriptor() {
+          static gc_descriptor d =
+            GC_DESC(shadow_node)
+            .WITH_FIELD(&shadow_node::base)
+            .WITH_FIELD(&shadow_node::shadow)
+            .WITH_FIELD(&shadow_node::next);
+          return d;
         }
+      }; // shadow_node
 
-        timestamp_t merge_before(timestamp_t ts) const {
-          assert(this != nullptr);
-          for (gc_ptr<const state_t> s = GC_THIS; s != nullptr; s=s->_prior_merge_state) {
-//            std::cerr << "Checking ts " << ts << " against merge/create ts " << s->_last_merge_time << std::endl;
-            if (ts > s->_last_merge_time) {
-              return s->_last_merge_time;
-            }
-          }
-          assert(ruts::fail("merge_before() was passed a timestamp earlier than the context's creation"));
-          return timestamp_t{};
-        }
-
-      };
-
-      
-      snapshot _parent;
+      const gc_ptr<iso_context>  _parent;
+      const gc_ptr<task> _creation_task;
+      mutable std::atomic<gc_ptr<task>> _top_level_task{nullptr};
       std::atomic<gc_ptr<const state_t> > _state;
-      std::atomic<gc_ptr<merge_blocker> > _merge_blockers{nullptr};
-      using shadow_map_type = small_gc_cuckoo_map<gc_ptr<branch>, gc_ptr<branch>>;
-      const gc_ptr<shadow_map_type> _shadow_map;
       const view_type _view_type;
       const mod_type _mod_type;
+      std::atomic<gc_ptr<shadow_node>> _shadows;
+      gc_atomic_stack<gc_ptr<blocking_mod>> _block_inbound;
+      gc_atomic_stack<gc_ptr<in_process_inbound_publish>> _in_process;
+      std::atomic<bool> _has_publishable_children;
+      gc_atomic_stack<gc_ptr<task>> _unconditional_redo_tasks;
+        
 
       class private_ctor {};
       friend class control;
-      gc_ptr<branch> create_shadow(const gc_ptr<branch> &b);
       class global_context_t {};
 
-      constexpr static std::size_t initial_shadow_map_size() {
-	return 10;
-      }
-      constexpr static std::size_t initial_global_shadow_map_size() {
-	return initial_shadow_map_size();
+      void drain_inbound_blockers(const gc_ptr<iso_context> &child);
+
+      static gc_ptr<task> compute_creation_task(const gc_ptr<iso_context> &p) {
+        gc_ptr<task> t = task::prevailing();
+        if (t->get_context() == p) {
+          return t;
+        } else {
+          return p->top_level_task();
+        }
       }
 
     public:
       static const auto &descriptor() {
         static gc_descriptor d =
 	  GC_DESC(iso_context)
+          .WITH_SUPER(exportable)
 	  .WITH_SUPER(with_uniform_id)
 	  .WITH_FIELD(&iso_context::_parent)
+	  .WITH_FIELD(&iso_context::_creation_task)
+	  .WITH_FIELD(&iso_context::_top_level_task)
 	  .WITH_FIELD(&iso_context::_state)
-	  .WITH_FIELD(&iso_context::_merge_blockers)
-	  .WITH_FIELD(&iso_context::_shadow_map)
 	  .WITH_FIELD(&iso_context::_view_type)
-	  .WITH_FIELD(&iso_context::_mod_type);
+	  .WITH_FIELD(&iso_context::_mod_type)
+          .WITH_FIELD(&iso_context::_shadows)
+          .WITH_FIELD(&iso_context::_block_inbound)
+          .WITH_FIELD(&iso_context::_in_process)
+          .WITH_FIELD(&iso_context::_has_publishable_children)
+          .WITH_FIELD(&iso_context::_unconditional_redo_tasks)
+          ;
         return d;
       }
 
@@ -533,159 +507,79 @@ namespace mds {
                   private_ctor, const gc_ptr<iso_context> &p,
 		  view_type vt, mod_type mt, timestamp_t ts = most_recent)
         : exportable(gc),
-          _parent{p->new_snapshot(ts)},
-          _state{make_gc<state_t>(_parent.timestamp)},
-          _shadow_map{make_gc<shadow_map_type>(initial_shadow_map_size())},
-          _view_type{vt}, _mod_type{mt}
+          _parent{p},
+          _creation_task{compute_creation_task(p)},
+          _state{make_gc<published_state>(new_snapshot_time(ts))},
+          _view_type{vt}, _mod_type{mt},
+          _shadows{nullptr}, _has_publishable_children{false}
+          {
+            // std::cout << "Created a context [" << vt << "," << mt << "]: "
+            //           << GC_THIS << std::endl;
+            if (is_publishable()) {
+              p->_has_publishable_children = true;
+            }
+          }
+
+
+      iso_context(gc_token &gc, private_ctor, global_context_t)
+        : exportable{gc},
+          _parent{nullptr},
+          _creation_task{},
+          _state{make_gc<published_state>(0)},
+          _view_type{view_type::live}, _mod_type{mod_type::detached},
+          _shadows{nullptr}, _has_publishable_children{false}
           {}
 
-
-      iso_context(gc_token &gc, private_ctor, global_context_t) : exportable{gc},
-          _parent{nullptr, 0}, _state{make_gc<state_t>(0)},
-          _shadow_map{make_gc<shadow_map_type>(initial_global_shadow_map_size())},
-          _view_type{view_type::live},
-          _mod_type{mod_type::detached}
-          {}
-
-
-      gc_ptr<iso_context> parent() const {
-        return _parent.context;
+      static gc_ptr<iso_context> prevailing() {
+        return task::prevailing()->get_context();
       }
 
-      /*
-       *  Needs to be public so that init_conversion_table can see it.
-       *  Could friend, but probably not worth the bother.
-       */
-      struct merge_task : write_or_merge_task {
-        static const wm_task_disc discrim = wm_task_disc::merge_disc;
-        using conflict_ptr = versioned_gc_ptr<conflict_list, 1>;
-        static constexpr typename conflict_ptr::template flag_id<0> has_value{};
+      gc_ptr<task> push_prevailing() {
+        return top_level_task()->push();
+      }
+      
+      gc_ptr<iso_context> parent() const {
+        return _parent;
+      }
 
-	conflict_ptr::atomic_pointer conflicts{nullptr};
-	std::atomic<timestamp_t> merge_time{0};
-	const gc_ptr<iso_context> context;
-	explicit merge_task(gc_token &gc,
-			    const gc_ptr<iso_context> &c,
-			    discriminator_type d = discrim)
-          : write_or_merge_task{gc, d},
-            context(c) {}
-	
-	static const auto &descriptor() {
-	  static gc_descriptor d =
-	    GC_DESC(merge_task)
-	    .WITH_SUPER(write_or_merge_task)
-	    .WITH_FIELD(&merge_task::conflicts)
-	    .WITH_FIELD(&merge_task::merge_time)
-	    .WITH_FIELD(&merge_task::context);
-	  return d;
-	}
+      gc_ptr<task> creation_task() const {
+        return _creation_task;
+      }
 
-        static merge_result perform(const gc_ptr<iso_context> &ctxt) {
-          gc_ptr<merge_task> task = make_gc<merge_task>(ctxt);
-	  ctxt->install(task);
-	  /*
-	   * At this point, it's installed.  If it's not still there
-	   * by the time we call run, somebody else took care of it,
-	   * but we'll return as soon as we check done.  We never try
-	   * to run "whatever is there", since we're only concerned
-	   * about this one finishing.
-	   */
-	  task->run();
-	  /*
-	   * Now we can remove it.
-	   */
-	  ctxt->remove(task);
-          return merge_result(ctxt, task->merge_time, task->conflicts.pointer());
+      gc_ptr<task> top_level_task() const {
+        gc_ptr<task> t = _top_level_task;
+        if (t != nullptr) {
+          return t;
+        } else {
+          t = task::for_context(std::const_pointer_cast<iso_context>(GC_THIS));
+          auto rr = ruts::try_change_value(_top_level_task, nullptr, t);
+          return rr.resulting_value();
         }
+      }
 
-      struct virtuals : write_or_merge_task::virtuals {
-	void run(cooperative_task<wm_task_disc> *self) override {
-	  return self->call_non_virtual(&merge_task::run_impl);
-	}
-      };
-
-        void run_impl() {
-	  if (is_done()) {
-	    return;
-	  }
-          if (merge_time == 0) {
-            /*
-             * Since this is installed, it will finish before any
-             * further conflicts can be added, so we can grab a new
-             * snapshot for the merge.  Any conflicting writes will
-             * help finish the merge first.  Any non-conflicting
-             * writes after this point can be assumed to happen after
-             * the merge attempt.  If this thread dies and another
-             * picks up, it will use the merge time computed by the
-             * prior thread.
-             */
-            merge_time = ++(*current_version);
-//            std::cout << "Merging at " << merge_time << std::endl;  // DEBUG
-            auto rr = ruts::try_change_value(merge_time, 0, merge_time);
-            /*
-             * If that failed, we'll use the one that was there.
-             */
-            merge_time = rr.resulting_value();
-          }
-          conflict_ptr current = conflicts.contents();
-          if (!current[has_value]) {
-            gc_ptr<const state_t> s = context->_state;
-            gc_ptr<conflict_list> conflicts_seen = s->merge(merge_time, context->_state);
-            if (conflicts_seen != nullptr) {
-              conflict_ptr new_cp = conflicts_seen;
-              new_cp[has_value] = true;
-              /*
-               * The variadic ctor makes the compiler complain that it
-               * can't get a reference to flag_id<0>::num
-               */
-              conflicts.change(current, new_cp);
-              /*
-               * If that didn't do anything, it means somebody already finished the merge.
-               */
-              return;
-            }
-            /*
-             * At this point, the new state has been installed.
-             */
-            /*
-             * Once this is installed, nobody can change the state (to
-             * add a conflict or merge) until it's done.  So if we
-             * can't install the new state, it means that somebody
-             * already did it for us, and since the merge must have
-             * succeeded (otherwise we would have found conflicts
-             * above), we can be sure that the correct answer is "no
-             * conflicts".
-             *
-             * Since we know there are were no conflicts (because
-             * new_state isn't null) and nobody can add any, we also
-             * don't have to worry about the state changing due to
-             * conflicts being resolved and removed.
-             */
-            conflict_ptr new_cp = nullptr;
-            new_cp[has_value] = true;
-            conflicts.change(current, new_cp);
-          }
-	  set_done();
-        }
-      };
+      bool is_global() const {
+        return _parent == nullptr;
+      }
 
       static constexpr global_context_t global{};
-      inline
-      gc_ptr<branch> shadow(const gc_ptr<branch> &b) {
-        assert(b != nullptr);
-        if (b->context == this) {
-          return b;
+
+      gc_ptr<view> shadow(const gc_ptr<view> &v) {
+        assert(v != nullptr);
+        if (v->context == this) {
+          return v;
         }
-        gc_ptr<branch> sb = (*_shadow_map)[b];
-        if (sb != nullptr) {
-          return sb;
-        }
-        return create_shadow(b);
+        return shadow_cache::instance().lookup(GC_THIS, v);
       }
 
+      static gc_ptr<view> shadowed(const gc_ptr<view> &v) {
+        return prevailing()->shadow(v);
+      }
+
+      gc_ptr<view> find_shadow(const gc_ptr<view> &v);
+
       template <typename T>
-      bd_value<T> shadowed_val(const bd_value<T> &val) {
-	return val.on_branch == nullptr ? bd_value<T>() : bd_value<T>(val.value, shadow(val.on_branch));
+      vd_value<T> shadowed_val(const vd_value<T> &val) {
+	return val.in_view == nullptr ? vd_value<T>() : vd_value<T>(val.value, shadow(val.in_view));
       }
 
       template <typename T>
@@ -693,11 +587,20 @@ namespace mds {
 	return val;
       }
 
-      snapshot new_snapshot(timestamp_t ts) {
-        if (ts == most_recent) {
-          ts = ++(*current_version);
-        }
-        return snapshot{GC_THIS, ts};
+      static timestamp_t new_snapshot_time(timestamp_t ts) {
+        return ts == most_recent ? ++(*current_version) : ts;
+      }
+
+      mod_type get_mod_type() const {
+        return _mod_type;
+      }
+
+      view_type get_view_type() const {
+        return _view_type;
+      }
+
+      std::pair<mod_type, view_type> get_mod_and_view_types() const {
+        return std::make_pair(_mod_type, _view_type);
       }
 
       bool is_snapshot() const {
@@ -708,202 +611,218 @@ namespace mds {
         return _mod_type == mod_type::read_only;
       }
 
-      bool is_mergeable() const {
-        return _mod_type == mod_type::full;
+      bool is_publishable() const {
+        return _mod_type == mod_type::publishable;
       }
 
+      bool is_detached() const {
+        return !is_publishable();
+      }
+
+      gc_ptr<const state_t> current_state() const {
+        return _state.load();
+      }
+
+      gc_ptr<const published_state> most_recent_published_state() const {
+        return current_state()->most_recent_published();
+      }
+
+      timestamp_t last_stable_time() const {
+        return most_recent_published_state()->timestamp();
+      }
+
+      timestamp_t stable_time_before(timestamp_t ts) const {
+        gc_ptr<const published_state> s = last_publish_before(ts);
+        return s == nullptr ? 0 : s->timestamp();
+      }
+
+      gc_ptr<const published_state> first_publish_after(timestamp_t ts) const {
+        gc_ptr<const published_state> best = most_recent_published_state();
+        if (best->timestamp() <= ts) {
+          return nullptr;
+        }
+        for (gc_ptr<const published_state> s = best->prior_published_state;
+             s != nullptr && s->timestamp() > ts;
+             s = s->prior_published_state)
+          {
+            best = s;
+          }
+        return best;
+      }
+
+      gc_ptr<const published_state> last_publish_before(timestamp_t ts) const
+      {
+        for (gc_ptr<const published_state> s = most_recent_published_state();
+             s != nullptr;
+             s = s->prior_published_state)
+          {
+            if (s->timestamp() < ts) {
+              return s;
+            }
+          }
+        return nullptr;
+      }
+
+      timestamp_t publish_time_before(timestamp_t ts) const {
+        gc_ptr<const published_state> s = last_publish_before(ts);
+        return s == nullptr ? 0 : s->timestamp();
+      }
 
       gc_ptr<iso_context> as_of(timestamp_t ts, view_type vt, mod_type mt) const {
-        if (mt == mod_type::full && is_read_only()) {
+        if (mt == mod_type::publishable && is_read_only()) {
           throw read_only_context_ex{};
         }
         /*
-         * Parent needs to be non-conts.
+         * Parent needs to be non-const.
          * TODO: Should this method be non-const?
          */
         iso_context *nc_this = const_cast<iso_context*>(this);
         return make_gc<iso_context>(private_ctor{}, this_as_gc_ptr(nc_this), vt, mt, ts);
       }
 
-      timestamp_t last_stable_time() const {
-        return _parent.timestamp;
-      }
-      gc_ptr<iso_context> last_stable() const {
-        if (this == global_context) {
-          // The global context is always stable, so get a snapshot as of now.
-          return as_of(*current_version, view_type::snapshot, mod_type::read_only);
-        }
-        return _parent.context->as_of(last_stable_time(), view_type::snapshot, mod_type::read_only);
-      }
-
       gc_ptr<iso_context> new_child(view_type vt, mod_type mt) {
         return as_of(most_recent, vt, mt);
       }
 
-      /*
-       * Returns null conflicts if merge succeeded, conflicts otherwise.
-       * Throws unmergeable_context_ex if not mergeable.
-       */
-      merge_result merge() {
-        if (!is_mergeable()) {
-          throw unmergeable_context_ex{};
-        }
-        return merge_task::perform(GC_THIS);
-      }
+      gc_ptr<publication_attempt> publish();
 
-      bool was_merged_after(timestamp_t ts) const {
-        return _state.load()->before_merge(ts);
-      }
+      void block_inbound_publication(const gc_ptr<blocking_mod> &bm);
 
-      std::tuple<bool, timestamp_t> merge_after(timestamp_t ts) const {
-        return _state.load()->merge_after(ts);
-      }
+    protected:
+      gc_ptr<in_process_inbound_publish> prepare_for_publish(const gc_ptr<iso_context> &child);
 
-      timestamp_t merge_before(timestamp_t ts) const {
-        return _state.load()->merge_before(ts);
-      }
-
-      void install(const gc_ptr<write_or_merge_task> &task) {
-	gc_ptr<merge_blocker> new_blocker = make_gc<merge_blocker>(task);
-	if (task->is_merge()) {
-	  /*
-	   * If this is a merge, we need to clear everything before we
-	   * can install it.  And we cycle until we do.
-	   */
-	  ruts::cas_loop(_merge_blockers,
-			      [&new_blocker](const gc_ptr<merge_blocker> &blocker) {
-				if (blocker != nullptr) {
-				  merge_blocker::run_all(blocker);
-				}
-				return new_blocker;
-			      });
-	  /*
-	   * If the loop doesn't succeed in an iteration, it means that somebody else
-	   * either added a write task (so there may be finished tasks that we did)
-	   * or they cleared everything and added a merge.  Or things got cleared.
-	   * We'll loop around until we successfully add this merge task.
-	   */
-	} else {
-	  /*
-	   * If the existing is a non-null blocker containing a merge, we run it and
-	   * install a blocker with just this task.  Otherwise we prepend this task
-	   * onto the blocker stack.
-	   */
-	  ruts::cas_loop(_merge_blockers,
-			      [&new_blocker](const gc_ptr<merge_blocker> &blocker)
-			      {
-				new_blocker->set_next(merge_blocker::run_merge_and_prune(blocker));
-				return new_blocker;
-			      });
-	}
-      }
-
-      void remove(const gc_ptr<write_or_merge_task> &task)
-      {
-	gc_ptr<merge_blocker> replacement;
-        ruts::try_cas(_merge_blockers,
-			   [&](const gc_ptr<merge_blocker> &blocker) {
-			     if (blocker == nullptr) {
-			       return false;
-			     }
-			     replacement = merge_blocker::remove(blocker, task);
-			     return replacement != blocker;
-			   },
-			   [&](const gc_ptr<merge_blocker> &blocker) {
-			     return replacement;
-			   });
-        /*
-         * If this fails, it means somebody else already removed it, which is fine.
-         */
+    public:
+      template <typename Fn>
+      void update_state(Fn &&fn) {
+        ruts::cas_loop(_state, [fn=std::forward<Fn>(fn)](const auto &old) {
+            return fn(old);
+          });
       }
 
       void add_conflict(const gc_ptr<conflict> &c) {
-	if (!c->is_resolved()) {
-	  ruts::cas_loop(_state, [&](gc_ptr<const state_t> s) {
-	      return s->add_conflict(c);
-	    });
-	  if (!c->install()) {
-	    /*
-	     * See comment on branch_value_chain::_conflict.  This
-	     * means somebody else already took care of this.  But
-	     * we've already added the conflict, so we need to say
-	     * that it is resolved to take it off the context's
-	     * state.
-	     */
-	    c->mark_resolved();
-	  }
-	}
+        if (is_publishable()) {
+          update_state([&](const auto &old) {
+              return old->add_conflict(c);
+            });
+        }
+      }
+      void add_modification(const gc_ptr<modified_value_chain> &mvc)
+      {
+        if (is_publishable()) {
+          update_state([&](const auto &old) {
+              return old->add_modified(mvc);
+            });
+        }
+      }
+      void block_publication(const gc_ptr<blocking_mod> &bm) {
+        if (is_publishable()) {
+          update_state([&](const auto &old) {
+              return old->add_blocker(bm);
+            });
+        }
       }
 
-      void add_contingent_conflict(const gc_ptr<conflict> &c) {
-        ruts::cas_loop(_state, [&](gc_ptr<const state_t> s) {
-          return s->add_contingent_conflict(c);
-        });
+      void unconditionally_redo(const gc_ptr<task> &t) {
+        _unconditional_redo_tasks.push(t);
       }
 
-      void conflict_resolved(const gc_ptr<conflict> &c) {
-        ruts::try_cas_loop(_state, [&](gc_ptr<const state_t> s) {
-          /*
-           * We only worry about changing if this is the head of the
-           * state's conflict list.  Otherwise, we'll pull it off when
-           * the head is resolved.
-	   *
-	   * It's possible (apparently) that we have a race and two
-	   * threads mark the same conflict as resolved (after failing
-	   * to install), leading to the conflict list being empty.
-	   * In that case, it's clearly gone, so we don't worry about
-	   * it.
-           */
-	    auto clist = s->conflicts();
-	    return clist != nullptr && clist->get_conflict() == c;
-        },
-        [&](gc_ptr<const state_t> s){
-          gc_ptr<conflict_list> new_conflicts = s->conflicts()->pop_resolved();
-          gc_ptr<state_t> new_state = s->update_conflicts(new_conflicts);
-          return new_state;
-        });
-
+      template <typename Fn>
+      void for_each_unconditional_redo(Fn &&fn) {
+        _unconditional_redo_tasks.for_each(std::forward<Fn>(fn));
       }
 
-      // temporary use for conflict resolution:
-      // While there are bugs preventing the clearing all of conflicts,
-      // by resolving them and marking them resolved, 
-      // we call clear_conflicts at the end of conflict resolution,
-      // on the basis that we believe all real conflicts have been resolved.
-      // However, the risk is that more conflicts may have occurred in the 
-      // meantime, and we're just dropping them on the floor here! - ss
-      void clear_conflicts() {
-        // modeled on the code of add_contingent_conflict above...
-        // try passing update conflict a nullptr to drop the list...
-        // (memory leak!)
-        gc_ptr<state_t> last_try = nullptr;
-        ruts::cas_loop(_state, [&](gc_ptr<const state_t> s) {
-          last_try = s->update_conflicts(nullptr);
-          return last_try;
-        });
+      void note_resolved(const conflict_list &conflicts) {
+        /*
+         * If there are more conflicts already we don't bother.  We'll
+         * catch them next time.
+         */
+        if (current_state()->conflicts() == conflicts) {
+          update_state([&](const auto &old) {
+              return old->note_resolved(conflicts);
+            });
+        }
       }
 
-    };
+      bool has_conflicts() const {
+        return !current_state()->conflicts().empty();
+      }
+
+      void roll_snapshot_forward(timestamp_t as_of) {
+        assert(is_snapshot());
+        ruts::try_cas(_state,
+                      [=](const auto &current) {
+                        auto ts = current->prior_published_state->timestamp();
+                        /*
+                         * We don't do anything if it's been published
+                         * or rolled forward past the point we want.
+                         */
+                        return ts < as_of;
+                      },
+                      [=](const auto &current) {
+                        return current->roll_forward(as_of);
+                      });
+      }
+
+    }; // iso_context
 
     /*
-     * We can't put iso_context before branch, because we can't do
-     * cuckoo_map<branch*,branch*> until we know that branch inherits
-     * from with_uniform_id.  Sigh.  So the inlines will go here.
+     * If there's no MSV when we do a read, do we need to create one?
+     *
+     * For the top-level view, the answer is no.  For live views, the
+     * answer is yes, since we have to freeze because the parent might
+     * change.  For detached and read-only snapshots, the answer is
+     * no, because the value is established by the timestamp, which is
+     * necessarily in the past, and future parent values are
+     * irrelevant.  For publishable snapshots, the answer is yes,
+     * because the value chain needs to be plugged in as a contingent
+     * child of its parent so that it can see future parent
+     * modifications as meaning that it should get a conflict.
      */
-
-    template <kind K>
     inline
-    void
-    field_conflict<K>::add_to_impl(conflict_sink &sink) {
-      sink.add_conflict(_record, _branch->parent, _field);
+    bool
+    view::need_msv_on_initial_read() const {
+      return (parent != nullptr)
+        && (!context->is_snapshot()
+            || context->is_publishable());
     }
 
-    template <kind K>
+
     inline
-    void
-    array_elmt_conflict<K>::add_to_impl(conflict_sink &sink) const {
-        sink.add_conflict(_array, _branch->parent, _i);
+    gc_ptr<view>
+    shadow_cache::lookup(const gc_ptr<iso_context> c,
+                         const gc_ptr<view> v)
+    {
+      if (c != _last_context) {
+        _last_shadow_map = &_context_map[c];
+        _last_context = c;
+        _last_view = nullptr;
+      }
+      if (v != _last_view) {
+        external_gc_ptr<view> esv = (*_last_shadow_map)[v];
+        if (esv == nullptr) {
+          /*
+           * We have to be careful here, becase our call to
+           * find_shadow() may wind up calling shadow(), which will
+           * call us and may play with our cache values.  So we can't
+           * assume past this call that any of them are still valid
+           * and that none of the maps have changed.  If _last_context
+           * is still right, then _last_shadow_map will also be right,
+           * but it might have changed.  So we have to put the new
+           * value in explicitly.
+           */
+          esv = c->find_shadow(v);
+          if (c != _last_context) {
+            _last_shadow_map = &_context_map[c];
+            _last_context = c;
+          }
+          (*_last_shadow_map)[v] = esv;
+        }
+        _last_shadow = esv;
+        _last_view = v;
+      }
+      return _last_shadow;
     }
+
   }
 }
 

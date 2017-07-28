@@ -51,13 +51,21 @@ fieldMember(type, typeParams, name, recordType) ::= "static final $type$<$typePa
 /** getter implementation */
 getterImpl(type, getterName, fieldName, getValueMethod, recordName) ::= <<
 default $type$ $getterName$() {
-    $\t$return $recordName$.Statics.$fieldName$.$getValueMethod$(this);
+  return $recordName$.Statics.$fieldName$.$getValueMethod$(this);
 }
 
 >>
 
+>>
+
 /** getter declaration */
-getterDeclaration(type, getterName) ::= "$type$ $getterName$();$\n$"
+getterDeclaration(type, getterName, fq_name, isFinal) ::= <<
+default $type$ $getterName$() {
+  return $if(isFinal)$__PRIVATE_$fq_name$()$else$__GET_IMPL()$endif$.$getterName$();
+}
+
+>>  
+
 
 /** modifier implementation with no arguments*/
 modifierImplNoArgs(modifierName, fieldName, fieldMethod, recordName, numType) ::= <<
@@ -68,25 +76,143 @@ default $numType$ $modifierName$() {
 >>
 
 /** modifier declaration with no arguments*/
-modifierDeclarationNoArgs(modifierName, typeParam) ::= "$typeParam$ $modifierName$();$\n$"
+modifierDeclarationNoArgs(modifierName, typeParam) ::= <<
+default $typeParam$ $modifierName$() {
+  return __GET_IMPL().$modifierName$();
+}
+
+>>
 
 /** modifier implementation */
 modifierImpl(modifierName, typeParam, fieldName, fieldMethod, recordName) ::= <<
 default $typeParam$ $modifierName$($typeParam$ val) {
-    return $recordName$.Statics.$fieldName$.$fieldMethod$(this, val);
+  return $recordName$.Statics.$fieldName$.$fieldMethod$(this, val);
 }
 
 >>
 
 /** modifier declaration */
-modifierDeclaration(modifierName, typeParam) ::= "$typeParam$ $modifierName$($typeParam$ val);$\n$"
+modifierDeclaration(modifierName, typeParam) ::= <<
+default $typeParam$ $modifierName$($typeParam$ val) {
+  return __GET_IMPL().$modifierName$(val);
+}
+
+>>
+
+/** final setter declaration */
+finalSetterDeclaration(modifierName, typeParam) ::= <<
+$typeParam$ $modifierName$($typeParam$ val);
+
+>>
+
+/** common vars for final fields */
+finalCommonVars(nFields) ::= <<
+private __FinalFieldControl __FFC = new __FinalFieldControl($nFields$);
+
+protected void __finishConstruction() {
+  super.__finishConstruction();
+  if (__FFC != null) {
+    __FFC.afterConstructor(this, rec->rec.__FFC = null);
+  }
+}
+
+>>
+
+/** final field impl */
+finalFieldImpl(fieldName, type, getter, peeker, setter, peekValueMethod, setValueMethod,
+               recordName, field, index, defaultVal) ::= <<
+boolean __$fieldName$_IS_CACHED = false;
+$type$ __$fieldName$_CACHED_VAL = $defaultVal$;
+void __RESET_$fieldName$() {
+  __$fieldName$_IS_CACHED = false;
+  __$fieldName$_CACHED_VAL = $defaultVal$;
+}
+
+@Override
+public $type$ $peeker$() {
+  if (!__$fieldName$_IS_CACHED) {
+    __$fieldName$_CACHED_VAL = $recordName$.Statics.$fieldName$.$peekValueMethod$(this);
+    __$fieldName$_IS_CACHED = true;
+  }
+  return __$fieldName$_CACHED_VAL;
+}
+
+@Override
+public $type$ $getter$() {
+  if (__$fieldName$_IS_CACHED) {
+    if (__FFC != null) {
+      __FFC.handleGet($index$);
+    }
+  } else {
+    __$fieldName$_CACHED_VAL = $recordName$.Statics.$fieldName$.$peekValueMethod$(this);
+    __$fieldName$_IS_CACHED = true;
+  }
+  return __$fieldName$_CACHED_VAL;
+}
+
+@Override
+public $type$ $setter$($type$ val) {
+  if (__$fieldName$_IS_CACHED) {
+    throw new com.hpl.mds.FinalFieldModifiedException("$recordName$", "$field$");
+  }
+  $recordName$.Statics.$fieldName$.initFinal(this, val);
+  __$fieldName$_CACHED_VAL = val;
+  __$fieldName$_IS_CACHED = true;
+  assert __FFC != null;
+  __FFC.handleSet($index$, this, r->r.__RESET_$fieldName$());
+  return __$fieldName$_CACHED_VAL;
+}
+
+>>
+
+/** managed getter implementation */
+managedGetterImpl(mType, getter, primGetter) ::= <<
+default $mType$ $getter$() {
+  return $mType$.valueOf($primGetter$());
+}
+
+>>
+
+/** prim getter implementation */
+primGetterImpl(pType, getter, mGetter, toPrim) ::= <<
+default $pType$ $getter$() {
+  return $mGetter$().$toPrim$();
+}
+
+>>
+
+/** managed setter implementation */
+managedSetterImpl(mType, setter, toPrim) ::= <<
+default $mType$ $setter$($mType$ val) {
+  $setter$(val.$toPrim$());
+  return val;
+}
+
+>>
+
+/** prim setter implementation */
+primSetterImpl(pType, setter, mType, toPrim) ::= <<
+default $pType$ $setter$($pType$ val) {
+  $setter$($mType$.valueOf(val));
+  return val;
+}
+
+>>
+
+
+
 
 /****************************************************/
 /**						methods						*/
 /****************************************************/
 
 /** generic method declaration */
-methodDeclaration(methodName, returnType, parameters) ::= "$returnType$ $methodName$($parameters$);$\n$"
+methodDeclaration(methodName, returnType, parameters, paramNames, return) ::= <<
+default $returnType$ $methodName$($parameters$) {
+  $return$__GET_IMPL().$methodName$($paramNames; separator=", "$);
+}
+
+>>
 
 /** instance method implementation */
 methodImplementation(
@@ -99,7 +225,7 @@ methodImplementation(
     castStart, 
     castEnd) ::= <<
 default $returnType$ $methodName$($parameters$) {
-$\t$$castStart$$schema$.$schemaMethod$($arguments; separator=", "$)$castEnd$;
+  $castStart$$schema$.$schemaMethod$($arguments; separator=", "$)$castEnd$;
 }
 
 >>
@@ -115,7 +241,7 @@ ambiguousMethod(
     castStart, 
     castEnd) ::= <<
 public $returnType$ $methodName$($parameters$) {
-$\t$$castStart$$schema$.$schemaMethod$($arguments; separator=", "$)$castEnd$;
+  $castStart$$schema$.$schemaMethod$($arguments; separator=", "$)$castEnd$;
 }
 
 >>
@@ -131,8 +257,17 @@ staticMethod(
     castStart, 
     castEnd) ::= <<
 static $returnType$ $methodName$($parameters$) {
-$\t$$castStart$$schema$.$schemaMethod$($arguments; separator=", "$)$castEnd$;
+  $castStart$$schema$.$schemaMethod$($arguments; separator=", "$)$castEnd$;
 }
+
+>>
+
+/** static method decl */
+staticMethodDeclaration(
+    methodName, 
+    returnType, 
+    parameters) ::= <<
+$returnType$ $methodName$($parameters$);
 
 >>
 
@@ -147,24 +282,27 @@ userConstructor(
     schema, 
     arguments) ::= <<
 public Impl($parameters; separator=", "$) {
-$\t$super($recordName$.TYPE);
-$\t$$schema$.$recordName$(this$arguments:{a |, $a$}$);
+  this($recordName$.TYPE);
+  $schema$.$recordName$(_privateImpl$arguments:{a |, $a$}$);
+  __finishConstruction();
 }
 
 >>
 
 /** default constructor implementation */
-defaultConstructor(recordName) ::= <<
+defaultConstructor(recordName, parentRecord) ::= <<
 public Impl() {
-$\t$super($recordName$.TYPE);
+  this($recordName$.TYPE);
+  $if(parentRecord)$_privateImpl.superInit();$endif$  
+  __finishConstruction();
 }
 
 >>
 
 /** creation method implementation*/
-creationMethodImpl(recordName, parameters, arguments) ::= <<
-public $recordName$.Impl record($parameters$) {
-$\t$return new Impl($arguments; separator=", "$);
+creationMethodImpl(recordName, parameters, arguments, fq_name) ::= <<
+public $fq_name$__PrivateImpl record($parameters$) {
+  return new Impl($arguments; separator=", "$).__PRIVATE_$fq_name$();
 }
 
 >>
@@ -172,5 +310,35 @@ $\t$return new Impl($arguments; separator=", "$);
 /** creation method declaration*/
 creationMethodDec(returnType, parameters) ::= <<
 $returnType$ record($parameters$);
+
+>>
+
+/** superInit method */
+superInitMethod(recordName, parameters, schema, arguments, fq_name) ::= <<
+default void superInit($parameters$) {
+  $schema$.$recordName$(__PRIVATE_$fq_name$()$if(arguments)$, $arguments; separator=", "$$endif$);
+}
+
+>>
+
+/** defaultSuperInit method */
+defaultSuperInitMethod(recordName, parentRecord, fq_name) ::= <<
+default void superInit() {
+  $if(parentRecord)$__PRIVATE_$fq_name$().superInit();$endif$
+}
+
+>>
+
+/** thisInit method */
+thisInitMethod(recordName, parameters, schema, arguments) ::= <<
+default void thisInit($parameters$) {
+  $schema$.$recordName$(this$if(arguments)$, $arguments; separator=", "$$endif$);
+}
+
+>>
+
+/** static final declaration */
+staticFinalDecl(name, type, schema) ::= <<
+static final $type$ $name$ = $schema$.$name$;
 
 >>

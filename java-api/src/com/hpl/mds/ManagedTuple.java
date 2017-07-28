@@ -27,8 +27,6 @@
 package com.hpl.mds;
 
 import com.hpl.mds.impl.Stub;
-import com.hpl.mds.naming.Namespace;
-import com.hpl.mds.naming.Prior;
 import com.hpl.mds.tuple.Managed10ple;
 import com.hpl.mds.tuple.Managed4ple;
 import com.hpl.mds.tuple.Managed5ple;

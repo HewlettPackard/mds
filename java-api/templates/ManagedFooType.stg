@@ -62,21 +62,7 @@ $body(class(type), type, type.managedName, type.boxedName, type.primName, type.f
 body(class, type, managed, boxed, prim, field, short, impl, types) ::= <<
 package $package(type)$;
 
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.ManagedType;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.RecordType;
-import com.hpl.mds.$ifString({string},{prim})$.$managed$;
-import com.hpl.mds.$ifString({string},{prim.field})$.$field$;
-import com.hpl.mds.$ifString({string},{prim.container.array})$.$managed$Array;
-import com.hpl.mds.$ifString({string},{prim.container.list})$.$managed$List;
-import com.hpl.mds.$ifString({string},{prim.container.map})$.ManagedMapTo$short$;
-import com.hpl.mds.$ifString({string},{prim.container.map})$.ManagedStringTo$short$Map;
-import com.hpl.mds.$ifString({string},{prim.container.set})$.$managed$Set;
-import com.hpl.mds.naming.Namespace;
-import com.hpl.mds.naming.Prior;
-import com.hpl.mds.exceptions.UnboundNameException;
+import com.hpl.mds.*;
 
 
 
@@ -105,11 +91,11 @@ public class $class$ implements ManagedTypeImpl<$managed$>, $managed$.Type {
    * @throws UnboundNameException when the name is not bound to anything in this context
    * @throws IncompatibleTypeException when the name is bound to something other than this type
    */
-  private static native $jniArg()$ lookup$whenString({Handle})$(long ctxtHandle, long namespaceHandle, long nameHandle);
+  private static native $jniArg()$ lookup$whenString({Handle})$(long namespaceHandle, long nameHandle);
   /**
    * @returns false if the name is bound to a sub-namespace in the current context.
    */
-  private static native boolean bindIn(long ctxtHandle, long namespaceHandle, long nameHandle, $jniArg()$ val);
+  private static native boolean bindIn(long namespaceHandle, long nameHandle, $jniArg()$ val);
 
     private $class$() {}
 	
@@ -168,10 +154,9 @@ public class $class$ implements ManagedTypeImpl<$managed$>, $managed$.Type {
   public $impl$ lookupName(Namespace ns, CharSequence name) {
     try {
 $ifString({
-      IsoContextProxy ctxt = IsoContextProxy.current();
       NamespaceProxy nsp = (NamespaceProxy)ns;
       ManagedStringProxy msp = ManagedStringProxy.valueOf(name);
-      return $fromJNI({lookupHandle(ctxt.handleIndex(), nsp.handleIndex(), msp.handleIndex())})$;
+      return $fromJNI({lookupHandle(nsp.handleIndex(), msp.handleIndex())})$;
 },{
       return $impl$.valueOf(lookupNameAs$short$(ns, name));
 })$      
@@ -189,11 +174,10 @@ $ifString({
 $ifString({
     return ManagedString.asString(lookupName(ns, name));
 },{
-    IsoContextProxy ctxt = IsoContextProxy.current();
     NamespaceProxy nsp = (NamespaceProxy)ns;
     ManagedStringProxy msp = ManagedStringProxy.valueOf(name);
     
-    return lookup(ctxt.handleIndex(), nsp.handleIndex(), msp.handleIndex());
+    return lookup(nsp.handleIndex(), msp.handleIndex());
 })$    
   }
 	
@@ -202,13 +186,11 @@ $ifString({
     /*
      * TODO: Prior is unused
      */
-    IsoContextProxy ctxt = IsoContextProxy.current();
     NamespaceProxy nsp = (NamespaceProxy)ns;
     ManagedStringProxy msp = ManagedStringProxy.valueOf(name);
     
-    boolean worked = bindIn(ctxt.handleIndex(), nsp.handleIndex(), msp.handleIndex(), $toJNI({val})$);
+    boolean worked = bindIn(nsp.handleIndex(), msp.handleIndex(), $toJNI({val})$);
     if (!worked) {
-import com.hpl.mds.exceptions.BoundToNamespaceException;    
       throw new BoundToNamespaceException(ns, name);
     }
     return val$whenString({.toString()})$;

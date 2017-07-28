@@ -25,7 +25,7 @@
  */
 
 delimiters "$", "$"
-package(type) ::= "com.hpl.mds.holder"
+package(type) ::= "com.hpl.mds"
 class(type) ::= "$type.shortName$Holder"
 
 code(type,types) ::= <<
@@ -69,6 +69,10 @@ public class $class$ {
   }
   
   public $class$() {
+  }
+
+  public String toString() {
+    return $boxed$.toString(value);
   }
 }
 >>

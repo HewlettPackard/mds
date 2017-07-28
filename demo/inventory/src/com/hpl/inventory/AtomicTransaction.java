@@ -44,8 +44,8 @@ package com.hpl.inventory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.hpl.mds.IsolationContext;
-import com.hpl.mds.PubOption;
-import com.hpl.mds.exceptions.FailedTransactionException;
+import com.hpl.mds.Options;
+import com.hpl.mds.FailedTransactionException;
 
 
 public class AtomicTransaction implements Runnable {
@@ -64,7 +64,10 @@ public class AtomicTransaction implements Runnable {
     public void run() {
     	PubTrace mr = new PubTrace(nextTxn.incrementAndGet(), task.getClass().getName(), maxTries);
         try {
-            IsolationContext.isolated(task, mr, PubOption.reRunNTimes(maxTries));
+          IsolationContext.isolated(Options
+                                    .reRunNTimes(maxTries)
+                                    .reportTo(mr),
+                                    task);
         } catch (FailedTransactionException e) {
             // ignore
         }

@@ -40,8 +40,8 @@ import com.hpl.erk.config.RunConfig;
 import com.hpl.erk.config.RunContext;
 import com.hpl.erk.config.ex.ConfigErrorsSeen;
 import com.hpl.mds.IsolationContext;
-import com.hpl.mds.PubOption;
-import com.hpl.mds.exceptions.FailedTransactionException;
+import com.hpl.mds.Options;
+import com.hpl.mds.FailedTransactionException;
 import com.plant42.log4j.appenders.RabbitMQAppender;
 import com.plant42.log4j.layouts.PlainLayout;
 
@@ -118,9 +118,10 @@ public class Demo3_Shop extends Demo3Base {
     		PubTrace trace = new PubTrace(nextTxn.incrementAndGet(), desc, maxTries, shopNameParam.getVal());
     		// ***************************
             try {
-                isolated(() -> {
-                    inventory.stockIn(units, productName);
-                }, trace, PubOption.reRunNTimes(maxTries));
+                isolated(Options.reRunNTimes(maxTries).reportTo(trace),
+                         () -> {
+                           inventory.stockIn(units, productName);
+                         });
             } catch (FailedTransactionException e) {
                 // ignored
             }
@@ -134,10 +135,11 @@ public class Demo3_Shop extends Demo3Base {
     		PubTrace trace = new PubTrace(nextTxn.incrementAndGet(), desc, maxTries, shopNameParam.getVal());
     		// ***************************
             try {
-                isolated(() -> {
-                    inventory.orderOut(units, productName);
-                    maybeBlock();
-                }, trace, PubOption.reRunNTimes(maxTries));
+              isolated(Options.reRunNTimes(maxTries).reportTo(trace),
+                       () -> {
+                         inventory.orderOut(units, productName);
+                         maybeBlock();
+                       });
             } catch (FailedTransactionException e) {
                 // ignored
             }

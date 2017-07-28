@@ -156,6 +156,34 @@ public class RecordInfo {
         }
     }
 
+  /**
+   * Representation of a static final constant
+   */
+  public static class ConstantInfo {
+    private String name;
+    private String type;
+    private Visibility visibility;
+
+    public ConstantInfo(String name, String type, Visibility visibility) {
+      this.name = name;
+      this.type = type;
+      this.visibility = visibility;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public String getType() {
+      return type;
+    }
+
+    public Visibility getVisibility() {
+      return visibility;
+    }
+  }
+                        
+
     /**
      * Field representation of a managed record, stores all information related
      * to a field.
@@ -179,6 +207,8 @@ public class RecordInfo {
          */
         private String getterNameFormat;
 
+      private boolean isFinal;
+
         // visibilities
         private Visibility fieldVisibility;
         private Visibility getterVisibility;
@@ -189,11 +219,18 @@ public class RecordInfo {
         private Visibility mulVisibility;
         private Visibility divVisibility;
 
-        public FieldInfo(VarInfo varInfo, String mdsName, String getterNameFormat) {
-            this.varInfo = varInfo;
-            this.mdsName = mdsName;
-            this.getterNameFormat = getterNameFormat;
-        }
+      public FieldInfo(VarInfo varInfo, String mdsName, String getterNameFormat,
+                       boolean isFinal)
+      {
+        this.varInfo = varInfo;
+        this.mdsName = mdsName;
+        this.getterNameFormat = getterNameFormat;
+        this.isFinal = isFinal;
+      }
+
+      public FieldInfo(VarInfo varInfo) {
+        this.varInfo = varInfo;
+      }
 
         public void setFieldVisibility(Visibility fieldVisibility) {
             this.fieldVisibility = fieldVisibility;
@@ -258,6 +295,10 @@ public class RecordInfo {
         public Visibility getModifiersVisibility() {
             return modifiersVisibility;
         }
+
+      public boolean isFinal() {
+        return isFinal;
+      }
 
         /**
          * @return The corresponding name as found in the MDS
@@ -598,6 +639,7 @@ public class RecordInfo {
     private List<MethodInfo> userConstructor = Collections.emptyList();
     private List<MethodInfo> staticMethods = Collections.emptyList();
     private Set<String> fieldNames = Collections.emptySet();
+  private List<ConstantInfo> constants = Collections.emptyList();
 
     /**
      * If this managed record was declared as abstract
@@ -619,6 +661,13 @@ public class RecordInfo {
     public void setSimpleName(String simpleName) {
         this.simpleName = simpleName;
     }
+
+  public String getFQName() {
+    if (pkg == null || pkg.isEmpty()) {
+      return simpleName;
+    }
+    return String.format("%s_%s", pkg.replace('.','_'), simpleName);
+  }
 
     public String getTypeName() {
         return typeName;
@@ -659,6 +708,17 @@ public class RecordInfo {
             fields = new ArrayList<>();
         }
         fields.add(fieldInfo);
+    }
+
+    public List<ConstantInfo> getConstants() {
+        return constants;
+    }
+
+    public void addConstant(ConstantInfo fieldInfo) {
+        if (constants.isEmpty()) {
+            constants = new ArrayList<>();
+        }
+        constants.add(fieldInfo);
     }
 
     public void addInstanceMethod(MethodInfo methodInfo) {

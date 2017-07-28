@@ -77,46 +77,39 @@ extern "C"
   jboolean
   JNICALL
   Java_com_hpl_mds_impl_RecordArrayProxy_isSameViewOfSameObject (JNIEnv *jEnv, jclass,
-                                                                 jlong aHIndex, jlong bHIndex,
-                                                                 jlong ctxtHIndex)
+                                                                 jlong aHIndex, jlong bHIndex)
   {
     return exception_handler_wr (jEnv, is_same_view_same_object<kind::RECORD>,
-                                 aHIndex, bHIndex, ctxtHIndex);
+                                 aHIndex, bHIndex);
   }
   JNIEXPORT
   jlong
   JNICALL
   Java_com_hpl_mds_impl_RecordArrayProxy_createArray (JNIEnv *jEnv, jclass,
-						      jlong ctxtHIndex,
 						      jlong size,
 						      jlong arrayTypeHIndex)
   {
     return exception_handler_wr (jEnv, [=]
       {
-	indexed<iso_context_handle> ctxt
-	  { ctxtHIndex};
 	indexed<array_type_handle<kind::RECORD>> type
 	  { arrayTypeHIndex};
 	indexed<managed_array_handle<kind::RECORD>> a
-	  { type->create_array(size, *ctxt)};
+	  { type->create_array(size)};
 	return a.return_index();
       });
   }
   JNIEXPORT
   jlong
   JNICALL
-  Java_com_hpl_mds_impl_RecordArrayProxy_readHandle (JNIEnv *jEnv, jclass,
-						     jlong handleIndex,
-						     jlong ctxtHIndex,
-						     jlong index)
+  Java_com_hpl_mds_impl_RecordArrayProxy_getHandle (JNIEnv *jEnv, jclass,
+                                                    jlong handleIndex,
+                                                    jlong index)
   {
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<managed_array_handle<kind::RECORD>> a
 	  { handleIndex};
-	indexed<iso_context_handle> ctxt
-	  { ctxtHIndex};
-	api_type<kind::RECORD> val = a->read (*ctxt, index);
+	api_type<kind::RECORD> val = a->frozen_read (index);
 	indexed<managed_record_handle> r
 	  { val};
 	return r.return_index ();
@@ -125,23 +118,59 @@ extern "C"
   JNIEXPORT
   jlong
   JNICALL
-  Java_com_hpl_mds_impl_RecordArrayProxy_writeHandle (JNIEnv *jEnv, jclass,
-						      jlong handleIndex,
-						      jlong ctxtHIndex,
-						      jlong index, jlong valArg)
+  Java_com_hpl_mds_impl_RecordArrayProxy_peekHandle (JNIEnv *jEnv, jclass,
+						     jlong handleIndex,
+						     jlong index)
   {
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<managed_array_handle<kind::RECORD>> a
 	  { handleIndex};
-	indexed<iso_context_handle> ctxt
-	  { ctxtHIndex};
+	api_type<kind::RECORD> val = a->free_read (index);
+	indexed<managed_record_handle> r
+	  { val};
+	return r.return_index ();
+      });
+  }
+  JNIEXPORT
+  jlong
+  JNICALL
+  Java_com_hpl_mds_impl_RecordArrayProxy_setHandle (JNIEnv *jEnv, jclass,
+                                                    jlong handleIndex,
+                                                    jlong index, jlong valArg)
+  {
+    return exception_handler_wr (jEnv, [=]
+      {
+	indexed<managed_array_handle<kind::RECORD>> a
+	  { handleIndex};
 	indexed<managed_record_handle> r
 	  { valArg};
 	api_type<kind::RECORD> val
 	  { *r};
 	api_type<kind::RECORD> ov
-	  { a->write (*ctxt, index, val)};
+        { a->write (index, val)};
+	indexed<managed_record_handle> old
+	  { ov};
+	return old.return_index ();
+      });
+  }
+  JNIEXPORT
+  jlong
+  JNICALL
+  Java_com_hpl_mds_impl_RecordArrayProxy_getAndSetHandle (JNIEnv *jEnv, jclass,
+                                                          jlong handleIndex,
+                                                          jlong index, jlong valArg)
+  {
+    return exception_handler_wr (jEnv, [=]
+      {
+	indexed<managed_array_handle<kind::RECORD>> a
+	  { handleIndex};
+	indexed<managed_record_handle> r
+	  { valArg};
+	api_type<kind::RECORD> val
+	  { *r};
+	api_type<kind::RECORD> ov
+        { a->write (index, val, ret_mode::prior_val)};
 	indexed<managed_record_handle> old
 	  { ov};
 	return old.return_index ();

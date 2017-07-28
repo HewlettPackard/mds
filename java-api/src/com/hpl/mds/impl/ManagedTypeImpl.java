@@ -27,11 +27,7 @@
 
 package com.hpl.mds.impl;
 
-import com.hpl.mds.Field;
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.ManagedType;
-import com.hpl.mds.RecordType;
+import com.hpl.mds.*;
 
 
 public interface ManagedTypeImpl<T extends ManagedObject> extends ManagedType<T> {

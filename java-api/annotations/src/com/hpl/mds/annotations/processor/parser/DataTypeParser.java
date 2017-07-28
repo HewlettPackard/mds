@@ -78,23 +78,23 @@ public class DataTypeParser {
     private static final String OBJ_BOOLEAN = "java.lang.Boolean";
 
     private static final String MANAGED_PRIMITIVE = "com.hpl.mds.ManagedPrimitive";
-    private static final String MANAGED_STRING = "com.hpl.mds.string.ManagedString";
-    private static final String MANAGED_SHORT = "com.hpl.mds.prim.ManagedShort";
-    private static final String MANAGED_LONG = "com.hpl.mds.prim.ManagedLong";
-    private static final String MANAGED_INT = "com.hpl.mds.prim.ManagedInt";
-    private static final String MANAGED_FLOAT = "com.hpl.mds.prim.ManagedFloat";
-    private static final String MANAGED_DOUBLE = "com.hpl.mds.prim.ManagedDouble";
-    private static final String MANAGED_BYTE = "com.hpl.mds.prim.ManagedByte";
-    private static final String MANAGED_BOOLEAN = "com.hpl.mds.prim.ManagedBoolean";
+    private static final String MANAGED_STRING = "com.hpl.mds.ManagedString";
+    private static final String MANAGED_SHORT = "com.hpl.mds.ManagedShort";
+    private static final String MANAGED_LONG = "com.hpl.mds.ManagedLong";
+    private static final String MANAGED_INT = "com.hpl.mds.ManagedInt";
+    private static final String MANAGED_FLOAT = "com.hpl.mds.ManagedFloat";
+    private static final String MANAGED_DOUBLE = "com.hpl.mds.ManagedDouble";
+    private static final String MANAGED_BYTE = "com.hpl.mds.ManagedByte";
+    private static final String MANAGED_BOOLEAN = "com.hpl.mds.ManagedBoolean";
 
-    private static final String MANAGED_ARRAY_BOOLEAN = "com.hpl.mds.prim.container.array.ManagedBooleanArray";
-    private static final String MANAGED_ARRAY_BYTE = "com.hpl.mds.prim.container.array.ManagedByteArray";
-    private static final String MANAGED_ARRAY_DOUBLE = "com.hpl.mds.prim.container.array.ManagedDoubleArray";
-    private static final String MANAGED_ARRAY_FLOAT = "com.hpl.mds.prim.container.array.ManagedFloatArray";
-    private static final String MANAGED_ARRAY_INT = "com.hpl.mds.prim.container.array.ManagedIntArray";
-    private static final String MANAGED_ARRAY_LONG = "com.hpl.mds.prim.container.array.ManagedLongArray";
-    private static final String MANAGED_ARRAY_SHORT = "com.hpl.mds.prim.container.array.ManagedShortArray";
-    private static final String MANAGED_ARRAY_STRING = "com.hpl.mds.string.ManagedStringArray";
+    private static final String MANAGED_ARRAY_BOOLEAN = "com.hpl.mds.ManagedBooleanArray";
+    private static final String MANAGED_ARRAY_BYTE = "com.hpl.mds.ManagedByteArray";
+    private static final String MANAGED_ARRAY_DOUBLE = "com.hpl.mds.ManagedDoubleArray";
+    private static final String MANAGED_ARRAY_FLOAT = "com.hpl.mds.ManagedFloatArray";
+    private static final String MANAGED_ARRAY_INT = "com.hpl.mds.ManagedIntArray";
+    private static final String MANAGED_ARRAY_LONG = "com.hpl.mds.ManagedLongArray";
+    private static final String MANAGED_ARRAY_SHORT = "com.hpl.mds.ManagedShortArray";
+    private static final String MANAGED_ARRAY_STRING = "com.hpl.mds.ManagedStringArray";
 
     private static final String MANAGED_RECORD = "com.hpl.mds.ManagedRecord";
     private static final String MANAGED_ARRAY = "com.hpl.mds.ManagedArray";

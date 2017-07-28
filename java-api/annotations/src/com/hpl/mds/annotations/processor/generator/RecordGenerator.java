@@ -100,6 +100,7 @@ public class RecordGenerator {
         recordTemplate.add("pkg", recordInfo.getPkg());
         recordTemplate.add("simple_name", recordInfo.getSimpleName());
         recordTemplate.add("type_name", recordInfo.getTypeName());
+        recordTemplate.add("fq_name", recordInfo.getFQName());
         recordTemplate.add("parent", recordInfo.getParent());
         recordTemplate.add("superInterfaces", recordInfo.getSuperInterfaces());
         if (recordInfo.isAbstract()) {
@@ -116,24 +117,36 @@ public class RecordGenerator {
      */
     private void addFieldsAndMethods(ST recordTemplate, RecordInfo recordInfo) {
 
-        FieldRenderer fieldRenderer = new FieldRenderer(dataTypeRenderer, recordInfo.getFields(),
-                recordInfo.getSimpleName(), stGroup, recordTemplate);
+      FieldRenderer fieldRenderer = new FieldRenderer(messager, recordInfo, dataTypeRenderer,
+                                                      stGroup, recordTemplate);
         fieldRenderer.render();
+        fieldRenderer.renderStaticFinals(recordInfo.getConstants());
         MethodRenderer methodRenderer = new MethodRenderer(messager, dataTypeRenderer, recordInfo, stGroup,
                 recordTemplate);
         methodRenderer.render();
 
         // merge generated public, protected and private methods
 
+        List<String> constructingMethods = merge(methodRenderer.getConstructingMethods(), fieldRenderer.getConstructingMethods());
         List<String> privateMethods = merge(methodRenderer.getPrivateMethods(), fieldRenderer.getPrivateMethods());
         List<String> protectedMethods = merge(methodRenderer.getProtectedMethods(),
                 fieldRenderer.getProtectedMethods());
         List<String> publicMethods = merge(methodRenderer.getPublicMethods(), fieldRenderer.getPublicMethods());
+        List<String> privateStaticMethods = merge(methodRenderer.getPrivateStaticMethods(), fieldRenderer.getPrivateStaticMethods());
+        List<String> protectedStaticMethods = merge(methodRenderer.getProtectedStaticMethods(),
+                fieldRenderer.getProtectedStaticMethods());
+        List<String> publicStaticMethods = merge(methodRenderer.getPublicStaticMethods(), fieldRenderer.getPublicStaticMethods());
+        List<String> methodImpls = merge(methodRenderer.getMethodImpls(), fieldRenderer.getMethodImpls());
 
         // add methods to template
+        recordTemplate.add("constructingMethods", constructingMethods);
         recordTemplate.add("privateMethods", privateMethods);
         recordTemplate.add("protectedMethods", protectedMethods);
         recordTemplate.add("publicMethods", publicMethods);
+        recordTemplate.add("privateStaticMethods", privateStaticMethods);
+        recordTemplate.add("protectedStaticMethods", protectedStaticMethods);
+        recordTemplate.add("publicStaticMethods", publicStaticMethods);
+        recordTemplate.add("methodImpls", methodImpls);
     }
 
     /**

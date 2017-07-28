@@ -39,38 +39,38 @@ import com.hpl.mds.ManagedMap;
 import com.hpl.mds.ManagedSet;
 import com.hpl.mds.MapField;
 import com.hpl.mds.SetField;
-import com.hpl.mds.prim.ManagedBoolean;
-import com.hpl.mds.prim.ManagedByte;
-import com.hpl.mds.prim.ManagedDouble;
-import com.hpl.mds.prim.ManagedFloat;
-import com.hpl.mds.prim.ManagedInt;
-import com.hpl.mds.prim.ManagedLong;
-import com.hpl.mds.prim.ManagedShort;
-import com.hpl.mds.prim.container.array.ManagedBooleanArray;
-import com.hpl.mds.prim.container.array.ManagedByteArray;
-import com.hpl.mds.prim.container.array.ManagedDoubleArray;
-import com.hpl.mds.prim.container.array.ManagedFloatArray;
-import com.hpl.mds.prim.container.array.ManagedIntArray;
-import com.hpl.mds.prim.container.array.ManagedLongArray;
-import com.hpl.mds.prim.container.array.ManagedShortArray;
-import com.hpl.mds.prim.field.BooleanArrayField;
-import com.hpl.mds.prim.field.BooleanField;
-import com.hpl.mds.prim.field.ByteArrayField;
-import com.hpl.mds.prim.field.ByteField;
-import com.hpl.mds.prim.field.DoubleArrayField;
-import com.hpl.mds.prim.field.DoubleField;
-import com.hpl.mds.prim.field.FloatArrayField;
-import com.hpl.mds.prim.field.FloatField;
-import com.hpl.mds.prim.field.IntArrayField;
-import com.hpl.mds.prim.field.IntField;
-import com.hpl.mds.prim.field.LongArrayField;
-import com.hpl.mds.prim.field.LongField;
-import com.hpl.mds.prim.field.ShortArrayField;
-import com.hpl.mds.prim.field.ShortField;
-import com.hpl.mds.string.ManagedString;
-import com.hpl.mds.string.ManagedStringArray;
-import com.hpl.mds.string.StringArrayField;
-import com.hpl.mds.string.StringField;
+import com.hpl.mds.ManagedBoolean;
+import com.hpl.mds.ManagedByte;
+import com.hpl.mds.ManagedDouble;
+import com.hpl.mds.ManagedFloat;
+import com.hpl.mds.ManagedInt;
+import com.hpl.mds.ManagedLong;
+import com.hpl.mds.ManagedShort;
+import com.hpl.mds.ManagedBooleanArray;
+import com.hpl.mds.ManagedByteArray;
+import com.hpl.mds.ManagedDoubleArray;
+import com.hpl.mds.ManagedFloatArray;
+import com.hpl.mds.ManagedIntArray;
+import com.hpl.mds.ManagedLongArray;
+import com.hpl.mds.ManagedShortArray;
+import com.hpl.mds.BooleanArrayField;
+import com.hpl.mds.BooleanField;
+import com.hpl.mds.ByteArrayField;
+import com.hpl.mds.ByteField;
+import com.hpl.mds.DoubleArrayField;
+import com.hpl.mds.DoubleField;
+import com.hpl.mds.FloatArrayField;
+import com.hpl.mds.FloatField;
+import com.hpl.mds.IntArrayField;
+import com.hpl.mds.IntField;
+import com.hpl.mds.LongArrayField;
+import com.hpl.mds.LongField;
+import com.hpl.mds.ShortArrayField;
+import com.hpl.mds.ShortField;
+import com.hpl.mds.ManagedString;
+import com.hpl.mds.ManagedStringArray;
+import com.hpl.mds.StringArrayField;
+import com.hpl.mds.StringField;
 
 /**
  * All constant information for data types and some of its attributes, including
@@ -82,6 +82,7 @@ public class TypeProp {
 
     static final String VALUE_OF = ".valueOf";
     static final String SET_FIELD_VALUE_METHOD = "set";
+  //    static final String INIT_FIELD_VALUE_METHOD = "init";
     static final String GET_MNG_VALUE_METHOD = "get";
     static final String PEEK_MNG_VALUE_METHOD = "peek";
     static final String TYPE_MNG_MEMBER = ".TYPE";
@@ -119,6 +120,21 @@ public class TypeProp {
             this.numeric = numeric;
             this.collection = collection;
         }
+
+      public boolean managedIsCheaper() {
+        return primitiveType == null || this == STRING;
+      }
+
+      public String defaultValue() {
+        if (numeric) {
+          return "0";
+        } else if ("boolean".equals(primitiveType)) {
+          return "false";
+        } else {
+          return "null";
+        }
+      }
+      
 
         public Class<?> getFieldType() {
             return fieldType;

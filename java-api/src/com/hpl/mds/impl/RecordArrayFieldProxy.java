@@ -29,14 +29,7 @@ package com.hpl.mds.impl;
 
 import java.util.function.Function;
 
-import com.hpl.mds.Caching;
-import com.hpl.mds.ManagedArray;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.RecordType;
-import com.hpl.mds.function.LongConsumer;
-import com.hpl.mds.function.ToLongFunction;
-import com.hpl.mds.task.Task;
+import com.hpl.mds.*;
 
 public class RecordArrayFieldProxy<RT extends ManagedRecord, ET extends ManagedRecord> extends ArrayFieldProxy<RT, ET> {
 
@@ -51,9 +44,14 @@ public class RecordArrayFieldProxy<RT extends ManagedRecord, ET extends ManagedR
   
   private static native long createFieldIn(long rtHandle, long nameHandle, long valTypeHandle);
   private static native long valTypeHandle(long handle);
-  private static native long getValueHandle(long handle, long ctxtHandle, long recordHandle);
-  private static native long peekValueHandle(long handle, long ctxtHandle, long recordHandle);
-  private static native long setValueHandle(long handle, long ctxtHandle, long recHandle, long valHandle);
+  private static native long getValueHandle(long handle, long recordHandle);
+  private static native long peekValueHandle(long handle, long recordHandle);
+  private static native long setValueHandle(long handle, long recHandle, long valHandle);
+  private static native boolean initFinal(long handle, long recHandle, long valHandle);
+  private static native long getAndSetValueHandle(long handle, long recHandle, long valHandle);
+  private static native boolean changeValueHandle(long handle, long recHandle, 
+                                                  long expectedHandle, long valHandle,
+                                                  LongConsumer mismatchSink);
   public RecordArrayTypeProxy<ET> valueType() {
     if (valueType_ == null) {
       long vtHandle = valTypeHandle(handleIndex_);
@@ -78,40 +76,46 @@ public class RecordArrayFieldProxy<RT extends ManagedRecord, ET extends ManagedR
 
     @Override
     public ManagedArray<ET> get(RT record) {
-      Task.addRead(record, this);
-      long val = RecordArrayFieldProxy.<RT,ET>getValueHandle(handleIndex_,
-                                                        IsoContextProxy.current().handleIndex(),
-                                                        ManagedRecordProxy.handleOf(record));
+      long val = RecordArrayFieldProxy.<RT>getValueHandle(handleIndex_,
+                                                          ManagedRecordProxy.handleOf(record));
 
       return RecordArrayProxy.fromHandle(val, valueType_);
+    }
+
+    @Override
+    public ManagedArray<ET> peek(RT record) {
+      long val = RecordArrayFieldProxy.<RT>peekValueHandle(handleIndex_,
+                                                           ManagedRecordProxy.handleOf(record));
+
+      return RecordArrayProxy.fromHandle(val, valueType_);
+    }
+
+    @Override
+    public ManagedArray<ET> set(RT rec, ManagedArray<ET> val) {
+      long old = setValueHandle(handleIndex_, 
+				ManagedRecordProxy.handleOf(rec),
+				RecordArrayProxy.handleOf(val));
+      return RecordArrayProxy.fromHandle(old, valueType_);
     }
     
     @Override
-    public ManagedArray<ET> peek(RT record) {
-      Task.addRead(record, this);
-      long val = RecordArrayFieldProxy.<RT,ET>peekValueHandle(handleIndex_,
-                                                        IsoContextProxy.current().handleIndex(),
-                                                        ManagedRecordProxy.handleOf(record));
-
-      return RecordArrayProxy.fromHandle(val, valueType_);
+    public void initFinal(RT rec, ManagedArray<ET> val) {
+      if (!initFinal(handleIndex_, 
+                     ManagedRecordProxy.handleOf(rec),
+                     RecordArrayProxy.handleOf(val)))
+        {
+          throw new FinalFieldModifiedException(recordType().name().asString(),
+                                                name().asString());
+        }
     }
     
-    public ManagedArray<ET> set(RT rec, ManagedArray<ET> val) {
-      // log.debug("RecordFieldProxy.set: val = " + val);
-      Task.addWrite(rec, this);  
-      setValueHandle(handleIndex_, IsoContextProxy.current().handleIndex(), 
-                     ManagedRecordProxy.handleOf(rec),
-                     RecordArrayProxy.handleOf(val));
-      return val;
+    @Override
+    public ManagedArray<ET> getAndSet(RT rec, ManagedArray<ET> val) {
+      long old = getAndSetValueHandle(handleIndex_, 
+                                      ManagedRecordProxy.handleOf(rec),
+                                      RecordArrayProxy.handleOf(val));
+      return RecordArrayProxy.fromHandle(old, valueType_);
     }
-
-  public ManagedArray<ET> getAndSet(RT rec, ManagedArray<ET> val) {
-    Task.addReadWrite(rec, this);  
-    long old = setValueHandle(handleIndex_, IsoContextProxy.current().handleIndex(), 
-                              ManagedRecordProxy.handleOf(rec),
-                              RecordArrayProxy.handleOf(val));
-    return RecordArrayProxy.fromHandle(old, valueType_);
-  }
-
+    
     
 }

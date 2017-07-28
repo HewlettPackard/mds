@@ -26,13 +26,9 @@
 
 package com.hpl.mds.impl;
 
-import com.hpl.mds.ManagedComposite;
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.RecordType;
-import com.hpl.mds.naming.Namespace;
-import com.hpl.mds.naming.Prior;
+import com.hpl.mds.*;
+import java.lang.ref.WeakReference;
+import java.util.function.Consumer;
 
 public abstract class ManagedRecordProxy extends Proxy implements ManagedRecord {
 	
@@ -51,10 +47,10 @@ public abstract class ManagedRecordProxy extends Proxy implements ManagedRecord 
   }
 
   private static native void release(long index);
-  private static native long createRecord(long recTypeHandle, long ctxtHandle);
+  private static native long createRecord(long recTypeHandle);
   private static native boolean isIdentical(long aHandle, long bHandle);
   private static native boolean isSameObject(long aHandle, long bHandle);
-  private static native boolean isSameViewOfSameObject(long aHandle, long bHandle, long ctxtHandle);
+  private static native boolean isSameViewOfSameObject(long aHandle, long bHandle);
   private static native long recordTypeIndex(long handle);
   static native long getUUID(long recHandle);
   
@@ -66,14 +62,18 @@ public abstract class ManagedRecordProxy extends Proxy implements ManagedRecord 
      * us.
      */
     if (forward_ == null || forward_ == this) {
+      //      System.out.format("Releasing record %s%n", this);
       proxyTable.release(index);
     }
   }
   
   public enum FromHandle { FROM_HANDLE};
+  public enum Secondary { SECONDARY };
 
   protected ManagedRecordProxy(FromHandle keyword, long handle, RecordType<? extends ManagedRecord> type) {
-    super(handle);
+    super(handle, proxyTable);
+    //    System.out.format("Created a %s with handle %,d%n", type, handle);
+    //    Thread.dumpStack();
     RecordTypeProxy<? extends ManagedRecord> rtp = RecordTypeProxy.downcast(type);
     RecordTypeProxy<? extends ManagedRecord> rtpf = rtp.forward();
     if (rtpf == null) {
@@ -85,11 +85,20 @@ public abstract class ManagedRecordProxy extends Proxy implements ManagedRecord 
     }
   }
   
+  protected ManagedRecordProxy(Secondary keyword, ManagedRecordProxy mrp) {
+    super(mrp.handleIndex_, null);
+    forward_ = mrp;
+    type = mrp.type;
+  }
+
   public ManagedRecordProxy(RecordType<? extends ManagedRecord> type)
   {
-	  this(FromHandle.FROM_HANDLE,
-			  createRecord(RecordTypeProxy.downcast(type).handleIndex(), IsoContextProxy.current().handleIndex()),
-			  type);
+    this(FromHandle.FROM_HANDLE, createRecord(type), type);
+  }
+
+  private static long createRecord(RecordType<? extends ManagedRecord> type) {
+    // System.out.format("Creating a %s%n", type);
+    return createRecord(RecordTypeProxy.downcast(type).handleIndex());
   }
 
   
@@ -189,18 +198,6 @@ public abstract class ManagedRecordProxy extends Proxy implements ManagedRecord 
     return mrb == null ? 0 : mrb.handleIndex();
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (o == this) {
-      return true;
-    } else if (o == null) {
-      return false;
-    } else if (!(o instanceof ManagedComposite)) {
-      return false;
-    }
-    return isSameViewOfSameObject((ManagedComposite)o);
-  }
-
 
   @Override
   public boolean isIdentical(ManagedComposite other) {
@@ -235,8 +232,7 @@ public abstract class ManagedRecordProxy extends Proxy implements ManagedRecord 
     } else if (!(other instanceof ManagedRecordProxy)) { 
       return false; 
     }
-    return isSameViewOfSameObject(handleIndex_, ((ManagedRecordProxy)other).handleIndex(),
-                                  IsoContextProxy.current().handleIndex());
+    return isSameViewOfSameObject(handleIndex_, ((ManagedRecordProxy)other).handleIndex());
   }
   
   public long getUUID() {
@@ -255,10 +251,171 @@ public abstract class ManagedRecordProxy extends Proxy implements ManagedRecord 
 
   @Override
   public String toString() {
+    return __OBJECT_METHOD_toString();
+  }
+
+  final public String defaultToString() {
     return String.format("Record[%,d (%x) %s]",
 			 handleIndex_,
 			 System.identityHashCode(this),
 			 getClass().getCanonicalName());
   }
+
+  @Override
+  public int hashCode() {
+    return __OBJECT_METHOD_hashCode();
+  }
+
+  final public int defaultHashCode() {
+    return super.hashCode();
+  }
+
+  final public boolean defaultEquals(Object o) {
+    if (o == this) {
+      return true;
+    } else if (o == null) {
+      return false;
+    } else if (!(o instanceof ManagedComposite)) {
+      return false;
+    }
+    return isSameViewOfSameObject((ManagedComposite)o);
+  }
+
+  protected static class __FinalFieldControl {
+    final TaskProxy creationTask = TaskProxy.current();
+    TaskProxy[] initTasks;
+    int nSubtasks = 0;
+
+    public __FinalFieldControl(int nFinalFields) {
+      initTasks = new TaskProxy[nFinalFields];
+    }
+
+    public 
+    <R extends ManagedRecordProxy>
+      void afterConstructor(R obj, Consumer<? super R> fn)
+    {
+      if (nSubtasks == 0) {
+        fn.accept(obj);
+      } else {
+        final WeakReference<R> wr = new WeakReference<>(obj);
+        creationTask.getContext().afterSuccessfulPublish(()->{
+            R rec = wr.get();
+            if (rec != null) {
+              fn.accept(rec);
+            }
+          });
+      }
+    }
+
+    public void handleGet(int index) {
+      TaskProxy initTask = initTasks[index];
+      if (initTask != null) {
+        TaskProxy currentTask = TaskProxy.current();
+        /*
+         * If we're reading in the same task that wrote it, we don't
+         * have to worry..
+         */
+        if (currentTask != initTask) {
+          currentTask.dependsOn(initTask);
+          if (currentTask == creationTask) {
+            /*
+             * If the creation task depends on the init task for this
+             * field, we know we won't redo the init without redoing the
+             * creation, so we don't have to worry about it from the
+             * outside.
+             */
+            initTasks[index] = null;
+            nSubtasks--;
+          }
+        }
+      }
+    }
+
+    private <R extends ManagedRecordProxy>
+      void handleRollup(int index, WeakReference<R> wr, Consumer<? super R> reset)
+    {
+      /*
+       * The current task here is the one we were in outside
+       * the block.
+       */
+      TaskProxy currentTask = TaskProxy.current();
+      if (currentTask == creationTask) {
+        /*
+         * We're back to the top.  We can clear the init task.
+         */
+        initTasks[index] = null;
+        nSubtasks--;
+      } else {
+        addRollupHook(index, currentTask, wr, reset);
+      }
+    }
+
+    private <R extends ManagedRecordProxy>
+      void addRollupHook(int index, TaskProxy currentTask,
+                         WeakReference<R> wr, Consumer<? super R> reset)
+    {
+      /*
+       * If we're in a different context, it must be a subcontext in
+       * the ctor.  Because of the rules for contexts and final
+       * variable initialization, we're required to be in an
+       * isolated block (or equivalent), so we need to unwind on
+       * publish, but we know we'll get back to the creating context
+       * before the constructor ends.
+       */
+      IsoContextProxy creationContext = creationTask.getContext();
+      IsoContextProxy currentContext = currentTask.getContext();
+      if (creationContext != currentContext) {
+        currentContext.afterSuccessfulPublish(()->{
+            handleRollup(index, wr, reset);
+          });
+        currentContext.afterFailedPublish(()->{
+            R rec = wr.get();
+            if (rec != null) {
+              initTasks[index] = null;
+              nSubtasks--;
+              reset.accept(rec);
+            }
+          });
+      }
+    }
+
+    public <R extends ManagedRecordProxy>
+      void handleSet(int index, R obj, Consumer<? super R> reset) {
+      TaskProxy currentTask = TaskProxy.current();
+      /*
+       * If we're in the creation task, we don't have to worry.
+       */
+      if (currentTask != creationTask) {
+        initTasks[index] = currentTask;
+        nSubtasks++;
+        WeakReference<R> wr = new WeakReference<>(obj);
+        addRollupHook(index, currentTask, wr, reset);
+        currentTask.onPrepareForRedo(()->{
+            R rec = wr.get();
+            if (rec != null) {
+              initTasks[index] = null;
+              nSubtasks--;
+              reset.accept(rec);
+            }
+          });
+      }
+    }
+  }
+
+  protected void __finishConstruction() {}
+  
+  abstract protected ManagedRecordProxy __GET_IMPL();
+  
+  public boolean isIdentical (ManagedRecord other) {
+    if (this == other) {
+      return true;
+    }
+    if (other == null) {
+      return false;
+    }
+    return __GET_IMPL() == ((ManagedRecordProxy)other).__GET_IMPL();
+  }
+    
+  
 
 }

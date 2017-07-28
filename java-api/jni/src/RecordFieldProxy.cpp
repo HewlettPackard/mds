@@ -57,6 +57,7 @@ extern "C"
   Java_com_hpl_mds_impl_RecordFieldProxy_getNameHandle (JNIEnv *jEnv, jclass,
 							jlong hIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, get_name_handle<kind::RECORD>, hIndex);
   }
 
@@ -66,6 +67,7 @@ extern "C"
   Java_com_hpl_mds_impl_RecordFieldProxy_getRecTypeHandle (JNIEnv *jEnv, jclass,
 							   jlong hIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, get_rec_type_handle<kind::RECORD>,
 				 hIndex);
   }
@@ -78,6 +80,7 @@ extern "C"
 							jlong nameHIndex,
 							jlong valTypeHIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<record_type_handle> rec_type
@@ -98,6 +101,7 @@ extern "C"
   Java_com_hpl_mds_impl_RecordFieldProxy_valTypeHandle (JNIEnv *jEnv, jclass,
 							jlong hIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<record_field_handle<kind::RECORD>> h
@@ -117,13 +121,9 @@ extern "C"
   JNICALL
   Java_com_hpl_mds_impl_RecordFieldProxy_getValueHandle (JNIEnv *jEnv, jclass,
 							 jlong hIndex,
-							 jlong ctxtHIndex,
-							 jlong recHIndex,
-							 jboolean freezep,
-							 jboolean cachep,
-							 jobject record,
-							 jobject valFunc)
+							 jlong recHIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	/*
@@ -131,12 +131,33 @@ extern "C"
 	 */
 	indexed<record_field_handle<kind::RECORD>> h
 	  { hIndex};
-	indexed<iso_context_handle> ctxt
-	  { ctxtHIndex};
 	indexed<managed_record_handle> rec
 	  { recHIndex};
 	indexed<managed_record_handle> val
-	  { freezep ? h->read_frozen(*ctxt, *rec) : h->read(*ctxt, *rec)};
+        { h->frozen_read(*rec)};
+	return val.return_index();
+      });
+  }
+
+  JNIEXPORT
+  jlong
+  JNICALL
+  Java_com_hpl_mds_impl_RecordFieldProxy_peekValueHandle (JNIEnv *jEnv, jclass,
+                                                          jlong hIndex,
+                                                          jlong recHIndex)
+  {
+    ensure_thread_initialized(jEnv);
+    return exception_handler_wr (jEnv, [=]
+      {
+	/*
+	 * Not handling caching or defaults yet
+	 */
+	indexed<record_field_handle<kind::RECORD>> h
+	  { hIndex};
+	indexed<managed_record_handle> rec
+	  { recHIndex};
+	indexed<managed_record_handle> val
+        { h->free_read(*rec)};
 	return val.return_index();
       });
   }
@@ -146,54 +167,66 @@ extern "C"
   JNICALL
   Java_com_hpl_mds_impl_RecordFieldProxy_setValueHandle (JNIEnv *jEnv, jclass,
 							 jlong hIndex,
-							 jlong ctxtHIndex,
 							 jlong recHIndex,
 							 jlong valArg)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<record_field_handle<kind::RECORD>> h
 	  { hIndex};
-	indexed<iso_context_handle> ctxt
-	  { ctxtHIndex};
 	indexed<managed_record_handle> rec
 	  { recHIndex};
 	indexed<managed_record_handle> val
 	  { valArg};
 	indexed<managed_record_handle> old
-	  { h->write(*ctxt, *rec, *val)};
+        { h->write(*rec, *val)};
 	return old.return_index();
       });
   }
 
-  JNIEXPORT jboolean JNICALL
-  Java_com_hpl_mds_impl_RecordFieldProxy_changeValueHandle (JNIEnv *jEnv,
-							    jclass, jlong,
-							    jlong, jlong, jlong,
-							    jlong, jobject);
-
   JNIEXPORT
-  void
+  jboolean
   JNICALL
-  Java_com_hpl_mds_impl_RecordFieldProxy_setToParent (JNIEnv *jEnv, jobject,
-						      jlong hIndex,
-						      jlong ctxtHIndex,
-						      jlong recHIndex)
+  Java_com_hpl_mds_impl_RecordFieldProxy_initFinal (JNIEnv *jEnv, jclass,
+							 jlong hIndex,
+							 jlong recHIndex,
+							 jlong valArg)
   {
-    exception_handler (jEnv, set_to_parent<kind::RECORD>, hIndex, ctxtHIndex,
-		       recHIndex);
+    ensure_thread_initialized(jEnv);
+    return exception_handler_wr (jEnv, [=]
+      {
+	indexed<record_field_handle<kind::RECORD>> h
+	  { hIndex};
+	indexed<managed_record_handle> rec
+	  { recHIndex};
+	indexed<managed_record_handle> val
+	  { valArg};
+	return h->write_initial(*rec, *val);
+      });
   }
 
   JNIEXPORT
-  void
+  jlong
   JNICALL
-  Java_com_hpl_mds_impl_RecordFieldProxy_rollback (JNIEnv *jEnv, jobject,
-						   jlong hIndex,
-						   jlong ctxtHIndex,
-						   jlong recHIndex)
+  Java_com_hpl_mds_impl_RecordFieldProxy_getAndSetValueHandle (JNIEnv *jEnv, jclass,
+                                                               jlong hIndex,
+                                                               jlong recHIndex,
+                                                               jlong valArg)
   {
-    exception_handler (jEnv, rollback<kind::RECORD>, hIndex, ctxtHIndex,
-		       recHIndex);
+    ensure_thread_initialized(jEnv);
+    return exception_handler_wr (jEnv, [=]
+      {
+	indexed<record_field_handle<kind::RECORD>> h
+	  { hIndex};
+	indexed<managed_record_handle> rec
+	  { recHIndex};
+	indexed<managed_record_handle> val
+	  { valArg};
+	indexed<managed_record_handle> old
+        { h->write(*rec, *val, ret_mode::prior_val)};
+	return old.return_index();
+      });
   }
 
 }

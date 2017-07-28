@@ -29,16 +29,10 @@ package com.hpl.mds.impl;
 
 import java.util.function.Function;
 
-import com.hpl.mds.Caching;
-import com.hpl.mds.Holder;
-import com.hpl.mds.IsolationContext;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.RecordField;
-import com.hpl.mds.RecordType;
-import com.hpl.mds.function.LongConsumer;
-import com.hpl.mds.function.ToLongFunction;
-import com.hpl.mds.task.Task;
+import com.hpl.mds.*;
+import com.hpl.mds.callbacks.ChangeHandler;
+import com.hpl.mds.callbacks.ChangeHandlerRemovalHook;
+import com.hpl.mds.callbacks.FieldChange;
 
 public class RecordFieldProxy<RT extends ManagedRecord, FT extends ManagedRecord> extends FieldProxy<RT, FT> implements RecordField<RT,FT> {
 
@@ -57,23 +51,15 @@ public class RecordFieldProxy<RT extends ManagedRecord, FT extends ManagedRecord
 
   private static native long createFieldIn(long rtHandle, long nameHandle, long valTypeHandle);
   private static native long valTypeHandle(long handle);
-  private static native long getValueHandle(long handle, long ctxtHandle, long recordHandle);
-  private static native long peekValueHandle(long handle, long ctxtHandle, long recordHandle);
-  private static native long setValueHandle(long handle, long ctxtHandle, long recHandle, long valHandle);
-  private static native void setToParent(long handle, long ctxtHandle, long recHandle);
-  private static native void rollback(long handle, long ctxtHandle, long recHandle);
-      
-  public void setToParent(RT rec) {
-      setToParent(handleIndex_, IsoContextProxy.current().handleIndex(),
-                      ManagedRecordProxy.handleOf(rec));
-  }
-  
-  public void rollback(RT rec) {
-      rollback(handleIndex_, IsoContextProxy.current().handleIndex(),
-                      ManagedRecordProxy.handleOf(rec));
-  }
-  
-  
+  private static native long getValueHandle(long handle, long recordHandle);
+  private static native long peekValueHandle(long handle, long recordHandle);
+  private static native long setValueHandle(long handle, long recHandle, long valHandle);
+  private static native long getAndSetValueHandle(long handle, long recHandle, long valHandle);
+  private static native boolean initFinal(long handle, long recHandle, long valHandle);
+  private static native boolean changeValueHandle(long handle,  long recHandle, 
+                                                  long expectedHandle, long valHandle,
+                                                  LongConsumer mismatchSink);
+
   @Override
   void releaseHandleIndex(long index) {
     release(index);
@@ -125,40 +111,42 @@ public class RecordFieldProxy<RT extends ManagedRecord, FT extends ManagedRecord
 
     @Override
     public FT get(RT record) {
-      Task.addRead(record, this);
       long val = RecordFieldProxy.<RT,FT>getValueHandle(handleIndex_,
-                                                        IsoContextProxy.current().handleIndex(),
                                                         ManagedRecordProxy.handleOf(record));
 
       return ManagedRecordProxy.fromHandle(val, valueType_);
     }
     
-    @Override
     public FT peek(RT record) {
-      Task.addRead(record, this);
       long val = RecordFieldProxy.<RT,FT>peekValueHandle(handleIndex_,
-                                                         IsoContextProxy.current().handleIndex(),
                                                          ManagedRecordProxy.handleOf(record));
 
       return ManagedRecordProxy.fromHandle(val, valueType_);
     }
     
     public FT set(RT rec, FT val) {
-      Task.addWrite(rec, this);  
-      setValueHandle(handleIndex_, IsoContextProxy.current().handleIndex(), 
-                     ManagedRecordProxy.handleOf(rec),
-                     ManagedRecordProxy.handleOf(val));
-      return val;
-    }
-    
-    public FT getAndSet(RT rec, FT val) {
-      Task.addReadWrite(rec, this);  
-      long old = setValueHandle(handleIndex_, IsoContextProxy.current().handleIndex(), 
+      long old = setValueHandle(handleIndex_, 
 				ManagedRecordProxy.handleOf(rec),
 				ManagedRecordProxy.handleOf(val));
       return ManagedRecordProxy.fromHandle(old, valueType_);
     }
     
-
+    public FT getAndSet(RT rec, FT val) {
+      long old = getAndSetValueHandle(handleIndex_, 
+                                      ManagedRecordProxy.handleOf(rec),
+                                      ManagedRecordProxy.handleOf(val));
+      return ManagedRecordProxy.fromHandle(old, valueType_);
+    }
+    
+    public void initFinal(RT rec, FT val) {
+      if (!initFinal(handleIndex_, 
+                     ManagedRecordProxy.handleOf(rec),
+                     ManagedRecordProxy.handleOf(val)))
+        {
+          throw new FinalFieldModifiedException(recordType().name().asString(),
+                                                name().asString());
+        }
+    }
+    
 
 }

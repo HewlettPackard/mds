@@ -30,11 +30,12 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import com.hpl.mds.annotations.Public;
 import com.hpl.mds.annotations.RecordSchema;
+import com.hpl.mds.annotations.Final;
 
 @RecordSchema(name = "com.hpl.inventory.Inventory")
 public interface InventorySchema {
 	
-	@Public
+	@Public @Final
 	ListOfProducts products();
 	
 	static boolean add(Inventory.Private self, Product product) {
@@ -103,7 +104,7 @@ public interface InventorySchema {
 		return self.generateReport(name, 3);
 	}
 
-	static void Inventory(Inventory.Private self) {
+	static void Inventory(Inventory.Constructing self) {
 		self.setProducts(ListOfProducts.create.record());
 	}
 	

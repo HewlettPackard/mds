@@ -68,23 +68,14 @@ import $imprt$;
 $endif$
   // Isolation Context statics for $ftype$
 
-  static $tvars$ $rtype$ isolated($ftype$$tbounds$ fn$comma(formals)$$formals$, MergeReport success, Collection<? extends PubOption> options) {
-    $return$ IsolationContext.isolated(fn$comma(actuals)$$actuals$, success, options);
+  static $tvars$ $rtype$ isolated(PubOption opts, $ftype$$tbounds$ fn$comma(formals)$$formals$) {
+    $return$ IsolationContext.isolated(opts, fn$comma(actuals)$$actuals$);
   }
-  static $tvars$ $rtype$ isolated($ftype$$tbounds$ fn$comma(formals)$$formals$, Collection<? extends PubOption> options) {
-    $return$ IsolationContext.isolated(fn$comma(actuals)$$actuals$, options);
-  }
-  static $tvars$ $rtype$ isolated($ftype$$tbounds$ fn$comma(formals)$$formals$, MergeReport success, PubOption... options) {
-    $return$ IsolationContext.isolated(fn$comma(actuals)$$actuals$, success, options);
-  }
-  static $tvars$ $rtype$ isolated($ftype$$tbounds$ fn$comma(formals)$$formals$, PubOption... options) {
-    $return$ IsolationContext.isolated(fn$comma(actuals)$$actuals$, options);
+  static $tvars$ $rtype$ isolated($ftype$$tbounds$ fn$comma(formals)$$formals$) {
+    $return$ isolated(PubOption.defaultOpts(), fn$comma(actuals)$$actuals$);
   }
   static $tvars$ $rtype$ detached($ftype$$tbounds$ fn$comma(formals)$$formals$) {
     $return$ IsolationContext.detached(fn$comma(actuals)$$actuals$);
-  }
-  static $tvars$ $rtype$ inSnapshot($ftype$$tbounds$ fn$comma(formals)$$formals$) {
-    $return$ IsolationContext.inSnapshot(fn$comma(actuals)$$actuals$);
   }
   static $tvars$ $rtype$ inReadOnlySnapshot($ftype$$tbounds$ fn$comma(formals)$$formals$) {
     $return$ IsolationContext.inReadOnlySnapshot(fn$comma(actuals)$$actuals$);
@@ -95,8 +86,6 @@ contents(prims, masked, types) ::= <<
 package $package()$;
 
 import java.util.Collection;
-import com.hpl.mds.task.Task;
-import com.hpl.mds.task.TaskInterface;
 
 /**
  * Interface to hold static methods so that users can type
@@ -126,24 +115,53 @@ $functionals({java.util.function.Function}, {<T,R>}, {R}, {Function}, {<? super 
 $functionals({java.util.function.BiFunction}, {<T1,T2,R>}, {R}, {BiFunction}, {<? super T1, ? super T2, ? extends R>}, {T1 arg1, T2 arg2}, {arg1, arg2}, 
              {apply(arg1, arg2)}, {return})$
 
+static <X,R> R isolated(PubOption opts,
+                        Supplier<? extends X> compute,
+                        Function<? super X, ? extends R> get)
+{
+  return IsolationContext.isolated(opts, compute, get);
+}
+
+static <X,R> R isolated(Supplier<? extends X> compute, Function<? super X, ? extends R> get)
+{
+  return IsolationContext.isolated(compute, get);
+}
+
+static <R> R isolated(PubOption opts, Runnable compute, Supplier<? extends R> get) {
+  return IsolationContext.isolated(opts, compute, get);
+}
+
+static <R> R isolated(Runnable compute, Supplier<? extends R> get) {
+  return IsolationContext.isolated(compute, get);
+}
+
+static <X, R> R isolated(PubOption opts,
+                         X data,
+                         Consumer<? super X> compute,
+                         Function<? super X, ? extends R> get)
+{
+  return IsolationContext.isolated(opts, data, compute, get);
+}
+
+static <X, R> R isolated(X data,
+                         Consumer<? super X> compute,
+                         Function<? super X, ? extends R> get)
+{
+  return IsolationContext.isolated(data, compute, get);
+}
+
+
+
   static Task currentTask() {
     return Task.current();
   }
 
-  static void runTask(String taskId, TaskInterface taskInterface) {
-    Task.runTask(taskId, taskInterface);
+  static void asTask(Runnable fn) {
+    Task.asTask(fn);
   }
 
-  static void runTask(TaskInterface taskInterface) {
-    Task.runTask(taskInterface);
-  }
-
-  static Task task(String taskId, TaskInterface taskInterface) {
-    return Task.task(taskId, taskInterface);
-  }
-
-  static Task task(TaskInterface taskInterface) {
-    return Task.task(taskInterface);
+  static void asTask(Supplier<?> fn) {
+    Task.asTask(fn);
   }
 
 }

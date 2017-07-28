@@ -70,11 +70,22 @@ namespace mds {
     void throwIncompatibleSuperClassEx(JNIEnv *jEnv);
     void throwUnmodifiableRecordTypeEx(JNIEnv *jEnv);
     void throwReadOnlyContextEx(JNIEnv *jEnv);
-    void throwUnmergeableContextEx(JNIEnv *jEnv);
+    void throwUnpublishableContextEx(JNIEnv *jEnv);
     void throwUnimplementedEx(JNIEnv *jEnv);
     void throwUnknownEx(JNIEnv *jEnv);
+    void throwUnknownEx(JNIEnv *jEnv, const std::string &desc);
     void stubNotImplemented(JNIEnv *jEnv);
     void exception_converter(JNIEnv *jEnv);
+
+    void initialize_thread(JNIEnv *jEnv);
+    
+    inline void ensure_thread_initialized(JNIEnv *jEnv) {
+      static thread_local bool initialized = false;
+      if (!initialized) {
+        initialize_thread(jEnv);
+        initialized = true;
+      }
+    }
 
     template<typename Callable, typename ... Args>
       inline auto
@@ -142,6 +153,11 @@ namespace mds {
       return find_method(env, cls, "<init>", sig);
     }
 
+    inline jmethodID find_static_method(JNIEnv *env, jclass cls,
+                                        const char *name, const char *sig) {
+      return env->GetStaticMethodID(cls, name, sig);
+    }
+
     class java_ex {
       const jclass clss;
       jmethodID ctor;
@@ -168,6 +184,7 @@ namespace mds {
       T b = api::handle_store<T>::get(bHIndex);
       return a == b;
     }
+
 
     template <typename H>
     struct handle_store_traits {
@@ -323,7 +340,7 @@ namespace std {
   template <typename C, typename Tr, typename H>
   basic_ostream<C,Tr> &
   operator <<(basic_ostream<C,Tr> &os, const mds::jni::indexed<H> &h) {
-    return os << "#" << h.peek_index() << ": " << *h;
+    return os << typeid(H).name() << " #" << h.peek_index() << ": " << *h;
   }
 
 }

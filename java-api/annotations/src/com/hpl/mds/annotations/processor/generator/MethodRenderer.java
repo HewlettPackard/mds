@@ -32,8 +32,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.processing.Messager;
 import javax.tools.Diagnostic.Kind;
+import javax.annotation.processing.Messager;
 
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
@@ -51,7 +51,7 @@ import com.hpl.mds.annotations.processor.generator.TypeProp.Properties;
  * 
  * @author Abraham Alcantara
  */
-public class MethodRenderer {
+public class MethodRenderer extends Renderer {
 
     /**
      * Renders a method at the required visibility level
@@ -69,7 +69,9 @@ public class MethodRenderer {
      * @author Abraham Alcantara
      */
     private interface Renderer {
-        void render(String parameters, List<String> arguments, String[] renders, MethodInfo methodInfo);
+        void render(String parameters,
+                    String[] paramNames,
+                    List<String> arguments, String[] renders, MethodInfo methodInfo);
     }
 
     private static final String VOID = "void";
@@ -89,6 +91,10 @@ public class MethodRenderer {
     private static final String TEMPLATE_CREATION_METHOD_DEC = "creationMethodDec";
     private static final String TEMPLATE_AMBIGUOUS_METHOD = "ambiguousMethod";
     private static final String TEMPLATE_STATIC_METHOD = "staticMethod";
+    private static final String TEMPLATE_STATIC_METHOD_DECLARATION = "staticMethodDeclaration";
+    private static final String TEMPLATE_SUPER_INIT_METHOD = "superInitMethod";
+    private static final String TEMPLATE_DEFAULT_SUPER_INIT_METHOD = "defaultSuperInitMethod";
+    private static final String TEMPLATE_THIS_INIT_METHOD = "thisInitMethod";
 
     private static final int PRIM = 0;
     private static final int MNG = 1;
@@ -97,46 +103,17 @@ public class MethodRenderer {
     private static final int CAST_START = 2;
     private static final int CAST_END = 3;
 
-    /**
-     * To display localized messages to the user
-     */
-    private final Messager messager;
-
-    /**
-     * For data type rendering of arguments, parameters and return types
-     */
-    private final DataTypeRenderer dataTypeRenderer;
-
-    /**
-     * Reference to string template group for rendering
-     */
-    private final STGroup stGroup;
-
-    /**
-     * Reference to managed record template
-     */
-    private final ST recordTemplate;
-
-    /**
-     * Information of the record that is being rendered
-     */
-    private final RecordInfo recordInfo;
 
     /*
      * All rendered methods
      */
-    private List<String> privateMethods = Collections.emptyList();
-    private List<String> protectedMethods = Collections.emptyList();
-    private List<String> publicMethods = Collections.emptyList();
-    private List<String> userConstructors = Collections.emptyList();
-    private List<String> creationMethodsImpl = Collections.emptyList();
-    private List<String> publicCreationMethods = Collections.emptyList();
-    private List<String> protectedCreationMethods = Collections.emptyList();
-    private List<String> privateCreationMethods = Collections.emptyList();
-    private List<String> publicStaticMethods = Collections.emptyList();
-    private List<String> protectedStaticMethods = Collections.emptyList();
-    private List<String> privateStaticMethods = Collections.emptyList();
-    private List<String> ambiguousMethods = Collections.emptyList();
+  private List<String> userConstructors;
+  private List<String> creationMethodsImpl;
+  private List<String> publicCreationMethods;
+  private List<String> protectedCreationMethods;
+  private List<String> privateCreationMethods;
+  private List<String> ambiguousMethods;
+  private List<String> superInitMethods;
 
     /**
      * 
@@ -153,119 +130,51 @@ public class MethodRenderer {
      */
     public MethodRenderer(Messager messager, DataTypeRenderer dataTypeRenderer, RecordInfo recordInfo, STGroup stGroup,
             ST recordTemplate) {
-        super();
-        this.messager = messager;
-        this.dataTypeRenderer = dataTypeRenderer;
-        this.recordInfo = recordInfo;
-        this.stGroup = stGroup;
-        this.recordTemplate = recordTemplate;
-    }
-
-    private void addPrivateMethod(String render) {
-        if (privateMethods.isEmpty()) {
-            privateMethods = new ArrayList<>();
-        }
-        privateMethods.add(render);
-    }
-
-    private void addProtectedMethod(String render) {
-        if (protectedMethods.isEmpty()) {
-            protectedMethods = new ArrayList<>();
-        }
-        protectedMethods.add(render);
-    }
-
-    private void addPublicMethod(String render) {
-        if (publicMethods.isEmpty()) {
-            publicMethods = new ArrayList<>();
-        }
-        publicMethods.add(render);
+      super(recordInfo, dataTypeRenderer, stGroup, recordTemplate, messager);
     }
 
     private void addUserConstructor(String render) {
-        if (userConstructors.isEmpty()) {
-            userConstructors = new ArrayList<>();
-        }
-        userConstructors.add(render);
+      userConstructors = addTo(userConstructors, render);
     }
 
     private void addCreationMethodsImpl(String render) {
-        if (creationMethodsImpl.isEmpty()) {
-            creationMethodsImpl = new ArrayList<>();
-        }
-        creationMethodsImpl.add(render);
+      creationMethodsImpl = addTo(creationMethodsImpl, render);
     }
 
     private void addPublicCreationMethod(String render) {
-        if (publicCreationMethods.isEmpty()) {
-            publicCreationMethods = new ArrayList<>();
-        }
-        publicCreationMethods.add(render);
+      publicCreationMethods = addTo(publicCreationMethods, render);
     }
 
     private void addProtectedCreationMethod(String render) {
-        if (protectedCreationMethods.isEmpty()) {
-            protectedCreationMethods = new ArrayList<>();
-        }
-        protectedCreationMethods.add(render);
+      protectedCreationMethods = addTo(protectedCreationMethods, render);
     }
 
     private void addPrivateCreationMethod(String render) {
-        if (privateCreationMethods.isEmpty()) {
-            privateCreationMethods = new ArrayList<>();
-        }
-        privateCreationMethods.add(render);
-    }
-
-    private void addPpublicStaticMethod(String render) {
-        if (publicStaticMethods.isEmpty()) {
-            publicStaticMethods = new ArrayList<>();
-        }
-        publicStaticMethods.add(render);
-    }
-
-    private void addProtectedStaticMethod(String render) {
-        if (protectedStaticMethods.isEmpty()) {
-            protectedStaticMethods = new ArrayList<>();
-        }
-        protectedStaticMethods.add(render);
-    }
-
-    private void addPrivateStaticMethod(String render) {
-        if (privateStaticMethods.isEmpty()) {
-            privateStaticMethods = new ArrayList<>();
-        }
-        privateStaticMethods.add(render);
+      privateCreationMethods = addTo(privateCreationMethods, render);
     }
 
     private void addAmbiguousMethod(String render) {
-        if (ambiguousMethods.isEmpty()) {
-            ambiguousMethods = new ArrayList<>();
-        }
-        ambiguousMethods.add(render);
+      ambiguousMethods = addTo(ambiguousMethods, render);
     }
 
-    public List<String> getPrivateMethods() {
-        return privateMethods;
-    }
-
-    public List<String> getProtectedMethods() {
-        return protectedMethods;
-    }
-
-    public List<String> getPublicMethods() {
-        return publicMethods;
+    private void addSuperInitMethod(String render) {
+      superInitMethods = addTo(superInitMethods, render);
     }
 
     /**
      * Renders all instance methods, constructors and creation methods
      */
+  @Override
     public void render() {
         Set<String> signatures = new HashSet<>();
         List<MethodInfo> methods = recordInfo.getMethods();
         if (!methods.isEmpty()) {
             for (MethodInfo methodInfo : methods) {
-                renderMethodMembers(methodInfo, signatures, this::renderInstanceMethodMembers, "this");
+              Visibility vis = methodInfo.getVisibility();
+              String selfArg = vis == Visibility.PRIVATE ? "this"
+                : String.format("__PRIVATE_%s()", recordInfo.getFQName());
+              renderMethodMembers(methodInfo, signatures, this::renderInstanceMethodMembers,
+                                  selfArg);
             }
         }
         List<MethodInfo> staticMethods = recordInfo.getStaticMethods();
@@ -285,24 +194,25 @@ public class MethodRenderer {
                 renderConstructor(methodInfo, signatures);
             }
         }
-        if (userConstructors.isEmpty()) {
+        if (getList(userConstructors).isEmpty()) {
             renderDefaultConstructor();
+        } else if (recordInfo.getParent() == null) {
+            addConstructingMethod(renderDefaultSuperInitMethod());
         }
 
-        addContentToTemplate();
+        addCodeToManagedRecord();
     }
 
-    private void addContentToTemplate() {
-        recordTemplate.add("userConstructors", userConstructors);
-        recordTemplate.add("ambiguousMethods", ambiguousMethods);
-        recordTemplate.add("creationMethodsImpl", creationMethodsImpl);
-        recordTemplate.add("publicCreationMethods", publicCreationMethods);
-        recordTemplate.add("protectedCreationMethods", protectedCreationMethods);
-        recordTemplate.add("privateCreationMethods", privateCreationMethods);
-        recordTemplate.add("publicStaticMethods", publicStaticMethods);
-        recordTemplate.add("protectedStaticMethods", protectedStaticMethods);
-        recordTemplate.add("privateStaticMethods", privateStaticMethods);
-    }
+  @Override
+  protected void addCodeToManagedRecord(ST recordTemplate) {
+    recordTemplate.add("userConstructors", getList(userConstructors));
+    recordTemplate.add("ambiguousMethods", getList(ambiguousMethods));
+    recordTemplate.add("creationMethodsImpl", getList(creationMethodsImpl));
+    recordTemplate.add("publicCreationMethods", getList(publicCreationMethods));
+    recordTemplate.add("protectedCreationMethods", getList(protectedCreationMethods));
+    recordTemplate.add("privateCreationMethods", getList(privateCreationMethods));
+    recordTemplate.add("superInitMethods", getList(superInitMethods));
+  }
 
     /**
      * Renders all class members of an instance method
@@ -316,6 +226,7 @@ public class MethodRenderer {
             String firstArg) {
 
         List<VarInfo> parameters = methodInfo.getParameters();
+        String[] paramNames = parameters.stream().map(VarInfo::getName).toArray(String[]::new);
         int[] renderIndex = new int[parameters.size()];
         boolean[] emittedTwiceIndex = new boolean[parameters.size()];
         String[][] paramTypes = new String[parameters.size()][2];
@@ -340,7 +251,7 @@ public class MethodRenderer {
                     methodSignature, argsSelected, parametersRender);
             if (signatures.add(methodSignature.toString())) {
                 for (String[] renders : renderMethod) {
-                    renderer.render(parametersRender.toString(), argsSelected, renders, methodInfo);
+                  renderer.render(parametersRender.toString(), paramNames, argsSelected, renders, methodInfo);
                 }
             } else {
                 messager.printMessage(Kind.ERROR, ERROR_METHODS_SIGNATURE, methodInfo.getMethod());
@@ -360,7 +271,7 @@ public class MethodRenderer {
      * @param index
      *            the position to store the parameter in the given arrays
      */
-    private void renderArgumentAndParameterType(VarInfo varInfo, String[][] rendersParams, String[][] rendersArguments,
+  private void renderArgumentAndParameterType(VarInfo varInfo, String[][] rendersParams, String[][] rendersArguments,
             int index) {
         String name = varInfo.getName();
         if (varInfo.isEmittedTwice()) {
@@ -392,6 +303,26 @@ public class MethodRenderer {
         }
     }
 
+  private String maskedMethodName(MethodInfo methodInfo) {
+    String name = methodInfo.getName();
+    List<VarInfo> params = methodInfo.getParameters();
+    int arity = params.size();
+    boolean isObjMethod = false;
+    if (arity == 0) {
+      isObjMethod = (name.equals("toString")
+                     || name.equals("hashCode"));
+    } else if (arity == 1) {
+      if (name.equals("equals")) {
+        String argType = params.get(0).getComplexType();
+        isObjMethod = "java.lang.Object".equals(argType);
+      }
+    }
+    if (isObjMethod) {
+      name = "__OBJECT_METHOD_"+name;
+    }
+    return name;
+  }
+
     /**
      * Render method properties, including: name, return type and casting
      * 
@@ -401,7 +332,7 @@ public class MethodRenderer {
      */
     private String[][] renderMethodProperties(MethodInfo methodInfo) {
         VarInfo returnType = methodInfo.getReturnType();
-        String methodName = methodInfo.getName();
+        String methodName = maskedMethodName(methodInfo);
         if (returnType.isEmittedTwice()) {
             String[][] renders = new String[2][4];
             Properties properties = dataTypeRenderer.getProperties(returnType.getType());
@@ -450,30 +381,27 @@ public class MethodRenderer {
      * @param methodInfo
      *            information of the method to render
      */
-    private void renderInstanceMethodMembers(String parameters, List<String> arguments, String[] renders,
-            MethodInfo methodInfo) {
-        if (!methodInfo.isAbstract()) {
-            addPrivateMethod(renderDefaultMethodImpl(parameters, arguments, renders, methodInfo.getName()));
-            if (methodInfo.isAmbiguous()) {
-                addAmbiguousMethod(renderAmbiguousMethodImpl(parameters, arguments, renders, methodInfo.getName()));
-            }
-        }
-        switch (methodInfo.getVisibility()) {
-        case PUBLIC:
-            addPublicMethod(renderMethodDeclaration(renders[RETURN_TYPE], renders[METHOD_NAME], parameters));
-            break;
-        case PROTECTED:
-            addProtectedMethod(renderMethodDeclaration(renders[RETURN_TYPE], renders[METHOD_NAME], parameters));
-            break;
-        case PRIVATE:
-            if (methodInfo.isAbstract()) {
-                addPrivateMethod(renderMethodDeclaration(renders[RETURN_TYPE], renders[METHOD_NAME], parameters));
-            }
-            break; // ignore, default implementation is at this level
-        default:
-            break;
-        }
+  private void renderInstanceMethodMembers(String parameters, String[] paramNames, List<String> arguments,
+                                           String[] renders, MethodInfo methodInfo)
+  {
+    String decl = renderMethodDeclaration(renders[RETURN_TYPE],
+                                          renders[METHOD_NAME],
+                                          parameters,
+                                          paramNames);
+    String impl = renderDefaultMethodImpl(parameters, arguments, renders,
+                                          methodInfo.getName());
+    Visibility vis = methodInfo.getVisibility();
+
+    if (methodInfo.isAbstract()) {
+      addCode(vis, decl);
+    } else {
+      addCode(methodInfo.getVisibility(), decl, impl);
+      if (methodInfo.isAmbiguous()) {
+        addAmbiguousMethod(renderAmbiguousMethodImpl(parameters, arguments,
+                                                     renders, methodInfo.getName()));
+      }
     }
+  }
 
     /**
      * @param parameters
@@ -487,9 +415,9 @@ public class MethodRenderer {
      *            name of the method in the schema
      * @return render of an instance method implementation for a class
      */
-    private String renderAmbiguousMethodImpl(String parameters, List<String> arguments, String[] renders,
+  private String renderAmbiguousMethodImpl(String parameters, List<String> arguments, String[] renders,
             String schemaMethod) {
-        return renderMehodImpl(parameters, arguments, renders, schemaMethod, TEMPLATE_AMBIGUOUS_METHOD);
+        return renderMethodImpl(parameters, arguments, renders, schemaMethod, TEMPLATE_AMBIGUOUS_METHOD);
     }
 
     /**
@@ -505,24 +433,32 @@ public class MethodRenderer {
      * @param methodInfo
      *            information of the method to render
      */
-    private void renderStaticMethodMembers(String parameters, List<String> arguments, String[] renders,
-            MethodInfo methodInfo) {
-        addPrivateStaticMethod(renderDefaultMethodImpl(parameters, arguments, renders, methodInfo.getName()));
-        switch (methodInfo.getVisibility()) {
-        case PUBLIC:
-            addPpublicStaticMethod(renderMethodDeclaration(renders[RETURN_TYPE], renders[METHOD_NAME], parameters));
-            addPublicMethod(renderStaticMethod(parameters, arguments, renders, methodInfo.getName()));
-            break;
-        case PROTECTED:
-            addProtectedStaticMethod(renderMethodDeclaration(renders[RETURN_TYPE], renders[METHOD_NAME], parameters));
-            break;
-        case PRIVATE:
-            break; // ignore, default implementation is at this level
-        default:
-            break;
-        }
+  private void renderStaticMethodMembers(String parameters, String[] paramNames, List<String> arguments,
+                                         String[] renders, MethodInfo methodInfo)
+  {
+    String decl = renderStaticMethodDeclaration(renders[RETURN_TYPE],
+                                                renders[METHOD_NAME],
+                                                parameters);
+    String impl = renderDefaultMethodImpl(parameters, arguments, renders, methodInfo.getName());
 
+    addPrivateStaticMethod(impl);
+    // addCode(methodInfo.getVisibility(),
+    //         renderStaticMethod(parameters, arguments, renders, methodInfo.getName()));
+    switch (methodInfo.getVisibility()) {
+    case PUBLIC:
+      addPublicStaticMethod(decl);
+      addPublicMethod(renderStaticMethod(parameters, arguments, renders, methodInfo.getName()));
+      break;
+    case PROTECTED:
+      addProtectedStaticMethod(decl);
+      break;
+    case PRIVATE:
+      break; // ignore, default implementation is at this level
+    default:
+      break;
     }
+
+  }
 
     /**
      * @param parameters
@@ -538,7 +474,7 @@ public class MethodRenderer {
      */
     private String renderDefaultMethodImpl(String parameters, List<String> arguments, String[] renders,
             String schemaMethod) {
-        return renderMehodImpl(parameters, arguments, renders, schemaMethod, TEMPLATE_METHOD_IMPL);
+        return renderMethodImpl(parameters, arguments, renders, schemaMethod, TEMPLATE_METHOD_IMPL);
     }
 
     /**
@@ -555,7 +491,7 @@ public class MethodRenderer {
      */
     private String renderStaticMethod(String parameters, List<String> arguments, String[] renders,
             String schemaMethod) {
-        return renderMehodImpl(parameters, arguments, renders, schemaMethod, TEMPLATE_STATIC_METHOD);
+        return renderMethodImpl(parameters, arguments, renders, schemaMethod, TEMPLATE_STATIC_METHOD);
     }
 
     /**
@@ -572,19 +508,19 @@ public class MethodRenderer {
      *            name of the schema for the render
      * @return render of an instance method implementation
      */
-    private String renderMehodImpl(String parameters, List<String> arguments, String[] renders, String schemaMethod,
+    private String renderMethodImpl(String parameters, List<String> arguments, String[] renders, String schemaMethod,
             String templateName) {
-        ST template = stGroup.getInstanceOf(templateName);
-        assert template != null; // this template should always exists
-        template.add("methodName", renders[METHOD_NAME]);
-        template.add("returnType", renders[RETURN_TYPE]);
-        template.add("parameters", parameters);
-        template.add("schema", recordInfo.getSchema());
-        template.add("schemaMethod", schemaMethod);
-        template.add("arguments", arguments);
-        template.add("castStart", renders[CAST_START]);
-        template.add("castEnd", renders[CAST_END]);
-        return template.render();
+      return renderTemplate(templateName,
+                            t->{
+                              t.add("methodName", renders[METHOD_NAME]);
+                              t.add("returnType", renders[RETURN_TYPE]);
+                              t.add("parameters", parameters);
+                              t.add("schema", recordInfo.getSchema());
+                              t.add("schemaMethod", schemaMethod);
+                              t.add("arguments", arguments);
+                              t.add("castStart", renders[CAST_START]);
+                              t.add("castEnd", renders[CAST_END]);
+                            });
     }
 
     /**
@@ -596,14 +532,37 @@ public class MethodRenderer {
      *            method parameters
      * @return render of an instance method declaration
      */
-    private String renderMethodDeclaration(String returnType, String name, String parameters) {
-        ST template = stGroup.getInstanceOf(TEMPLATE_METHOD_DECLARATION);
-        assert template != null; // this template should always exists
-        template.add("returnType", returnType);
-        template.add("methodName", name);
-        template.add("parameters", parameters);
-        return template.render();
-    }
+  private String renderMethodDeclaration(String returnType, String name, String parameters,
+                                         String[] paramNames)
+  {
+    return renderTemplate(TEMPLATE_METHOD_DECLARATION,
+                          t->{
+                            t.add("returnType", returnType);
+                            t.add("methodName", name);
+                            t.add("parameters", parameters);
+                            t.add("paramNames", paramNames);
+                            t.add("return", returnType.equals("void") ? "" : RETURN);
+                          });
+  }
+
+  /**
+     * @param returnType
+     *            return type of the method
+     * @param name
+     *            method name
+     * @param parameters
+     *            method parameters
+     * @return render of an instance method declaration
+     */
+  private String renderStaticMethodDeclaration(String returnType, String name, String parameters)
+  {
+    return renderTemplate(TEMPLATE_STATIC_METHOD_DECLARATION,
+                          t->{
+                            t.add("returnType", returnType);
+                            t.add("methodName", name);
+                            t.add("parameters", parameters);
+                          });
+  }
 
     /**
      * Renders all members associated with the given constructor
@@ -624,9 +583,7 @@ public class MethodRenderer {
             rendersArguments[i] = name;
         }
         addUserConstructor(renderConstructor(rendersParams, rendersArguments));
-        if (!recordInfo.isAbstract()) {
-            renderCreationMethods(constructor, signatures);
-        }
+        renderConstructorMethods(constructor, signatures);
     }
 
     /**
@@ -686,13 +643,13 @@ public class MethodRenderer {
      * @return Render of a constructor
      */
     private String renderConstructor(String[] parameters, String[] arguments) {
-        ST template = stGroup.getInstanceOf(TEMPLATE_USER_CONSTRUCTOR);
-        assert template != null; // this template should always exists
-        template.add("recordName", recordInfo.getSimpleName());
-        template.add("parameters", parameters);
-        template.add("schema", recordInfo.getSchema());
-        template.add("arguments", arguments);
-        return template.render();
+      return renderTemplate(TEMPLATE_USER_CONSTRUCTOR,
+                            t->{
+                              t.add("recordName", recordInfo.getSimpleName());
+                              t.add("parameters", parameters);
+                              t.add("schema", recordInfo.getSchema());
+                              t.add("arguments", arguments);
+                            });
     }
 
     /**
@@ -703,7 +660,7 @@ public class MethodRenderer {
      * @param signatures
      *            method signatures
      */
-    private void renderCreationMethods(MethodInfo constructor, Set<String> signatures) {
+    private void renderConstructorMethods(MethodInfo constructor, Set<String> signatures) {
         List<VarInfo> parameters = constructor.getParameters();
         int[] renderIndex = new int[parameters.size()];
         boolean[] emittedTwiceIndex = new boolean[parameters.size()];
@@ -725,7 +682,11 @@ public class MethodRenderer {
             renderArgumentsAndParameters(constructor, parameters, renderIndex, paramTypes, rendersArguments,
                     methodSignature, argsSelected, parametersRender);
             if (signatures.add(methodSignature.toString())) {
+              if (!recordInfo.isAbstract()) {
                 renderCreationMethodMembers(parametersRender.toString(), argsSelected, visibility);
+              }
+              addSuperInitMethod(renderSuperInitMethod(parametersRender.toString(), argsSelected));
+              addConstructingMethod(renderThisInitMethod(parametersRender.toString(), argsSelected));
             } else {
                 messager.printMessage(Kind.ERROR, ERROR_METHODS_SIGNATURE, constructor.getMethod());
             }
@@ -829,12 +790,13 @@ public class MethodRenderer {
      * @return Implementation of a creation method
      */
     private String renderCreationMethodImpl(String parameters, List<String> arguments) {
-        ST template = stGroup.getInstanceOf(TEMPLATE_CREATION_METHOD_IMPL);
-        assert template != null; // this template should always exists
-        template.add("recordName", recordInfo.getSimpleName());
-        template.add("parameters", parameters);
-        template.add("arguments", arguments);
-        return template.render();
+      return renderTemplate(TEMPLATE_CREATION_METHOD_IMPL,
+                            t->{
+                              t.add("recordName", recordInfo.getSimpleName());
+                              t.add("parameters", parameters);
+                              t.add("arguments", arguments);
+                              t.add("fq_name", recordInfo.getFQName());
+                            });
     }
 
     /**
@@ -868,24 +830,57 @@ public class MethodRenderer {
      *         type
      */
     private String renderCreationMethodDec(String parameters, String returnType) {
-        ST template = stGroup.getInstanceOf(TEMPLATE_CREATION_METHOD_DEC);
-        assert template != null; // this template should always exists
-        template.add("returnType", returnType);
-        template.add("parameters", parameters);
-        return template.render();
+      return renderTemplate(TEMPLATE_CREATION_METHOD_DEC,
+                            t->{
+                              t.add("returnType", returnType);
+                              t.add("parameters", parameters);
+                            });
     }
 
     /**
      * Renders the default no argument constructor
      */
     private void renderDefaultConstructor() {
-        ST template = stGroup.getInstanceOf(TEMPLATE_DEFAULT_CONSTRUCTOR);
-        assert template != null; // this template should always exists
-        template.add("recordName", recordInfo.getSimpleName());
-        addUserConstructor(template.render());
-        if (!recordInfo.isAbstract()) {
-            renderCreationMethodMembers(EMPTY, Collections.emptyList(), Visibility.PUBLIC);
-        }
+      String code = renderTemplate(TEMPLATE_DEFAULT_CONSTRUCTOR,
+                                   t->{
+                                     t.add("recordName", recordInfo.getSimpleName());
+                                     t.add("parentRecord", recordInfo.getParent());
+                                   });
+      addUserConstructor(code);
+      addSuperInitMethod(renderDefaultSuperInitMethod());
+      if (!recordInfo.isAbstract()) {
+        renderCreationMethodMembers(EMPTY, Collections.emptyList(), Visibility.PUBLIC);
+      }
+    }
+
+  private String renderSuperInitMethod(String parameters, List<String> arguments) {
+    return renderTemplate(TEMPLATE_SUPER_INIT_METHOD,
+                          t->{
+                            t.add("recordName", recordInfo.getSimpleName());
+                            t.add("parameters", parameters);
+                            t.add("schema", recordInfo.getSchema());
+                            t.add("arguments", arguments);
+                            t.add("fq_name", recordInfo.getFQName());
+                          });
+    }
+
+  private String renderDefaultSuperInitMethod() {
+    return renderTemplate(TEMPLATE_DEFAULT_SUPER_INIT_METHOD,
+                          t->{
+                            t.add("recordName", recordInfo.getSimpleName());
+                            t.add("parentRecord", recordInfo.getParent());
+                            t.add("fq_name", recordInfo.getFQName());
+                          });
+    }
+
+  private String renderThisInitMethod(String parameters, List<String> arguments) {
+    return renderTemplate(TEMPLATE_THIS_INIT_METHOD,
+                          t->{
+                            t.add("recordName", recordInfo.getSimpleName());
+                            t.add("parameters", parameters);
+                            t.add("schema", recordInfo.getSchema());
+                            t.add("arguments", arguments);
+                          });
     }
 
 }

@@ -36,8 +36,6 @@ $if(directSupers)$$directSupers,dsParams: {s,p| $s$.Type$p$};separator=", "$$els
 
 type(class, params, bounds, directSupers, dsParams, allSupers, extras, typeInit) ::= <<
 import java.util.List;
-import com.hpl.mds.naming.Namespace;
-import com.hpl.mds.naming.HName;
 $if(!params)$
 $if (typeInit)$
 static Type TYPE = $typeInit$;

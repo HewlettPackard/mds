@@ -264,4 +264,5 @@ public class VisibilitiesParser {
         // no dominant value
         return null;
     }
+
 }

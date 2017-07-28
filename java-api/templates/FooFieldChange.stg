@@ -62,9 +62,7 @@ $body(class(type), type, type.managedName, type.boxedName, type.primName, type.f
 body(class, type, managed, boxed, prim, field, short, types) ::= <<
 package $package(type)$;
 
-import com.hpl.mds.$ifString({string},{prim.field})$.$field$;
-import com.hpl.mds.$ifString({string},{prim})$.$managed$;
-import com.hpl.mds.ManagedRecord;
+import com.hpl.mds.*;
 
 public interface $field$Change<RT extends ManagedRecord> extends FieldChange<RT, $managed$> {
   @Override

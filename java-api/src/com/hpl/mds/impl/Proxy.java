@@ -36,21 +36,32 @@ import com.hpl.erk.util.ArrayUtils;
 
 public abstract class Proxy {
 
-	protected final long handleIndex_;
-    abstract void releaseHandleIndex(long index);
+  protected final long handleIndex_;
+  abstract void releaseHandleIndex(long index);
     
-    @Override
-    protected void finalize() throws Throwable {
-      releaseHandleIndex(handleIndex_);
-    }
+  @Override
+  protected void finalize() throws Throwable {
+    // System.out.format("Finalizing %s%n", this);
+    releaseHandleIndex(handleIndex_);
+  }
 
-	protected Proxy(long hi) {
-		this.handleIndex_ = hi;
-	}
+  protected Proxy(long hi, Table table) {
+    this.handleIndex_ = hi;
+    /*
+     * A null table means there's no place to cache it.
+     */
+    if (table != null) {
+      table.add(hi, this);
+    }
+  }
 	
-	public long handleIndex() {
-		return handleIndex_;
-	}
+  // protected Proxy(long hi) {
+  //   this.handleIndex_ = hi;
+  // }
+	
+  public long handleIndex() {
+    return handleIndex_;
+  }
 
   /*
    * The domain is an object that will be the same for all elements
@@ -62,186 +73,223 @@ public abstract class Proxy {
     return getClass();
   }
 	
-	public boolean proxiesToSame(Proxy other) {
-	  // A better approach would probably be to cache the underlying 
-	  // object hash as a long in the proxy.  Then we can compare
-	  // hashes when the indexes aren't the same.
-	  return (other != null
-		  && (handleIndex_ == other.handleIndex_)
-		  && (domain() == other.domain()));
-	}
+  public boolean proxiesToSame(Proxy other) {
+    // A better approach would probably be to cache the underlying 
+    // object hash as a long in the proxy.  Then we can compare
+    // hashes when the indexes aren't the same.
+    return (other != null
+            && (handleIndex_ == other.handleIndex_)
+            && (domain() == other.domain()));
+  }
 	
-	@Override
-	public int hashCode() {
-		// Arguably, we should use the actual underlying object hash, 
-		// since Long.hashCode() is terrible
-		return domain().hashCode() ^ Long.hashCode(handleIndex_);
-	}
+  @Override
+  public int hashCode() {
+    // Arguably, we should use the actual underlying object hash, 
+    // since Long.hashCode() is terrible
+    return domain().hashCode() ^ Long.hashCode(handleIndex_);
+  }
 
 	
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == this) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (!(obj instanceof Proxy)) {
-			return false;
-		}
-		return proxiesToSame((Proxy)obj);
-	}
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == this) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof Proxy)) {
+      return false;
+    }
+    return proxiesToSame((Proxy)obj);
+  }
 	
-	static protected class Table<P extends Proxy> {
-	  static final int DEFAULT_CACHE_SIZE_BITS = 8;
-	  final int cache_size;
-	  final int cache_mask;
+  static protected class Table<P extends Proxy> {
+    static final int DEFAULT_CACHE_SIZE_BITS = 8;
+    final int cache_size;
+    final int cache_mask;
 
-      final ThreadLocalCache threadLocalCache = new ThreadLocalCache();
-      final ConcurrentMap<Long, WeakReference<P>> globalMap = new ConcurrentHashMap<>();
-      final LongConsumer releaser;
+    final ThreadLocalCache threadLocalCache = new ThreadLocalCache();
+    final ConcurrentMap<Long, WeakReference<P>> globalMap = new ConcurrentHashMap<>();
+    final LongConsumer releaser;
       
-	  public Table(LongConsumer releaser, int cache_size_bits) {
-	    super();
-	    this.releaser = releaser;
-	    cache_size = 1 << cache_size_bits;
-	    cache_mask = cache_size-1;
-	  }
-	  public Table(LongConsumer releaser) {
-	    this(releaser, DEFAULT_CACHE_SIZE_BITS);
-	  }
-	  class ThreadLocalCache extends ThreadLocal<WeakReference<P>[]> {
-	    @Override
-	    protected WeakReference<P>[] initialValue() {
-	    	// If we do a single assignment to WeakReference<P>[], javac complains that it's unchecked,
-	    	// and Eclipse complains that suppressing unchecked is unnecessary.
-	      WeakReference<?>[] a = ArrayUtils.newArray(WeakReference.class, cache_size);
-	      @SuppressWarnings("unchecked")
-	      WeakReference<P>[] array = (WeakReference<P>[])a;
-	      return array;
-	    }
-	  }
+    public Table(LongConsumer releaser, int cache_size_bits) {
+      super();
+      this.releaser = releaser;
+      cache_size = 1 << cache_size_bits;
+      cache_mask = cache_size-1;
+    }
+    public Table(LongConsumer releaser) {
+      this(releaser, DEFAULT_CACHE_SIZE_BITS);
+    }
+    class ThreadLocalCache extends ThreadLocal<WeakReference<P>[]> {
+      @Override
+      protected WeakReference<P>[] initialValue() {
+        // If we do a single assignment to WeakReference<P>[], javac complains that it's unchecked,
+        // and Eclipse complains that suppressing unchecked is unnecessary.
+        WeakReference<?>[] a = ArrayUtils.newArray(WeakReference.class, cache_size);
+        @SuppressWarnings("unchecked")
+          WeakReference<P>[] array = (WeakReference<P>[])a;
+        return array;
+      }
+    }
 
-	  static final protected class WithTinyCache<P extends Proxy> extends Table<P> {
-	    WithTinyCache(LongConsumer releaser) {
-	      super(releaser, 4);
-	    }
-	  }
+    static final protected class WithTinyCache<P extends Proxy> extends Table<P> {
+      WithTinyCache(LongConsumer releaser) {
+        super(releaser, 4);
+      }
+    }
 
-	  static final protected class WithSmallCache<P extends Proxy> extends Table<P> {
-	    WithSmallCache(LongConsumer releaser) {
-	      super(releaser, 8);
-	    }
-	  }
-	  static final protected class WithLargeCache<P extends Proxy> extends Table<P> {
-	    WithLargeCache(LongConsumer releaser) {
-	      super(releaser, 16);
-	    }
-	  }
-	  static final protected class WithHugeCache<P extends Proxy> extends Table<P> {
-	    WithHugeCache(LongConsumer releaser) {
-	      super(releaser, 20);
-	    }
-	  }
+    static final protected class WithSmallCache<P extends Proxy> extends Table<P> {
+      WithSmallCache(LongConsumer releaser) {
+        super(releaser, 8);
+      }
+    }
+    static final protected class WithLargeCache<P extends Proxy> extends Table<P> {
+      WithLargeCache(LongConsumer releaser) {
+        super(releaser, 16);
+      }
+    }
+    static final protected class WithHugeCache<P extends Proxy> extends Table<P> {
+      WithHugeCache(LongConsumer releaser) {
+        super(releaser, 20);
+      }
+    }
 
 
-	  final void release(long index) {
-	    releaser.accept(index);
-	  }
+    final void release(long index) {
+      releaser.accept(index);
+    }
+
+    void add(long index, P obj) {
+      int slot = (int)(index & cache_mask);
+      WeakReference<P> wr = new WeakReference<>(obj);
+      WeakReference<P>[] c = threadLocalCache.get();
+      c[slot] = wr;
+      globalMap.put(index, wr);
+    }
 	  
-	  /*
-	   * It's assumed that there's a reference held on this index,
-	   * so we don't worry about it going away, and we can assume that
-	   * if we have it in a cache, it's the right one.  We also count on
-	   * the finalizer removing of a created proxy removing the last 
-	   * reference associated with the fromIndex() call that created it.
-	   */
-	  final P fromIndex(long index, LongFunction<? extends P> creator) {
-	    if (index == 0) {
-	      return null;
-	    }
-	    int slot = (int)(index & cache_mask);
-	    WeakReference<P>[] c = threadLocalCache.get();
-	    WeakReference<P> wr = c[slot];
-	    P res = null;
-	    if (wr != null && (res = wr.get()) != null && res.handleIndex_ == index) {
-	      /*
-	       *  We have it in the local cache.  We don't need our reference,
-	       *  because we will use the one in the proxy we found.
-	       */
-	      releaser.accept(index);
-	      return res;
-	    }
-	    
+    /*
+     * It's assumed that there's a reference held on this index,
+     * so we don't worry about it going away, and we can assume that
+     * if we have it in a cache, it's the right one.  We also count on
+     * the finalizer removing of a created proxy removing the last 
+     * reference associated with the fromIndex() call that created it.
+     */
+    final P fromIndex(long index, LongFunction<? extends P> creator) {
+      if (index == 0) {
+        return null;
+      }
+      int slot = (int)(index & cache_mask);
+      WeakReference<P>[] c = threadLocalCache.get();
+      WeakReference<P> wr = c[slot];
+      P res = null;
+      if (wr != null && (res = wr.get()) != null && res.handleIndex_ == index) {
         /*
-         * It's not in the local cache, so we look in the global cache.
+         *  We have it in the local cache.  We don't need our reference,
+         *  because we will use the one in the proxy we found.
          */
-        wr = globalMap.get(index);
-        if (wr != null && (res = wr.get()) != null) {
-          /*
-           *  We have it in the global cache.  We don't need our reference,
-           *  because we will use the one in the proxy we found.  We do,
-           *  however, need to add it to the local cache.
-           */
-          releaser.accept(index);
-          c[slot] = wr;
-          return res;
-        }
+        //        System.out.format("Found %d in local cache: %s%n", res.handleIndex_, res);
+        releaser.accept(index);
+        return res;
+      }
+	    
+      /*
+       * It's not in the local cache, so we look in the global cache.
+       */
+      wr = globalMap.get(index);
+      if (wr != null && (res = wr.get()) != null) {
         /*
-         * It was in neither cache, so we create one.  The proxy will be
-         * responsible for the reference we hold, so we don't release, even
-         * if we wind up dropping this proxy on the floor because we use a
-         * proxy added to the global cache by a racing thread.
-         * 
-         * We do this adding in a loop because a racing thread may also be
-         * adding at the same time.  wr, at all times holds the last thing
-         * we think 
-	     */
-        res = creator.apply(index);
-        WeakReference<P> newWR = new WeakReference<>(res);
-	    while (true) {
+         *  We have it in the global cache.  We don't need our reference,
+         *  because we will use the one in the proxy we found.  We do,
+         *  however, need to add it to the local cache.
+         */
+        releaser.accept(index);
+        c[slot] = wr;
+        //        System.out.format("Found %d in global cache: %s%n", res.handleIndex_, res);
+        return res;
+      }
+      /*
+       * It was in neither cache, so we create one.  The creation will
+       * put it in the cache.  Note that it's possible that a racing
+       * thread will have also created one with the same handle (at
+       * least if it's from a handle to an object found in the managed
+       * heap as opposed to one that we're creating).  We previously
+       * jumped through hoops to make sure that we returned the first
+       * one to hit the global cache, as long as it was still around
+       * (see installUnlessCached() below) but that was a lot of work
+       * and only worked if creating an object *didn't* put it in the
+       * cache, which resulted in multiple copies anyway, even without
+       * racing.  So now we count on the ctor calling add(obj) on the
+       * table.
+       */
+      res = creator.apply(index);
+      return res;
+    }
+
+    /*
+     * This is the old logic in which we tried to install the new one
+     * in the cache unless we found another one added by a racing
+     * thread *and* the one in the cache hadn't already been
+     * collected.
+     *
+     * Comment from just before this code in fromhandle():
+     * 
+     * The proxy will be responsible for the reference we hold, so we
+     * don't release, even if we wind up dropping this proxy on the
+     * floor because we use a proxy added to the global cache by a
+     * racing thread.
+     * 
+     * We do this adding in a loop because a racing thread may also be
+     * adding at the same time.  wr, at all times holds the last thing
+     * we think
+     */
+    final P installUnlessCached(P res, long index, int slot, WeakReference<P>[] c)
+    {
+      WeakReference<P> newWR = new WeakReference<>(res);
+      WeakReference<P> wr = null;
+      while (true) {
+        if (wr == null) {
+          wr = globalMap.putIfAbsent(index, newWR);
           if (wr == null) {
-            wr = globalMap.putIfAbsent(index, newWR);
-            if (wr == null) {
-              c[slot] = newWR;
-              return res;
-            }
-            /*
-             * Otherwise wr holds the next value
-             */
-          } else if (globalMap.replace(index, wr, newWR)) {
             c[slot] = newWR;
             return res;
-          } else {
-            wr = globalMap.get(index);
           }
           /*
-           * We didn't install it, but wr now holds the current value
+           * Otherwise wr holds the next value
            */
-          P curr = wr == null ? null : wr.get();
-          if (curr != null) {
-            c[slot] = wr;
-            return curr;
-          }
-          /*
-           * If we got here, it was created by a racing thread, but it's already
-           * been collected, so the WeakRef that was installed is invalid.
-           */
-	    }
-	  }
+        } else if (globalMap.replace(index, wr, newWR)) {
+          c[slot] = newWR;
+          return res;
+        } else {
+          wr = globalMap.get(index);
+        }
+        /*
+         * We didn't install it, but wr now holds the current value
+         */
+        P curr = wr == null ? null : wr.get();
+        if (curr != null) {
+          c[slot] = wr;
+          return curr;
+        }
+        /*
+         * If we got here, it was created by a racing thread, but it's already
+         * been collected, so the WeakRef that was installed is invalid.
+         */
+      }
+    }
 
-	  final public void replace(long handleIndex_, P replacement) {
-	    /*
-	     * This is done within a synchronized block on the object being replaced,
-	     * so we can do the replacement unconditionally.
-	     * 
-	     * Note that the original value may still be in thread-local caches,
-	     * so the logic of the call to fromIndex() should be that it checks
-	     * to see whether what's returned was forwarded.
-	     */
-	    globalMap.replace(handleIndex_, new WeakReference<>(replacement));
-	  }
-	}
+    final public void replace(long handleIndex_, P replacement) {
+      /*
+       * This is done within a synchronized block on the object being replaced,
+       * so we can do the replacement unconditionally.
+       * 
+       * Note that the original value may still be in thread-local caches,
+       * so the logic of the call to fromIndex() should be that it checks
+       * to see whether what's returned was forwarded.
+       */
+      globalMap.replace(handleIndex_, new WeakReference<>(replacement));
+    }
+  }
 
 }

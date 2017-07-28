@@ -25,7 +25,7 @@
  */
 
 delimiters "$", "$"
-package(type) ::= "com.hpl.mds.function"
+package(type) ::= "com.hpl.mds"
 class(type) ::= "$type.shortName$Predicate"
 
 code(type,types) ::= <<

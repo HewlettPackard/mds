@@ -26,7 +26,7 @@
 
 delimiters "$", "$"
 import "string.stg"
-package(type) ::= "com.hpl.mds.$ifString({string},{prim.field})$"
+package(type) ::= "com.hpl.mds"
 class(type) ::= "$type.fieldName$"
 
 code(type,types) ::= <<
@@ -74,17 +74,6 @@ $if(type.bool)$
 import java.util.function.Predicate;
 $endif$
 
-import com.hpl.mds.Field;
-import com.hpl.mds.Holder;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.RecordType;
-import com.hpl.mds.Caching;
-import com.hpl.mds.$ifString({string},{prim})$.$managed$;
-$unlessString({
-import com.hpl.mds.function.$short$Supplier;
-import com.hpl.mds.function.To$short$Function;
-import com.hpl.mds.holder.$short$Holder;
-})$
 
 public interface $field$<RT extends ManagedRecord> extends Field<RT, $managed$>$if(type.bool)$, Predicate<RT>$endif$ {
 
@@ -127,7 +116,10 @@ $ifString({
     return val.toString();
   \}
   default $val()$ getAndSet(RT rec, $arg()$ val) {
-    return ManagedString.asString(set(rec, ManagedString.valueOf(val)));
+    return ManagedString.asString(getAndSet(rec, ManagedString.valueOf(val)));
+  \}
+  default void initFinal(RT rec, $arg()$ val) {
+    initFinal(rec, ManagedString.valueOf(val));
   \}
 },{
   $val()$ set(RT rec, $arg()$ val);
@@ -143,6 +135,12 @@ $ifString({
   @Override
   default $managed$ getAndSet(RT rec, $managed$ val) {
     return $managed$.valueOf(getAndSet(rec, $managed$.as$short$(val)));
+  \}
+
+  void initFinal(RT rec, $arg()$ val);
+  @Override
+  default void initFinal(RT rec, $managed$ val) {
+    initFinal(rec, $managed$.as$short$(val));
   \}
 })$
 
@@ -163,7 +161,8 @@ $ as$short$Function() {
   }
 
 $if(type.numeric)$
-$["inc","getAndInc","dec","getAndDec","mult","getAndMult","div","getAndDiv",]:{ func |
+$["inc","dec","mult","div",
+  "getAndInc", "getAndDec", "getAndMult", "getAndDiv"]:{ func |
   $prim$ $func$(RT rec, $prim$ by);
   default $managed$ $func$(RT rec, $managed$ by) {
     return $managed$.valueOf($func$(rec, $managed$.as$type.shortName$(by)));

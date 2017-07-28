@@ -27,14 +27,7 @@
 
 package com.hpl.mds.impl;
 
-import com.hpl.mds.ArrayField;
-import com.hpl.mds.Holder;
-import com.hpl.mds.IsolationContext;
-import com.hpl.mds.ManagedArray;
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.RecordType;
+import com.hpl.mds.*;
 
 public abstract class ArrayFieldProxy<RT extends ManagedRecord, ET extends ManagedObject> extends FieldProxy<RT, ManagedArray<ET>> implements ArrayField<RT,ET> {
 
@@ -48,21 +41,6 @@ public abstract class ArrayFieldProxy<RT extends ManagedRecord, ET extends Manag
   private static native long getNameHandle(long handle);
   private static native long getRecTypeHandle(long handle);
   
-  private static native void setToParent(long handle, long ctxtHandle, long recHandle);
-  private static native void rollback(long handle, long ctxtHandle, long recHandle);
-  
-      
-  public void setToParent(RT rec) {
-      setToParent(handleIndex_, IsoContextProxy.current().handleIndex(),
-                      ManagedRecordProxy.handleOf(rec));
-  }
-  
-  public void rollback(RT rec) {
-      rollback(handleIndex_, IsoContextProxy.current().handleIndex(),
-                      ManagedRecordProxy.handleOf(rec));
-  }
-
-
   
   @Override
   void releaseHandleIndex(long index) {

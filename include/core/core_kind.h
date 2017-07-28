@@ -68,6 +68,9 @@ namespace mds {
     template <> struct kind_traits<kind::ARRAY> : kind_traits_base<kind::ARRAY, managed_array_base> {
       using type_t = array_type_base;
     };
+    template <> struct kind_traits<kind::NAMESPACE> : kind_traits_base<kind::NAMESPACE, name_space> {
+      //      using type_t = array_type_base;
+    };
 
 
     /*

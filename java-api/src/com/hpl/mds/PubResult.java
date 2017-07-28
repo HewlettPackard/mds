@@ -26,14 +26,19 @@
 
 package com.hpl.mds;
 
+import java.util.Collection;
+import java.util.Collections;
 
 public interface PubResult {
   IsolationContext sourceContext();
   IsolationContext targetContext();
-  IsolationContext sourceSnapshotAtMerge();
-  IsolationContext targetSnapshotAtMerge();
-  IsolationContext lastCommonSnapshot();
   boolean succeeded();
-  int numConflictsResolved();
-  int numConflictsRemaining();
+  long nToRedo();
+  Task[] redoTasksByStartTime();
+  boolean prepareForRedo();
+  boolean redo(Task task);
+  boolean resolve(Collection<PublishReport> reports);
+default
+  boolean resolve() { return resolve(Collections.emptyList()); }
+  
 }

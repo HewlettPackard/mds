@@ -78,13 +78,13 @@ extern "C" {
 JNIEXPORT 
 $jni$
 JNICALL 
-Java_com_hpl_mds_impl_$class$_lookup
+Java_com_hpl_mds_impl_$class$_lookup$whenString({Handle})$
   (JNIEnv *jEnv, jobject, 
-   jlong ctxtHIndex,
    jlong nsHIndex,
    jlong nameHIndex)
 {
-  return exception_handler_wr(jEnv, lookup<$kind$>, ctxtHIndex, nsHIndex, nameHIndex);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, lookup<$kind$>, nsHIndex, nameHIndex);
 }
 
 
@@ -93,13 +93,13 @@ jboolean
 JNICALL 
 Java_com_hpl_mds_impl_$class$_bindIn
   (JNIEnv *jEnv, jobject, 
-   jlong ctxtHIndex,
    jlong nsHIndex,
    jlong nameHIndex,
    $jni$ val)
 {
-  return exception_handler_wr(jEnv, bind_in<$kind$>, ctxtHIndex, nsHIndex, nameHIndex, val);
- }   
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, bind_in<$kind$>, nsHIndex, nameHIndex, val);
+}   
 
 }
 >>

@@ -29,7 +29,7 @@ import "usage.stg"
 import "type.stg"
 import "string.stg"
 import "covariant.stg"
-package(type) ::= "com.hpl.mds.$if(type.string)$string$else$prim.container.array$endif$"
+package(type) ::= "com.hpl.mds"
 class(type) ::= "$type.managedName$Array"
 
 code(type,types) ::= <<
@@ -65,21 +65,9 @@ $body(class(type), type, type.managedName, type.boxedName, type.primName, type.f
 body(class, type, managed, boxed, prim, field, short, types) ::= <<
 package $package(type)$;
 
-import com.hpl.mds.ManagedOrdered;
 import java.util.function.Consumer;
-$unlessString({
-// import com.hpl.mds.ManagedPrimArray;
-})$
 
-import com.hpl.mds.ManagedArray;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.RecordType;
-import com.hpl.mds.$ifString({string},{prim})$.$managed$;
-import com.hpl.mds.$ifString({string},{prim.field})$.$short$ArrayField;
 import com.hpl.mds.impl.$short$ArrayType;
-$unlessString({
-import com.hpl.mds.function.$short$Consumer;
-})$
 
 import com.hpl.mds.usage.UsageBase;
 
@@ -195,6 +183,9 @@ $ifString({
   default $val()$ set(long index, $arg()$ val) {
     return ManagedString.asString(set(index, $managed$.valueOf(val)));
   \}
+  default $val()$ getAndSet(long index, $arg()$ val) {
+    return ManagedString.asString(getAndSet(index, $managed$.valueOf(val)));
+  \}
 },{
   @Override
   default $managed$ get(long index) {
@@ -202,10 +193,21 @@ $ifString({
   \}
   $val()$ get$short$(long index);
   
+  @Override
+  default $managed$ peek(long index) {
+    return $managed$.valueOf(peek$short$(index));
+  \}
+  $val()$ peek$short$(long index);
+  
   $val()$ set(long index, $arg()$ val);
   @Override
   default $managed$ set(long index, $managed$ val) {
     return $managed$.valueOf(set(index, $managed$.as$short$(val)));
+  \}
+  $val()$ getAndSet(long index, $arg()$ val);
+  @Override
+  default $managed$ getAndSet(long index, $managed$ val) {
+    return $managed$.valueOf(getAndSet(index, $managed$.as$short$(val)));
   \}
   
 })$
@@ -243,7 +245,7 @@ import java.lang.reflect.Array;
   
   default $val()$[] toJavaArray($val()$[] array) {
     final int s = size();
-    final $val()$[] a = (array!=null && s < array.length) ? array : new $val()$[s];
+    final $val()$[] a = (array!=null && s <= array.length) ? array : new $val()$[s];
     for (int i=0; i<s; i++) {
       a[i] = get$short$(i);
     }
@@ -287,8 +289,10 @@ import java.lang.reflect.Array;
   
   
 $if(type.numeric)$
-$["inc","dec","mult","div"]:{ func |
+$["inc","dec","mult","div"],
+ ["getAndInc","getAndDec","getAndMult","getAndDiv"]:{ func, getAndFunc |
   $prim$ $func$(long index, $prim$ by);
+  $prim$ $getAndFunc$(long index, $prim$ by);
   default $managed$ $func$(long index, $managed$ by) {
     return $managed$.valueOf($func$(index, $managed$.as$type.shortName$(by)));
   \}
@@ -303,6 +307,79 @@ $["inc","dec","mult","div"]:{ func |
   \}
 }
 $
-$endif$  
+$endif$
+
+$if(type.long)$
+import java.util.stream.LongStream;
+  default LongStream longStream(long from, long to) {
+    return indexStream(from, to).map(this::getLong);
+  }
+  default LongStream longStream() {
+    return longStream(0, longSize());
+  }
+$endif$
+$if(type.int)$
+import java.util.stream.IntStream;
+  default IntStream intStream(long from, long to) {
+    return indexStream(from, to).mapToInt(this::getInt);
+  }
+  default IntStream intStream() {
+    return intStream(0, longSize());
+  }
+$endif$
+$if(type.double)$
+import java.util.stream.DoubleStream;
+  default DoubleStream doubleStream(long from, long to) {
+    return indexStream(from, to).mapToDouble(this::getDouble);
+  }
+  default DoubleStream doubleStream() {
+    return doubleStream(0, longSize());
+  }
+$endif$
+
+  default java.util.function.LongConsumer $type.shortLower$ElementConsumer(Consumer<? super $above()$> fn) {
+    return (i)->fn.accept(get$short$(i));
+  }
+
+  default void forEach$short$InTasks(Consumer<? super $above()$> fn) {
+    indexStream()
+      .forEach(Task.consumer($type.shortLower$ElementConsumer(fn)));
+  }
+
+  default void forEach$short$InParallelTasks(Consumer<? super $above()$> fn) {
+    indexStream()
+      .parallel()
+      .forEach(Task.inCurrent(Task.consumer($type.shortLower$ElementConsumer(fn))));
+  }
+
+
+$unlessString({
+  default java.util.function.LongConsumer elementConsumer($short$Consumer fn) {
+    return (i)->fn.accept(get$short$(i));
+  \}
+  default java.util.function.LongConsumer $type.shortLower$ElementConsumer($short$Consumer fn) {
+    return elementConsumer(fn);
+  \}
+
+  default void forEachInTasks($short$Consumer fn) {
+    indexStream()
+      .forEach(Task.consumer(elementConsumer(fn)));
+  \}
+
+  default void forEach$short$InTasks($short$Consumer fn) {
+    forEachInTasks(fn);
+  \}
+  
+  default void forEachInParallelTasks($short$Consumer fn) {
+    indexStream()
+      .parallel()
+      .forEach(Task.inCurrent(Task.consumer(elementConsumer(fn))));
+  \}
+
+  default void forEach$short$InParallelTasks($short$Consumer fn) {
+    forEachInParallelTasks(fn);
+  \}
+  
+})$
 }
 >>

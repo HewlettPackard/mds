@@ -29,7 +29,7 @@ import "usage.stg"
 import "type.stg"
 import "string.stg"
 import "covariant.stg"
-package(type) ::= "com.hpl.mds.$ifString({string},{prim.container.map})$"
+package(type) ::= "com.hpl.mds"
 class(type) ::= "ManagedMapTo$type.shortName$"
 
 code(type,types) ::= <<
@@ -73,22 +73,6 @@ import java.util.function.Function;
 import com.hpl.mds.impl.Stub;
 
 
-import com.hpl.mds.ManagedContainer;
-import com.hpl.mds.ManagedObject;
-$unlessString({
-import com.hpl.mds.ManagedMapToPrim;
-})$
-import com.hpl.mds.ManagedMap;
-import com.hpl.mds.ManagedType;
-import com.hpl.mds.$ifString({string},{prim})$.$managed$;
-$unlessString({
-import com.hpl.mds.function.To$short$Function;
-import com.hpl.mds.function.$short$Modifier;
-import com.hpl.mds.function.$short$KeyedModifier;
-})$
-$unlessString({
-import com.hpl.mds.string.ManagedString;
-})$
 import com.hpl.mds.usage.UsageBase;
 
 public interface $class$<K extends ManagedObject> extends $ifString({ManagedMap<K,$managed$>},{ManagedMapToPrim<K, $boxed$, $managed$>})$ {

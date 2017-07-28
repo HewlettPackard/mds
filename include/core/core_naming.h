@@ -34,12 +34,13 @@
 #ifndef CORE_NAMING_H_
 #define CORE_NAMING_H_
 
-#include "core/core_msv.h"
+#include "core/core_typed_msv.h"
 #include "core/core_kind.h"
 #include "core/core_globals.h"
 #include "ruts/ms_forward.h"
 #include "mpgc/gc_cuckoo_map.h"
 #include <tuple>
+#include <sstream>
 
 
 namespace mds {
@@ -47,239 +48,313 @@ namespace mds {
 
     template <kind K> class ks_bound_val;
 
-    struct bound_val : gc_allocated {
-      kind _kind;
+    struct bound_val : gc_allocated_with_virtuals<bound_val, kind> {
+      using base = gc_allocated_with_virtuals<bound_val, kind>;
       /*
        * Throws incompatible_type_ex if wrong kind
        */
       template <kind K> kind_mv<K> value() const;
     protected:
-      bound_val(gc_token &gc, kind k) : gc_allocated{gc}, _kind{k} {}
+      bound_val(gc_token &gc, kind k) : base{gc, k} {}
     public:
+      static void init_vf_table(typename base::vf_table &);
       static const auto &descriptor() {
         static gc_descriptor d =
 	  GC_DESC(bound_val)
-	  .WITH_FIELD(&bound_val::_kind);
+	  .WITH_SUPER(base);
         return d;
       }
+
+      struct virtuals : virtuals_base {
+        using impl = value_chain;
+        virtual std::string to_string(const bound_val *self) const = 0;
+      };
+
+      std::string to_string() const {
+        return call_virtual(this, &virtuals::to_string);
+      }
+      
     };
 
     template <kind K>
     struct ks_bound_val : public bound_val {
       kind_mv<K> _val;
+
+      static const kind discrim = K;
+
       ks_bound_val(gc_token &gc, const kind_mv<K> &v) : bound_val{gc, K}, _val{v} {}
       static const auto &descriptor() {
         static gc_descriptor d =
-	  GC_DESC(ks_bound_val)
-	  .template WITH_SUPER(bound_val)
-	  .template WITH_FIELD(&ks_bound_val::_val);
+          GC_DESC(ks_bound_val)
+          .template WITH_SUPER(bound_val)
+          .template WITH_FIELD(&ks_bound_val::_val);
         return d;
       }
-    };
 
-    template <kind K>
-    kind_mv<K>
-    bound_val::value() const {
-      if (_kind != K) {
-        throw incompatible_type_ex{};
-      }
-      const ks_bound_val<K> *self = static_cast<const ks_bound_val<K>*>(this);
-      return self->_val;
-    }
-
-    class binding {
-      enum class state : char { UNBOUND, NAMESPACE, BOUND };
-      state _state = state::UNBOUND;
-      gc_ptr<bound_val> _val = nullptr;
-    protected:
-      constexpr static binding unbound() {
-        return binding{state::UNBOUND};
-      }
-      constexpr static binding sub_namespace() {
-        return binding{state::NAMESPACE};
-      }
-    public:
-      static const auto &descriptor() {
-        static gc_descriptor d =
-	  GC_DESC(binding)
-	  .template WITH_FIELD(&binding::_state)
-	  .template WITH_FIELD(&binding::_val);
-        return d;
-      }
-      explicit constexpr binding(state s = state::UNBOUND) : _state{s}, _val{nullptr} {}
-      static constexpr binding for_namespace() {
-        return binding{state::NAMESPACE};
-      }
-      template <kind K>
-      static binding bound_to(const kind_mv<K> &val) {
-        binding b{state::BOUND};
-        b._val = make_gc<ks_bound_val<K>>(val);
-        return b;
-      }
-
-      bool is_bound() const {
-        return _state != state::UNBOUND;
-      }
-      bool is_namespace() const {
-        return _state == state::NAMESPACE;
-      }
-      template <kind K>
-      kind_mv<K>
-      value() const {
-        if (_state == state::UNBOUND) {
-          throw unbound_name_ex{};
-        }
-        if (_state == state::NAMESPACE) {
-          throw incompatible_type_ex{};
-        }
-        return _val->value<K>();
-      }
-
-    };
-
-    class name_space : public exportable, public with_uniform_id {
-      using msv_t = msv<kind::BINDING>;
-      struct bound_name : gc_allocated {
-        std::atomic<gc_ptr<name_space>>_sub_namespace{nullptr};
-        gc_ptr<msv_t> _vals;
-
-        bound_name(gc_token &gc, const gc_ptr<name_space> &ns, const gc_ptr<interned_string> &name)
-	  : gc_allocated{gc},
-	    _vals(make_gc<msv_t>(make_gc<bound_name_conflict::generator>(ns, name)))
-        {}
-        static const auto &descriptor() {
-          static gc_descriptor d =
-	    GC_DESC(bound_name)
-	    .WITH_FIELD(&bound_name::_sub_namespace)
-	    .WITH_FIELD(&bound_name::_vals);
-          return d;
-        }
-        gc_ptr<name_space> sub_namespace() {
-          gc_ptr<name_space> ns = _sub_namespace;
-          if (ns != nullptr) {
-            return ns;
-          }
-          ns = make_gc<name_space>();
-          auto rr = ruts::try_change_value(_sub_namespace, nullptr, ns);
-          return rr.resulting_value();
+      struct virtuals : bound_val::virtuals {
+        using impl = ks_bound_val;
+        std::string to_string(const bound_val *self) const {
+          return self->call_non_virtual(&impl::to_string);
         }
       };
-      using map_t = small_gc_cuckoo_map<gc_ptr<interned_string> , gc_ptr<bound_name>>;
-      gc_ptr<map_t> _map;
 
-      constexpr static std::size_t initial_map_size() {
-	return 10;
+      std::string to_string() const {
+        using namespace std;
+        ostringstream s;
+        s << "[" << _discrim << "] " << _val;
+        return s.str();
       }
+    };
 
-      using lookup_t = std::tuple<gc_ptr<bound_name>, binding>;
-      lookup_t lookup(const gc_ptr<interned_string> &name, const gc_ptr<iso_context> &ctxt) const {
-        gc_ptr<bound_name> bn = _map->get(name);
-        if (bn == nullptr) {
-          return lookup_t{nullptr, binding{}};
-        }
-        gc_ptr<branch> sb = ctxt->shadow(top_level_branch);
-        binding b = bn->_vals->read(sb, ctxt);
-        return lookup_t{bn, b};
-      }
-
-      lookup_t lookup_or_create(const gc_ptr<interned_string> &name, const gc_ptr<iso_context> &ctxt) {
-        lookup_t res = lookup(name, ctxt);
-        gc_ptr<bound_name> &bn = std::get<0>(res);
-        if (bn != nullptr) {
-          return res;
-        }
-        bn = make_gc<bound_name>(GC_THIS, name);
-        _map->put_new(name, bn);
-        return lookup(name, ctxt);
-      }
-
-
-    public:
-      name_space(gc_token &gc) : exportable{gc}, _map{make_gc<map_t>(initial_map_size())} {}
-
-      static const auto &descriptor() {
-        static gc_descriptor d =
-	  GC_DESC(name_space)
-	  .WITH_SUPER(with_uniform_id)
-	  .WITH_FIELD(&name_space::_map);
-        return d;
-      }
-      /*
-       * Throws incompatible_type_ex if the proffered type isn't a
-       * superclass of the actual one
-       * 
-       * Throws unbound_name_ex if the name is unbound
-       */
-      template <kind K> kind_mv<K> read(const gc_ptr<interned_string> &name,
-                                        const gc_ptr<iso_context> &ctxt) const {
-        binding b;
-        std::tie(std::ignore, b) = lookup(name, ctxt);
-        /*
-         * If there's no bound_name, the binding will be unbound
-         */
-        if (!b.is_bound()) {
-          throw unbound_name_ex{};
-        }
-        if (b.is_namespace()) {
+      template <kind K>
+      kind_mv<K>
+      bound_val::value() const {
+        if (_discrim != K) {
           throw incompatible_type_ex{};
         }
-        return b.value<K>();
+        const ks_bound_val<K> *self = static_cast<const ks_bound_val<K>*>(this);
+        return self->_val;
       }
-      template <kind K> bool bind(const gc_ptr<interned_string> &name,
-                                  const kind_mv<K> &val,
-                                  const gc_ptr<iso_context> &ctxt,
-                                  res_mode resolvep,
-                                  bool replace_namespace) {
-        gc_ptr<bound_name> bn;
-        binding old_b;
-        std::tie(bn, old_b) = lookup_or_create(name, ctxt);
-        if (old_b.is_namespace() && !replace_namespace) {
-          return false;
+
+      class binding {
+        enum class state : char { UNBOUND, NAMESPACE, BOUND };
+        state _state = state::UNBOUND;
+        gc_ptr<bound_val> _val = nullptr;
+      protected:
+        constexpr static binding unbound() {
+          return binding{state::UNBOUND};
         }
-        binding new_b = binding::bound_to<K>(val);
-        gc_ptr<branch> sb = ctxt->shadow(top_level_branch);
-        bn->_vals->write(sb, ctxt, resolvep, new_b);
-        return true;
-      }
-      bool is_bound(const gc_ptr<interned_string> &name,
-                    const gc_ptr<iso_context> &ctxt) const {
-        binding b;
-        std::tie(std::ignore, b) = lookup(name, ctxt);
-        /*
-         * If there's no bound_name, the binding will be unbound
-         */
-        return b.is_bound();
-      }
-      gc_ptr<name_space> child_namespace(const gc_ptr<interned_string> &name,
-                                         const gc_ptr<iso_context> &ctxt,
-                                         bool create_if_missing) {
-        gc_ptr<bound_name> bn;
-        binding b;
-        std::tie(bn, b) = create_if_missing ? lookup_or_create(name, ctxt) : lookup(name, ctxt);
-        if (bn == nullptr) {
-          /*
-           * This would only happen if we weren't asking to create it.
-           */
-          return nullptr;
+        constexpr static binding sub_namespace() {
+          return binding{state::NAMESPACE};
         }
-        if (b.is_bound()) {
-//          std::cout << "Found " << ruts::to_utf8(name->as_string()) << std::endl;
-          if (!b.is_namespace()) {
+      public:
+        static const auto &descriptor() {
+          static gc_descriptor d =
+            GC_DESC(binding)
+            .template WITH_FIELD(&binding::_state)
+            .template WITH_FIELD(&binding::_val);
+          return d;
+        }
+        explicit constexpr binding(state s = state::UNBOUND) : _state{s}, _val{nullptr} {}
+        static constexpr binding for_namespace() {
+          return binding{state::NAMESPACE};
+        }
+        template <kind K>
+        static binding bound_to(const kind_mv<K> &val) {
+          binding b{state::BOUND};
+          b._val = make_gc<ks_bound_val<K>>(val);
+          return b;
+        }
+
+        bool is_bound() const {
+          return _state != state::UNBOUND;
+        }
+        bool is_namespace() const {
+          return _state == state::NAMESPACE;
+        }
+        template <kind K>
+        kind_mv<K>
+        value() const {
+          if (_state == state::UNBOUND) {
+            throw unbound_name_ex{};
+          }
+          if (_state == state::NAMESPACE) {
             throw incompatible_type_ex{};
           }
-        } else if (!create_if_missing) {
-          return nullptr;
-        } else {
-//          std::cout << "Creating " << ruts::to_utf8(name->as_string()) << std::endl;
-          gc_ptr<branch> sb = ctxt->shadow(top_level_branch);
-          bn->_vals->write(sb, ctxt, res_mode::non_resolving, binding::for_namespace());
+          return _val->value<K>();
         }
-        return bn->sub_namespace();
-      }
+
+        bool operator ==(const binding &rhs) const {
+          return _state == rhs._state && _val == rhs._val;
+        }
+        bool operator !=(const binding &rhs) const {
+          return !((*this) == rhs);
+        }
+
+        template <typename C, typename Tr>
+        std::basic_ostream<C,Tr> &print_on(std::basic_ostream<C,Tr> &os) const {
+          switch (_state) {
+          case state::UNBOUND:
+            return os << "UNBOUND";
+          case state::NAMESPACE:
+            return os << "NAMESPACE";
+          default:
+            return os << _val->to_string();
+          }
+        }
+        
 
 
-    };
+      };
+
+    template <>
+    struct managed_value_is_view_dependent<name_space> : std::true_type {};
+
+      class name_space : public managed_composite, public with_uniform_id {
+        using msv_t = typed_msv<kind::BINDING>;
+        struct bound_name : gc_allocated {
+          std::atomic<gc_ptr<name_space>>_sub_namespace{nullptr};
+          gc_ptr<msv_t> _vals;
+
+          bound_name(gc_token &gc, const gc_ptr<name_space> &ns, const gc_ptr<interned_string> &name)
+            : gc_allocated{gc},
+              _vals(make_gc<msv_t>())
+          {}
+          static const auto &descriptor() {
+            static gc_descriptor d =
+              GC_DESC(bound_name)
+              .WITH_FIELD(&bound_name::_sub_namespace)
+              .WITH_FIELD(&bound_name::_vals);
+            return d;
+          }
+          gc_ptr<name_space> sub_namespace() {
+            gc_ptr<name_space> ns = _sub_namespace;
+            if (ns != nullptr) {
+              return ns;
+            }
+            ns = make_gc<name_space>();
+            auto rr = ruts::try_change_value(_sub_namespace, nullptr, ns);
+            return rr.resulting_value();
+          }
+        }; // bound_name
+        using map_t = small_gc_cuckoo_map<gc_ptr<interned_string> , gc_ptr<bound_name>>;
+        gc_ptr<map_t> _map;
+
+        constexpr static std::size_t initial_map_size() {
+          return 10;
+        }
+
+        using lookup_t = std::tuple<gc_ptr<bound_name>, binding>;
+
+        lookup_t lookup(const gc_ptr<interned_string> &name,
+                        const gc_ptr<view> &v) 
+        {
+          gc_ptr<bound_name> bn = _map->get(name);
+          if (bn == nullptr) {
+            return lookup_t{nullptr, binding{}};
+          }
+          gc_ptr<view> sb = iso_context::shadowed(v);
+          binding b = bn->_vals->frozen_read(sb);
+          return lookup_t{bn, b};
+        }
+
+        lookup_t lookup_or_create(const gc_ptr<interned_string> &name,
+                                  const gc_ptr<view> &v)
+        {
+          lookup_t res = lookup(name, v);
+          gc_ptr<bound_name> &bn = std::get<0>(res);
+          if (bn != nullptr) {
+            return res;
+          }
+          bn = make_gc<bound_name>(GC_THIS, name);
+          _map->put_new(name, bn);
+          return lookup(name, v);
+        }
+
+
+      public:
+        name_space(gc_token &gc) : managed_composite{gc}, _map{make_gc<map_t>(initial_map_size())} {}
+
+        static const auto &descriptor() {
+          static gc_descriptor d =
+            GC_DESC(name_space)
+            .WITH_SUPER(managed_composite)
+            .WITH_SUPER(with_uniform_id)
+            .WITH_FIELD(&name_space::_map);
+          return d;
+        }
+        /*
+         * Throws incompatible_type_ex if the proffered type isn't a
+         * superclass of the actual one
+         * 
+         * Throws unbound_name_ex if the name is unbound
+         */
+        template <kind K> kind_mv<K> read(const gc_ptr<interned_string> &name,
+                                          const gc_ptr<view> &v)
+        {
+          binding b;
+          gc_ptr<view> sb = iso_context::shadowed(v);
+          std::tie(std::ignore, b) = lookup_or_create(name, sb);
+          /*
+           * If there's no bound_name, the binding will be unbound
+           */
+          if (!b.is_bound()) {
+            throw unbound_name_ex{};
+          }
+          if (b.is_namespace()) {
+            throw incompatible_type_ex{};
+          }
+          return b.value<K>();
+        }
+        template <kind K> bool bind(const gc_ptr<interned_string> &name,
+                                    const gc_ptr<view> &v,
+                                    const kind_mv<K> &val,
+                                    bool replace_namespace)
+        {
+          gc_ptr<bound_name> bn;
+          binding old_b;
+          gc_ptr<view> sb = iso_context::shadowed(v);
+          std::tie(bn, old_b) = lookup_or_create(name, sb);
+          if (old_b.is_namespace() && !replace_namespace) {
+            return false;
+          }
+          binding new_b = binding::bound_to<K>(val);
+          bn->_vals->write(sb, new_b);
+          return true;
+        }
+        bool is_bound(const gc_ptr<interned_string> &name,
+                      const gc_ptr<view> &v)
+        {
+          binding b;
+          gc_ptr<view> sb = iso_context::shadowed(v);
+          std::tie(std::ignore, b) = lookup_or_create(name, sb);
+          /*
+           * If there's no bound_name, the binding will be unbound
+           */
+          return b.is_bound();
+        }
+        managed_value<name_space> child_namespace(const gc_ptr<interned_string> &name,
+                                                  const gc_ptr<view> &v,
+                                                  bool create_if_missing)
+        {
+          gc_ptr<bound_name> bn;
+          binding b;
+          gc_ptr<view> sb = iso_context::shadowed(v);
+          std::tie(bn, b) = create_if_missing
+            ? lookup_or_create(name, sb)
+            : lookup(name, sb);
+          if (bn == nullptr) {
+            /*
+             * This would only happen if we weren't asking to create it.
+             */
+            return nullptr;
+          }
+          if (b.is_bound()) {
+            //          std::cout << "Found " << ruts::to_utf8(name->as_string()) << std::endl;
+            if (!b.is_namespace()) {
+              throw incompatible_type_ex{};
+            }
+          } else if (!create_if_missing) {
+            return nullptr;
+          } else {
+            //          std::cout << "Creating " << ruts::to_utf8(name->as_string()) << std::endl;
+            bn->_vals->write(sb, binding::for_namespace());
+          }
+          return managed_value<name_space>{bn->sub_namespace(), sb};
+        }
+
+
+      };
+    }
+}
+
+namespace std {
+  template <typename C, typename Tr>
+  basic_ostream<C,Tr> &
+  operator <<(basic_ostream<C,Tr> &os, const mds::core::binding &b) {
+    return b.print_on(os);
   }
+
 }
 
 

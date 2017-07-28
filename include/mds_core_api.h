@@ -60,21 +60,21 @@ namespace mds {
     * core type, you can use "to_core_val(val)".  (To go the other way, you
     * can just use a constructor.)
     *
-    * Handles come in two forms.  branch_independent_handle<T> holds an
+    * Handles come in two forms.  view_independent_handle<T> holds an
     * external_gc_ptr<T> object.  It can be copy/move constructed or constructed
-    * from a branch_independent_handle<X>, external_gc_ptr<X>, or gc_ptr<X> for any
+    * from a view_independent_handle<X>, external_gc_ptr<X>, or gc_ptr<X> for any
     * X for which pointer assignment would work.  It can also be default
     * constructed or constructed from nullptr.  Assignment operators for
     * each of these also exist as well as comparisons for equality and
     * inequality (whenever the corresponding pointers could be compared).
     *
-    * branch_relative_handle<T> hold a branch_independent_handle<T>
-    * pointing to a core object as well as an external_gc_ptr<branch>.  Its constructor
+    * view_relative_handle<T> hold a view_independent_handle<T>
+    * pointing to a core object as well as an external_gc_ptr<view>.  Its constructor
     * requires both components and it can only be assigned from or compared
-    * to another branch_relative_handle<T>.  The object() and branch() methods
+    * to another view_relative_handle<T>.  The object() and view() methods
     * can be used to obtain the two components.  There is also a constructor
-    * that takes a branch_relative_handle and an external_gc_ptr<branch>
-    * and returns a handle to the object on the new branch.
+    * that takes a view_relative_handle and an external_gc_ptr<view>
+    * and returns a handle to the object on the new view.
     *
     * The actual classes APIs will use are subclasses of these two handle
     * types which expose (as direct methods, not via pointers) core methods,
@@ -145,14 +145,15 @@ namespace mds {
      
    }
 
-   using core::res_mode;
-   constexpr res_mode resolving = res_mode::resolving;
-   constexpr res_mode non_resolving = res_mode::non_resolving;
 
    using core::kind;
    using core::kind_val;
    using core::kind_type;
    using core::kind_field;
+
+   using core::ret_mode;
+   using core::modify_op;
+   template <kind K> using mod_condition = core::mod_condition<K>;
 
    using core::with_uniform_id;
    using core::uniform_key;
@@ -163,7 +164,7 @@ namespace mds {
    using core::unmodifiable_record_type_ex;
    using core::unbound_name_ex;
    using core::read_only_context_ex;
-   using core::unmergeable_context_ex;
+   using core::unpublishable_context_ex;
 
    using core::view_type;
    using core::mod_type;
@@ -182,6 +183,15 @@ namespace mds {
    template <bool ConstP> class iso_context_handle_cp;
    using iso_context_handle = iso_context_handle_cp<false>;
    using const_iso_context_handle = iso_context_handle_cp<true>;
+
+   template <bool ConstP> class publication_attempt_handle_cp;
+   using publication_attempt_handle = publication_attempt_handle_cp<false>;
+   using const_publication_attempt_handle = publication_attempt_handle_cp<true>;
+
+   template <bool ConstP> class task_handle_cp;
+   using task_handle = task_handle_cp<false>;
+   using const_task_handle = task_handle_cp<true>;
+
 
    template <bool ConstP> class managed_record_handle_cp;
    using managed_record_handle = managed_record_handle_cp<false>;
@@ -226,8 +236,6 @@ namespace mds {
    template <bool ConstP> class namespace_handle_cp;
    using namespace_handle = namespace_handle_cp<false>;
    using const_namespace_handle = namespace_handle_cp<true>;
-
-   class merge_result;
 
    /*
     * api_type<T> will either be T or a handle (defined in a specialization)
@@ -275,12 +283,12 @@ namespace mds {
 
    template <typename T, typename = std::enable_if_t<core::is_exportable<T>::value>
    >
-   struct branch_independent_handle {
+   struct view_independent_handle {
      using value_type = T;
    private:
      core::external_gc_ptr<T> _ptr;
 
-     template <typename X, typename E> friend class branch_independent_handle;
+     template <typename X, typename E> friend class view_independent_handle;
    protected:
    public:
      auto &pointer() const {
@@ -289,50 +297,50 @@ namespace mds {
 
      template <typename X> using compatible = std::enable_if_t<std::is_convertible<X*,T*>::value>;
 
-     branch_independent_handle(const branch_independent_handle &) = default;
+     view_independent_handle(const view_independent_handle &) = default;
      template <typename X, typename = compatible<X> >
-     branch_independent_handle(const branch_independent_handle<X> &rhs) : _ptr{rhs.pointer()} {}
+     view_independent_handle(const view_independent_handle<X> &rhs) : _ptr{rhs.pointer()} {}
 
-     branch_independent_handle(branch_independent_handle &&) = default;
+     view_independent_handle(view_independent_handle &&) = default;
      template <typename X, typename = compatible<X> >
-     branch_independent_handle(branch_independent_handle<X> &&rhs) : _ptr{std::move(rhs.pointer())} {}
-
-     template <typename X, typename = compatible<X> >
-     branch_independent_handle(const core::external_gc_ptr<X> &rhs) : _ptr{rhs} {}
+     view_independent_handle(view_independent_handle<X> &&rhs) : _ptr{std::move(rhs.pointer())} {}
 
      template <typename X, typename = compatible<X> >
-     branch_independent_handle(const core::gc_ptr<X> &rhs) : _ptr{rhs} {}
+     view_independent_handle(const core::external_gc_ptr<X> &rhs) : _ptr{rhs} {}
 
-     constexpr branch_independent_handle() = default;
-     constexpr branch_independent_handle(nullptr_t) {}
-
-     branch_independent_handle &operator =(const branch_independent_handle &) = default;
      template <typename X, typename = compatible<X> >
-     branch_independent_handle &operator =(const branch_independent_handle<X> &rhs) {
+     view_independent_handle(const core::gc_ptr<X> &rhs) : _ptr{rhs} {}
+
+     constexpr view_independent_handle() = default;
+     constexpr view_independent_handle(nullptr_t) {}
+
+     view_independent_handle &operator =(const view_independent_handle &) = default;
+     template <typename X, typename = compatible<X> >
+     view_independent_handle &operator =(const view_independent_handle<X> &rhs) {
        _ptr = rhs.pointer();
        return *this;
      }
 
-     branch_independent_handle &operator =(branch_independent_handle &&) = default;
+     view_independent_handle &operator =(view_independent_handle &&) = default;
      template <typename X, typename = compatible<X> >
-     branch_independent_handle &operator =(branch_independent_handle<X> &&rhs) {
+     view_independent_handle &operator =(view_independent_handle<X> &&rhs) {
        _ptr = std::move(rhs.pointer());
        return this;
      }
 
      template <typename X, typename = compatible<X> >
-     branch_independent_handle &operator =(const core::external_gc_ptr<X> &rhs) {
+     view_independent_handle &operator =(const core::external_gc_ptr<X> &rhs) {
        _ptr = rhs;
        return this;
      }
 
      template <typename X, typename = compatible<X> >
-     branch_independent_handle &operator =(const core::gc_ptr<X> &rhs) {
+     view_independent_handle &operator =(const core::gc_ptr<X> &rhs) {
        _ptr = rhs;
        return this;
      }
 
-     branch_independent_handle &operator =(nullptr_t) {
+     view_independent_handle &operator =(nullptr_t) {
        _ptr = nullptr;
        return this;
      }
@@ -347,7 +355,7 @@ namespace mds {
 
 
      template <typename X, typename = if_comparable_t<X> >
-     bool operator ==(const branch_independent_handle<X> &rhs) const {
+     bool operator ==(const view_independent_handle<X> &rhs) const {
        return _ptr== rhs.pointer();
      }
      template <typename X, typename = if_comparable_t<X> >
@@ -374,7 +382,7 @@ namespace mds {
      operator core::external_gc_ptr<X> () const {
        return value;
      }
-     virtual ~branch_independent_handle() {}
+     virtual ~view_independent_handle() {}
 #endif
      bool is_null() const {
        return _ptr.is_null();
@@ -391,7 +399,7 @@ namespace mds {
 
      auto ignore_const() const {
        using nc_value_type = std::remove_const_t<value_type>;
-       branch_independent_handle<nc_value_type> nct(std::const_pointer_cast<nc_value_type>(_ptr));
+       view_independent_handle<nc_value_type> nct(std::const_pointer_cast<nc_value_type>(_ptr));
        return nct;
      }
 
@@ -399,33 +407,44 @@ namespace mds {
        return pointer()->uuid();
      }
 
-     void swap(branch_independent_handle &other) {
+     void swap(view_independent_handle &other) {
        _ptr.swap(other._ptr);
      }
+
+     template <typename S>
+     class __weak_handle {
+       core::external_weak_gc_ptr<T> _ptr;
+     public:
+       __weak_handle(const S &h) : _ptr{h.pointer()} {}
+       __weak_handle() = default;
+       S lock() const {
+         return S(_ptr.lock());
+       }
+     };
    };
 
    template <typename T, typename X, typename = std::common_type_t<X,T> >
-   bool operator ==(const core::external_gc_ptr<X> &lhs, const branch_independent_handle<T> &rhs) {
+   bool operator ==(const core::external_gc_ptr<X> &lhs, const view_independent_handle<T> &rhs) {
      return rhs == lhs;
    }
    template <typename T, typename X, typename = std::common_type_t<X,T> >
-   bool operator !=(const core::external_gc_ptr<X> &lhs, const branch_independent_handle<T> &rhs) {
+   bool operator !=(const core::external_gc_ptr<X> &lhs, const view_independent_handle<T> &rhs) {
      return rhs != lhs;
    }
    template <typename T, typename X, typename = std::common_type_t<X,T> >
-   bool operator ==(const core::gc_ptr<X> &lhs, const branch_independent_handle<T> &rhs) {
+   bool operator ==(const core::gc_ptr<X> &lhs, const view_independent_handle<T> &rhs) {
      return rhs == lhs;
    }
    template <typename T, typename X, typename = std::common_type_t<X,T> >
-   bool operator !=(const core::gc_ptr<X> &lhs, const branch_independent_handle<T> &rhs) {
+   bool operator !=(const core::gc_ptr<X> &lhs, const view_independent_handle<T> &rhs) {
      return rhs != lhs;
    }
    template <typename T>
-   inline bool operator==(nullptr_t, const branch_independent_handle<T> &rhs) {
+   inline bool operator==(nullptr_t, const view_independent_handle<T> &rhs) {
      return rhs.is_null();
    }
    template <typename T>
-   inline bool operator!=(nullptr_t, const branch_independent_handle<T> &rhs) {
+   inline bool operator!=(nullptr_t, const view_independent_handle<T> &rhs) {
      return !rhs.is_null();
    }
 
@@ -433,20 +452,20 @@ namespace mds {
    template <typename T,  typename = std::enable_if_t<
        std::is_base_of<core::managed_composite, T>::value
        > >
-   struct branch_relative_handle {
+   struct view_relative_handle {
      using value_type = T;
    private:
-     template <typename X, typename E> friend class branch_relative_handle;
-     using icb = core::external_gc_ptr<core::branch>;
-     branch_independent_handle<T> _obj;
-     icb _branch;
+     template <typename X, typename E> friend class view_relative_handle;
+     using icb = core::external_gc_ptr<core::view>;
+     view_independent_handle<T> _obj;
+     icb _view;
 
      icb nullcheck(const icb b) const {
        return _obj == nullptr ? icb{} : b;
      }
 
-     void check_non_null_branch() const {
-       assert( (_obj == nullptr) == (_branch==nullptr) );
+     void check_non_null_view() const {
+       assert( (_obj == nullptr) == (_view==nullptr) );
      }
    public:
      auto &object() const {
@@ -457,94 +476,94 @@ namespace mds {
        return _obj.pointer();
      }
 
-     auto &branch() const {
-       return _branch;
+     auto &view() const {
+       return _view;
      }
 
      template <typename X = T, typename = std::enable_if_t<std::is_base_of<X, T>::value>>
      auto to_core_val() const {
-       return core::managed_value<X>(pointer(), branch());
+       return core::managed_value<X>(pointer(), view());
      }
 
      template <typename X> using compatible = std::enable_if_t<std::is_convertible<X*,T*>::value>;
 
-     branch_relative_handle(const branch_relative_handle &) = default;
+     view_relative_handle(const view_relative_handle &) = default;
      template <typename X, typename = compatible<X> >
-     branch_relative_handle(const branch_relative_handle<X> &rhs)
-     : _obj{rhs._obj}, _branch{rhs._branch}
+     view_relative_handle(const view_relative_handle<X> &rhs)
+     : _obj{rhs._obj}, _view{rhs._view}
      {}
 
-     branch_relative_handle(branch_relative_handle &&) = default;
+     view_relative_handle(view_relative_handle &&) = default;
      template <typename X, typename = compatible<X> >
-     branch_relative_handle(branch_relative_handle<X> &&rhs)
+     view_relative_handle(view_relative_handle<X> &&rhs)
      : _obj{std::move(rhs._obj)},
-       _branch{std::move(rhs._branch)}
+       _view{std::move(rhs._view)}
      {}
 
      template <typename X, typename = compatible<X> >
-     branch_relative_handle(const core::bd_value<X> &rhs)
-     : _obj{rhs.value}, _branch{rhs.on_branch}
+     view_relative_handle(const core::vd_value<X> &rhs)
+     : _obj{rhs.value}, _view{rhs.in_view}
      {
-       check_non_null_branch();
+       check_non_null_view();
      }
 
      template <typename X, typename = compatible<X> >
-     branch_relative_handle(const branch_relative_handle &rhs, const icb &b)
-     : _obj{rhs._obj}, _branch{nullcheck(b)}
+     view_relative_handle(const view_relative_handle &rhs, const icb &b)
+     : _obj{rhs._obj}, _view{nullcheck(b)}
      {
-       check_non_null_branch();
+       check_non_null_view();
      }
 
      template <typename X, typename = compatible<X> >
-     branch_relative_handle(branch_relative_handle &&rhs, const icb &b)
-     : _obj{std::move(rhs._obj)}, _branch{nullcheck(b)}
+     view_relative_handle(view_relative_handle &&rhs, const icb &b)
+     : _obj{std::move(rhs._obj)}, _view{nullcheck(b)}
      {
-       check_non_null_branch();
+       check_non_null_view();
      }
 
      template <typename X, typename = compatible<X> >
-     branch_relative_handle(const core::external_gc_ptr<X> &rhs, const icb &b)
-     : _obj{rhs}, _branch{nullcheck(b)}
+     view_relative_handle(const core::external_gc_ptr<X> &rhs, const icb &b)
+     : _obj{rhs}, _view{nullcheck(b)}
      {
-       check_non_null_branch();
+       check_non_null_view();
      }
 
      template <typename X, typename = compatible<X> >
-     branch_relative_handle(const core::gc_ptr<X> &rhs, const icb &b)
-     : _obj{rhs}, _branch{nullcheck(b)}
+     view_relative_handle(const core::gc_ptr<X> &rhs, const icb &b)
+     : _obj{rhs}, _view{nullcheck(b)}
      {
-       check_non_null_branch();
+       check_non_null_view();
      }
 
-     branch_relative_handle() = default;
-     constexpr branch_relative_handle(nullptr_t) {}
+     view_relative_handle() = default;
+     constexpr view_relative_handle(nullptr_t) {}
 
-     branch_relative_handle &operator =(const branch_relative_handle &) = default;
+     view_relative_handle &operator =(const view_relative_handle &) = default;
      template <typename X, typename = compatible<X> >
-     branch_relative_handle &operator =(const branch_relative_handle<X> &rhs) {
+     view_relative_handle &operator =(const view_relative_handle<X> &rhs) {
        _obj= rhs._obj;
-       _branch = rhs._branch;
+       _view = rhs._view;
        return *this;
      }
 
-     branch_relative_handle &operator =(branch_relative_handle &&) = default;
+     view_relative_handle &operator =(view_relative_handle &&) = default;
      template <typename X, typename = compatible<X> >
-     branch_relative_handle &operator =(branch_relative_handle<X> &&rhs) {
+     view_relative_handle &operator =(view_relative_handle<X> &&rhs) {
        _obj = std::move(rhs._obj);
-       _branch = std::move(rhs._branch);
+       _view = std::move(rhs._view);
        return this;
      }
 
-     branch_relative_handle &operator =(nullptr_t) {
+     view_relative_handle &operator =(nullptr_t) {
        _obj = nullptr;
-       _branch = nullptr;
+       _view = nullptr;
        return this;
      }
 
 
      template <typename X, typename = std::common_type_t<X,T> >
-     bool operator ==(const branch_relative_handle<X> &rhs) const {
-       return _obj == rhs._obj && _branch == rhs._branch;
+     bool operator ==(const view_relative_handle<X> &rhs) const {
+       return _obj == rhs._obj && _view == rhs._view;
      }
      bool operator ==(nullptr_t) const {
        return _obj.is_null();
@@ -557,43 +576,42 @@ namespace mds {
        return _obj.is_null();
      }
 
-     template <typename X, bool ConstP, typename = std::common_type_t<X,T> >
-     bool same_in(const iso_context_handle_cp<ConstP> &ctxt,
-                  const branch_relative_handle<X> &rhs) const
+     template <typename X, typename = std::common_type_t<X,T> >
+     bool same_in_prevailing_context(const view_relative_handle<X> &rhs) const
      {
        if (_obj != rhs._obj) {
          return false;
        }
-       // If either branch is null, then both objects should be null.
+       // If either view is null, then both objects should be null.
        // (If only one was, we would have failed the prior test.)  So
-       // both branches should be null, and we'll succeed here.
-       if (_branch == rhs._branch) {
+       // both views should be null, and we'll succeed here.
+       if (_view == rhs._view) {
          return true;
        }
-       auto cp = ctxt.pointer();
-       return cp->shadow(_branch) == cp->shadow(rhs._branch);
+       auto cp = core::iso_context::prevailing();
+       return cp->shadow(_view) == cp->shadow(rhs._view);
      }
 
 
-     void swap(branch_relative_handle &other) {
+     void swap(view_relative_handle &other) {
        _obj.swap(other._obj);
-       _branch.swap(other._branch);
+       _view.swap(other._view);
      }
 
      /*
       * We use opposite hashes and shift just in case we would have a
-      * branch_relative_handle<branch> where both referred to the
+      * view_relative_handle<view> where both referred to the
       * same thing.  Farfetched, but why not be safe?
       */
      constexpr std::uint64_t hash1() const {
-       return (_obj.hash1() << 1) ^ _branch.hash2();
+       return (_obj.hash1() << 1) ^ _view.hash2();
      }
      constexpr std::uint64_t hash2() const {
-       return (_obj.hash2() << 1) ^ _branch.hash1();
+       return (_obj.hash2() << 1) ^ _view.hash1();
      }
      auto ignore_const() const {
        using nc_value_type = std::remove_const_t<value_type>;
-       branch_relative_handle<nc_value_type> nct(std::const_pointer_cast<nc_value_type>(_obj.pointer()), _branch);
+       view_relative_handle<nc_value_type> nct(std::const_pointer_cast<nc_value_type>(_obj.pointer()), _view);
        return nct;
      }
 #if 0
@@ -605,24 +623,24 @@ namespace mds {
      operator core::external_gc_ptr<X> () const {
        return value;
      }
-     virtual ~branch_independent_handle() {}
+     virtual ~view_independent_handle() {}
      core::gc_ptr<value_type> to_core_val() const {
        return _ptr;
      }
      template <typename X = LeafT, typename = std::enable_if_t<std::is_base_of<X, LeafT>::value>>
      core::managed_value<X> to_core_val() const {
-       return core::managed_value<X>(value, on_branch);
+       return core::managed_value<X>(value, in_view);
      }
 
 #endif
    };
 
    template <typename T>
-   inline bool operator==(nullptr_t, const branch_relative_handle<T> &rhs) {
+   inline bool operator==(nullptr_t, const view_relative_handle<T> &rhs) {
      return rhs.is_null();
    }
    template <typename T>
-   inline bool operator!=(nullptr_t, const branch_relative_handle<T> &rhs) {
+   inline bool operator!=(nullptr_t, const view_relative_handle<T> &rhs) {
      return !rhs.is_null();
    }
 
@@ -642,9 +660,9 @@ namespace mds {
 
    template <bool ConstP>
    struct interned_string_handle_cp
-       : branch_independent_handle<htarget_<ConstP,core::interned_string>>
+       : view_independent_handle<htarget_<ConstP,core::interned_string>>
    {
-     using base = branch_independent_handle<htarget_<ConstP,core::interned_string>>;
+     using base = view_independent_handle<htarget_<ConstP,core::interned_string>>;
      using typename base::value_type;
      using non_const_type = interned_string_handle_cp<false>;
 
@@ -837,19 +855,110 @@ namespace mds {
      return s;
    }
 
+
+
+   template <bool ConstP>
+   struct task_handle_cp
+     : view_independent_handle<htarget_<ConstP,core::task>>
+   {
+     using base = view_independent_handle<htarget_<ConstP,core::task>>;
+     using typename base::value_type;
+     using non_const_type = task_handle_cp<false>;
+
+     using weak_handle = typename base::template __weak_handle<task_handle_cp>;
+
+     template <bool CP>
+       using when_less_const = std::enable_if_t<(CP <= ConstP)>;
+
+     using base::base;
+     using base::is_null;
+     using base::pointer;
+
+     task_handle_cp() = default;
+
+     template <bool CP, typename = when_less_const<CP> >
+     task_handle_cp(const task_handle_cp<CP> &rhs)
+     : base{rhs}
+     {}
+
+     template <bool CP, typename = when_less_const<CP> >
+     task_handle_cp(task_handle_cp<CP> &&rhs)
+     : base{std::move(rhs)}
+     {}
+
+     template <bool CP, typename = when_less_const<CP> >
+     task_handle_cp &
+     operator =(const task_handle_cp<CP> &rhs) {
+       base::operator =(rhs);
+       return *this;
+     }
+
+     template <bool CP, typename = when_less_const<CP> >
+     task_handle_cp &
+     operator =(task_handle_cp<CP> &&rhs) {
+       base::operator =(std::move(rhs));
+       return *this;
+     }
+
+     iso_context_handle get_context() const;
+
+     task_handle get_parent() const {
+       return is_null() ? task_handle{} : pointer()->get_parent();
+     }
+
+     static task_handle default_task() {
+       ensure_process_registered();
+       static task_handle t{core::global_context->top_level_task()};
+       return t;
+     }
+
+     template <typename Fn>
+       static void init_thread_base_task(Fn &&fn)
+     {
+       ensure_process_registered();
+       core::task::init_thread_base_task(std::forward<Fn>(fn));
+     }
+
+     task_handle push() const {
+       return is_null() ? task_handle{} : pointer()->push();
+     }
+
+     static task_handle push_new() {
+       task_handle h =  core::task::push_new();
+       return h;
+     }
+
+     static task_handle pop() {
+       return core::task::pop();
+     }
+
+     void add_dependent(const task_handle &other) {
+       pointer()->add_dependent_task(other.pointer());
+     }
+
+     void always_redo() {
+       pointer()->unconditionally_redo();
+     }
+
+     void cannot_redo() {
+       pointer()->set_not_redoable();
+     }
+
+   };
+
    iso_context_handle global_ic__();
    iso_context_handle for_process_ic__();
 
    template <bool ConstP>
-   struct iso_context_handle_cp : branch_independent_handle<htarget_<ConstP,core::iso_context>>
+   struct iso_context_handle_cp : view_independent_handle<htarget_<ConstP,core::iso_context>>
    {
      /*
-      * Could put a shadow branch cache here that we pass in to calls to short-circuit
+      * Could put a shadow view cache here that we pass in to calls to short-circuit
       * the shadow calculation.  It would have to be atomic but would probably be faster
       * than going to NVM.
       */
 
-     using base = branch_independent_handle<htarget_<ConstP,core::iso_context>>;
+     using base = view_independent_handle<htarget_<ConstP,core::iso_context>>;
      using typename base::value_type;
      using non_const_type = iso_context_handle_cp<false>;
 
@@ -896,8 +1005,8 @@ namespace mds {
        return is_null() ? true : pointer()->is_read_only();
      }
 
-     bool is_mergeable() const {
-       return is_null() ? false : pointer()->is_mergeable();
+     bool is_publishable() const {
+       return is_null() ? false : pointer()->is_publishable();
      }
 
      iso_context_handle parent() const {
@@ -923,10 +1032,10 @@ namespace mds {
      iso_context_handle new_child(view_type vt, mod_type mt) const {
        return iso_context_handle{pointer()->new_child(vt, mt)};
      }
-     iso_context_handle new_snapshot_child(mod_type mt = mod_type::full) const {
+     iso_context_handle new_snapshot_child(mod_type mt = mod_type::publishable) const {
        return new_child(view_type::snapshot, mt);
      }
-     iso_context_handle new_nonsnapshot_child(mod_type mt = mod_type::full) const {
+     iso_context_handle new_nonsnapshot_child(mod_type mt = mod_type::publishable) const {
        return new_child(view_type::live, mt);
      }
      iso_context_handle new_detached_snapshot_child() const {
@@ -944,12 +1053,24 @@ namespace mds {
      /*
       * Throws unmergeable_context_ex if not mergeable
       */
-     void publish(merge_result &cs) const;
+     publication_attempt_handle publish();
 
-     // temporary for conflict resolution:
-     void clear_conflicts() {
-       pointer()->clear_conflicts();
+     task_handle push_prevailing() {
+       return pointer()->push_prevailing();
      }
+
+     bool has_conflicts() const {
+       return pointer()->has_conflicts();
+     }
+
+     task_handle top_level_task() const {
+       return pointer()->top_level_task();
+     }
+
+     task_handle creation_task() const {
+       return pointer()->creation_task();
+     }
+
    };
 
 
@@ -959,20 +1080,100 @@ namespace mds {
      return ctxt;
    }
    inline iso_context_handle for_process_ic__() {
-     static iso_context_handle ctxt{global_ic__().new_child(view_type::live, mod_type::full)};
+     static iso_context_handle ctxt{global_ic__().new_child(view_type::live, mod_type::publishable)};
      return ctxt;
    }
 
+   template <bool CP>
+   inline
+   iso_context_handle
+   task_handle_cp<CP>::get_context() const {
+       return is_null() ? iso_context_handle{} : pointer()->get_context();
+     }
+
    template <bool ConstP>
-   struct managed_record_handle_cp : branch_relative_handle<htarget_<ConstP,core::managed_record>>
+   struct publication_attempt_handle_cp
+     : view_independent_handle<htarget_<ConstP,core::publication_attempt>>
+   {
+     using base = view_independent_handle<htarget_<ConstP,core::publication_attempt>>;
+     using typename base::value_type;
+     using non_const_type = publication_attempt_handle_cp<false>;
+
+     template <bool CP>
+       using when_less_const = std::enable_if_t<(CP <= ConstP)>;
+
+     using base::base;
+     using base::is_null;
+     using base::pointer;
+
+     publication_attempt_handle_cp() = default;
+
+     template <bool CP, typename = when_less_const<CP> >
+     publication_attempt_handle_cp(const publication_attempt_handle_cp<CP> &rhs)
+     : base{rhs}
+     {}
+
+     template <bool CP, typename = when_less_const<CP> >
+     publication_attempt_handle_cp(publication_attempt_handle_cp<CP> &&rhs)
+     : base{std::move(rhs)}
+     {}
+
+     template <bool CP, typename = when_less_const<CP> >
+     publication_attempt_handle_cp &
+     operator =(const publication_attempt_handle_cp<CP> &rhs) {
+       base::operator =(rhs);
+       return *this;
+     }
+
+     template <bool CP, typename = when_less_const<CP> >
+     publication_attempt_handle_cp &
+     operator =(publication_attempt_handle_cp<CP> &&rhs) {
+       base::operator =(std::move(rhs));
+       return *this;
+     }
+
+     bool succeeded() const {
+       return pointer()->succeeded();
+     }
+
+     iso_context_handle source_context() const {
+       return pointer()->context();
+     }
+
+     long n_to_redo() const {
+       return pointer()->n_to_redo();
+     }
+
+     std::vector<task_handle> redo_tasks_by_start_time() const {
+       std::vector<mpgc::gc_ptr<core::task>> tasks = pointer()->redo_tasks_by_start_time();
+       std::vector<task_handle> handles(tasks.begin(), tasks.end());
+       return handles;
+     }
+
+     bool prepare_for_redo() const {
+       return pointer()->prepare_for_redo();
+     }
+
+   };
+
+   template <bool CP>
+   inline publication_attempt_handle
+   iso_context_handle_cp<CP>::publish()
+   {
+     return pointer()->publish();
+   }
+   
+
+   template <bool ConstP>
+   struct managed_record_handle_cp : view_relative_handle<htarget_<ConstP,core::managed_record>>
    {
      /*
-      * Could put a shadow branch cache here that we pass in to calls to short-circuit
+      * Could put a shadow view cache here that we pass in to calls to short-circuit
       * the shadow calculation.  It would have to be atomic but would probably be faster
       * than going to NVM.
       */
 
-     using base = branch_relative_handle<htarget_<ConstP,core::managed_record>>;
+     using base = view_relative_handle<htarget_<ConstP,core::managed_record>>;
      using typename base::value_type;
      using non_const_type = managed_record_handle_cp<false>;
 
@@ -984,6 +1185,8 @@ namespace mds {
      using base::pointer;
 
      managed_record_handle_cp() = default;
+     managed_record_handle_cp(const managed_record_handle_cp &) = default;
+     managed_record_handle_cp(managed_record_handle_cp &&) = default;
 
      template <bool CP, typename = when_less_const<CP> >
      managed_record_handle_cp(const managed_record_handle_cp<CP> &rhs)
@@ -994,6 +1197,9 @@ namespace mds {
      managed_record_handle_cp(managed_record_handle_cp<CP> &&rhs)
      : base{std::move(rhs)}
      {}
+
+     managed_record_handle_cp &operator =(const managed_record_handle_cp &) = default;
+     managed_record_handle_cp &operator =(managed_record_handle_cp &&) = default;
 
      template <bool CP, typename = when_less_const<CP> >
      managed_record_handle_cp &
@@ -1020,9 +1226,9 @@ namespace mds {
 
    template <kind K, bool ConstP>
    struct record_field_handle_cp
-   : public branch_independent_handle<htarget_<ConstP,const kind_field<K>>>
+   : public view_independent_handle<htarget_<ConstP,const kind_field<K>>>
    {
-     using base = branch_independent_handle<htarget_<ConstP,const kind_field<K>>>;
+     using base = view_independent_handle<htarget_<ConstP,const kind_field<K>>>;
      using typename base::value_type;
      using non_const_type = record_field_handle_cp<K, false>;
 
@@ -1065,79 +1271,76 @@ namespace mds {
       * I'm assuming that it is fully specified, at least down to "record" for any
       * record type.
       */
-     api_type<K> read(const iso_context_handle &ctxt,
-                      const managed_record_handle &r) const {
-//       std::cout << "[reading from " << ctxt.value << "]" << std::endl ;
-       return pointer()->read(r.pointer(), r.branch(), ctxt.pointer());
+     api_type<K> free_read(const managed_record_handle &r) const {
+       api_type<K> val = pointer()->free_read(r.pointer(), r.view());
+       // std::cout << "Free read " << val << std::endl;
+       return val;
      }
-     api_type<K> read_frozen(const iso_context_handle &ctxt,
-                             const managed_record_handle &r) const {
-       return pointer()->read_frozen(r.pointer(), r.branch(), ctxt.pointer());
+     api_type<K> frozen_read(const managed_record_handle &r) const {
+       api_type<K> val =  pointer()->frozen_read(r.pointer(), r.view());
+       // std::cout << "Frozen read " << val << std::endl;
+       return val;
+     }
+     bool has_value(const managed_record_handle &r) const {
+       return is_null() ? false : pointer()->has_value(r.pointer(), r.view());
      }
      /*
       * Throws read_only_context_ex if context is read only
       */
-     api_type<K> write(const iso_context_handle &ctxt,
-		       const managed_record_handle &r,
+     api_type<K> modify(const managed_record_handle &r,
+                        modify_op op,
+                        const api_type<K> &val,
+                        ret_mode returning = ret_mode::resulting_val) const
+     {
+       api_type<K> rv =  pointer()->modify(r.pointer(), r.view(), op,
+                                           to_core_val<K>(val), returning);
+       // std::cout << "Modify returned " << rv << std::endl;
+       return rv;
+     }
+     api_type<K> write(const managed_record_handle &r,
 		       const api_type<K> &val,
-		       res_mode resolving = non_resolving) const {
-       return pointer()->write(r.pointer(), r.branch(), ctxt.pointer(), to_core_val<K>(val), resolving);
+		       ret_mode returning = ret_mode::resulting_val) const
+     {
+       return pointer()->write(r.pointer(), r.view(), to_core_val<K>(val), returning);
      }
-     api_type<K> set_to_parent(const iso_context_handle &ctxt,
-                        const managed_record_handle &r,
-                        res_mode resolving = non_resolving) const {
-       return pointer()->set_to_parent(r.pointer(), r.branch(), ctxt.pointer(), resolving);
-     }
-     api_type<K> resolve_to_parent(const iso_context_handle &ctxt,
-                            const managed_record_handle &r) const {
-       return set_to_parent(ctxt, r, resolving);
-     }
-     api_type<K> resolve_to_current(const iso_context_handle &ctxt,
-                             const managed_record_handle &r) const {
-       return pointer()->resolve_to_current(r.pointer(), r.branch(), ctxt.pointer());
-     }
-     api_type<K> roll_back(const iso_context_handle &ctxt,
-                    const managed_record_handle &r,
-                    res_mode resolving = non_resolving) const {
-       return pointer()->roll_back(r.pointer(), r.branch(), ctxt.pointer(), resolving);
-     }
-     api_type<K> resolve_by_rollback(const iso_context_handle &ctxt,
-                              const managed_record_handle &r) const {
-       return roll_back(ctxt, r, resolving);
+     bool write_initial(const managed_record_handle &r,
+                        const api_type<K> &val) const
+     {
+       try {
+         pointer()->write(r.pointer(), r.view(), to_core_val<K>(val),
+                          ret_mode::resulting_val, core::is_unbound_guard<K>());
+         return true;
+       } catch (core::guard_failure_ex &) {
+         return false;
+       }
      }
      template <typename T = api_type<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value> >
-       api_type<K> add(const iso_context_handle &ctxt,
-		       const managed_record_handle &r,
+       api_type<K> add(const managed_record_handle &r,
 		       const api_type<K> &val,
-		       res_mode resolving = non_resolving) const {
-       return pointer()->add(r.pointer(), r.branch(), ctxt.pointer(), val, resolving);
+		       ret_mode returning = ret_mode::resulting_val) const
+     {
+       return pointer()->add(r.pointer(), r.view(), val, returning);
      }
      template <typename T = api_type<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value> >
-       api_type<K> sub(const iso_context_handle &ctxt,
-		       const managed_record_handle &r,
+       api_type<K> sub(const managed_record_handle &r,
 		       const api_type<K> &val,
-		       res_mode resolving = non_resolving) const {
-       return pointer()->sub(r.pointer(), r.branch(), ctxt.pointer(), val, resolving);
+		       ret_mode returning = ret_mode::resulting_val) const
+     {
+       return pointer()->sub(r.pointer(), r.view(), val, returning);
      }
      template <typename T = api_type<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value> >
-       api_type<K> mul(const iso_context_handle &ctxt,
-		       const managed_record_handle &r,
+       api_type<K> mul(const managed_record_handle &r,
 		       const api_type<K> &val,
-		       res_mode resolving = non_resolving) const {
-       return pointer()->mul(r.pointer(), r.branch(), ctxt.pointer(), val, resolving);
+		       ret_mode returning = ret_mode::resulting_val) const {
+       return pointer()->mul(r.pointer(), r.view(), val, returning);
      }
      template <typename T = api_type<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value> >
-       api_type<K> div(const iso_context_handle &ctxt,
-		       const managed_record_handle &r,
+       api_type<K> div(const managed_record_handle &r,
 		       const api_type<K> &val,
-		       res_mode resolving = non_resolving) const {
-       return pointer()->div(r.pointer(), r.branch(), ctxt.pointer(), val, resolving);
+		       ret_mode returning = ret_mode::resulting_val) const {
+       return pointer()->div(r.pointer(), r.view(), val, returning);
      }
 
-     bool has_value(const iso_context_handle &ctxt,
-                    const managed_record_handle &r) const {
-       return is_null() ? false : pointer()->has_value(r.pointer(), r.branch(), ctxt.pointer());
-     }
      interned_string_handle name() const {
        return pointer()->name;
      }
@@ -1148,9 +1351,9 @@ namespace mds {
 
    template <bool ConstP>
    struct managed_array_base_handle_cp
-   : public branch_relative_handle<htarget_<ConstP,core::managed_array_base>>
+   : public view_relative_handle<htarget_<ConstP,core::managed_array_base>>
    {
-     using base = branch_relative_handle<htarget_<ConstP,core::managed_array_base>>;
+     using base = view_relative_handle<htarget_<ConstP,core::managed_array_base>>;
      using typename base::value_type;
      using non_const_type = managed_array_base_handle_cp<false>;
 
@@ -1194,9 +1397,9 @@ namespace mds {
 
    template <kind K, bool ConstP>
    struct managed_array_handle_cp
-   : public branch_relative_handle<htarget_<ConstP,core::managed_array<K>>>
+   : public view_relative_handle<htarget_<ConstP,core::managed_array<K>>>
    {
-     using base = branch_relative_handle<htarget_<ConstP,core::managed_array<K>>>;
+     using base = view_relative_handle<htarget_<ConstP,core::managed_array<K>>>;
      using typename base::value_type;
      using non_const_type = managed_array_handle_cp<K, false>;
 
@@ -1205,7 +1408,7 @@ namespace mds {
      using base::base;
      using base::is_null;
      using base::pointer;
-     using base::branch;
+     using base::view;
 
      managed_array_handle_cp() = default;
 
@@ -1238,83 +1441,68 @@ namespace mds {
        return pointer()->uuid();
      }
 
-     api_type<K> read(const iso_context_handle &ctxt,
-                      const array_index_type i) const {
-       return pointer()->read(i, branch(), ctxt.pointer());
+     api_type<K> free_read(const array_index_type i) const
+     {
+       return pointer()->free_read(i, view());
      }
-     api_type<K> read_frozen(const iso_context_handle &ctxt,
-                             const array_index_type i) const {
-       return pointer()->read_frozen(i, branch(), ctxt.pointer());
-     }
-
-     api_type<K> write(const iso_context_handle &ctxt,
-		       const array_index_type i,
-		       const api_type<K> &val,
-		       res_mode resolving = non_resolving) const {
-       return pointer()->write(i, branch(), ctxt.pointer(), to_core_val<K>(val), resolving);
-     }
-     api_type<K> set_to_parent(const iso_context_handle &ctxt,
-			      const array_index_type i,
-			      res_mode resolving = non_resolving) const {
-       return pointer()->set_to_parent(i, branch(), ctxt.pointer(), resolving);
-     }
-     api_type<K> resolve_to_parent(const iso_context_handle &ctxt,
-				   const array_index_type i) const {
-       return set_to_parent(ctxt, i, resolving);
-     }
-     api_type<K> resolve_to_current(const iso_context_handle &ctxt,
-				    const array_index_type i) const {
-       return pointer()->resolve_to_current(i, branch(), ctxt.pointer());
-     }
-     api_type<K> roll_back(const iso_context_handle &ctxt,
-			   const array_index_type i,
-			   res_mode resolving = non_resolving) const {
-       return pointer()->roll_back(i, branch(), ctxt.pointer(), resolving);
-     }
-     api_type<K> resolve_by_rollback(const iso_context_handle &ctxt,
-				     const array_index_type i) const {
-       return roll_back(ctxt, i, branch(), resolving);
-     }
-     template <typename T = api_type<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value> >
-       api_type<K> add(const iso_context_handle &ctxt,
-		       const array_index_type i,
-		       const api_type<K> &val,
-		       res_mode resolving = non_resolving) const {
-       return pointer()->add(i, branch(), ctxt.pointer(), val, resolving);
-     }
-     template <typename T = api_type<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value> >
-       api_type<K> sub(const iso_context_handle &ctxt,
-		       const array_index_type i,
-		       const api_type<K> &val,
-		       res_mode resolving = non_resolving) const {
-       return pointer()->sub(i, branch(), ctxt.pointer(), val, resolving);
-     }
-     template <typename T = api_type<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value> >
-       api_type<K> mul(const iso_context_handle &ctxt,
-		       const array_index_type i,
-		       const api_type<K> &val,
-		       res_mode resolving = non_resolving) const {
-       return pointer()->mul(i, branch(), ctxt.pointer(), val, resolving);
-     }
-     template <typename T = api_type<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value> >
-       api_type<K> div(const iso_context_handle &ctxt,
-		       const array_index_type i,
-		       const api_type<K> &val,
-		       res_mode resolving = non_resolving) const {
-       return pointer()->div(i, branch(), ctxt.pointer(), val, resolving);
+     api_type<K> frozen_read(const array_index_type i) const
+     {
+       return pointer()->frozen_read(i, view());
      }
 
-     bool has_value(const iso_context_handle &ctxt,
-                    const array_index_type i) const {
-       return is_null() ? false : pointer()->has_value(i, branch(), ctxt.pointer());
+     api_type<K> write(const array_index_type i,
+                       modify_op op,
+                       const api_type<K> &val,
+                       ret_mode returning = ret_mode::resulting_val) const
+     {
+       return pointer()->modify(i, view(), op, to_core_val<K>(val), returning);
      }
 
-     array_size_type<K> size() {
+     api_type<K> write(const array_index_type i,
+                       const api_type<K> &val,
+                       ret_mode returning = ret_mode::resulting_val) const
+     {
+       return pointer()->write(i, view(), to_core_val<K>(val), returning);
+     }
+
+     template <typename T = api_type<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value> >
+       api_type<K> add(const array_index_type i,
+		       const api_type<K> &val,
+		       ret_mode returning = ret_mode::resulting_val) const
+     {
+       return pointer()->add(i, view(), val, returning);
+     }
+     template <typename T = api_type<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value> >
+       api_type<K> sub(const array_index_type i,
+		       const api_type<K> &val,
+		       ret_mode returning = ret_mode::resulting_val) const
+     {
+       return pointer()->sub(i, view(), val, returning);
+     }
+     template <typename T = api_type<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value> >
+       api_type<K> mul(const array_index_type i,
+		       const api_type<K> &val,
+		       ret_mode returning = ret_mode::resulting_val) const
+     {
+       return pointer()->mul(i, view(), val, returning);
+     }
+     template <typename T = api_type<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value> >
+       api_type<K> div(const array_index_type i,
+		       const api_type<K> &val,
+		       ret_mode returning = ret_mode::resulting_val) const {
+       return pointer()->div(i, view(), val, returning);
+     }
+
+     bool has_value(const array_index_type i) const {
+       return is_null() ? false : pointer()->has_value(i, view());
+     }
+
+     array_size_type<K> size() const {
        return pointer()->size;
      }
 
      managed_array_base_handle_cp<ConstP> as_base() {
-       return managed_array_base_handle_cp<ConstP>(pointer(), branch());
+       return managed_array_base_handle_cp<ConstP>(pointer(), view());
      }
    };
 
@@ -1323,9 +1511,9 @@ namespace mds {
    struct mv_wrapper<kind::ARRAY> : public use_handle<managed_array_base_handle> {};
 
    template <kind K, bool ConstP, typename LeafT, typename Enable>
-   struct managed_type_handle_cp: public branch_independent_handle<htarget_<ConstP, LeafT>>
+   struct managed_type_handle_cp: public view_independent_handle<htarget_<ConstP, LeafT>>
    {
-     using base = branch_independent_handle<htarget_<ConstP, LeafT>>;
+     using base = view_independent_handle<htarget_<ConstP, LeafT>>;
      using typename base::value_type;
      using non_const_type = managed_type_handle_cp<K, false, LeafT, Enable>;
 
@@ -1484,9 +1672,8 @@ namespace mds {
      }
 
      managed_array_handle<K>
-     create_array(array_size_type<K> s,
-                  iso_context_handle ctxt) const {
-       return pointer()->create_array(s, ctxt.pointer());
+     create_array(array_size_type<K> s) const {
+       return pointer()->create_array(s);
      }
 
      template <bool CP>
@@ -1595,8 +1782,8 @@ namespace mds {
        return *this;
      }
 
-     managed_record_handle create_record(iso_context_handle ctxt) const {
-       return pointer()->create_record(ctxt.pointer());
+     managed_record_handle create_record() const {
+       return pointer()->create_record();
      }
      bool is_created() const {
        return is_null() ? false : pointer()->is_created();
@@ -1688,8 +1875,8 @@ namespace mds {
    //   template <> struct mv_wrapper<core::record_type> : public use_handle<record_type_handle> {};
    //
    template <bool ConstP>
-   struct namespace_handle_cp : public branch_independent_handle<htarget_<ConstP,core::name_space>> {
-     using base = branch_independent_handle<htarget_<ConstP,core::name_space>>;
+   struct namespace_handle_cp : public view_relative_handle<htarget_<ConstP,core::name_space>> {
+     using base = view_relative_handle<htarget_<ConstP,core::name_space>>;
      using typename base::value_type;
      using non_const_type = namespace_handle_cp<false>;
 
@@ -1699,6 +1886,7 @@ namespace mds {
      using base::base;
      using base::is_null;
      using base::pointer;
+     using base::view;
 
      namespace_handle_cp() = default;
 
@@ -1726,33 +1914,38 @@ namespace mds {
        return *this;
      }
 
-     template <bool C1, bool C2>
-     namespace_handle child_namespace(const iso_context_handle_cp<C1> &ctxt,
-                                      const interned_string_handle_cp<C2> &name, bool create_if_missing)
+     template <bool C1>
+     namespace_handle child_namespace(const interned_string_handle_cp<C1> &name,
+                                      bool create_if_missing)
      {
-       return namespace_handle{pointer()->child_namespace(name.pointer(), ctxt.pointer(), create_if_missing)};
+       return namespace_handle{pointer()->child_namespace(name.pointer(),
+                                                          view(),
+                                                          create_if_missing)};
      }
      /*
       * Throws unbound_name_ex if the name is unbound.
-      * Throws incompatible_type_ex if the name is bound but not to something that can be considered to be of this
-      * type (e.g., the same type or a record type of a subclass of this type).
+      *
+      * Throws incompatible_type_ex if the name is bound but not to
+      * something that can be considered to be of this type (e.g., the
+      * same type or a record type of a subclass of this type).
       */
-     template <kind K, bool C1, bool C2>
-     api_type<K> _lookup(const iso_context_handle_cp<C1> &ctxt,
-                         const interned_string_handle_cp<C2> &name) const {
-       return pointer()->template read<K>(name.pointer(), ctxt.pointer());
+     template <kind K, bool C1>
+       api_type<K> _lookup(const interned_string_handle_cp<C1> &name,
+                           const core::external_gc_ptr<core::view> &v) const
+     {
+       return pointer()->template read<K>(name.pointer(), v);
      }
-     template <kind K, typename LeafT, bool C1, bool C2, bool C3>
-     api_type<K> lookup(const iso_context_handle_cp<C1> &ctxt,
-                        const interned_string_handle_cp<C2> &name,
-                        const managed_type_handle_cp<K,C3,LeafT> &type) const {
-       return _lookup<K>(ctxt, name);
+     template <kind K, typename LeafT, bool C1, bool C2>
+     api_type<K> lookup(const interned_string_handle_cp<C1> &name,
+                        const managed_type_handle_cp<K,C2,LeafT> &type) const
+     {
+       return _lookup<K>(name, view());
      }
-     template <bool C1, bool C2, bool C3>
-     managed_record_handle lookup(const iso_context_handle_cp<C1> &ctxt,
-                                  const interned_string_handle_cp<C2> &name,
-                                  const record_type_handle_cp<C3> &rt) const {
-       managed_record_handle mrh = _lookup<kind::RECORD>(ctxt, name);
+     template <bool C1, bool C2>
+     managed_record_handle lookup(const interned_string_handle_cp<C1> &name,
+                                  const record_type_handle_cp<C2> &rt) const
+     {
+       managed_record_handle mrh = _lookup<kind::RECORD>(name, view());
        /*
         * If we get here, it's bound to a record, but it might not be something
         * of the kind we expect.
@@ -1765,82 +1958,86 @@ namespace mds {
      }
 
      // su - TODO error handling
-     template <kind K, bool C1, bool C2, bool C3>
-     managed_array_handle<K> lookup(const iso_context_handle_cp<C1> &ctxt,
-                                    const interned_string_handle_cp<C2> &name,
-                                    const array_type_handle_cp<K,C3> &at) const {
-       managed_array_base_handle mabh = _lookup<kind::ARRAY>(ctxt, name);
+     template <kind K, bool C1, bool C2>
+     managed_array_handle<K> lookup(const interned_string_handle_cp<C1> &name,
+                                    const array_type_handle_cp<K,C2> &at) const
+     {
+       managed_array_base_handle mabh = _lookup<kind::ARRAY>(name, view());
        managed_array_handle<K>   mah  = 
          managed_array_handle<K>(
            mabh.pointer()->template downcast<K>(),
-           mabh.branch()
+           mabh.view()
            );
 
        return mah;
      }
 
      /*
-      * Replaces binding of "name" with "val".
-      * Returns false if name bound to namespace and replace_namespace is false, true otherwise.
+      * Replaces binding of "name" with "val".  Returns false if name
+      * bound to namespace and replace_namespace is false, true
+      * otherwise.
       */
-     template <kind K, bool C1, bool C2>
-     bool bind(const iso_context_handle_cp<C1> &ctxt,
-               const interned_string_handle_cp<C2> &name,
+     template <kind K, bool C1>
+     bool bind(const interned_string_handle_cp<C1> &name,
                const api_type<K> &val,
-               res_mode resolving = non_resolving,
-               bool replace_namespace = false) const {
-       return pointer()->bind<K>(name.pointer(), api::to_core_val<K>(val), ctxt.pointer(), resolving, replace_namespace);
+               ret_mode returning = ret_mode::resulting_val,
+               bool replace_namespace = false) const
+     {
+       return pointer()->bind<K>(name.pointer(), view(), api::to_core_val<K>(val), replace_namespace);
      }
      /*
-      * Binds "name" to "val", but only if there is no prior binding.  Returns whether it bound
+      * Binds "name" to "val", but only if there is no prior binding.
+      * Returns whether it bound
       */
-     template <kind K, bool C1, bool C2>
-     bool bind_new(const iso_context_handle_cp<C1> &ctxt,
-                   const interned_string_handle_cp<C2> &name,
-                   const api_type<K> &val) const {
+     template <kind K, bool C1>
+     bool bind_new(const interned_string_handle_cp<C1> &name,
+                   const api_type<K> &val) const
+     {
        throw core::unimplemented{};
      }
      /*
-      * Binds "name" to "val", but only if there was a prior binding.  Returns whether it bound
+      * Binds "name" to "val", but only if there was a prior binding.
+      * Returns whether it bound
       */
-     template <kind K, bool C1, bool C2>
-     bool replace_binding(const iso_context_handle_cp<C1> &ctxt,
-                          const interned_string_handle_cp<C2> &name,
-                          const api_type<K> &val) const {
+     template <kind K, bool C1>
+     bool replace_binding(const interned_string_handle_cp<C1> &name,
+                          const api_type<K> &val) const
+     {
        throw core::unimplemented{};
      }
      /*
-      * Binds "name" to "val", but only if it was bound to "expected".  Returns whether it bound
+      * Binds "name" to "val", but only if it was bound to "expected".
+      * Returns whether it bound
       */
-     template <kind K, kind K2, bool C1, bool C2>
-     bool replace_binding(const iso_context_handle_cp<C1> &ctxt,
-                          const interned_string_handle_cp<C2> &name,
+     template <kind K, kind K2, bool C1>
+     bool replace_binding(const interned_string_handle_cp<C1> &name,
                           const api_type<K> &val,
-                          const api_type<K2> &expected) const {
+                          const api_type<K2> &expected) const
+     {
        throw core::unimplemented{};
      }
 
-     template <bool C1, bool C2>
-     bool is_bound(const iso_context_handle_cp<C1> &ctxt,
-                   const interned_string_handle_cp<C2> &name) const {
-       return pointer()->is_bound(name.pointer(), ctxt.pointer());
+     template <bool C1>
+     bool is_bound(const interned_string_handle_cp<C1> &name) const
+     {
+       return pointer()->is_bound(name.pointer(), view());
      }
-     template <kind K, bool C1, bool C2>
-     bool is_bound_to(const iso_context_handle_cp<C1> &ctxt,
-                      const interned_string_handle_cp<C2> &name,
-                      const api_type<K> &expected) const {
+     template <kind K, bool C1>
+     bool is_bound_to(const interned_string_handle_cp<C1> &name,
+                      const api_type<K> &expected) const
+     {
        throw core::unimplemented{};
      }
 
-     template <bool C1, bool C2>
-     bool unbind(const iso_context_handle_cp<C1> &ctxt,
-                 const interned_string_handle_cp<C2> &name) const {
+     template <bool C1>
+     bool unbind(const interned_string_handle_cp<C1> &name) const
+     {
        throw core::unimplemented{};
      }
-     template <kind K, bool C1, bool C2>
-     bool unbind_from(const iso_context_handle_cp<C1> &ctxt,
-                      const interned_string_handle_cp<C2> &name,
-                      const api_type<K> &expected) const {
+     template <kind K, bool C1>
+     bool unbind_from(const interned_string_handle_cp<C1> &name,
+                      const api_type<K> &expected) const
+     {
        throw core::unimplemented{};
      }
 
@@ -1854,36 +2051,44 @@ namespace mds {
      };
 
      static namespace_handle global() {
-       return namespace_handle{core::global_namespace};
+       return namespace_handle{core::global_namespace, prevailing_view()};
      }
      /*
       * Throws illegal_path_ex if one of the segments on the path is not a namespace.
       * If one of the segments is unbound, returns a null namespace_handle.
       */
-     template <typename Iter, bool C1>
+     template <typename Iter>
      static namespace_handle
-     from_existing_path(const iso_context_handle_cp<C1> &ctxt, const Iter &path_start, const Iter &path_end) {
-       return _path(ctxt.pointer(), path_start, path_end, false);
+     from_existing_path(const Iter &path_start, const Iter &path_end) {
+       return _path(path_start, path_end, false);
      }
 
      /*
       * Throws illegal_path_ex if one of the segments on the path is not a namespace.
       * If a suffix is unbound, creates namespaces.
       */
-     template <typename Iter, bool C1>
+     template <typename Iter>
      static namespace_handle
-     from_path(const iso_context_handle_cp<C1> &ctxt, const Iter &path_start, const Iter &path_end) {
-       return _path(ctxt.pointer(), path_start, path_end, true);
+     from_path(const Iter &path_start, const Iter &path_end) {
+       return _path(path_start, path_end, true);
      }
 
    private:
-     template <typename Iter, bool C1>
-     static namespace_handle _path(const iso_context_handle_cp<C1> &ctxt, const Iter &path_start, const Iter &path_end, bool create_namespaces) {
-       core::gc_ptr<core::name_space> d = core::global_namespace;
+     static mpgc::gc_ptr<core::view> prevailing_view() {
+       return core::iso_context::prevailing()->shadow(core::top_level_view);
+     }
+     
+     template <typename Iter>
+     static namespace_handle _path(const Iter &path_start, const Iter &path_end,
+                                   bool create_namespaces)
+     {
+       using namespace core;
+       const mpgc::gc_ptr<core::view> v = prevailing_view();
+       managed_value<name_space> d{global_namespace, v};
        for (Iter p = path_start; d != nullptr && p != path_end; p++) {
          interned_string_handle name = *p;
          try {
-           d = d->child_namespace(name, ctxt, create_namespaces);
+           d = d.value->child_namespace(name.pointer(), d.in_view, create_namespaces);
          } catch (incompatible_type_ex &) {
            /*
             * We found something that wasn't a namespace.
@@ -1897,415 +2102,7 @@ namespace mds {
 
    };
 
-   struct merge_result: public core::conflict_sink {
-   private:
-     iso_context_handle _source_context;
-     core::timestamp_t _merge_time;
-     bool _merge_succeeded;
-     mutable iso_context_handle _target_context;
-     mutable iso_context_handle _last_common_snapshot;
-     mutable iso_context_handle _source_at_merge;
-     mutable iso_context_handle _target_at_merge;
-     template <bool ConstP> friend void iso_context_handle_cp<ConstP>::publish(merge_result &cs) const;
-//     friend void iso_context_handle::publish(merge_result &) const;
 
-     /*
-      * Returns false if there were conflicts in the parameter, but all
-      * were resolved before they could be added here, so the publish should
-      * be resolved.
-      */
-     bool inject(const core::merge_result &mr) {
-       // std::cerr << "Injecting context : " << mr.merging_context << std::endl;
-       _source_context = iso_context_handle{mr.merging_context};
-       // std::cerr << "Injected context : " << &_source_context << std::endl;
-       _merge_time = mr.merge_timestamp;
-       _merge_succeeded = mr.conflicts == nullptr;
-       if (_merge_succeeded) {
-//         std::cerr << "Merge succeeded" << std::endl;
-         merge_succeeded();
-         return true;
-       }
-//       std::cerr << "Merge failed " << std::endl;
-//       std::cerr << "merge_result inject conflicts" << std::endl;
-       bool saw_conflict = false;
-       if (mr.conflicts != nullptr) {
-         mr.conflicts->for_each([&](const core::gc_ptr<core::conflict> &c){
-           if (!c->is_resolved()) {
-             if (!saw_conflict) {
-               saw_conflict = true;
-               merge_failed();
-             }
-             // reasserting original implementation: 
-             // - dropping "new" call to add_conflict to add at core level
-             // - re-establishing orig call to conflict to add_to merge_result
-             //   resulting in addition of conflict to java-level PubResult
-             // add_conflict(c);
-             c->add_to(*this);
-           }
-         });
-       }
-       if (!saw_conflict) {
-         return false;
-       }
-       merge_conflicts_complete();
-       return true;
-     }
-     static managed_record_handle at(const core::gc_ptr<core::managed_record> &r,
-                                     const core::gc_ptr<core::branch> &b) {
-       return core::kind_mv<kind::RECORD>{r,b};
-     }
-
-     template <kind K>
-     void add_field_conflict(const core::gc_ptr<core::managed_record> &r,
-                             const core::gc_ptr<core::branch> &b,
-                             const core::gc_ptr<const core::record_field<K>> &f) {
-        // ss: reasserting original implementation: 
-        // either this code is called by merge_result add_conflict specialisations
-        // or it is never called because it is overridden by pr_merge_result
-        // add_conflict specialisations instead
-        // adding print statements to both to see where the code goes...
-       //        std::cout << "merge_result::add_field_conflict: invoked!" << std::endl;
-        managed_record_handle rh = at(r,b);
-        record_field_handle<K> fh{f};
-        add_conflict(rh, fh);
-
-        // std::cout << "merge_result::add_field_conflict: no longer implemented" << std::endl;
-
-        // // ss: rather than generating record/field handles at this point, 
-        // // create a list of core::conflict objects using existing code
-        // // but only ever pass a confict_handle thro the API. 
-        // // and only ever expose record/field via their handles 
-        // // at the point they are accessed thro the API.
-        // // 
-        // // managed_record_handle rh = at(r,b);
-        // // record_field_handle<K> fh{f};
-        // // add_conflict(rh, fh);
-        // // 
-        // // have to create a new conflict at this level
-        // // to avoid modifying the existing linked list of conflicts from below
-        // // - adding this conflict to mds::api::merge_result::conflicts
-
-        // std::cout << "merge_result::add_field_conflict: on b " << b << " r: " << r << " f: " << f << std::endl;
-        // conflict *conflict = new typename field_conflict<K>::data_type{b,r,f};
-        // _conflicts = conflict->prepend_to(_conflicts);
-     }
-
-
-     // ss: reasserting original implementation: 
-     // these calls to add_conflict are invoked for each conflict type
-     // from core_conflict call to sink.add_conflict
-
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::BOOL>> &f) override {
-       //       std::cout << "merge_result::add_conflict record_field BOOL: invoked!" << std::endl;
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::BYTE>> &f) override {
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::UBYTE>> &f) override {
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::SHORT>> &f) override {
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::USHORT>> &f) override {
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::INT>> &f) override {
-       //       std::cout << "merge_result::add_conflict record_field INT: invoked!" << std::endl;
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::UINT>> &f) override {
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::LONG>> &f) override {
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::ULONG>> &f) override {
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::FLOAT>> &f) override {
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::DOUBLE>> &f) override {
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::STRING>> &f) override {
-       //       std::cout << "merge_result::add_conflict record_field STRING: invoked!" << std::endl;
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::RECORD>> &f) override {
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_record> &r,
-                       const core::gc_ptr<core::branch> &b,
-                       const core::gc_ptr<const core::record_field<kind::ARRAY>> &f) override {
-       add_field_conflict(r, b, f);
-     }
-     void add_conflict(const core::gc_ptr<core::name_space> &ns,
-                       const core::gc_ptr<core::interned_string> &name) override {
-       // std::cout << "merge_result::add_conflict(namespace,name): no longer implemented" << std::endl;
-       // see add_conflict(conflict) above instead - ss
-
-       // // commenting out this implementation until namespace branch issue sorted
-       // // 
-       // // ss: as for field_conflict above, 
-       // // rather than generating namespace/name handles at this point, 
-       // // create a list of core::conflict objects using existing code
-       // // but only ever pass a confict_handle thro the API. 
-       // // and only ever expose namespace/name via their handles 
-       // // at the point they are accessed thro the API.
-       // // 
-       // // add_conflict(namespace_handle{ns}, interned_string_handle{name});
-       // // have to create a new conflict at this level
-       // // to avoid modifying the existing linked list of conflicts from below
-       // // - adding this conflict to mds::api::merge_result::conflicts
-       // // new code: 
-       // // conflict *conflict = new bound_name_conflict::data_type{b,ns,name};
-       // // _conflicts = conflict->prepend_to(_conflicts);
-
-       // ss: re-establishing orig impl:
-       add_conflict(namespace_handle{ns}, interned_string_handle{name});
-     }
-
-     template <kind K>
-     void add_array_elmt_conflict(const core::gc_ptr<core::managed_array<K>> &a,
-                                  const core::gc_ptr<core::branch> &b,
-                                  const array_index_type i) {
-       managed_array_handle<K> ah{a,b};
-       add_conflict(ah, i);
-     }
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::BOOL>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::BYTE>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::UBYTE>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::SHORT>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::USHORT>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::INT>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::UINT>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::LONG>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::ULONG>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::FLOAT>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::DOUBLE>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::STRING>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::RECORD>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-     void add_conflict(const core::gc_ptr<core::managed_array<kind::ARRAY>> &a,
-                       const core::gc_ptr<core::branch> &b,
-                       const array_index_type i) override {
-       add_array_elmt_conflict(a, b, i);
-     }
-
-
-   public:
-     virtual ~merge_result() {}
-
-     iso_context_handle source_context() const {
-       return _source_context;
-     }
-
-     iso_context_handle target_context() const {
-       if (_target_context.is_null()) {
-         if (!_source_context.is_null()) {
-           _target_context = _source_context.new_child(view_type::parent_view, mod_type::read_only);
-         }
-       }
-       return _target_context;
-     }
-
-     iso_context_handle last_common_snapshot() const {
-       if (_last_common_snapshot.is_null()) {
-         if (!_source_context.is_null()) {
-           core::gc_ptr<core::iso_context> sc = _source_context.pointer();
-           core::timestamp_t ts = sc->merge_before(_merge_time);
-           _last_common_snapshot = target_context().ro_snapshot_at(ts);
-         }
-       }
-       return _last_common_snapshot;
-     }
-
-     iso_context_handle source_at_merge() const {
-       if (_source_at_merge.is_null()) {
-         if (!_source_context.is_null()) {
-           _source_at_merge = _source_context.ro_snapshot_at(_merge_time);
-         }
-       }
-       return _source_at_merge;
-     }
-     iso_context_handle target_at_merge() const {
-       if (_target_at_merge.is_null()) {
-         if (!_source_context.is_null()) {
-           _target_at_merge = target_context().ro_snapshot_at(_merge_time);
-         }
-       }
-       return _target_at_merge;
-     }
-
-     virtual void merge_succeeded() = 0;
-     virtual void merge_failed() = 0;
-     virtual void merge_conflicts_complete() {}
-
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::BOOL> &f) = 0;
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::BYTE> &f) = 0;
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::UBYTE> &f) = 0;
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::SHORT> &f) = 0;
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::USHORT> &f) = 0;
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::INT> &f) = 0;
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::UINT> &f) = 0;
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::LONG> &f) = 0;
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::ULONG> &f) = 0;
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::FLOAT> &f) = 0;
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::DOUBLE> &f) = 0;
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::STRING> &f) = 0;
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::RECORD> &f) = 0;
-     virtual void add_conflict(const managed_record_handle &r,
-                               const record_field_handle<kind::ARRAY> &f) = 0;
-     virtual void add_conflict(const namespace_handle &ns,
-                               const interned_string_handle &name) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::BOOL> &a,
-                               const array_index_type i) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::BYTE> &a,
-                               const array_index_type i) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::UBYTE> &a,
-                               const array_index_type i) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::SHORT> &a,
-                               const array_index_type i) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::USHORT> &a,
-                               const array_index_type i) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::INT> &a,
-                               const array_index_type i) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::UINT> &a,
-                               const array_index_type i) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::LONG> &a,
-                               const array_index_type i) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::ULONG> &a,
-                               const array_index_type i) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::FLOAT> &a,
-                               const array_index_type i) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::DOUBLE> &a,
-                               const array_index_type i) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::STRING> &a,
-                               const array_index_type i) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::RECORD> &a,
-                               const array_index_type i) = 0;
-     virtual void add_conflict(const managed_array_handle<kind::ARRAY> &a,
-                               const array_index_type i) = 0;
-   };
-
-   template <bool ConstP>
-   inline
-   void
-   iso_context_handle_cp<ConstP>::publish(merge_result &cs) const {
-     bool done;
-     // std::cout << "iso_context_handle: publish" << std::endl;
-     do {
-       core::merge_result mr = pointer()->merge();
-       done = cs.inject(mr);
-     } while (!done);
-     cs._source_context = *this;
-   }
 
    template <kind K, bool ConstP, typename LeafT, typename Enable>
    inline
@@ -2317,14 +2114,18 @@ namespace mds {
    }
 
    /*
-    * This is a convenience class to allow stashing handles someplace so that you can refer to them
-    * by an index, suitable for storing in a Java object.  If you do so, remember to call free() when the
-    * last use of the handle is gone (e.g., in a native finalize() method).  If you can hold the handle
-    * directly, it will be more efficient.  No effort is made to determine that the handle is not already
-    * in the store.  What is returned is a copy of the handle, so modifications are not preserved.
+    * This is a convenience class to allow stashing handles someplace
+    * so that you can refer to them by an index, suitable for storing
+    * in a Java object.  If you do so, remember to call free() when
+    * the last use of the handle is gone (e.g., in a native finalize()
+    * method).  If you can hold the handle directly, it will be more
+    * efficient.  No effort is made to determine that the handle is
+    * not already in the store.  What is returned is a copy of the
+    * handle, so modifications are not preserved.
     *
-    * index 0 is reserved to indicate a value of T{} (null handle, null pointer, or zero value).
-    * Otherwise, index i refers to the (i-1)th element of the vector.
+    * index 0 is reserved to indicate a value of T{} (null handle,
+    * null pointer, or zero value).  Otherwise, index i refers to the
+    * (i-1)th element of the vector.
     */
    template <typename T>
    class handle_store {
@@ -2384,27 +2185,38 @@ namespace mds {
    };
 
    /*
-    * This is a convenience class to allow stashing handles someplace so that you can refer to them
-    * by an index, suitable for storing in a Java object.  If you do so, remember to call free() when the
-    * last use of the handle is gone (e.g., in a native finalize() method).  If you can hold the handle
-    * directly, it will be more efficient.
+    * This is a convenience class to allow stashing handles someplace
+    * so that you can refer to them by an index, suitable for storing
+    * in a Java object.  If you do so, remember to call free() when
+    * the last use of the handle is gone (e.g., in a native finalize()
+    * method).  If you can hold the handle directly, it will be more
+    * efficient.
     *
-    * In this variant (unlike in handle_store), only one instance of each handle is kept, so identical indices
-    * imply identical handles.  Note that this only applies while the handle is in the store.  Each entry in
-    * the store keeps a reference count, incremented by calls to store(h) and decremented by calls to free(i).
-    * When this count hits zero, free() returns true, and the index may be reused for another handle.
+    * In this variant (unlike in handle_store), only one instance of
+    * each handle is kept, so identical indices imply identical
+    * handles.  Note that this only applies while the handle is in the
+    * store.  Each entry in the store keeps a reference count,
+    * incremented by calls to store(h) and decremented by calls to
+    * free(i).  When this count hits zero, free() returns true, and
+    * the index may be reused for another handle.
     *
-    * Calls to store(h), by default, assume that the returned index will be used to create a new wrapper object
-    * (which will call free() in its finalize method), so the reference count is incremented.  Users who maintain
-    * a side table of objects, so they can be reused, should pass in a second parameter of false, which indicates
-    * that the reference count should not be incremented if the handle exists in the table.  The return value from
-    * store() includes an indication of whether the handle was added to the store by this operation.
+    * Calls to store(h), by default, assume that the returned index
+    * will be used to create a new wrapper object (which will call
+    * free() in its finalize method), so the reference count is
+    * incremented.  Users who maintain a side table of objects, so
+    * they can be reused, should pass in a second parameter of false,
+    * which indicates that the reference count should not be
+    * incremented if the handle exists in the table.  The return value
+    * from store() includes an indication of whether the handle was
+    * added to the store by this operation.
     *
-    * No effort is made to determine that the handle is not already
-    * in the store.  What is returned is a copy of the handle, so modifications are not preserved.
+    * No effort is made to determine that the handle is not already in
+    * the store.  What is returned is a copy of the handle, so
+    * modifications are not preserved.
     *
-    * index 0 is reserved to indicate a value of T{} (null handle, null pointer, or zero value).
-    * Otherwise, index i refers to the (i-1)th element of the vector.
+    * index 0 is reserved to indicate a value of T{} (null handle,
+    * null pointer, or zero value).  Otherwise, index i refers to the
+    * (i-1)th element of the vector.
     */
    template <typename T>
    class unique_handle_store {
@@ -2522,6 +2334,20 @@ namespace ruts {
    : intrinsic_hash2<mds::api::iso_context_handle_cp<CP>> {};
 
  template <bool CP>
+ struct hash1<mds::api::publication_attempt_handle_cp<CP>>
+   : intrinsic_hash1<mds::api::publication_attempt_handle_cp<CP>> {};
+ template <bool CP>
+ struct hash2<mds::api::publication_attempt_handle_cp<CP>>
+   : intrinsic_hash2<mds::api::publication_attempt_handle_cp<CP>> {};
+
+ template <bool CP>
+ struct hash1<mds::api::task_handle_cp<CP>>
+   : intrinsic_hash1<mds::api::task_handle_cp<CP>> {};
+ template <bool CP>
+ struct hash2<mds::api::task_handle_cp<CP>>
+   : intrinsic_hash2<mds::api::task_handle_cp<CP>> {};
+
+ template <bool CP>
  struct hash1<mds::api::managed_record_handle_cp<CP>>
    : intrinsic_hash1<mds::api::managed_record_handle_cp<CP>> {};
  template <bool CP>
@@ -2591,6 +2417,12 @@ namespace std {
   struct hash<mds::api::iso_context_handle_cp<CP>> : ruts::delegate_hash<mds::api::iso_context_handle_cp<CP>> {};
 
   template <bool CP>
+  struct hash<mds::api::publication_attempt_handle_cp<CP>> : ruts::delegate_hash<mds::api::publication_attempt_handle_cp<CP>> {};
+
+  template <bool CP>
+  struct hash<mds::api::task_handle_cp<CP>> : ruts::delegate_hash<mds::api::task_handle_cp<CP>> {};
+
+  template <bool CP>
   struct hash<mds::api::interned_string_handle_cp<CP>> : ruts::delegate_hash<mds::api::interned_string_handle_cp<CP>> {};
 
   template <bool CP>
@@ -2622,28 +2454,34 @@ namespace std {
 
   template <typename T>
   inline
-  void swap(mds::api::branch_independent_handle<T> &lhs, mds::api::branch_independent_handle<T> &rhs) {
+  void swap(mds::api::view_independent_handle<T> &lhs, mds::api::view_independent_handle<T> &rhs) {
     lhs.swap(rhs);
   }
   template <typename T>
   inline
-  void swap(mds::api::branch_relative_handle<T> &lhs, mds::api::branch_relative_handle<T> &rhs) {
+  void swap(mds::api::view_relative_handle<T> &lhs, mds::api::view_relative_handle<T> &rhs) {
     lhs.swap(rhs);
   }
 
 //  template <typename T, typename E>
-//  struct hash<mds::api::branch_relative_handle<T,E>> : ruts::delegate_hash<mds::api::branch_relative_handle<T,E>> {};
+//  struct hash<mds::api::view_relative_handle<T,E>> : ruts::delegate_hash<mds::api::view_relative_handle<T,E>> {};
 
   template <typename C, typename Tr, typename T, typename E>
   basic_ostream<C,Tr> &
-  operator <<(basic_ostream<C,Tr> &os, const mds::api::branch_independent_handle<T,E> &h) {
+  operator <<(basic_ostream<C,Tr> &os, const mds::api::view_independent_handle<T,E> &h) {
     return os << h.pointer();
   }
 
   template <typename C, typename Tr, typename T, typename E>
   basic_ostream<C,Tr> &
-  operator <<(basic_ostream<C,Tr> &os, const mds::api::branch_relative_handle<T,E> &h) {
-    return os << h.pointer() << "{" << h.branch() << "}";
+  operator <<(basic_ostream<C,Tr> &os, const mds::api::view_relative_handle<T,E> &h) {
+    return os << h.pointer() << "{" << h.view() << "}";
+  }
+
+  template <typename C, typename Tr, bool CP>
+  basic_ostream<C,Tr> &
+  operator <<(basic_ostream<C,Tr> &os, const mds::api::interned_string_handle_cp<CP> &h) {
+    return os << h.pointer() ;
   }
 
 

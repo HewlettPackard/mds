@@ -62,17 +62,9 @@ $body(class(type), type, type.managedName, type.boxedName, type.primName, type.a
 body(class, type, managed, boxed, prim, field, short, jni, types) ::= <<
 package $package(type)$;
 
-import com.hpl.mds.Caching;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.ManagedArray;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.RecordType;
+import com.hpl.mds.*;
 import java.util.function.Function;
 import java.util.function.ToLongFunction;
-import com.hpl.mds.$ifString({string},{prim})$.$managed$;
-import com.hpl.mds.$ifString({string},{prim.field})$.$field$;
-import com.hpl.mds.impl.IsoContextProxy;
-import com.hpl.mds.task.Task;
 
 //public class $class$<RT extends ManagedRecord, $managed$> extends FieldProxy<RT, $managed$> implements $field$<RT> {
 //public interface $field$<RT extends ManagedRecord> extends Field<RT, $managed$>
@@ -88,11 +80,11 @@ public class $class$<RT extends ManagedRecord>
     super(handleIndex, recType, name);
   }
 
-  private static native <RT extends ManagedRecord>
-  long getValueHandle(long handle, long ctxtHandle, long recHandle);
-  private static native <RT extends ManagedRecord>
-  long peekValueHandle(long handle, long ctxtHandle, long recHandle);
-  private static native long setValueHandle(long handle, long ctxtHandle, long recHandle, long valHandle);
+  private static native long getValueHandle(long handle, long recHandle);
+  private static native long peekValueHandle(long handle, long recHandle);
+  private static native long setValueHandle(long handle, long recHandle, long valHandle);
+  private static native boolean initFinal(long handle, long recHandle, long valHandle);
+  private static native long getAndSetValueHandle(long handle, long recHandle, long valHandle);
   private static native long createFieldIn(long rtHandle, long nameHandle);
 
   static <RT extends ManagedRecord> $class$<RT> in(RecordType<RT> recType, CharSequence name) {
@@ -109,24 +101,20 @@ public class $class$<RT extends ManagedRecord>
   
   @Override
   public $short$ArrayProxy get(RT record) {
-    Task.addRead(record, this);
-    long h = $class$.<RT>getValueHandle(handleIndex_, IsoContextProxy.current().handleIndex(), 
+    long h = $class$.<RT>getValueHandle(handleIndex_, 
                                         ManagedRecordProxy.handleOf(record));
     return $short$ArrayProxy.fromHandle(h);
   }
-    
   @Override
   public $short$ArrayProxy peek(RT record) {
-    Task.addRead(record, this);
-    long h = $class$.<RT>peekValueHandle(handleIndex_, IsoContextProxy.current().handleIndex(), 
+    long h = $class$.<RT>peekValueHandle(handleIndex_,
                                         ManagedRecordProxy.handleOf(record));
     return $short$ArrayProxy.fromHandle(h);
   }
     
   @Override
   public $short$ArrayProxy getAndSet(RT rec, ManagedArray<$managed$> val) {
-    Task.addReadWrite(rec, this);
-    long h = setValueHandle(handleIndex_, IsoContextProxy.current().handleIndex(),
+    long h = getAndSetValueHandle(handleIndex_, 
                            ManagedRecordProxy.handleOf(rec), 
                            (($short$ArrayProxy)val).handleIndex());
     return $short$ArrayProxy.fromHandle(h);
@@ -134,11 +122,22 @@ public class $class$<RT extends ManagedRecord>
 	
   @Override
   public $short$ArrayProxy set(RT rec, ManagedArray<$managed$> val) {
-    Task.addWrite(rec, this);
-    setValueHandle(handleIndex_, IsoContextProxy.current().handleIndex(),
+    setValueHandle(handleIndex_, 
                            ManagedRecordProxy.handleOf(rec), 
                            (($short$ArrayProxy)val).handleIndex());
     return ($short$ArrayProxy)val;
+  }
+	
+  @Override
+  public void initFinal(RT rec, ManagedArray<$managed$> val) {
+    if (!initFinal(handleIndex_, 
+                   ManagedRecordProxy.handleOf(rec), 
+                   (($short$ArrayProxy)val).handleIndex()))
+    {
+      throw new FinalFieldModifiedException(recordType().name().asString(),
+                                            name().asString());
+    
+    \}
   }
 	
 

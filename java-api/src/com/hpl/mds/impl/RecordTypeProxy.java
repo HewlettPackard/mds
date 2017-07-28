@@ -31,23 +31,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.function.LongFunction;
 
-import com.hpl.mds.Field;
-import com.hpl.mds.ManagedArray;
-import com.hpl.mds.ManagedList;
-import com.hpl.mds.ManagedMap;
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.ManagedSet;
-import com.hpl.mds.ManagedType;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.RecordExtension;
-import com.hpl.mds.RecordType;
-import com.hpl.mds.exceptions.BoundToNamespaceException;
+import com.hpl.mds.*;
 import com.hpl.mds.impl.ManagedRecordProxy.FromHandle;
-import com.hpl.mds.naming.Namespace;
-import com.hpl.mds.naming.Prior;
-import com.hpl.mds.string.ManagedMapFromString;
-import com.hpl.mds.string.ManagedString;
 
 public class RecordTypeProxy <R extends ManagedRecord> extends Proxy implements ManagedTypeImpl<R>, RecordType<R> {
 
@@ -77,8 +62,9 @@ public class RecordTypeProxy <R extends ManagedRecord> extends Proxy implements 
   // declare RecordType by name in ManagedSpace
   private static native long declareType(long nameHandle);
   private static native long declareType(long nameHandle, long superHandle);
-  private static native long lookupHandle(long h, long ctxtHandle, long namespaceHandle, long nameHandle);
-  private static native boolean bindHandle(long h, long ctxtHandle, long namespaceHandle, long nameHandle, long valHandle);
+  private static native long lookupHandle(long h, long namespaceHandle, long nameHandle);
+  private static native boolean bindHandle(long h, 
+                                           long namespaceHandle, long nameHandle, long valHandle);
   private static native boolean isSameAs(long aHandle, long bHandle);
   // ensureCreated() returns the handle, which may be to a pre-existing type.
   private static native long ensureCreated(long h);
@@ -86,7 +72,7 @@ public class RecordTypeProxy <R extends ManagedRecord> extends Proxy implements 
   private static native long superHandle(long h);
 
   private RecordTypeProxy(long handle, ManagedStringProxy name, Class<? extends R> implClass) {
-    super(handle);
+    super(handle, proxyTable);
     if (implClass == null) {
       // If we don't know what class to create, we don't know how to create it.
       fromHandleCtor_ = null;
@@ -257,8 +243,10 @@ public class RecordTypeProxy <R extends ManagedRecord> extends Proxy implements 
 
   @Override
   public boolean ensureCreated() {
+    // System.out.format("Ensuring %s created%n", this);
     long curr = ensureCreated(handleIndex());
     if (curr != handleIndex_) {
+      // System.out.format("Found another.  Need to forward%n");
     	/*
     	 * There already was one.  We need to turn
     	 * it into a RecordTypeProxy<R>, but with the 
@@ -363,8 +351,7 @@ public class RecordTypeProxy <R extends ManagedRecord> extends Proxy implements 
   public R lookupName(Namespace ns, CharSequence name) {
     NamespaceProxy nsp = (NamespaceProxy)ns;
     ManagedStringProxy msp = ManagedStringProxy.valueOf(name);
-    IsoContextProxy ctxt = IsoContextProxy.current();
-    long handle = lookupHandle(handleIndex_, ctxt.handleIndex(), nsp.handleIndex(), msp.handleIndex());
+    long handle = lookupHandle(handleIndex_, nsp.handleIndex(), msp.handleIndex());
     return ManagedRecordProxy.fromHandle(handle, this);
   }
 
@@ -372,8 +359,7 @@ public class RecordTypeProxy <R extends ManagedRecord> extends Proxy implements 
   public R bindIn(Namespace ns, CharSequence name, R val, Prior prior) {
     NamespaceProxy nsp = (NamespaceProxy)ns;
     ManagedStringProxy msp = ManagedStringProxy.valueOf(name);
-    IsoContextProxy ctxt = IsoContextProxy.current();
-    if (!bindHandle(handleIndex_, ctxt.handleIndex(), nsp.handleIndex(), msp.handleIndex(), ManagedRecordProxy.handleOf(val))) {
+    if (!bindHandle(handleIndex_, nsp.handleIndex(), msp.handleIndex(), ManagedRecordProxy.handleOf(val))) {
       throw new BoundToNamespaceException(nsp, name);
     }
     return val;

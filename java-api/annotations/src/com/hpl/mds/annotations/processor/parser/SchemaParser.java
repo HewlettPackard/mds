@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
@@ -70,6 +71,7 @@ public class SchemaParser {
 
     private static final String STATIC_METHOD = "StaticMethod";
     private static final String PRIVATE = "Private";
+    private static final String CONSTRUCTING = "Constructing";
     private static final String PKG_DELIMITER = ".";
 
     /**
@@ -250,10 +252,29 @@ public class SchemaParser {
                 messager.printMessage(Kind.ERROR,
                         "Ignoring interface, use schema interface instead: " + typeMirror.toString(), schema);
             } else {
-                recordInfo.addSuperInterface(element.toString());
+              recordInfo.addSuperInterface(typeAsString(typeMirror));
             }
         }
     }
+
+  private String typeAsString(TypeMirror tm) {
+    if (!(tm instanceof DeclaredType)) {
+      return String.format("[Type: %s]", tm);
+    }
+    DeclaredType t = (DeclaredType)tm;
+    TypeMirror enclosing = t.getEnclosingType();
+    List<? extends TypeMirror> params = t.getTypeArguments();
+    Element e = t.asElement();
+    //    String s = enclosing.getKind() != TypeKind.NONE ? typeAsString(enclosing)+"." : "";
+    String s = "";
+    s += e.toString();
+    if (!params.isEmpty()) {
+      s += params.stream()
+        .map(this::typeAsString)
+        .collect(Collectors.joining(",","<",">"));
+    }
+    return s;
+  }
 
     /**
      * Generates the MDS type name The default type name is the same as the
@@ -271,7 +292,9 @@ public class SchemaParser {
         if (typeNameAnnotation != null) {
             String name = typeNameAnnotation.name().trim();
             if (!name.isEmpty()) {
-                typeName = name;
+              typeName = String.format(name,
+                                       schemaContext.getRecordSimpleName(),
+                                       schemaContext.getPkg());
             } else {
                 messager.printMessage(Kind.ERROR, "Empty name in annotation: " + TypeName.class.getName(), schema);
             }
@@ -289,16 +312,19 @@ public class SchemaParser {
      */
     private void parserMembers(RecordInfo recordInfo, Element schema) {
         for (Element member : schema.getEnclosedElements()) {
-            LOGGER.info("parsing method: " + member.getSimpleName().toString());
-            if (!ElementKind.METHOD.equals(member.getKind())) {
-                continue;
-            }
-            assert member instanceof ExecutableElement;
-            ExecutableElement method = (ExecutableElement) member;
-            if (parseAbstractMethod(recordInfo, method)) {
-            } else if (parseStaticMethod(recordInfo, method)) {
-            } else if (parseInstanceMethod(recordInfo, method)) {
-            } else if (fieldParser.parse(method, recordInfo, schemaContext)) {
+            LOGGER.info("parsing member: " + member.getSimpleName().toString());
+            if (ElementKind.FIELD.equals(member.getKind())) {
+              VariableElement field = (VariableElement)member;
+              if (fieldParser.parseStaticFinal(field, recordInfo, schemaContext)) {
+              }
+            } else if (ElementKind.METHOD.equals(member.getKind())) {
+              assert member instanceof ExecutableElement;
+              ExecutableElement method = (ExecutableElement) member;
+              if (parseAbstractMethod(recordInfo, method)) {
+              } else if (parseStaticMethod(recordInfo, method)) {
+              } else if (parseInstanceMethod(recordInfo, method)) {
+              } else if (fieldParser.parse(method, recordInfo, schemaContext)) {
+              }
             }
         }
     }
@@ -318,11 +344,11 @@ public class SchemaParser {
         }
         try {
             MethodInfo methodInfo = null;
-            if (method.getAnnotation(Static.class) != null) {
+            if (isMethodFirstParamOfType(method.getParameters(), STATIC_METHOD)) {
+              methodInfo = methodParser.parse(method, 1, schemaContext);
+              methodInfo.setOmitFirstParam(true);
+            } else if (method.getAnnotation(Static.class) != null) {
                 methodInfo = methodParser.parse(method, 0, schemaContext);
-            } else if (isMethodFirstParamOfType(method.getParameters(), STATIC_METHOD)) {
-                methodInfo = methodParser.parse(method, 1, schemaContext);
-                methodInfo.setOmitFirstParam(true);
             } else {
                 return false;
             }
@@ -386,7 +412,13 @@ public class SchemaParser {
         if (!method.getModifiers().contains(Modifier.STATIC)) {
             return false;
         }
-        if (!isMethodFirstParamOfType(method.getParameters(), PRIVATE)) {
+        boolean firstParamOkay = isMethodFirstParamOfType(method.getParameters(), PRIVATE);
+        if (!firstParamOkay
+            && recordInfo.getSimpleName().equals(method.getSimpleName().toString()))
+          {
+            firstParamOkay = isMethodFirstParamOfType(method.getParameters(), CONSTRUCTING);
+          }
+        if (!firstParamOkay) {
             return false;
         }
         try {
@@ -450,12 +482,12 @@ public class SchemaParser {
         } else if (isValidInstanceMethod(methodInfo)) {
             recordInfo.addInstanceMethod(methodInfo);
             RecordInfo parent = schemaContext.getParent();
-            if (parent != null) {
+            if (methodInfo.getVisibility() == null) {
+              methodInfo.setVisibility(schemaContext.getVisibilities().get(Emitted.METHOD));
+            }
+            if (parent != null && methodInfo.getVisibility() != Visibility.PRIVATE) {
                 methodInfo.setAmbiguous(parentHasMethod(parent, methodInfo));
             }
-        }
-        if (methodInfo.getVisibility() == null) {
-            methodInfo.setVisibility(schemaContext.getVisibilities().get(Emitted.METHOD));
         }
     }
 
@@ -468,9 +500,11 @@ public class SchemaParser {
      */
     private boolean parentHasMethod(RecordInfo parent, MethodInfo methodInfo) {
         for (MethodInfo parentMethod : parent.getMethods()) {
-            if (parentMethod.getName().equals(methodInfo.getName())
-                    && parentMethod.getParameters().equals(methodInfo.getParameters())) {
-                return true;
+          if (parentMethod.getVisibility() != Visibility.PRIVATE
+              && parentMethod.getName().equals(methodInfo.getName())
+              && parentMethod.getParameters().equals(methodInfo.getParameters()))
+            {
+              return true;
             }
         }
         return false;

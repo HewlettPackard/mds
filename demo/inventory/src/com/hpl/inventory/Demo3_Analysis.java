@@ -32,7 +32,7 @@ import com.hpl.erk.config.RunConfig;
 import com.hpl.erk.config.RunContext;
 import com.hpl.erk.config.ex.ConfigErrorsSeen;
 import com.hpl.inventory.TextStyle.Color;
-import com.hpl.mds.holder.IntHolder;
+import com.hpl.mds.IntHolder;
 
 import static com.hpl.mds.IsolationContext.inReadOnlySnapshot;
 import static com.hpl.inventory.Formatting.formatCurrency;

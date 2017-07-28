@@ -28,11 +28,6 @@ package com.hpl.mds;
 
 import java.util.List;
 
-import com.hpl.mds.naming.HName;
-import com.hpl.mds.naming.Namespace;
-import com.hpl.mds.naming.Prior;
-
-
 
 public interface ManagedObject {
   interface ForManagedObject {}

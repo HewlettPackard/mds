@@ -31,9 +31,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.hpl.mds.MergeReport;
+import com.hpl.mds.PublishReport;
+import com.hpl.mds.IsolationContext;
 
-public class PubTrace implements MergeReport {
+public class PubTrace implements PublishReport {
 	private static final Logger defaultLog = Logger.getLogger(PubTrace.class);
 	private static final Level defaultLevel = Level.TRACE;
 
@@ -67,7 +68,7 @@ public class PubTrace implements MergeReport {
 		this(txn, desc, maxTries, defaultLog, defaultLevel, pname);
 	}
 	@Override
-	public void beforeRun() {
+	public void beforeRun(IsolationContext ctxt) {
 		if (tries > 0) {
 			msg("conflict detected, will retry");
 		}

@@ -67,14 +67,6 @@ import com.hpl.mds.impl.Stub;
 import com.hpl.mds.impl.RecordTypeProxy;
 
 
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.$elseif(type.string)$string.$endif$$type.managedName$;
-import com.hpl.mds.$if(type.prim)$prim.field.$elseif(type.string)$string.$endif$$type.fieldName$;
-import com.hpl.mds.$if(type.prim)$prim.field.$elseif(type.string)$string.$endif$$type.arrayFieldName$;
-import com.hpl.mds.$if(type.prim)$prim.container.array.$elseif(type.string)$string.$endif$$type.managedName$Array;
-} 
-$
-
 
 public interface RecordType<R extends ManagedRecord> extends ManagedType<R> {
 

@@ -82,6 +82,10 @@ namespace mds
 	    { recTypeHIndex };
 	  indexed<interned_string_handle> name
 	    { nameHIndex };
+          // std::cout << "Looking for field '" << *name << "'"
+          //           << " in " << rec_type->name()
+          //           << std::endl;
+            
 	  indexed<record_field_handle<KIND>> h
 	    { managed_handle_by_kind<KIND> ().field_in (*rec_type, *name, true) };
 	  return h.return_index ();
@@ -105,104 +109,93 @@ namespace mds
       template<kind KIND>
 	api_type<kind::LONG>
 	get_array_value_handle (api_type<kind::LONG> hIndex,
-				api_type<kind::LONG> ctxtHIndex,
 				api_type<kind::LONG> recHIndex)
 	{
+	  /*
+	   * Not handling caching or defaults yet
+	   */
 	  indexed<record_field_handle<kind::ARRAY>> h
 	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<managed_record_handle> rec
 	    { recHIndex };
 	  indexed<managed_array_base_handle> baseval
-	    { h->read_frozen(*ctxt, *rec) };
+          { h->frozen_read(*rec) };
 	  indexed<managed_array_handle<KIND>> val
 	    { managed_array_handle<KIND> (
 		baseval->pointer ()->template downcast<KIND> (),
-		baseval->branch ()) };
+		baseval->view ()) };
 	  return val.return_index ();
 	}
 
       template<kind KIND>
 	api_type<kind::LONG>
 	peek_array_value_handle (api_type<kind::LONG> hIndex,
-				api_type<kind::LONG> ctxtHIndex,
-				api_type<kind::LONG> recHIndex)
+                                 api_type<kind::LONG> recHIndex)
 	{
+	  /*
+	   * Not handling caching or defaults yet
+	   */
 	  indexed<record_field_handle<kind::ARRAY>> h
 	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<managed_record_handle> rec
 	    { recHIndex };
 	  indexed<managed_array_base_handle> baseval
-	    { h->read(*ctxt, *rec) };
+          { h->free_read(*rec) };
 	  indexed<managed_array_handle<KIND>> val
 	    { managed_array_handle<KIND> (
 		baseval->pointer ()->template downcast<KIND> (),
-		baseval->branch ()) };
+		baseval->view ()) };
 	  return val.return_index ();
 	}
 
       template<kind KIND>
 	inline typename str_to_long<KIND>::type
-	get_value (api_type<kind::LONG> hIndex, api_type<kind::LONG> ctxtHIndex,
-		   api_type<kind::LONG> recHIndex)
+	get_value (api_type<kind::LONG> hIndex,
+                   api_type<kind::LONG> recHIndex)
 	{
 	  indexed<record_field_handle<KIND> > h
 	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<managed_record_handle> rec
 	    { recHIndex };
-	  return h->read_frozen(*ctxt, *rec);
+	  return h->frozen_read(*rec);
 	}
-
       template<kind KIND>
 	inline typename str_to_long<KIND>::type
-	peek_value (api_type<kind::LONG> hIndex, api_type<kind::LONG> ctxtHIndex,
+	peek_value (api_type<kind::LONG> hIndex,
                     api_type<kind::LONG> recHIndex)
 	{
 	  indexed<record_field_handle<KIND> > h
 	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<managed_record_handle> rec
 	    { recHIndex };
-	  return h->read(*ctxt, *rec);
+	  return h->free_read(*rec);
 	}
 
       template<>
 	inline typename str_to_long<kind::STRING>::type
 	get_value<kind::STRING> (api_type<kind::LONG> hIndex,
-				 api_type<kind::LONG> ctxtHIndex,
 				 api_type<kind::LONG> recHIndex)
 	{
 	  indexed<record_field_handle<kind::STRING> > h
 	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<managed_record_handle> rec
 	    { recHIndex };
-	  api_type<kind::STRING> val = h->read_frozen(*ctxt, *rec);
+	  api_type<kind::STRING> val = h->frozen_read(*rec);
 	  indexed<interned_string_handle> s
 	    { val };
 	  return s.return_index ();
 	}
-
       template<>
 	inline typename str_to_long<kind::STRING>::type
 	peek_value<kind::STRING> (api_type<kind::LONG> hIndex,
-                                  api_type<kind::LONG> ctxtHIndex,
                                   api_type<kind::LONG> recHIndex)
 	{
 	  indexed<record_field_handle<kind::STRING> > h
 	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<managed_record_handle> rec
 	    { recHIndex };
-	  api_type<kind::STRING> val = h->read(*ctxt, *rec);
+	  api_type<kind::STRING> val =
+            h->free_read(*rec);
 	  indexed<interned_string_handle> s
 	    { val };
 	  return s.return_index ();
@@ -210,30 +203,27 @@ namespace mds
 
       template<kind KIND>
 	inline typename str_to_long<KIND>::type
-	set_value (api_type<kind::LONG> hIndex, api_type<kind::LONG> ctxtHIndex,
-		   api_type<kind::LONG> recHIndex,
-		   typename str_to_long<KIND>::type valArg)
+	set_value (api_type<kind::LONG> hIndex,
+                   api_type<kind::LONG> recHIndex,
+		   typename str_to_long<KIND>::type valArg,
+                   ret_mode returning = ret_mode::resulting_val)
 	{
 	  indexed<record_field_handle<KIND>> h
 	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<managed_record_handle> rec
 	    { recHIndex };
-	  return h->write (*ctxt, *rec, valArg);
+	  return h->write (*rec, valArg, returning);
 	}
 
       template<>
 	inline typename str_to_long<kind::STRING>::type
 	set_value<kind::STRING> (api_type<kind::LONG> hIndex,
-				 api_type<kind::LONG> ctxtHIndex,
 				 api_type<kind::LONG> recHIndex,
-				 typename str_to_long<kind::STRING>::type valArg)
+				 typename str_to_long<kind::STRING>::type valArg,
+                                 ret_mode returning)
 	{
 	  indexed<record_field_handle<kind::STRING>> h
 	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<managed_record_handle> rec
 	    { recHIndex };
 	  indexed<interned_string_handle> s
@@ -241,31 +231,59 @@ namespace mds
 	  api_type<kind::STRING> val
 	    { *s };
 	  indexed<interned_string_handle> old
-	    { h->write (*ctxt, *rec, val) };
+          { h->write (*rec, val, returning) };
 	  return old.return_index ();
+	}
+
+      template<kind KIND>
+	inline bool
+	init_final (api_type<kind::LONG> hIndex,
+                    api_type<kind::LONG> recHIndex,
+                    typename str_to_long<KIND>::type valArg)
+	{
+	  indexed<record_field_handle<KIND>> h
+	    { hIndex };
+	  indexed<managed_record_handle> rec
+	    { recHIndex };
+	  return h->write_initial(*rec, valArg);
+	}
+
+      template<>
+	inline bool
+      init_final<kind::STRING> (api_type<kind::LONG> hIndex,
+                                api_type<kind::LONG> recHIndex,
+                                typename str_to_long<kind::STRING>::type valArg)
+	{
+	  indexed<record_field_handle<kind::STRING>> h
+	    { hIndex };
+	  indexed<managed_record_handle> rec
+          { recHIndex };
+	  indexed<interned_string_handle> s
+          { valArg };
+	  api_type<kind::STRING> val
+          { *s };
+	  return h->write_initial(*rec, val);
 	}
 
       template<kind KIND>
 	inline api_type<kind::LONG>
 	set_array_value_handle (api_type<kind::LONG> hIndex,
-				api_type<kind::LONG> ctxtHIndex,
 				api_type<kind::LONG> recHIndex,
-				api_type<kind::LONG> valArg)
+				api_type<kind::LONG> valArg,
+                                ret_mode returning = ret_mode::resulting_val)
 	{
 	  indexed<record_field_handle<kind::ARRAY>> h
 	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<managed_record_handle> rec
 	    { recHIndex };
 	  indexed<managed_array_handle<KIND>> val
 	    { valArg };
-	  auto v = h->write (*ctxt, *rec, *val);
+	  auto v = h->write (*rec, *val, returning);
 	  managed_array_handle<KIND> vdc;
 	  if (v != nullptr)
 	    {
 	      managed_array_handle<KIND> vdc2 (
-		  v.pointer ()->template downcast<KIND> (), v.branch ());
+		  v.pointer ()->template downcast<KIND> (), v.view ());
 	      vdc = vdc2;
 	    }
 	  indexed<managed_array_handle<KIND>> old (vdc);
@@ -273,44 +291,27 @@ namespace mds
 	}
 
       template<kind KIND>
-	inline void
-	set_to_parent (api_type<kind::LONG> hIndex,
-		       api_type<kind::LONG> ctxtHIndex,
-		       api_type<kind::LONG> recHIndex)
+	inline api_type<kind::LONG>
+	init_final_array (api_type<kind::LONG> hIndex,
+                          api_type<kind::LONG> recHIndex,
+                          api_type<kind::LONG> valArg)
 	{
-	  indexed<record_field_handle<KIND>> h
+	  indexed<record_field_handle<kind::ARRAY>> h
 	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<managed_record_handle> rec
 	    { recHIndex };
-
-	  // setToParent with resolving set, so conflict is cleared before rerun
-	  h->set_to_parent (*ctxt, *rec, res_mode::resolving);
+	  indexed<managed_array_handle<KIND>> val
+	    { valArg };
+	  return h->write_initial(*rec, *val);
 	}
 
-      template<kind KIND>
-	inline void
-	rollback (api_type<kind::LONG> hIndex, api_type<kind::LONG> ctxtHIndex,
-		  api_type<kind::LONG> recHIndex)
-	{
-	  indexed<record_field_handle<KIND>> h
-	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
-	  indexed<managed_record_handle> rec
-	    { recHIndex };
-
-	  // rollback - resolving not set - since this resets state for rerun,
-	  // not resolving any existing conflict
-	  h->roll_back (*ctxt, *rec);
-	}
 
       template<kind KIND, ARITH_OP OP>
 	inline api_type<kind::BOOL>
 	modify_value (api_type<kind::LONG> hIndex,
-		      api_type<kind::LONG> ctxtHIndex,
-		      api_type<kind::LONG> recHIndex, api_type<KIND> val)
+		      api_type<kind::LONG> recHIndex,
+                      api_type<KIND> val,
+                      ret_mode returning = ret_mode::resulting_val)
 	{
 	  // Check if OP is supported by the field proxy type :)
 	  static_assert(OP == ARITH_OP::add || OP == ARITH_OP::sub ||
@@ -320,20 +321,18 @@ namespace mds
 
 	  indexed<record_field_handle<KIND>> h
 	    { hIndex };
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<managed_record_handle> rec
 	    { recHIndex };
 	  switch (OP)
 	    {
 	    case ARITH_OP::add:
-	      return h->add (*ctxt, *rec, val);
+	      return h->add (*rec, val, returning);
 	    case ARITH_OP::sub:
-	      return h->sub (*ctxt, *rec, val);
+	      return h->sub (*rec, val, returning);
 	    case ARITH_OP::mul:
-	      return h->mul (*ctxt, *rec, val);
+	      return h->mul (*rec, val, returning);
 	    case ARITH_OP::div:
-	      return h->div (*ctxt, *rec, val);
+	      return h->div (*rec, val, returning);
 	    }
 	}
     }

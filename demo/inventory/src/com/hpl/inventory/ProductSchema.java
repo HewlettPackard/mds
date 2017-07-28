@@ -29,12 +29,13 @@ package com.hpl.inventory;
 import java.io.PrintStream;
 
 import com.hpl.mds.annotations.RecordSchema;
+import com.hpl.mds.annotations.Final;
 
 import static com.hpl.inventory.Formatting.formatCurrency;
 
 @RecordSchema(name = "com.hpl.inventory.Product")
 public interface ProductSchema {
-	String name();
+	@Final String name();
 	int count();
 	int countTarget();
 	int value();
@@ -78,7 +79,7 @@ public interface ProductSchema {
 	        System.out.println("     revenuePercentage = " + self.getRevenuePercentage() + "%");
 	}
 	
-	static void Product(Product.Private self, String name, int count, int value) {
+	static void Product(Product.Constructing self, String name, int count, int value) {
 		self.setName(name);
 		self.setCount(count);
 		self.setValue(value);

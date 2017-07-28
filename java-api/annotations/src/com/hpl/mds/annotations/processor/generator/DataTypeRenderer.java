@@ -28,6 +28,8 @@ package com.hpl.mds.annotations.processor.generator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.function.Function;
 
 import com.hpl.mds.annotations.processor.RecordInfo.DataType;
 import com.hpl.mds.annotations.processor.RecordInfo.ParameterType;
@@ -51,7 +53,7 @@ public class DataTypeRenderer {
      * @return source code rendered
      */
     public String renderTypeWithParams(final String typeName, List<ParameterType> params) {
-        return renderTypeWithParameters(typeName, getTypes(params));
+      return renderTypeWithParameters(typeName, getTypes(params));
     }
 
     /**
@@ -62,16 +64,10 @@ public class DataTypeRenderer {
      * @return the source code render of the data type including its parameters
      */
     public String renderTypeWithParameters(String type, List<String> parameterTypes) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(type);
-        buffer.append('<');
-        buffer.append(parameterTypes.get(0));
-        for (int i = 1; i < parameterTypes.size(); i++) {
-            buffer.append(", ");
-            buffer.append(parameterTypes.get(i));
-        }
-        buffer.append('>');
-        return buffer.toString();
+      if (parameterTypes.isEmpty()) {
+        return type;
+      }
+      return type+"<"+String.join(",", parameterTypes)+">";
     }
 
     /**
@@ -82,19 +78,25 @@ public class DataTypeRenderer {
      *            parameter data types of the collection
      * @return the simple names of the managed data types
      */
-    public List<String> getTypes(List<ParameterType> parameterTypes) {
-        List<String> types = new ArrayList<>(parameterTypes.size());
-        for (ParameterType parameterType : parameterTypes) {
-            String complexType = parameterType.getComplexType();
-            if (complexType != null) {
-                types.add(complexType);
-            } else {
-                Class<?> class1 = getProperties(parameterType.getType()).getMngType();
-                types.add(class1.getCanonicalName());
-            }
-        }
-        return types;
-    }
+  public List<String> getTypes(List<ParameterType> parameterTypes,
+                               Function<Properties, Class<?>> classFn)
+  {
+    return parameterTypes.stream()
+      .map(parameterType -> {
+          String complexType = parameterType.getComplexType();
+          if (complexType != null) {
+            return complexType;
+          } else {
+            Class<?> class1 = classFn.apply(getProperties(parameterType.getType()));
+            return class1.getCanonicalName();
+          }
+        })
+      .collect(Collectors.toList());
+  }
+
+  public List<String> getTypes(List<ParameterType> parameterTypes) {
+    return getTypes(parameterTypes, Properties::getMngType);
+  }
 
     /**
      * @param dataType

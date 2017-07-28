@@ -45,5 +45,24 @@ public interface ManagedRecord extends ManagedComposite {
           return null;
   }
 
+  String defaultToString();
+  
+  default String __OBJECT_METHOD_toString() {
+    return defaultToString();
+  }
+
+  int defaultHashCode();
+
+  default
+    int __OBJECT_METHOD_hashCode() {
+    return defaultHashCode();
+  }
+
+  boolean defaultEquals(Object obj);
+
+  default
+    boolean __OBJECT_METHOD_equals(Object obj) {
+    return defaultEquals(obj);
+  }
 }
 

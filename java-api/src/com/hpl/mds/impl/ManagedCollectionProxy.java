@@ -26,9 +26,7 @@
 
 package com.hpl.mds.impl;
 
-import com.hpl.mds.ManagedCollection;
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.ManagedType;
+import com.hpl.mds.*;
 
 public abstract class ManagedCollectionProxy<M extends ManagedObject> implements ManagedCollection<M> {
   @Override

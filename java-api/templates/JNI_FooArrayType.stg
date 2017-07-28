@@ -78,11 +78,10 @@ jlong
 JNICALL 
 Java_com_hpl_mds_impl_$class$_lookupHandle
   (JNIEnv *jEnv, jobject, 
-   jlong ctxtHIndex,
    jlong nsHIndex,
    jlong nameHIndex)
 {
-  return exception_handler_wr(jEnv, lookup_handle<$kind$>, ctxtHIndex, nsHIndex, nameHIndex);
+  return exception_handler_wr(jEnv, lookup_handle<$kind$>, nsHIndex, nameHIndex);
 }
 
 
@@ -91,12 +90,11 @@ jboolean
 JNICALL 
 Java_com_hpl_mds_impl_$class$_bindHandle
   (JNIEnv *jEnv, jobject, 
-   jlong ctxtHIndex,
    jlong nsHIndex,
    jlong nameHIndex,
    jlong valHandle)
 {
-  return exception_handler_wr(jEnv, bind_handle<$kind$>, ctxtHIndex, nsHIndex, nameHIndex, valHandle);
+  return exception_handler_wr(jEnv, bind_handle<$kind$>, nsHIndex, nameHIndex, valHandle);
 }
 
 JNIEXPORT 
@@ -113,12 +111,12 @@ Java_com_hpl_mds_impl_$class$_isSameAs
 JNIEXPORT 
 jlong
 JNICALL 
-Java_com_hpl_mds_impl_$class$_createArray
+Java_com_hpl_mds_impl_$class$_createArrayHandle
   (JNIEnv *jEnv, jobject, 
-   jlong ctxtHIndex,
    jlong size)
 {
-  return exception_handler_wr(jEnv, create_array<$kind$>, ctxtHIndex, size);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, create_array<$kind$>, size);
 }
 
 }

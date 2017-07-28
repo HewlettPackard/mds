@@ -38,6 +38,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Types;
+import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
 
 import com.hpl.mds.annotations.RecordSchema;
@@ -82,6 +83,7 @@ public class SchemaMetaParser {
      * Data types utility to find super types of a schema
      */
     private final Types typeUtil;
+    private final Elements elementUtils;
 
     /**
      * 
@@ -90,10 +92,11 @@ public class SchemaMetaParser {
      * @param typeUtil
      *            Data types utility to find super types of a schema
      */
-    public SchemaMetaParser(Messager messager, Types typeUtil) {
-        this.messager = messager;
-        this.typeUtil = typeUtil;
-    }
+  public SchemaMetaParser(Messager messager, Types typeUtil, Elements elementUtils) {
+    this.messager = messager;
+    this.typeUtil = typeUtil;
+    this.elementUtils = elementUtils;
+  }
 
     /**
      * @param schema
@@ -108,8 +111,21 @@ public class SchemaMetaParser {
             Element element = typeUtil.asElement(typeMirror);
             if (element.getAnnotation(RecordSchema.class) != null) {
                 return element.toString();
-            } else {
-                messager.printMessage(Kind.WARNING, "non-record-schema type: " + typeMirror.toString(), schema);
+            }
+            // Maybe the programmer used the record name rather than the schema name.
+            String parentSchemaName = typeMirror.toString()+"Schema";
+            TypeElement parentSchema = elementUtils.getTypeElement(parentSchemaName);
+            // messager
+            //   .printMessage(Kind.NOTE,
+            //                 String.format("Non-record schema %s (%s) would have schema %s (%s)",
+            //                               typeMirror, element,
+            //                               parentSchemaName, parentSchema));
+            if (parentSchema != null && parentSchema.getAnnotation(RecordSchema.class) != null) {
+              messager.printMessage(Kind.WARNING,
+                                    String.format("Record name used instead of schema name: %s",
+                                                  typeMirror.toString()),
+                                    schema);
+              return parentSchema.toString();
             }
         }
         return null;

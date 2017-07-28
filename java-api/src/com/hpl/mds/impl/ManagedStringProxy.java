@@ -26,11 +26,7 @@
 
 package com.hpl.mds.impl;
 
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.naming.Namespace;
-import com.hpl.mds.naming.Prior;
-import com.hpl.mds.string.ManagedString;
+import com.hpl.mds.*;
 
 public class ManagedStringProxy extends Proxy implements ManagedString {
 	
@@ -55,7 +51,7 @@ public class ManagedStringProxy extends Proxy implements ManagedString {
 
   	
   private ManagedStringProxy(long hi) {
-    super(hi);
+    super(hi, proxyTable);
   }
 
   @Override
@@ -98,11 +94,24 @@ public class ManagedStringProxy extends Proxy implements ManagedString {
   }
   
   @Override
-  public String asString() {
+  synchronized public String asString() {
     if (cachedString_ == null) {
       cachedString_ = toString(handleIndex_);
     }
     return cachedString_;
+  }
+
+  @Override
+  synchronized public String asStringNoCache() {
+    if (cachedString_ != null) {
+      return cachedString_;
+    }
+    return toString(handleIndex_);
+  }
+
+  @Override
+  synchronized public void clearCache() {
+    cachedString_ = null;
   }
   
   public static ManagedStringProxy fromHandle(long hi) {

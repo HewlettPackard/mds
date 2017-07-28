@@ -41,8 +41,11 @@ public class Types {
     public String getShortName() {
       return "Int";
     }
+    public boolean javaPrimSpec() { return true; }
   };
-  public static final PrimType LONG = new PrimType("ManagedLong", "Long", "long");
+  public static final PrimType LONG = new PrimType("ManagedLong", "Long", "long") {
+      public boolean javaPrimSpec() { return true; }
+    };
   public static final PrimType FLOAT = new PrimType("ManagedFloat", "Float", "float") {
     public boolean isIntegral() {
       return false;
@@ -52,6 +55,7 @@ public class Types {
     public boolean isIntegral() {
       return false;
     };
+    public boolean javaPrimSpec() { return true; }
   };
   public static final PrimType BOOLEAN = new PrimType("ManagedBoolean", "Boolean", "boolean") {
     public String getDefault() { return "false"; }
@@ -103,6 +107,14 @@ public class Types {
     
     public boolean isInt() {
       return this == INT;
+    }
+    
+    public boolean isLong() {
+      return this == LONG;
+    }
+    
+    public boolean isDouble() {
+      return this == DOUBLE;
     }
     
     public String getDefault() {
@@ -183,6 +195,10 @@ public class Types {
     
     
     public boolean isNumeric() {
+      return false;
+    }
+
+    public boolean javaPrimSpec() {
       return false;
     }
   }

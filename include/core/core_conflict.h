@@ -35,508 +35,58 @@
 #define CORE_CONFLICT_H_
 
 #include "core/core_fwd.h"
-#include "ruts/util.h"
-#include "core/core_strings.h"
-#include "mpgc/gc_virtuals.h"
 
 namespace mds {
   namespace core {
 
-    struct conflict_sink {
-      virtual ~conflict_sink() {}
-
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::BOOL>> &f) = 0;
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::BYTE>> &f) = 0;
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::UBYTE>> &f) = 0;
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::SHORT>> &f) = 0;
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::USHORT>> &f) = 0;
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::INT>> &f) = 0;
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::UINT>> &f) = 0;
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::LONG>> &f) = 0;
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::ULONG>> &f) = 0;
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::FLOAT>> &f) = 0;
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::DOUBLE>> &f) = 0;
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::STRING>> &f) = 0;
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::RECORD>> &f) = 0;
-      // su - this conflict deals with two different branches seeing two different arrays
-      //      as a field of a record
-      virtual void add_conflict(const gc_ptr<managed_record> &r,
-                                const gc_ptr<branch> &b,
-                                const gc_ptr<const record_field<kind::ARRAY>> &f) = 0;
-      virtual void add_conflict(const gc_ptr<name_space> &ns,
-                                const gc_ptr<interned_string> &name) = 0;
-      // su - this conflict deals with having two conflicting elements inside of an array
-      virtual void add_conflict(const gc_ptr<managed_array<kind::BOOL>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-      virtual void add_conflict(const gc_ptr<managed_array<kind::BYTE>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-      virtual void add_conflict(const gc_ptr<managed_array<kind::UBYTE>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-      virtual void add_conflict(const gc_ptr<managed_array<kind::SHORT>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-      virtual void add_conflict(const gc_ptr<managed_array<kind::USHORT>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-      virtual void add_conflict(const gc_ptr<managed_array<kind::INT>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-      virtual void add_conflict(const gc_ptr<managed_array<kind::UINT>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-      virtual void add_conflict(const gc_ptr<managed_array<kind::LONG>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-      virtual void add_conflict(const gc_ptr<managed_array<kind::ULONG>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-      virtual void add_conflict(const gc_ptr<managed_array<kind::FLOAT>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-      virtual void add_conflict(const gc_ptr<managed_array<kind::DOUBLE>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-      virtual void add_conflict(const gc_ptr<managed_array<kind::STRING>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-      virtual void add_conflict(const gc_ptr<managed_array<kind::RECORD>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-      virtual void add_conflict(const gc_ptr<managed_array<kind::ARRAY>> &a,
-                                const gc_ptr<branch> &b,
-                                const array_index_type i) = 0;
-    };
-
-    enum class cb_disc : unsigned char {
-      field_base,
-      array_base=field_base+n_kinds,
-      bound_name=array_base+n_kinds
-    };
-
-
-    class conflict : public gc_allocated_with_virtuals<conflict, cb_disc> {
-      using base = gc_allocated_with_virtuals<conflict, cb_disc>;
+    class conflict : public gc_allocated {
+      const gc_ptr<value_chain> _value_chain;
+      const gc_ptr<task> _redo_task;
+      mutable bool _resolved = false;
     public:
-	struct virtuals : virtuals_base {
-	  virtual void add_to(conflict *self, conflict_sink &sink) = 0;
-	};
-      void add_to(conflict_sink &sink)  {
-	call_virtual(this, &virtuals::add_to, sink);
-      }
 
-      
-      const gc_ptr<branch> _branch;
-      const gc_sub_ptr<std::atomic<gc_ptr<conflict>>> _location;
-
-      std::atomic<bool> _resolved{false};
-      explicit conflict(gc_token &gc,
-                        const gc_ptr<branch> &b,
-                        const gc_sub_ptr<std::atomic<gc_ptr<conflict>>> &loc,
-                        discriminator_type d)
-	: base(gc, d),
-	  _branch(b),
-	  _location(loc)
+      conflict(gc_token &gc,
+               const gc_ptr<value_chain> &vc,
+               const gc_ptr<task> &rt)
+        : gc_allocated{gc}, _value_chain{vc}, _redo_task{rt}
       {}
 
-      static
-      const auto &descriptor() {
+      const static auto &descriptor() {
         static gc_descriptor d =
-	  GC_DESC(conflict)
-	  .WITH_SUPER(base)
-	  .WITH_FIELD(&conflict::_branch)
-	  .WITH_FIELD(&conflict::_location)
-	  .WITH_FIELD(&conflict::_resolved);
+          GC_DESC(conflict)
+          .WITH_FIELD(&conflict::_value_chain)
+          .WITH_FIELD(&conflict::_redo_task)
+          .WITH_FIELD(&conflict::_resolved)
+          ;
+
         return d;
       }
 
-      bool is_resolved() {
+      bool is_resolved() const {
         return _resolved;
       }
 
-      void mark_resolved();
-
-      bool install() {
-        std::atomic<gc_ptr<conflict>> &loc = *_location;
-        gc_ptr<conflict> me = GC_THIS;
-        auto res = ruts::try_change_value(loc, nullptr, me);
-        /*
-         * If there's a race and two threads are trying to install the
-         * same conflict, we say they both succeeded so that neither
-         * tries to mark it resolved.
-         */
-        return res || res.resulting_value() == me;
-      }
-
-      // for conflict resolution:
-
-    };
-
-    /*
-     * We originally strung the lists through the conflicts
-     * themselves, which is more efficient, but the processing
-     * of a context's contingent conflict list by multiple
-     * threads could result in the same conflict being added
-     * to the conflict list multiple times, overwriting the
-     * next pointer and resulting in a circular list (and
-     * dropping everything after it).  This is bad.
-     */
-    // conflict_list_handle declared in mds_core_api.h
-    // requires conflict_list to be exportable, with_uniform_id
-    // class conflict_list : public gc_allocated
-    class conflict_list : public exportable, public with_uniform_id
-    {
-      const gc_ptr<conflict> _conflict;
-      gc_ptr<conflict_list> _next;
-      mutable bool _handled = false;
-    public:
-      conflict_list(gc_token &gc,
-                    const gc_ptr<conflict> &c,
-                    const gc_ptr<conflict_list> &n)
-      : exportable{gc},
-        _conflict(c), _next(n)
-      {
-        //assert(n == nullptr || n->get_gc_descriptor().is_valid());
-	//	assert(false);
-      }
-      //: gc_allocated{gc},
-
-      static
-      const auto &descriptor() {
-        static gc_descriptor d =
-	  GC_DESC(conflict_list)
-	  .WITH_SUPER(with_uniform_id)
-	  .WITH_FIELD(&conflict_list::_conflict)
-	  .WITH_FIELD(&conflict_list::_next)
-	  .WITH_FIELD(&conflict_list::_handled);
-        return d;
-      }
-
       /*
-       * We can't just call this "conflict", because that
-       * wipes out our ability to use the type.  I'm
-       * starting to think we should capitalize types.
+       * We can either make mark_resolved() accessible to const
+       * conflicts or pass them around non-const.  I'm on the fence,
+       * but the current code passes them around by const ptr, so I'm
+       * taking the easy path.
        */
-      gc_ptr<conflict> get_conflict() const {
-        return _conflict;
+      void mark_resolved() const {
+        _resolved = true;
       }
 
-      const gc_ptr<conflict_list>& next() const {
-        assert(_next == nullptr || _next->get_gc_descriptor().is_valid());
-        return _next;
+      gc_ptr<task> redo_task() const {
+        return _redo_task;
       }
 
-      static
-      gc_ptr<conflict_list>
-      prepend(const gc_ptr<conflict> &c,
-              const gc_ptr<conflict_list> &list) {
-       return make_gc<conflict_list>(c, list);
-      }
-
-
-      template <typename Fn>
-      void for_each(const Fn &fn) const {
-        for (gc_ptr<const conflict_list> cl = GC_THIS;
-            cl != nullptr;
-            cl = cl->next())
-        {
-          fn(cl->_conflict);
-        }
-      }
-
-      template <typename Fn>
-      void for_each_unhandled(const Fn &fn, bool mark_handled = false) const {
-        for (gc_ptr<const conflict_list> cl = GC_THIS;
-            cl != nullptr;
-            cl = cl->next())
-        {
-          if (!cl->_handled) {
-            fn(cl->_conflict);
-            if (mark_handled) {
-              cl->_handled = true;
-            }
-          }
-        }
-      }
-
-      template <typename Fn>
-      void handle_each(const Fn &fn) {
-        for_each_unhandled(fn, true);
-      }
-
-      gc_ptr<conflict_list> pop_resolved() {
-        for (gc_ptr<conflict_list> cl = GC_THIS;
-            cl != nullptr;
-            cl = cl->next())
-        {
-          if (!cl->_conflict->is_resolved()) {
-            return cl;
-          }
-        }
-        return nullptr;
-      }
-    };
-
-    enum class cg_disc : unsigned char {
-      record_base,
-      array_base=record_base+n_kinds,
-      bound_name=array_base+n_kinds
-    };
-
-
-    struct conflict_generator : gc_allocated_with_virtuals<conflict_generator, cg_disc> {
-      using base = gc_allocated_with_virtuals<conflict_generator, cg_disc>;
-      struct virtuals : virtuals_base {
-	virtual gc_ptr<conflict> generate(const conflict_generator *self,
-					  const gc_ptr<branch> &b,
-					  const gc_sub_ptr<std::atomic<gc_ptr<conflict>>> &loc)
-	  const = 0;
-      };
-
-      gc_ptr<conflict> generate(const gc_ptr<branch> &b,
-				const gc_sub_ptr<std::atomic<gc_ptr<conflict>>> &loc) const {
-	return call_virtual(this, &virtuals::generate, b, loc);
+      gc_ptr<value_chain> get_vc() const {
+        return _value_chain;
       }
       
-      conflict_generator(gc_token &gc, discriminator_type d) : base{gc, d} {}
-      static const auto &descriptor() {
-	static gc_descriptor d =
-	  GC_DESC(conflict_generator)
-	  .WITH_SUPER(base);
-	return d;
-      }
     };
+    
 
-    template <kind K>
-    struct field_conflict : conflict {
-      static constexpr discriminator_type discrim = ruts::enum_plus(cb_disc::field_base, ruts::index(K));
-      gc_ptr<managed_record> _record;
-      gc_ptr<const record_field<K>> _field;
-      explicit field_conflict(gc_token &gc, const gc_ptr<branch> &b,
-			      const gc_sub_ptr<std::atomic<gc_ptr<conflict>>> &loc,
-			      const gc_ptr<managed_record> &r,
-			      const gc_ptr<const record_field<K>> &f,
-			      discriminator_type d = discrim)
-	: conflict{gc, b, loc, d}, _record{r}, _field{f}
-      {}
-      
-      static const auto &descriptor() {
-	static gc_descriptor d =
-	  GC_DESC(field_conflict)
-	  .template WITH_SUPER(conflict)
-	  .template WITH_FIELD(&field_conflict::_record)
-	  .template WITH_FIELD(&field_conflict::_field);
-	return d;
-      }
-
-      struct virtuals : conflict::virtuals {
-	using impl = field_conflict;
-	void add_to(conflict *self, conflict_sink &sink) override {
-	  self->call_non_virtual(&impl::add_to_impl, sink);
-	}
-      };
-
-      void add_to_impl(conflict_sink &sink);
-      
-
-      struct generator : conflict_generator {
-	static constexpr discriminator_type
-	discrim = ruts::enum_plus(cg_disc::record_base, ruts::index(K));
-	gc_ptr<managed_record> _record;
-	gc_ptr<const record_field<K>> _field;
-	generator(gc_token &gc,
-		 const gc_ptr<managed_record> &r,
-		 const gc_ptr<const record_field<K>> &f,
-		 discriminator_type d = discrim)
-          : conflict_generator{gc, d}, _record{r}, _field{f}
-	{}
-	static const auto &descriptor() {
-	  static gc_descriptor d =
-	    GC_DESC(generator)
-	    .template WITH_SUPER(conflict_generator)
-	    .template WITH_FIELD(&generator::_record)
-	    .template WITH_FIELD(&generator::_field);
-	  return d;
-	}
-	struct virtuals : conflict_generator::virtuals {
-	  gc_ptr<conflict> generate(const conflict_generator *self,
-				    const gc_ptr<branch> &b,
-				    const gc_sub_ptr<std::atomic<gc_ptr<conflict>>> &loc)
-	    const override {
-	    return self->call_non_virtual(&generator::generate_impl, b, loc);
-	  }
-	};
-
-	gc_ptr<conflict> generate_impl(const gc_ptr<branch> &b,
-				       const gc_sub_ptr<std::atomic<gc_ptr<conflict>>> &loc) const {
-	  return make_gc<field_conflict>(b, loc, _record, _field);
-	}
-
-      };
-    };
-
-    template <kind K>
-    struct array_elmt_conflict : conflict {
-      using index_type = array_index_type;
-      static constexpr discriminator_type discrim = ruts::enum_plus(cb_disc::array_base, ruts::index(K));
-      gc_ptr<managed_array<K>> _array;
-      index_type               _i;
-      explicit array_elmt_conflict(gc_token &gc, const gc_ptr<branch> &b,
-				   const gc_sub_ptr<std::atomic<gc_ptr<conflict>>> &loc,
-				   const gc_ptr<managed_array<K>> &a,
-				   const index_type &i,
-				   discriminator_type d = discrim)
-        : conflict{gc, b, loc, d}, _array{a}, _i{i}
-        {}
-
-      static const auto &descriptor() {
-	static gc_descriptor d =
-	  GC_DESC(array_elmt_conflict)
-	  .template WITH_SUPER(conflict)
-	  .template WITH_FIELD(&array_elmt_conflict::_array)
-	  .template WITH_FIELD(&array_elmt_conflict::_i);
-	return d;
-      }
-
-      struct virtuals : conflict::virtuals {
-	using impl = array_elmt_conflict;
-	void add_to(conflict *self, conflict_sink &sink) override {
-	  self->call_non_virtual(&impl::add_to_impl, sink);
-	}
-      };
-
-      void add_to_impl(conflict_sink &sink) const;
-
-      struct generator : conflict_generator {
-        using typename conflict_generator::discriminator_type;
-        static constexpr discriminator_type discrim = ruts::enum_plus(cg_disc::array_base, ruts::index(K));
-	gc_ptr<managed_array<K>> _array;
-	index_type               _i;
-	generator(gc_token &gc, const gc_ptr<managed_array<K>> &a, const index_type &i, discriminator_type d = discrim)
-          : conflict_generator{gc, d}, _array{a}, _i{i}
-	{}
-	static const auto &descriptor() {
-	  static gc_descriptor d =
-	    GC_DESC(generator)
-	    .template WITH_SUPER(conflict_generator)
-	    .template WITH_FIELD(&generator::_array)
-	    .template WITH_FIELD(&generator::_i);
-	  return d;
-	}
-
-	struct virtuals : conflict_generator::virtuals {
-	  gc_ptr<conflict> generate(const conflict_generator *self,
-				    const gc_ptr<branch> &b,
-				    const gc_sub_ptr<std::atomic<gc_ptr<conflict>>> &loc)
-	    const override {
-	    return self->call_non_virtual(&generator::generate_impl, b, loc);
-	  }
-	};
-        //       static gc_ptr<data_type> create_data(const gc_ptr<managed_array<K>> &array, const index_type i) {
-        //   return make_gc<data_type>(array, i);
-        // }
-        gc_ptr<conflict> generate_impl(const gc_ptr<branch> &b,
-				       const gc_sub_ptr<std::atomic<gc_ptr<conflict>>> &loc) const {
-	  return make_gc<array_elmt_conflict>(b, loc, _array, _i);
-	}
-      };
-    };
-
-
-    struct bound_name_conflict : conflict {
-      static constexpr discriminator_type discrim = cb_disc::bound_name;
-      gc_ptr<name_space> _namespace;
-      gc_ptr<interned_string> _name;
-      explicit bound_name_conflict(gc_token &gc, const gc_ptr<branch> &b,
-				   const gc_sub_ptr<std::atomic<gc_ptr<conflict>>> &loc,
-				   const gc_ptr<name_space> &ns,
-				   const gc_ptr<interned_string> &name,
-				   discriminator_type d = discrim)
-	: conflict{gc, b, loc, d}, _namespace{ns}, _name{name}
-      {}
-      
-      static const auto &descriptor() {
-	static gc_descriptor d =
-	  GC_DESC(bound_name_conflict)
-	  .template WITH_SUPER(conflict)
-	  .template WITH_FIELD(&bound_name_conflict::_namespace)
-	  .template WITH_FIELD(&bound_name_conflict::_name);
-	return d;
-      }
-
-      struct virtuals : conflict::virtuals {
-	using impl = bound_name_conflict;
-	void add_to(conflict *self, conflict_sink &sink) override {
-	  self->call_non_virtual(&impl::add_to_impl, sink);
-	}
-      };
-
-      void add_to_impl(conflict_sink &sink) {
-	sink.add_conflict(_namespace, _name);
-      }
-
-      struct generator : conflict_generator {
-	static constexpr discriminator_type discrim = cg_disc::bound_name;
-	gc_ptr<name_space> _namespace;
-	gc_ptr<interned_string> _name;
-	generator(gc_token &gc,
-		  const gc_ptr<name_space> &ns,
-		  const gc_ptr<interned_string> &name,
-		  discriminator_type d = discrim)
-          : conflict_generator{gc, d}, _namespace{ns}, _name{name}
-	{}
-	static const auto &descriptor() {
-	  static gc_descriptor d =
-	    GC_DESC(generator)
-	    .WITH_SUPER(conflict_generator)
-	    .WITH_FIELD(&generator::_namespace)
-	    .WITH_FIELD(&generator::_name);
-	  return d;
-	}
-	struct virtuals : conflict_generator::virtuals {
-	  gc_ptr<conflict> generate(const conflict_generator *self,
-				    const gc_ptr<branch> &b,
-				    const gc_sub_ptr<std::atomic<gc_ptr<conflict>>> &loc)
-	    const override {
-	    return self->call_non_virtual(&generator::generate_impl, b, loc);
-	  }
-	};
-
-	gc_ptr<conflict> generate_impl(const gc_ptr<branch> &b,
-				       const gc_sub_ptr<std::atomic<gc_ptr<conflict>>> &loc) const {
-	  return make_gc<bound_name_conflict>(b, loc, _namespace, _name);
-	}
-
-      };
-    };
 
   }
 }

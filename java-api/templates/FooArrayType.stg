@@ -62,25 +62,7 @@ $body(class(type), type, type.managedName, type.boxedName, type.primName, type.a
 body(class, type, managed, boxed, prim, field, short, impl, types) ::= <<
 package $package(type)$;
 
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.ManagedList;
-import com.hpl.mds.ManagedOrdered;
-import com.hpl.mds.ManagedArray;
-import com.hpl.mds.ManagedSet;
-import com.hpl.mds.ManagedMap;
-import com.hpl.mds.string.ManagedMapFromString;
-import com.hpl.mds.ManagedType;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.RecordType;
-import com.hpl.mds.string.ManagedString;
-import com.hpl.mds.$ifString({string},{prim})$.$managed$;
-import com.hpl.mds.$ifString({string},{prim.container.array})$.$managed$Array;
-import com.hpl.mds.naming.Namespace;
-import com.hpl.mds.naming.Prior;
-import com.hpl.mds.exceptions.UnboundNameException;
-
-
+import com.hpl.mds.*;
 
 public class $class$ implements ManagedTypeImpl<ManagedArray<$managed$>\>, $managed$Array.Type {
 
@@ -106,13 +88,13 @@ public class $class$ implements ManagedTypeImpl<ManagedArray<$managed$>\>, $mana
    * @throws UnboundNameException when the name is not bound to anything in this context
    * @throws IncompatibleTypeException when the name is bound to something other than this type
    */
-  private static native long lookupHandle(long ctxtHandle, long namespaceHandle, long nameHandle);
+  private static native long lookupHandle(long namespaceHandle, long nameHandle);
   /**
    * @returns false if the name is bound to a sub-namespace in the current context.
    */
-  private static native boolean bindHandle(long ctxtHandle, long namespaceHandle, long nameHandle, long valHandle);
+  private static native boolean bindHandle(long namespaceHandle, long nameHandle, long valHandle);
   private static native boolean isSameAs(long aHandle, long bHandle);
-  private static native long createArray(long ctxtHandle, long size);
+  private static native long createArrayHandle(long size);
 
     private $class$() {}
 	
@@ -142,8 +124,7 @@ public class $class$ implements ManagedTypeImpl<ManagedArray<$managed$>\>, $mana
   
   @Override
   public $short$ArrayProxy create(long size) {
-    long cHndl = IsoContextProxy.current().handleIndex();
-    long aHndl = createArray(cHndl, size);
+    long aHndl = createArrayHandle(size);
     return $short$ArrayProxy.fromHandle(aHndl, size);
   }
 
@@ -221,11 +202,10 @@ $endif$
    */
   @Override
   public $managed$Array lookupName(Namespace ns, CharSequence name) {
-    IsoContextProxy ctxt = IsoContextProxy.current();
     NamespaceProxy nsp = (NamespaceProxy)ns;
     ManagedStringProxy msp = ManagedStringProxy.valueOf(name);
     
-    long ah = lookupHandle(ctxt.handleIndex(), nsp.handleIndex(), msp.handleIndex());  
+    long ah = lookupHandle(nsp.handleIndex(), msp.handleIndex());  
     return $short$ArrayProxy.fromHandle(ah);
   }
   
@@ -234,14 +214,12 @@ $endif$
     /*
      * TODO: Prior is unused
      */
-    IsoContextProxy ctxt = IsoContextProxy.current();
     NamespaceProxy nsp = (NamespaceProxy)ns;
     ManagedStringProxy msp = ManagedStringProxy.valueOf(name);
     $short$ArrayProxy ap = ($short$ArrayProxy)val;
     
-    boolean worked = bindHandle(ctxt.handleIndex(), nsp.handleIndex(), msp.handleIndex(), ap.handleIndex());
+    boolean worked = bindHandle(nsp.handleIndex(), msp.handleIndex(), ap.handleIndex());
     if (!worked) {
-import com.hpl.mds.exceptions.BoundToNamespaceException;    
       throw new BoundToNamespaceException(ns, name);
     }
     return val;

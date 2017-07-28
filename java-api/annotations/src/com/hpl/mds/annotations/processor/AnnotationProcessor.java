@@ -221,7 +221,9 @@ public class AnnotationProcessor extends AbstractProcessor {
         VisibilitiesParser visibilitiesParser = new VisibilitiesParser(processingEnv.getMessager());
         schemaParser = new SchemaParser(processingEnv.getMessager(), processingEnv.getElementUtils(),
                 processingEnv.getTypeUtils(), visibilitiesParser, getterNameParser, managedRecords);
-        metaParser = new SchemaMetaParser(processingEnv.getMessager(), processingEnv.getTypeUtils());
+        metaParser = new SchemaMetaParser(processingEnv.getMessager(),
+                                          processingEnv.getTypeUtils(),
+                                          processingEnv.getElementUtils());
     }
 
     /**

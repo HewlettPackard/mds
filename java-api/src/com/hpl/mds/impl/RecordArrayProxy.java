@@ -26,16 +26,7 @@
 
 package com.hpl.mds.impl;
 
-import com.hpl.mds.ManagedArray;
-import com.hpl.mds.ManagedComposite;
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.ManagedOrdered;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.ManagedType;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.naming.Namespace;
-import com.hpl.mds.naming.Prior;
-import com.hpl.mds.task.Task;
+import com.hpl.mds.*;
 import com.hpl.mds.usage.UsagePlan;
 import com.hpl.mds.usage.UsageScope;
 
@@ -50,21 +41,24 @@ public class RecordArrayProxy<R extends ManagedRecord> extends ArrayProxy<R> {
   private static native void release(long handle);
   private static native boolean isIdentical(long aHandle, long bHandle);
   private static native boolean isSameObject(long aHandle, long bHandle);
-  private static native boolean isSameViewOfSameObject(long aHandle, long bHandle, long ctxtHandle);
-  private static native long createArray(long ctxtHandle, long size, long typeHandle);
+  private static native boolean isSameViewOfSameObject(long aHandle, long bHandle);
+  private static native long createArray(long size, long typeHandle);
 
-  private static native long readHandle(long handle, long ctxtHandle, long index);
-  private static native long writeHandle(long handle, long ctxtHandle, long index, long val);
+  private static native long getHandle(long handle, long index);
+  private static native long peekHandle(long handle, long index);
+  private static native long setHandle(long handle, long index, long val);
+  private static native long getAndSetHandle(long handle, long index, long val);
   private static native long size(long handle);
   
-  private static native void setToParent(long handle, long ctxtHandle, long index);
   private static native String toString(long handle);
+
+  /*
 
   @Override
   public String toString() {
     return toString(handleIndex());
   }
-  
+  */
  
 
   @Override
@@ -140,21 +134,26 @@ public class RecordArrayProxy<R extends ManagedRecord> extends ArrayProxy<R> {
       return false;
     }
     RecordArrayProxy<?> dc = (RecordArrayProxy<?>)other;
-    return isSameViewOfSameObject(handleIndex(), dc.handleIndex(),
-                                  IsoContextProxy.current().handleIndex());
+    return isSameViewOfSameObject(handleIndex(), dc.handleIndex());
   }
 
   
   @Override
   public R get(long index) {
-	  Task.addRead(this, index);
-	  return ManagedRecordProxy.fromHandle(readHandle(handleIndex(), IsoContextProxy.current().handleIndex(), index), eltType);
+	  return ManagedRecordProxy.fromHandle(getHandle(handleIndex(), index), eltType);
+  }
+  @Override
+  public R peek(long index) {
+	  return ManagedRecordProxy.fromHandle(peekHandle(handleIndex(), index), eltType);
   }
   @Override
   public R set(long index, R val) {
-	  Task.addWrite(this, index);
-	  long old = writeHandle(handleIndex(), IsoContextProxy.current().handleIndex(),
-			  index, ManagedRecordProxy.handleOf(val));
+	  long old = setHandle(handleIndex(), index, ManagedRecordProxy.handleOf(val));
+	  return ManagedRecordProxy.fromHandle(old, eltType);
+  }
+  @Override
+  public R getAndSet(long index, R val) {
+	  long old = getAndSetHandle(handleIndex(), index, ManagedRecordProxy.handleOf(val));
 	  return ManagedRecordProxy.fromHandle(old, eltType);
   }
   
@@ -209,25 +208,6 @@ public class RecordArrayProxy<R extends ManagedRecord> extends ArrayProxy<R> {
   @Override
   public UsagePlan usagePlan(ManagedArray.Usage hint) {
     return Stub.notImplemented();
-  }
-
-  static class Change<RT extends ManagedRecord> extends ArrayProxy.Change<RT> {
-	  public Change(long arrayHandle, long index) {
-		  super(arrayHandle, index);
-	  }
-	  
-	  public Change(RecordArrayProxy<RT> array, long index) {
-		  super(array, handleOf(array), index);
-	  }
-  }
-
-  public Change<R> createChange(long index) {
-	  return new Change<>(this, index);
-  }
-  
-  @Override
-  public void setToParent(long index) {
-	  setToParent(handleIndex_, IsoContextProxy.global().handleIndex_, index);
   }
 
 }

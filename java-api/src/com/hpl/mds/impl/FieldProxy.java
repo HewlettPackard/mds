@@ -28,11 +28,7 @@ package com.hpl.mds.impl;
 
 import java.util.Objects;
 
-import com.hpl.mds.Field;
-import com.hpl.mds.Holder;
-import com.hpl.mds.IsolationContext;
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.ManagedRecord;
+import com.hpl.mds.*;
 
 import com.hpl.mds.callbacks.ChangeHandler;
 import com.hpl.mds.callbacks.ChangeHandlerRemovalHook;
@@ -44,7 +40,7 @@ public abstract class FieldProxy<RT extends ManagedRecord, FT extends ManagedObj
   protected RecordTypeProxy<RT> recordType_;
   
 	protected FieldProxy(long handleIndex, RecordTypeProxy<RT> recType, ManagedStringProxy name) {
-		super(handleIndex);
+          super(handleIndex, null);
 		recordType_ = recType;
 		name_ = name;
 	}
@@ -54,75 +50,7 @@ public abstract class FieldProxy<RT extends ManagedRecord, FT extends ManagedObj
 	  return get(rec);
 	}
 
-  abstract public void setToParent(RT rec);
-
 	
-  static class Change<RT extends ManagedRecord, FT extends ManagedObject>
-    extends ChangeBase {
-
-    /** 
-     * DoubleFieldProxy.Change represented by: 
-     *   objectId: ManagedRecord handle
-     *   changeId: RecordField<ManagedArray<ManagedDouble>> handle
-     */
-    private final long objectId;
-    private final long changeId;
-
-    private RT record;
-    private FieldProxy<RT,FT> field;
-
-    // constructor for calls from PubResultProxy.addDoubleFieldConflict, 
-    // creating conflict change objects
-    public Change(long recHandle, long fieldHandle) {
-      this.objectId = recHandle;
-      this.changeId = fieldHandle;
-    }
-
-    // constructor for calls from FieldProxy.createChange, 
-    // creating read/write change objects
-    public Change(RT record, FieldProxy<RT,FT> field) {
-      this(ManagedRecordProxy.handleOf(record), field.handleIndex_);
-      this.record = record;
-      this.field = field;
-    }
-
-    public long objectId() {
-      return objectId;
-    }
-
-    public long changeId() {
-      return changeId;
-    }
-
-    public boolean equals(Object obj) {
-      // check ChangeBase subtype equality first:
-      // ensures an object of one ChangeBase subtype 
-      // is never compared with an object of a different ChangeBase subtype
-      if (obj != null && obj.getClass() == Change.class) {
-	// then check equality of attribute values
-	return ( this.objectId == ((Change<?,?>)obj).objectId() &&
-		 this.changeId == ((Change<?,?>)obj).changeId() );
-      }
-      return false;
-    }
-
-    // If you override equals() then override hashcode too...
-    public int hashCode() {
-      return Objects.hash(this.getClass(), objectId, changeId);
-    }
-    public String toString() {
-      return "objectId: " + objectId + " changeId: " + changeId;
-    }
-
-    public void setToParent() {
-      field.setToParent(record);
-    }
-  }  // end class Change
-
-  // createChange - used for read/write tracking in task-based conflict resolution
-  public Change<RT,FT> createChange(RT record) {
-    return new Change<>(record, this);
-  }
 
   @Override
   public final boolean change(RT rec, FT expected, FT val) {

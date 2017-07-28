@@ -27,7 +27,8 @@
 ManagedRecord(
 	pkg, 
 	simple_name, 
-	type_name, 
+	type_name,
+        fq_name,
 	parent,
 	superInterfaces, 
 	fields,
@@ -35,9 +36,11 @@ ManagedRecord(
 	protectedFields,
 	privateFields,
 	publicFields,
+        constructingMethods,
 	privateMethods,
 	protectedMethods,
 	publicMethods,
+        methodImpls,
 	userConstructors,
 	creationMethodsImpl,
 	publicCreationMethods,
@@ -47,7 +50,9 @@ ManagedRecord(
 	publicStaticMethods,
 	protectedStaticMethods,
 	privateStaticMethods,
-	ambiguousMethods) ::= <<
+	ambiguousMethods,
+        finalFields,
+        superInitMethods) ::= <<
 $if(pkg)$package $pkg$;$endif$
 
 /*
@@ -170,36 +175,57 @@ public interface $simple_name$ extends $if(parent)$$parent$$else$com.hpl.mds.Man
 	
 	public com.hpl.mds.RecordType<? extends $simple_name$> type();
 	
+        $simple_name$.Impl __GET_IMPL();
+
+        default $fq_name$__PrivateImpl __PRIVATE_$fq_name$() {
+          return __GET_IMPL().__PRIVATE_$fq_name$();
+        }
+
 	static final com.hpl.mds.RecordType<$simple_name$> TYPE = TypeDef.TYPE;
 	static final Creator create = new Creator.Instance();
 	
-	$simple_name$ bindName(com.hpl.mds.naming.HName name);
+	$simple_name$ bindName(com.hpl.mds.HName name);
 	$simple_name$ bindName(CharSequence... segments);
-	$simple_name$ bindName(com.hpl.mds.naming.Namespace namespace, CharSequence name);
+	$simple_name$ bindName(com.hpl.mds.Namespace namespace, CharSequence name);
 	$simple_name$ bindName(char sep, CharSequence... segments);
 	$simple_name$ bindName(java.util.List<? extends CharSequence> segments);
 	$simple_name$ bindName(char sep, java.util.List<? extends CharSequence> segments);
 
-	public $simple_name$ seeAs(com.hpl.mds.ManagedRecord access);
-	public $simple_name$ seeAs(com.hpl.mds.ManagedRecord.StaticAccess access);
-	public $simple_name$.Protected seeAs($simple_name$.Protected access);
-	public $simple_name$.Protected seeAs($simple_name$.SMDefs.AsProtected access);
-	public $simple_name$.Private seeAs($simple_name$.Private access);
-	public $simple_name$.Private seeAs($simple_name$.SMDefs.AsPrivate access);
+	default public $simple_name$ objAs(com.hpl.mds.ManagedRecord access) {
+          return __GET_IMPL().objAs(access);
+        }
+	default public $simple_name$ objAs(com.hpl.mds.ManagedRecord.StaticAccess access) {
+          return __GET_IMPL().objAs(access);
+        }
+	default public $simple_name$.Protected objAs($simple_name$.Protected access) {
+          return __GET_IMPL().objAs(access);
+        }
+	default public $simple_name$.Protected objAs($simple_name$.SMDefs.AsProtected access) {
+          return __GET_IMPL().objAs(access);
+        }
+	default public $simple_name$.Private objAs($simple_name$.Private access) {
+          return __GET_IMPL().objAs(access);
+        }
+	default public $simple_name$.Private objAs($simple_name$.SMDefs.AsPrivate access) {
+          return __GET_IMPL().objAs(access);
+        }
 	
-	public static SMDefs callAs(com.hpl.mds.ManagedRecord.StaticAccess access) {
+	public static SMDefs classAs($simple_name$ access) {
                 return StaticMethod.instance;
         }
-        public static SMDefs.AsProtected callAs($simple_name$.Protected access) {
+	public static SMDefs classAs(com.hpl.mds.ManagedRecord.StaticAccess access) {
                 return StaticMethod.instance;
         }
-        public static SMDefs.AsProtected callAs($simple_name$.SMDefs.AsProtected access) {
+        public static SMDefs.AsProtected classAs($simple_name$.Protected access) {
                 return StaticMethod.instance;
         }
-        public static SMDefs.AsPrivate callAs($simple_name$.Private access) {
+        public static SMDefs.AsProtected classAs($simple_name$.SMDefs.AsProtected access) {
                 return StaticMethod.instance;
         }
-        public static SMDefs.AsPrivate callAs($simple_name$.SMDefs.AsPrivate access) {
+        public static SMDefs.AsPrivate classAs($simple_name$.Private access) {
+                return StaticMethod.instance;
+        }
+        public static SMDefs.AsPrivate classAs($simple_name$.SMDefs.AsPrivate access) {
                 return StaticMethod.instance;
         }
 
@@ -217,9 +243,9 @@ public interface $simple_name$ extends $if(parent)$$parent$$else$com.hpl.mds.Man
 		
 		public com.hpl.mds.RecordType<? extends $simple_name$> type();
 		
-		$simple_name$ bindName(com.hpl.mds.naming.HName name);
+		$simple_name$ bindName(com.hpl.mds.HName name);
 		$simple_name$ bindName(CharSequence... segments);
-		$simple_name$ bindName(com.hpl.mds.naming.Namespace namespace, CharSequence name);
+		$simple_name$ bindName(com.hpl.mds.Namespace namespace, CharSequence name);
 		$simple_name$ bindName(char sep, CharSequence... segments);
 		$simple_name$ bindName(java.util.List<? extends CharSequence> segments);
 		$simple_name$ bindName(char sep, java.util.List<? extends CharSequence> segments);
@@ -238,94 +264,196 @@ public interface $simple_name$ extends $if(parent)$$parent$$else$com.hpl.mds.Man
 		
 		$privateMethods$
 		
-		$simple_name$ bindName(com.hpl.mds.naming.HName name);
+		$simple_name$ bindName(com.hpl.mds.HName name);
 		$simple_name$ bindName(CharSequence... segments);
-		$simple_name$ bindName(com.hpl.mds.naming.Namespace namespace, CharSequence name);
+		$simple_name$ bindName(com.hpl.mds.Namespace namespace, CharSequence name);
 		$simple_name$ bindName(char sep, CharSequence... segments);
 		$simple_name$ bindName(java.util.List<? extends CharSequence> segments);
 		$simple_name$ bindName(char sep, java.util.List<? extends CharSequence> segments);
 
-		default public $simple_name$.Protected seeAs($simple_name$.Protected access) {
+		default public $simple_name$.Protected objAs($simple_name$.Protected access) {
 			return this;
 		}
 
-		default public $simple_name$.Protected seeAs($simple_name$.SMDefs.AsProtected access) {
+		default public $simple_name$.Protected objAs($simple_name$.SMDefs.AsProtected access) {
 			return this;
 		}
 
-		default public $simple_name$.Private seeAs($simple_name$.Private access) {
+		default public $simple_name$.Private objAs($simple_name$.Private access) {
 			return this;
 		}
 
-		default public $simple_name$.Private seeAs($simple_name$.SMDefs.AsPrivate access) {
+		default public $simple_name$.Private objAs($simple_name$.SMDefs.AsPrivate access) {
 			return this;
 		}
-	} 
+	}
 
-	$implModifier$ class Impl extends $if(parent)$$parent$.Impl$else$com.hpl.mds.impl.ManagedRecordProxy$endif$ implements Private {
+        interface MethodImpls extends Protected$if(parent)$, $parent$.MethodImpls $endif$ {
+          // public and private method impls
+          $methodImpls$
+        }
 
-		// user-defined constructors
-		// definitions for diamond-ambiguous methods
+        interface Constructing extends Private$if(parent)$, $parent$.Derived$endif$ {
+          // constructor-visible methods
+          $constructingMethods$
+        }
 
-        $ambiguousMethods$
-        
-		$userConstructors$
+        interface Derived extends $simple_name$ {
+          // superInit methods
+          $superInitMethods$
+        }
+
+
+        class $fq_name$__PrivateImpl extends com.hpl.mds.impl.ManagedRecordProxy implements Constructing {
+                final $simple_name$.Impl _impl;
+                public $simple_name$.Impl __GET_IMPL() {
+                  return _impl;
+                }
+                public $fq_name$__PrivateImpl __PRIVATE_$fq_name$() {
+                  return this;
+                }
+
+                // final fields
+                $finalFields$
+
+                $fq_name$__PrivateImpl($simple_name$.Impl impl) {
+                  super(Secondary.SECONDARY, impl);
+                  _impl = impl;
+                }
+
+		public com.hpl.mds.RecordType<? extends $simple_name$> type() {
+			return _impl.type();
+		}
+
+                public String toString() {
+                  return _impl.toString();
+                }
+
+                public int hashCode() {
+                  return _impl.hashCode();
+                }
+
+                public boolean equals(Object other) {
+                  return _impl.equals(other);
+                }
 		
+		public $packageFormat(pkg)$$simple_name$.Impl bindName(com.hpl.mds.HName name) {
+			return _impl.bindName(name);
+		}
+		public $packageFormat(pkg)$$simple_name$.Impl bindName(CharSequence... segments) {
+			return _impl.bindName(segments);
+		}
+		public $packageFormat(pkg)$$simple_name$.Impl bindName(com.hpl.mds.Namespace namespace, CharSequence name) {
+                        return _impl.bindName(namespace, name);
+                }
+		public $packageFormat(pkg)$$simple_name$.Impl bindName(char sep, CharSequence... segments) {
+			return _impl.bindName(sep, segments);
+		}
+		public $packageFormat(pkg)$$simple_name$.Impl bindName(java.util.List<? extends CharSequence> segments) {
+			return _impl.bindName(segments);
+		}
+		public $packageFormat(pkg)$$simple_name$.Impl bindName(char sep, java.util.List<? extends CharSequence> segments) {
+			return _impl.bindName(sep, segments);
+		}
+
+		public $simple_name$ objAs(com.hpl.mds.ManagedRecord access) {
+			return this;
+		}
+		public $simple_name$ objAs(com.hpl.mds.ManagedRecord.StaticAccess access) {
+			return this;
+		}
+
+		public $simple_name$.Protected objAs($simple_name$.Protected access) {
+			return this;
+		}
+
+		public $simple_name$.Protected objAs($simple_name$.SMDefs.AsProtected access) {
+			return this;
+		}
+
+		public $simple_name$.Private objAs($simple_name$.Private access) {
+			return this;
+		}
+
+		public $simple_name$.Private objAs($simple_name$.SMDefs.AsPrivate access) {
+			return this;
+		}
+        }
+
+	$implModifier$ class Impl extends $if(parent)$$parent$.Impl$else$com.hpl.mds.impl.ManagedRecordProxy$endif$ implements MethodImpls {
+                final $fq_name$__PrivateImpl _privateImpl;
+
+                public $simple_name$.Impl __GET_IMPL() {
+                  return this;
+                }
+
+                public final $fq_name$__PrivateImpl __PRIVATE_$fq_name$() {
+                  return _privateImpl;
+                }
+        
 		public Impl(com.hpl.mds.RecordType<? extends $simple_name$> type) {
 			super(type);
+                        _privateImpl = new $fq_name$__PrivateImpl(this);
 		}
 		public Impl(FromHandle fh, long handle,
 					com.hpl.mds.RecordType<? extends $simple_name$> type) {
 			super(fh, handle, type);
+                        _privateImpl = new $fq_name$__PrivateImpl(this);
 		}
 		public Impl(FromHandle fh, long handle) {
 			this(fh, handle, $simple_name$.TYPE);
 		}
 	
+		// user-defined constructors
+		$userConstructors$
+
+		// definitions for diamond-ambiguous methods
+                $ambiguousMethods$
+
 		public com.hpl.mds.RecordType<? extends $simple_name$> type() {
 			return typeOf(this);
 		}
 		
-		public $packageFormat(pkg)$$simple_name$.Impl bindName(com.hpl.mds.naming.HName name) {
+		public $packageFormat(pkg)$$simple_name$.Impl bindName(com.hpl.mds.HName name) {
 			return name.bind(this);
 		}
 		public $packageFormat(pkg)$$simple_name$.Impl bindName(CharSequence... segments) {
-			return bindName(com.hpl.mds.naming.HName.from(segments));
+			return bindName(com.hpl.mds.HName.from(segments));
 		}
-		public $packageFormat(pkg)$$simple_name$.Impl bindName(com.hpl.mds.naming.Namespace namespace, CharSequence name) {
+		public $packageFormat(pkg)$$simple_name$.Impl bindName(com.hpl.mds.Namespace namespace, CharSequence name) {
             return namespace.bind(name, this);
         }
 		public $packageFormat(pkg)$$simple_name$.Impl bindName(char sep, CharSequence... segments) {
-			return bindName(com.hpl.mds.naming.HName.from(sep, segments));
+			return bindName(com.hpl.mds.HName.from(sep, segments));
 		}
 		public $packageFormat(pkg)$$simple_name$.Impl bindName(java.util.List<? extends CharSequence> segments) {
-			return bindName(com.hpl.mds.naming.HName.from(segments));
+			return bindName(com.hpl.mds.HName.from(segments));
 		}
 		public $packageFormat(pkg)$$simple_name$.Impl bindName(char sep, java.util.List<? extends CharSequence> segments) {
-			return bindName(com.hpl.mds.naming.HName.from(sep, segments));
+			return bindName(com.hpl.mds.HName.from(sep, segments));
 		}
 
-		public $simple_name$ seeAs(com.hpl.mds.ManagedRecord access) {
-			return this;
+		public $simple_name$ objAs(com.hpl.mds.ManagedRecord access) {
+			return _privateImpl;
 		}
-		public $simple_name$ seeAs(com.hpl.mds.ManagedRecord.StaticAccess access) {
-			return this;
-		}
-
-		public $simple_name$.Protected seeAs($simple_name$.Protected access) {
-			return this;
+		public $simple_name$ objAs(com.hpl.mds.ManagedRecord.StaticAccess access) {
+			return _privateImpl;
 		}
 
-		public $simple_name$.Protected seeAs($simple_name$.SMDefs.AsProtected access) {
-			return this;
+		public $simple_name$.Protected objAs($simple_name$.Protected access) {
+			return _privateImpl;
 		}
 
-		public $simple_name$.Private seeAs($simple_name$.Private access) {
-			return this;
+		public $simple_name$.Protected objAs($simple_name$.SMDefs.AsProtected access) {
+			return _privateImpl;
 		}
 
-		public $simple_name$.Private seeAs($simple_name$.SMDefs.AsPrivate access) {
-			return this;
+		public $simple_name$.Private objAs($simple_name$.Private access) {
+			return _privateImpl;
+		}
+
+		public $simple_name$.Private objAs($simple_name$.SMDefs.AsPrivate access) {
+			return _privateImpl;
 		}
 	}
 }

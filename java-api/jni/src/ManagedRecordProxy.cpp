@@ -48,6 +48,7 @@ extern "C"
   Java_com_hpl_mds_impl_ManagedRecordProxy_release (JNIEnv *jEnv, jclass,
 						    jlong handleIndex)
   {
+    // std::cerr << "Releasing record " << handleIndex << std::endl;
     exception_handler (jEnv, [=]
       {
 	indexed<managed_record_handle> self
@@ -63,6 +64,7 @@ extern "C"
 							    jclass,
 							    jlong handleIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<managed_record_handle> self
@@ -88,17 +90,17 @@ extern "C"
   jlong
   JNICALL
   Java_com_hpl_mds_impl_ManagedRecordProxy_createRecord (JNIEnv *jEnv, jobject,
-							 jlong recTypeHIndex,
-							 jlong ctxtHIndex)
+							 jlong recTypeHIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<record_type_handle> rt
 	  { recTypeHIndex};
-	indexed<iso_context_handle> ctxt
-	  { ctxtHIndex};
+        //        std::cerr << "Creating a record of type " << rt.peek_index() << std::endl;
 	indexed<managed_record_handle> rec
-	  { rt->create_record(*ctxt)};
+	  { rt->create_record()};
+        // std::cerr << "Got record " << rec.peek_index() << std::endl;
 	return rec.return_index();
       });
   }
@@ -150,14 +152,13 @@ extern "C"
   jboolean
   JNICALL
   Java_com_hpl_mds_impl_ManagedRecordProxy_isSameViewOfSameObject (JNIEnv *jEnv, jclass,
-                                                                   jlong aHIndex, jlong bHIndex,
-                                                                   jlong ctxtHIndex)
+                                                                   jlong aHIndex, jlong bHIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=] {
         indexed<managed_record_handle> a { aHIndex };
         indexed<managed_record_handle> b { bHIndex };
-        indexed<iso_context_handle> ctxt { ctxtHIndex };
-        return a->same_in(*ctxt, *b);
+        return a->same_in_prevailing_context(*b);
       });
   }
 

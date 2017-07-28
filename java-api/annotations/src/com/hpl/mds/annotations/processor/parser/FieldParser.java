@@ -33,10 +33,15 @@ import java.util.logging.Logger;
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.element.Modifier;
 import javax.tools.Diagnostic.Kind;
 
 import com.hpl.mds.annotations.Emitted;
+import com.hpl.mds.annotations.Final;
+import com.hpl.mds.annotations.Private;
 import com.hpl.mds.annotations.processor.RecordInfo;
+import com.hpl.mds.annotations.processor.RecordInfo.ConstantInfo;
 import com.hpl.mds.annotations.processor.RecordInfo.DataType;
 import com.hpl.mds.annotations.processor.RecordInfo.FieldInfo;
 import com.hpl.mds.annotations.processor.RecordInfo.GetterFormatInfo;
@@ -100,19 +105,19 @@ public class FieldParser {
 
         // parsing field...
         try {
-            String mdsName = getMDSFieldName(recordInfo, method, schemaContext.getParent());
-            if (mdsName == null) {
-                return true;
-            }
-
-            VarInfo varInfo = parseFieldDataType(method, schemaContext, mdsName);
-            if (varInfo == null) {
-                return true;
-            }
-            String getterNameFormat = getFieldGetterNameFormat(method, varInfo.getType(), schemaContext);
-            FieldInfo fieldInfo = new FieldInfo(varInfo, mdsName, getterNameFormat);
-            parseFieldVisibility(fieldInfo, method, schemaContext);
-            recordInfo.addField(fieldInfo);
+          String mdsName = method.getSimpleName().toString();
+          if (isDuplicate(mdsName, recordInfo, schemaContext.getParent(), method)) {
+            return true;
+          }
+          VarInfo varInfo = parseFieldDataType(method, schemaContext, mdsName);
+          if (varInfo == null) {
+            return true;
+          }
+          String getterNameFormat = getFieldGetterNameFormat(method, varInfo.getType(), schemaContext);
+          boolean isFinal = (method.getAnnotation(Final.class) != null);
+          FieldInfo fieldInfo = new FieldInfo(varInfo, mdsName, getterNameFormat, isFinal);
+          parseFieldVisibility(fieldInfo, method, schemaContext);
+          recordInfo.addField(fieldInfo);
         } catch (ProcessingException e) {
             messager.printMessage(Kind.ERROR, "Ignoring Field, " + e.getMessage(), e.getElement());
         } catch (Exception e) {
@@ -180,23 +185,25 @@ public class FieldParser {
      * @param parent
      * @return a valid field name, null if the field name already exists
      */
-    private String getMDSFieldName(RecordInfo recordInfo, Element element, RecordInfo parent) {
-        String fieldName = element.getSimpleName().toString();
-        if (recordInfo.getFieldNames().contains(fieldName)) {
-            messager.printMessage(Kind.ERROR,
-                    "Ignoring Field, " + "The name of the field " + fieldName + " already exists", element);
-            return null;
-        }
-        if (parent != null && parent.getFieldNames().contains(fieldName)) {
-            messager.printMessage(Kind.ERROR,
-                    "Ignoring Field, The name of the field " + fieldName + " already exists in the parent record: "
-                            + parent.getSimpleName() + PKG_DELIMITER + parent.getPkg(),
-                    element);
-            return null;
-        }
-        recordInfo.addFieldName(fieldName);
-        return fieldName;
+  private boolean isDuplicate(String name, RecordInfo recordInfo, RecordInfo parent, Element element)
+  {
+    if (recordInfo.getFieldNames().contains(name)) {
+      messager.printMessage(Kind.ERROR,
+                            String.format("Field '%s' previously declared in %s: ignoring",
+                                          name, recordInfo.getSimpleName()),
+                            element);
+      return true;
     }
+    if (parent != null && parent.getFieldNames().contains(name)) {
+      messager.printMessage(Kind.ERROR,
+                            String.format("Field '%s' previously declared in %s: ignoring",
+                                          name, parent.getSimpleName()),
+                            element);
+      return true;
+    }
+    recordInfo.addFieldName(name);
+    return false;
+  }
 
     /**
      * Parses the visibility annotations of a field
@@ -223,4 +230,24 @@ public class FieldParser {
         fieldInfo.setDivVisibility(visibilities.get(Emitted.DIV));
     }
 
+  public boolean parseStaticFinal(VariableElement field,
+                                  RecordInfo recordInfo,
+                                  SchemaContext schemaContext)
+  {
+    if (!field.getModifiers().contains(Modifier.STATIC)
+        || !field.getModifiers().contains(Modifier.FINAL))
+      {
+        return false;
+      }
+    String name = field.getSimpleName().toString();
+    String type = field.asType().toString();
+    Map<Emitted, Visibility>
+      visibilities = visibilitiesParser.parse(field, Emitted.CONSTANT);
+    visibilitiesParser.populate(visibilities, Collections.emptyList(),
+                                schemaContext.getVisibilities());
+    Visibility visibility = visibilities.get(Emitted.CONSTANT);
+    ConstantInfo constInfo = new ConstantInfo(name, type, visibility);
+    recordInfo.addConstant(constInfo);
+    return true;
+  }
 }

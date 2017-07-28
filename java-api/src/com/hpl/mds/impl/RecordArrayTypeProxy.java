@@ -26,23 +26,7 @@
 
 package com.hpl.mds.impl;
 
-import com.hpl.mds.ManagedArray;
-import com.hpl.mds.ManagedList;
-import com.hpl.mds.ManagedMap;
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.ManagedOrdered;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.ManagedSet;
-import com.hpl.mds.ManagedType;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.RecordType;
-import com.hpl.mds.exceptions.BoundToNamespaceException;
-import com.hpl.mds.exceptions.IncompatibleTypeException;
-import com.hpl.mds.exceptions.UnboundNameException;
-import com.hpl.mds.naming.Namespace;
-import com.hpl.mds.naming.Prior;
-import com.hpl.mds.string.ManagedMapFromString;
-import com.hpl.mds.string.ManagedString;
+import com.hpl.mds.*;
 
 
 
@@ -54,13 +38,13 @@ public class RecordArrayTypeProxy<R extends ManagedRecord> extends Proxy impleme
    * @throws UnboundNameException when the name is not bound to anything in this context
    * @throws IncompatibleTypeException when the name is bound to something other than this type
    */
-  private static native long lookupHandle(long h, long ctxtHandle, long namespaceHandle, long nameHandle);
+  private static native long lookupHandle(long h, long namespaceHandle, long nameHandle);
   /**
    * @returns false if the name is bound to a sub-namespace in the current context.
    */
-  private static native boolean bindHandle(long ctxtHandle, long namespaceHandle, long nameHandle, long valHandle);
+  private static native boolean bindHandle(long namespaceHandle, long nameHandle, long valHandle);
   private static native boolean isSameAs(long aHandle, long bHandle);
-  private static native long createArray(long h, long ctxtHandle, long size);
+  private static native long createArray(long h, long size);
   private static native void release(long index);
   private static native long forRecordType(long recHandle);
   private static native long elementTypeHandle(long handle);
@@ -74,7 +58,7 @@ public class RecordArrayTypeProxy<R extends ManagedRecord> extends Proxy impleme
   public enum FromHandle { FROM_HANDLE};
     
   private RecordArrayTypeProxy(FromHandle fh, long handle, RecordTypeProxy<R> eltType) {
-    super(handle);
+    super(handle, proxyTable);
     this.eltType = eltType;
   }
   
@@ -115,8 +99,7 @@ public class RecordArrayTypeProxy<R extends ManagedRecord> extends Proxy impleme
 
   @Override
   public ManagedArray<R> create(long size) {
-    long cHndl = IsoContextProxy.current().handleIndex();
-    long aHndl = createArray(handleIndex_, cHndl, size);
+    long aHndl = createArray(handleIndex_, size);
     return RecordArrayProxy.fromHandle(aHndl, size, this);
   }
 
@@ -171,11 +154,10 @@ public class RecordArrayTypeProxy<R extends ManagedRecord> extends Proxy impleme
    */
   @Override
   public ManagedArray<R> lookupName(Namespace ns, CharSequence name) {
-    IsoContextProxy ctxt = IsoContextProxy.current();
     NamespaceProxy nsp = (NamespaceProxy)ns;
     ManagedStringProxy msp = ManagedStringProxy.valueOf(name);
 
-    long ah = lookupHandle(handleIndex_, ctxt.handleIndex(), nsp.handleIndex(), msp.handleIndex());
+    long ah = lookupHandle(handleIndex_, nsp.handleIndex(), msp.handleIndex());
     return RecordArrayProxy.fromHandle(ah, this);
   }
 
@@ -184,12 +166,11 @@ public class RecordArrayTypeProxy<R extends ManagedRecord> extends Proxy impleme
     /*
      * TODO: Prior is unused
      */
-    IsoContextProxy ctxt = IsoContextProxy.current();
     NamespaceProxy nsp = (NamespaceProxy)ns;
     ManagedStringProxy msp = ManagedStringProxy.valueOf(name);
     RecordArrayProxy<R> ap = (RecordArrayProxy<R>)val;
 
-    boolean worked = bindHandle(ctxt.handleIndex(), nsp.handleIndex(), msp.handleIndex(), ap.handleIndex());
+    boolean worked = bindHandle(nsp.handleIndex(), msp.handleIndex(), ap.handleIndex());
     if (!worked) {
       throw new BoundToNamespaceException(ns, name);
     }

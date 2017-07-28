@@ -67,23 +67,12 @@ package $package()$;
 
 import java.util.Collection;
 
-import com.hpl.mds.ManagedOrdered;
 import com.hpl.mds.usage.Operation;
 import com.hpl.mds.usage.UsageBase;
 import com.hpl.mds.usage.UsageMode;
 import com.hpl.mds.impl.Stub;
 
 
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.$elseif(type.string)$string.$endif$$type.managedName$;
-} 
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.array.$elseif(type.string)$string.$endif$Managed$type.shortName$Array;
-}
-$
 
 public interface ManagedArray<T extends ManagedObject> extends ManagedOrdered<T> {
 $masked: { type |
@@ -233,7 +222,9 @@ $endif$
 $
   // Actual operations below
   T get(long index);
+  T peek(long index);
   T set(long index, T newValue);
+  T getAndSet(long index, T newValue);
 
   default Object[] toArray() {
     int n = size();
@@ -268,6 +259,12 @@ import java.lang.reflect.Array;
     return array;
   }
 
+import java.util.function.IntFunction;
+
+  default T[] toArray(IntFunction<T[]> generator) {
+    return toArray(generator.apply(size()));
+  }
+
   default boolean contains(T val) {
     long s = longSize();
     for (long i=0; i<s; i++) {
@@ -289,14 +286,41 @@ import java.lang.reflect.Array;
 
 import java.util.stream.Stream;
 import java.util.stream.LongStream;
+
+  default LongStream indexStream(long from, long to) {
+    return LongStream.range(from, to);
+  }
+
+  default LongStream indexStream() {
+    return indexStream(0, longSize());
+  }
+
   default Stream<T> stream(long from, long to) { 
-	  return LongStream.range(from, to).mapToObj(this::get);
+	  return indexStream(from, to).mapToObj(this::get);
   }
 
   default Stream<T> stream() { 
 	  return stream(0, longSize());
   }
     
-  
+
+
+import java.util.function.Consumer;
+import java.util.function.LongConsumer;
+
+  default LongConsumer elementConsumer(Consumer<? super T> fn) {
+    return (i)->fn.accept(get(i));
+  }
+
+  default void forEachInTasks(Consumer<? super T> fn) {
+    indexStream()
+      .forEach(Task.consumer(elementConsumer(fn)));
+  }
+
+  default void forEachInParallelTasks(Consumer<? super T> fn) {
+    indexStream()
+      .parallel()
+      .forEach(Task.inCurrent(Task.consumer(elementConsumer(fn))));
+  }
 }
 >>

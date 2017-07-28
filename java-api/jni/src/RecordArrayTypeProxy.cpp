@@ -60,12 +60,11 @@ extern "C"
   jboolean
   JNICALL
   Java_com_hpl_mds_impl_RecordArrayTypeProxy_bindHandle (JNIEnv *jEnv, jobject,
-							 jlong ctxtHIndex,
 							 jlong nsHIndex,
 							 jlong nameHIndex,
 							 jlong valHandle)
   {
-    return exception_handler_wr (jEnv, bind_handle<kind::RECORD>, ctxtHIndex,
+    return exception_handler_wr (jEnv, bind_handle<kind::RECORD>, 
 				 nsHIndex, nameHIndex, valHandle);
   }
 
@@ -75,7 +74,6 @@ extern "C"
   Java_com_hpl_mds_impl_RecordArrayTypeProxy_lookupHandle (JNIEnv *jEnv,
 							   jobject,
 							   jlong hIndex,
-							   jlong ctxtHIndex,
 							   jlong nsHIndex,
 							   jlong nameHIndex)
   {
@@ -83,14 +81,12 @@ extern "C"
       {
 	indexed<array_type_handle<kind::RECORD>> self
 	  { hIndex};
-	indexed<iso_context_handle> ctxt
-	  { ctxtHIndex};
 	indexed<namespace_handle> ns
 	  { nsHIndex};
 	indexed<interned_string_handle> name
 	  { nameHIndex};
 	indexed<managed_array_handle<kind::RECORD>> val
-	  { ns->lookup (*ctxt, *name, *self)};
+	  { ns->lookup (*name, *self)};
 	return val.return_index ();
 
       });
@@ -112,17 +108,15 @@ extern "C"
   JNICALL
   Java_com_hpl_mds_impl_RecordArrayTypeProxy_createArray (JNIEnv *jEnv, jobject,
 							  jlong hIndex,
-							  jlong ctxtHIndex,
 							  jlong size)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<array_type_handle<kind::RECORD>> self
 	  { hIndex};
-	indexed<iso_context_handle> ctxt
-	  { ctxtHIndex};
 	indexed<managed_array_handle<kind::RECORD>> arr (
-	    self->create_array (size, *ctxt));
+	    self->create_array (size));
 	return arr.return_index ();
       });
   }

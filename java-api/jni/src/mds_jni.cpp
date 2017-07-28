@@ -62,6 +62,7 @@
 
 using namespace mds;
 using namespace mds::api;
+using namespace std;
 //using namespace mds::jni;
 
 
@@ -147,7 +148,7 @@ mds::jni::set_interned_string_handle(JNIEnv *jEnv,
 
 void
 mds::jni::throwUnboundNameEx(JNIEnv *env) {
-  static java_ex jex(env,"com/hpl/mds/exceptions/UnboundNameException");
+  static java_ex jex(env,"com/hpl/mds/UnboundNameException");
   jex.raise(env);
   //  std::cout << "Raised UnboundNameException: " << res << std::endl;
   //  std::cout << "Pending exception: " << env->ExceptionOccurred() << std::endl;
@@ -183,66 +184,78 @@ mds::jni::exception_converter(JNIEnv *jEnv){
     {
       throwReadOnlyContextEx (jEnv);
     }
-  catch (core::unmergeable_context_ex &)
+  catch (core::unpublishable_context_ex &)
     {
-      throwUnmergeableContextEx (jEnv);
+      throwUnpublishableContextEx (jEnv);
     }
   catch (core::unimplemented &)
     {
       throwUnimplementedEx (jEnv);
     }
+  catch (core::thread_base_task_unset_ex &)
+    {
+      throwUnknownEx (jEnv, "Core base task not set");
+    }
   catch (...)
     {
-      throwUnknownEx (jEnv);
+      // throwUnknownEx (jEnv);
     }
 }
 
 void
 mds::jni::throwIncompatibleTypeEx(JNIEnv *env) {
-  static java_ex jex(env,"com/hpl/mds/exceptions/IncompatibleTypeException");
+  static java_ex jex(env,"com/hpl/mds/IncompatibleTypeException");
   jex.raise(env);
 }
 
 void
 mds::jni::throwIncompatibleRecordTypeEx(JNIEnv *env) {
-  static java_ex jex(env,"com/hpl/mds/exceptions/IncompatibleRecordTypeException");
+  static java_ex jex(env,"com/hpl/mds/IncompatibleRecordTypeException");
   jex.raise(env);
 }
 
 void
 mds::jni::throwIncompatibleSuperClassEx(JNIEnv *env) {
-  static java_ex jex(env,"com/hpl/mds/exceptions/IncompatibleSupertypeException");
+  static java_ex jex(env,"com/hpl/mds/IncompatibleSupertypeException");
   jex.raise(env);
 }
 
 void
 mds::jni::throwUnmodifiableRecordTypeEx(JNIEnv *env) {
-  static java_ex jex(env,"com/hpl/mds/exceptions/UnmodifiableRecordTypeException");
+  static java_ex jex(env,"com/hpl/mds/UnmodifiableRecordTypeException");
   jex.raise(env);
 }
 
 void
 mds::jni::throwReadOnlyContextEx(JNIEnv *env) {
-  static java_ex jex(env,"com/hpl/mds/exceptions/ReadOnlyContextException");
+  static java_ex jex(env,"com/hpl/mds/ReadOnlyContextException");
   jex.raise(env);
 }
 
 void
-mds::jni::throwUnmergeableContextEx(JNIEnv *env) {
-  static java_ex jex(env,"com/hpl/mds/exceptions/UnmergeableContextException");
+mds::jni::throwUnpublishableContextEx(JNIEnv *env) {
+  static java_ex jex(env,"com/hpl/mds/UnpublishableContextException");
   jex.raise(env);
 }
 
 void
 mds::jni::throwUnimplementedEx(JNIEnv *env) {
-  static java_ex jex(env,"com/hpl/mds/exceptions/UnimplementedException");
+  static java_ex jex(env,"com/hpl/mds/UnimplementedException");
   jex.raise(env);
 }
 
 void
 mds::jni::throwUnknownEx(JNIEnv *env) {
-  static java_ex jex(env,"java/lang/RuntimeException");
-    jex.raise(env);
+  static java_ex jex(env,"com/hpl/mds/InternalException");
+  jex.raise(env);
+}
+
+void
+mds::jni::throwUnknownEx(JNIEnv *env, const std::string &desc) {
+  static java_ex jex(env,"com/hpl/mds/InternalException",
+                     "(Ljava/lang/String;)V");
+  jstring msg = env->NewStringUTF(desc.data());
+  jex.raise(env, msg);
 }
 
 void
@@ -251,9 +264,34 @@ mds::jni::stubNotImplemented(JNIEnv *env) {
   if (c == nullptr) {
     return; // exception thrown
   }
-  static jmethodID m = find_method(env, c, "notImplemented", "()V");
+  static jmethodID m = find_static_method(env, c, "notImplemented", "()V");
   if (m == nullptr) {
     return; // exception thrown
   }
   env->CallStaticObjectMethod(c, m);
+}
+
+
+void
+mds::jni::initialize_thread(JNIEnv *env) {
+  static jclass taskImplClass = find_class(env, "com/hpl/mds/impl/TaskProxy");
+  if (taskImplClass == nullptr) {
+    return; // exception thrown
+  }
+  static jmethodID setBaseTaskMethod =
+    find_static_method(env, taskImplClass, "current", "()Lcom/hpl/mds/impl/TaskProxy;");
+  if (setBaseTaskMethod == nullptr) {
+    return; // exception thrown
+  }
+  static jmethodID getHandleMethod = find_method(env, taskImplClass, "getHandle", "()J");
+  if (getHandleMethod == nullptr) {
+    return; // exception thrown
+  }
+
+  task_handle::init_thread_base_task([&]() {
+      jobject jt = env->CallStaticObjectMethod(taskImplClass, setBaseTaskMethod);
+      long h = env->CallLongMethod(jt, getHandleMethod);
+      indexed<task_handle> t{h};
+      return t->pointer();
+    });
 }

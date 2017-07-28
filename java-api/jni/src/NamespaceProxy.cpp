@@ -55,6 +55,7 @@ extern "C"
   JNICALL
   Java_com_hpl_mds_impl_NamespaceProxy_rootHandle (JNIEnv *jEnv, jobject)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	static indexed<namespace_handle> h
@@ -63,26 +64,23 @@ extern "C"
       });
   }
 
-//private static native long childHandle(long h, long nameHandle);
   JNIEXPORT
   jlong
   JNICALL
   Java_com_hpl_mds_impl_NamespaceProxy_childHandle (JNIEnv *jEnv, jobject,
 						    jlong hIndex,
-						    jlong ctxtHIndex,
 						    jlong nameHIndex,
 						    jboolean create_if_missing)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<namespace_handle> h
 	  { hIndex};
 	indexed<interned_string_handle> name
 	  { nameHIndex};
-	indexed<iso_context_handle> ctxt
-	  { ctxtHIndex};
 	indexed<namespace_handle> child
-	  { h->child_namespace(*ctxt, *name, create_if_missing)};
+        { h->child_namespace(*name, create_if_missing)};
 	return child.return_index();
       });
   }
@@ -91,19 +89,17 @@ extern "C"
   jlong
   JNICALL
   Java_com_hpl_mds_impl_NamespaceProxy_isBound (JNIEnv *jEnv, jobject,
-						jlong hIndex, jlong ctxtHIndex,
-						jlong nameHIndex,
-						jboolean create_if_missing)
+						jlong hIndex, 
+                                                jlong nameHIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<namespace_handle> h
 	  { hIndex};
 	indexed<interned_string_handle> name
 	  { nameHIndex};
-	indexed<iso_context_handle> ctxt
-	  { ctxtHIndex};
-	return h->is_bound(*ctxt, *name);
+	return h->is_bound(*name);
       });
   }
 

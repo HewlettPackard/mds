@@ -64,6 +64,7 @@ extern "C"
       {
 	indexed<interned_string_handle> name
 	  { nameHIndex};
+        // std::cout << "Looking up record type " << *name << std::endl;
 	/*
 	 *  TODO: We need to decide what to do with the fact that we have const and non-const
 	 *  record_type_handles (created as non-const, but const in records and fields), but the
@@ -89,6 +90,7 @@ extern "C"
 	  { nameHIndex};
 	indexed<record_type_handle> super
 	  { superHIndex};
+        // std::cout << "Looking up record type " << *name << std::endl;
 	/*
 	 *  TODO: We need to decide what to do with the fact that we have const and non-const
 	 *  record_type_handles (created as non-const, but const in records and fields), but the
@@ -106,24 +108,22 @@ extern "C"
   JNICALL
   Java_com_hpl_mds_impl_RecordTypeProxy_bindHandle (JNIEnv *jEnv, jobject,
 						    jlong hIndex,
-						    jlong ctxtHIndex,
 						    jlong nsHIndex,
 						    jlong nameHIndex,
 						    jlong valHandle)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<record_type_handle> rt
 	  { hIndex};
-	indexed<iso_context_handle> ctxt
-	  { ctxtHIndex};
 	indexed<namespace_handle> ns
 	  { nsHIndex};
 	indexed<interned_string_handle> name
 	  { nameHIndex};
 	indexed<managed_record_handle> val
 	  { valHandle};
-	return ns->bind<kind::RECORD>(*ctxt, *name, *val);
+	return ns->bind<kind::RECORD>(*name, *val);
       });
   }
 
@@ -164,22 +164,20 @@ extern "C"
   JNICALL
   Java_com_hpl_mds_impl_RecordTypeProxy_lookupHandle (JNIEnv *jEnv, jobject,
 						      jlong hIndex,
-						      jlong ctxtHIndex,
 						      jlong nsHIndex,
 						      jlong nameHIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<record_type_handle> self
 	  { hIndex};
-	indexed<iso_context_handle> ctxt
-	  { ctxtHIndex};
 	indexed<namespace_handle> ns
 	  { nsHIndex};
 	indexed<interned_string_handle> name
 	  { nameHIndex};
 	indexed<managed_record_handle> val
-	  { ns->lookup(*ctxt, *name, *self)};
+        { ns->lookup(*name, *self)};
 	return val.return_index();
 
       });

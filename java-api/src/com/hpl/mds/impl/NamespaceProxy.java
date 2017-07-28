@@ -26,12 +26,7 @@
 
 package com.hpl.mds.impl;
 
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.exceptions.NotANamespaceException;
-import com.hpl.mds.naming.Namespace;
-import com.hpl.mds.naming.Prior;
-import com.hpl.mds.string.ManagedString;
+import com.hpl.mds.*;
 
 public class NamespaceProxy extends Proxy implements Namespace {
 	
@@ -41,13 +36,13 @@ public class NamespaceProxy extends Proxy implements Namespace {
   
   private static native void release(long h);
   private static native long rootHandle();
-  private static native long childHandle(long h, long ctxtHandle, long nameHandle, boolean createIfMissing);
-  private static native boolean isBound(long h, long ctxtHandle, long nameHandle);
+  private static native long childHandle(long h, long nameHandle, boolean createIfMissing);
+  private static native boolean isBound(long h,long nameHandle);
   
   private final HNameImpl path;
   
   private NamespaceProxy(long handle, HNameImpl path) {
-    super(handle);
+    super(handle, null);
     this.path = path;
   }
 
@@ -66,11 +61,10 @@ public class NamespaceProxy extends Proxy implements Namespace {
   @Override
   public Namespace childNamespace(CharSequence name) {
     ManagedStringProxy np = ManagedStringProxy.valueOf(name);
-    IsoContextProxy ctxt = IsoContextProxy.current();
     boolean createIfMissing = true;
     HNameImpl childPath = path.append(np);
     try {
-    	long childHandle = childHandle(handleIndex_, ctxt.handleIndex(), np.handleIndex(), createIfMissing);
+    	long childHandle = childHandle(handleIndex_, np.handleIndex(), createIfMissing);
     	return new NamespaceProxy(childHandle, childPath);
     } catch (NotANamespaceException ex) {
     	ex.setData(this, np, childPath);
@@ -84,8 +78,7 @@ public class NamespaceProxy extends Proxy implements Namespace {
   }
   @Override
   public boolean isBound(CharSequence name, Prior prior) {
-	  IsoContextProxy ctxt = IsoContextProxy.current();
-    return isBound(handleIndex_, ctxt.handleIndex(), ManagedStringProxy.valueOf(name).handleIndex());
+    return isBound(handleIndex_, ManagedStringProxy.valueOf(name).handleIndex());
   }
   @Override
   public <T extends ManagedObject> T bind(CharSequence name, T obj, Prior prior) {

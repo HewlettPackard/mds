@@ -33,24 +33,25 @@ import com.hpl.erk.TopN;
 import com.hpl.mds.IsolationContext;
 import com.hpl.mds.ManagedArray;
 import com.hpl.mds.annotations.RecordSchema;
-import com.hpl.mds.holder.IntHolder;
+import com.hpl.mds.annotations.Final;
+import com.hpl.mds.IntHolder;
 
 import java.util.function.ToIntFunction;
 
 @RecordSchema(name = "com.hpl.inventory.Report")
 public interface ReportSchema {
 	
-	String name();
-	ListOfProducts allProducts();
-	ManagedArray<Product> topN();
-	int totalRevenue();
+	@Final String name();
+	@Final ListOfProducts allProducts();
+	@Final ManagedArray<Product> topN();
+	@Final int totalRevenue();
 
 	
-	static void Report(Report.Private self, String name, Inventory inventory, int nInTop) {
+	static void Report(Report.Constructing self, String name, Inventory inventory, int nInTop) {
 		self.setName(name);
 		ListOfProducts products = IsolationContext.inReadOnlySnapshot(inventory::getProducts);
 		self.setAllProducts(products);
-		self.setTotalRevenue(0);
+		// self.setTotalRevenue(0);
 		TopN<Product> highestRevenue = new TopN<>(nInTop, (a,b)-> {
 			int value = Integer.compare(b.getRevenue(), a.getRevenue());
 			if (value == 0) {
@@ -69,8 +70,8 @@ public interface ReportSchema {
 		self.setTopN(Product.TYPE.inArray().create(array));
 	}
 	
-	static void Report(Report.Private self, String name, Inventory inventory) {
-		Report(self, name, inventory, 3);
+	static void Report(Report.Constructing self, String name, Inventory inventory) {
+		self.thisInit(name, inventory, 3);
 	}
 	
 	static String formatFraction(Report.Private self, ToIntFunction<? super Product> func, IntFunction<String> valFormatter) {

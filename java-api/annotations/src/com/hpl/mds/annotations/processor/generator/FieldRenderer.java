@@ -28,12 +28,16 @@ package com.hpl.mds.annotations.processor.generator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.processing.Messager;
+import javax.tools.Diagnostic.Kind;
 
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 
+import com.hpl.mds.annotations.processor.RecordInfo;
+import com.hpl.mds.annotations.processor.RecordInfo.ConstantInfo;
 import com.hpl.mds.annotations.processor.RecordInfo.DataType;
 import com.hpl.mds.annotations.processor.RecordInfo.FieldInfo;
 import com.hpl.mds.annotations.processor.RecordInfo.VarInfo;
@@ -46,7 +50,7 @@ import com.hpl.mds.annotations.processor.generator.TypeProp.Properties;
  *
  * @author Abraham Alcantara
  */
-public class FieldRenderer {
+public class FieldRenderer extends Renderer {
 
     private static final String TEMPLATE_FIELD_MEMBER = "fieldMember";
     private static final String TEMPLATE_FIELD_DEF = "fieldDef";
@@ -58,27 +62,15 @@ public class FieldRenderer {
     private static final String TEMPLATE_MODIFIER_DECLARATION = "modifierDeclaration";
     private static final String TEMPLATE_MODIFIER_DECLARATION_NO_ARGS = "modifierDeclarationNoArgs";
     private static final String TEMPLATE_MODIFIER_IMPL_NO_ARGS = "modifierImplNoArgs";
+  private static final String TEMPLATE_FINAL_FIELD_IMPL = "finalFieldImpl";
+  private static final String TEMPLATE_FINAL_SETTER_DECLARATION = "finalSetterDeclaration";
+  private static final String TEMPLATE_MANAGED_GETTER_IMPL = "managedGetterImpl";
+  private static final String TEMPLATE_PRIM_GETTER_IMPL = "primGetterImpl";
+  private static final String TEMPLATE_MANAGED_SETTER_IMPL = "managedSetterImpl";
+  private static final String TEMPLATE_PRIM_SETTER_IMPL = "primSetterImpl";
+  private static final String TEMPLATE_FINAL_COMMON_VARS = "finalCommonVars";
+  private static final String TEMPLATE_STATIC_FINAL_DECL = "staticFinalDecl";
 
-    /**
-     * Reference to string template group for rendering
-     */
-    private final STGroup stGroup;
-    
-    /**
-     * 
-     */
-    private final ST recordTemplate;
-
-    /**
-     * field data types renderer
-     */
-    private final DataTypeRenderer dataTypeRenderer;
-
-    /**
-     * Simple name of the managed record being rendered
-     */
-    private final String recordSimpleName;
-    
     /**
      * Information of the fields to render
      */
@@ -87,15 +79,15 @@ public class FieldRenderer {
     /*
      * Methods and fields being rendered
      */
-    private List<String> fieldsDef = Collections.emptyList();
-    private List<String> declaredFields = Collections.emptyList();
-    private List<String> privateFields = Collections.emptyList();
-    private List<String> protectedFields = Collections.emptyList();
-    private List<String> publicFields = Collections.emptyList();
+  private List<String> fieldDefs;
+  private List<String> declaredFields;
+  private List<String> privateFields;
+  private List<String> protectedFields;
+  private List<String> publicFields;
 
-    private List<String> privateMethods = Collections.emptyList();
-    private List<String> protectedMethods = Collections.emptyList();
-    private List<String> publicMethods = Collections.emptyList();
+  private List<String> finalFields;
+
+  private int nextFinalFieldIndex = 0;
 
     /**
      * 
@@ -110,117 +102,83 @@ public class FieldRenderer {
      * @param recordTemplate
      *            string template for a managed record
      */
-    public FieldRenderer(DataTypeRenderer dataTypeRenderer, List<FieldInfo> fields, String recordSimpleName,
-            STGroup stGroup, ST recordTemplate) {
-        this.dataTypeRenderer = dataTypeRenderer;
-        this.fields = fields;
-        this.recordSimpleName = recordSimpleName;
-        this.stGroup = stGroup;
-        this.recordTemplate = recordTemplate;
-    }
+  public FieldRenderer(Messager messager, RecordInfo recordInfo, DataTypeRenderer dataTypeRenderer, 
+                       STGroup stGroup, ST recordTemplate)
+  {
+    super(recordInfo, dataTypeRenderer, stGroup, recordTemplate, messager);
+    this.fields = recordInfo.getFields();
+  }
 
     private void addFieldDef(String render) {
-        if (fieldsDef.isEmpty()) {
-            fieldsDef = new ArrayList<>();
-        }
-        fieldsDef.add(render);
+      fieldDefs = addTo(fieldDefs, render);
     }
 
     private void addDeclaredFields(String render) {
-        if (declaredFields.isEmpty()) {
-            declaredFields = new ArrayList<>();
-        }
-        declaredFields.add(render);
+      declaredFields = addTo(declaredFields, render);
     }
 
     private void addPrivateFields(String render) {
-        if (privateFields.isEmpty()) {
-            privateFields = new ArrayList<>();
-        }
-        privateFields.add(render);
+      privateFields = addTo(privateFields, render);
     }
 
     private void addProtectedFields(String render) {
-        if (protectedFields.isEmpty()) {
-            protectedFields = new ArrayList<>();
-        }
-        protectedFields.add(render);
+      protectedFields = addTo(protectedFields, render);
     }
 
-    private void addPublicFields(String render) {
-        if (publicFields.isEmpty()) {
-            publicFields = new ArrayList<>();
-        }
-        publicFields.add(render);
+
+    protected void addPublicFields(String render) {
+      publicFields = addTo(publicFields, render);
     }
 
-    private void addPrivateMethods(String render) {
-        if (privateMethods.isEmpty()) {
-            privateMethods = new ArrayList<>();
-        }
-        privateMethods.add(render);
-    }
 
-    private void addProtectedMethods(String render) {
-        if (protectedMethods.isEmpty()) {
-            protectedMethods = new ArrayList<>();
-        }
-        protectedMethods.add(render);
-    }
+  private void addFinalFields(String render) {
+    finalFields = addTo(finalFields, render);
+  }
 
-    private void addPublicMethods(String render) {
-        if (publicMethods.isEmpty()) {
-            publicMethods = new ArrayList<>();
-        }
-        publicMethods.add(render);
-    }
 
     /**
      * Renders all class members related to fields
      */
-    public void render() {
-        for (FieldInfo fieldInfo : fields) {
-            VarInfo varInfo = fieldInfo.getVarInfo();
-            DataType dataType = varInfo.getType();
-            if (DataType.RECORD.equals(dataType)) {
-                renderFieldRecord(fieldInfo, TypeProp.RECORD);
-            } else if (DataType.ARRAY.equals(dataType)) {
-                renderFieldArray(fieldInfo);
-            } else {
-                Properties properties = dataTypeRenderer.getProperties(dataType);
-                if (properties.isCollection()) {
-                    renderFieldCollection(fieldInfo, properties);
-                } else {
-                    renderFieldPrimitive(fieldInfo, properties);
-                }
-            }
+  @Override
+  public void render() {
+    nextFinalFieldIndex = 0;
+    for (FieldInfo fieldInfo : fields) {
+      VarInfo varInfo = fieldInfo.getVarInfo();
+      DataType dataType = varInfo.getType();
+      if (DataType.RECORD.equals(dataType)) {
+        renderFieldRecord(fieldInfo, TypeProp.RECORD);
+      } else if (DataType.ARRAY.equals(dataType)) {
+        renderFieldArray(fieldInfo);
+      } else {
+        Properties properties = dataTypeRenderer.getProperties(dataType);
+        if (properties.isCollection()) {
+          renderFieldCollection(fieldInfo, properties);
+        } else {
+          renderFieldPrimitive(fieldInfo, properties);
         }
-
-        addCodeToManagedRecord();
+      }
     }
+
+    if (nextFinalFieldIndex > 0) {
+      renderFinalsCommonCode(nextFinalFieldIndex);
+    }
+
+    addCodeToManagedRecord();
+  }
 
     /**
      * fills the managed record template with the generated content
      */
-    private void addCodeToManagedRecord() {
-        recordTemplate.add("fields", fieldsDef);
-        recordTemplate.add("declaredFields", declaredFields);
-        recordTemplate.add("privateFields", privateFields);
-        recordTemplate.add("protectedFields", protectedFields);
-        recordTemplate.add("publicFields", publicFields);
-    }
+  @Override
+  protected void addCodeToManagedRecord(ST recordTemplate) {
+    recordTemplate.add("fields", getList(fieldDefs));
+    recordTemplate.add("declaredFields", getList(declaredFields));
+    recordTemplate.add("privateFields", getList(privateFields));
+    recordTemplate.add("protectedFields", getList(protectedFields));
+    recordTemplate.add("publicFields", getList(publicFields));
+    recordTemplate.add("finalFields", getList(finalFields));
+  }
 
-    public List<String> getPublicMethods() {
-        return publicMethods;
-    }
-
-    public List<String> getProtectedMethods() {
-        return protectedMethods;
-    }
-
-    public List<String> getPrivateMethods() {
-        return privateMethods;
-    }
 
     /**
      * Renders all field members generated for a managed record type field
@@ -234,12 +192,63 @@ public class FieldRenderer {
         VarInfo varInfo = fieldInfo.getVarInfo();
         String recordType = varInfo.getComplexType();
         List<String> typeParams = Arrays.asList(recordSimpleName, recordType);
+        boolean isFinal = fieldInfo.isFinal();
         renderFieldRecordDef(fieldInfo, dataType, typeParams);
         renderFieldMembers(fieldInfo, dataType.getFieldType().getCanonicalName(), typeParams);
-        renderFieldGetters(fieldInfo, recordType);
-        renderFieldModifier(varInfo.getName(), fieldInfo.getSetterVisibility(), TypeProp.SET_FIELD_VALUE_METHOD,
-                recordType, firstCharUpperCase(fieldInfo.getMdsName()));
+        if (isFinal) {
+          renderFinalField(recordType,
+                           fieldInfo.getGetterVisibility(),
+                           fieldInfo.getVarInfo().getName(),
+                           getGetterName(fieldInfo),
+                           fieldInfo.getMdsName(),
+                           TypeProp.PEEK_MNG_VALUE_METHOD,
+                           "null");
+        } else {
+          renderFieldGetters(fieldInfo, recordType);
+          // String mName = isFinal ? TypeProp.INIT_FIELD_VALUE_METHOD : TypeProp.SET_FIELD_VALUE_METHOD;
+          String mName = TypeProp.SET_FIELD_VALUE_METHOD;
+          Visibility vis = fieldInfo.getSetterVisibility();
+          renderFieldModifier(varInfo.getName(), vis, mName, recordType,
+                              firstCharUpperCase(fieldInfo.getMdsName()), isFinal);
+        }
     }
+
+  private void renderFinalField(String type, Visibility getterVis,
+                                String fieldMemberName, String getterName,
+                                String fieldName, String fieldPeeker,
+                                String defaultVal)
+  {
+    int index = nextFinalFieldIndex++;
+    String peekerName = getPeekGetterName(getterName);
+    addCode(adder(getterVis),
+            getFieldGetterDeclaration(type, getterName, true));
+    addCode(adder(getterVis),
+            getFieldGetterDeclaration(type, peekerName, true));
+    String setValueMethod = TypeProp.SET_FIELD_VALUE_METHOD;
+    String setter = setValueMethod+firstCharUpperCase(fieldName);
+    addCode(this::addConstructingMethod,
+            renderTemplate(TEMPLATE_FINAL_SETTER_DECLARATION,
+                           t->{
+                             t.add("modifierName", setter);
+                             t.add("typeParam", type);
+                           }));
+    addCode(this::addFinalFields,
+            renderTemplate(TEMPLATE_FINAL_FIELD_IMPL,
+                           t->{
+                             t.add("fieldName",fieldMemberName);
+                             t.add("field", fieldName);
+                             t.add("type", type);
+                             t.add("getter", getterName);
+                             t.add("peeker", peekerName);
+                             t.add("setter", setter);
+                             t.add("peekValueMethod", fieldPeeker);
+                             t.add("setValueMethod", setValueMethod);
+                             t.add("recordName", recordSimpleName);
+                             t.add("index", index);
+                             t.add("defaultVal", defaultVal);
+                           }));
+  }
+                           
 
     /**
      * Generates field definition for record type field
@@ -251,17 +260,22 @@ public class FieldRenderer {
      * @param typeParams
      *            type parameter types
      */
-    private void renderFieldRecordDef(FieldInfo fieldInfo, Properties dataType, List<String> typeParams) {
-        VarInfo varInfo = fieldInfo.getVarInfo();
-        ST template = stGroup.getInstanceOf(TEMPLATE_FIELD_DEF);
-        assert template != null; // ensure template exists
-        template.add("type", dataType.getFieldType().getCanonicalName());
-        template.add("typeParams", typeParams);
-        template.add("name", varInfo.getName());
-        template.add("creationMethod", dataType.getCreateFieldMethod());
-        template.add("methodArgs", new String[] { getMDSName(fieldInfo), varInfo.getComplexType() + TYPE_MEMBER });
-        addFieldDef(template.render());
-    }
+  private void renderFieldRecordDef(FieldInfo fieldInfo, Properties dataType,
+                                    List<String> typeParams)
+  {
+    VarInfo varInfo = fieldInfo.getVarInfo();
+    addCode(this::addFieldDef,
+            renderTemplate(TEMPLATE_FIELD_DEF,
+                           t->{
+                             t.add("type", dataType.getFieldType().getCanonicalName());
+                             t.add("typeParams", typeParams);
+                             t.add("name", varInfo.getName());
+                             t.add("creationMethod", dataType.getCreateFieldMethod());
+                             t.add("methodArgs",
+                                   new String[] { getMDSName(fieldInfo),
+                                                  varInfo.getComplexType() + TYPE_MEMBER });
+                           }));
+  }
 
     /**
      * @param fieldInfo
@@ -283,27 +297,15 @@ public class FieldRenderer {
      *            type parameters of the field
      */
     private void renderFieldMembers(FieldInfo fieldInfo, String type, List<String> typeParams) {
-        ST fieldMemberTemplate = stGroup.getInstanceOf(TEMPLATE_FIELD_MEMBER);
-        assert fieldMemberTemplate != null; // ensure template exists
-        fieldMemberTemplate.add("type", type);
-        fieldMemberTemplate.add("typeParams", typeParams);
-        fieldMemberTemplate.add("name", fieldInfo.getVarInfo().getName());
-        fieldMemberTemplate.add("recordType", recordSimpleName);
-        String render = fieldMemberTemplate.render();
-        addDeclaredFields(render);
-        switch (fieldInfo.getFieldVisibility()) {
-        case PRIVATE:
-            addPrivateFields(render);
-            break;
-        case PROTECTED:
-            addProtectedFields(render);
-            break;
-        case PUBLIC:
-            addPublicFields(render);
-            break;
-        default:
-            throw new IllegalStateException("Unsupported visibility type");
-        }
+      String code = renderTemplate(TEMPLATE_FIELD_MEMBER,
+                                   t->{
+                                     t.add("type", type);
+                                     t.add("typeParams", typeParams);
+                                     t.add("name", fieldInfo.getVarInfo().getName());
+                                     t.add("recordType", recordSimpleName);
+                                   });
+      addCode(fieldInfo.getFieldVisibility(), code);
+      addCode(this::addDeclaredFields, code);
     }
 
     /**
@@ -342,26 +344,14 @@ public class FieldRenderer {
      * @param getterName
      *            the name of the getter
      */
-    private void renderFieldGetter(FieldInfo fieldInfo, String type, String getValueMethod, String getterName) {
-        Visibility getterVisibility = fieldInfo.getGetterVisibility();
-        if (!Visibility.NO.equals(getterVisibility)) {
-            addPrivateMethods(
-                    renderFieldGetterImpl(fieldInfo.getVarInfo().getName(), type, getValueMethod, getterName));
-            switch (getterVisibility) {
-            case PROTECTED:
-                addProtectedMethods(getFieldGetterDeclaration(type, getterName));
-                break;
-            case PUBLIC:
-                addPublicMethods(getFieldGetterDeclaration(type, getterName));
-                break;
-            case PRIVATE: // ignored, getters are already defined in
-                          // private
-                break;
-            default:
-                throw new IllegalStateException("Unsupported visibility type");
-            }
-        }
-    }
+  private void renderFieldGetter(FieldInfo fieldInfo, String type,
+                                 String getValueMethod, String getterName)
+  {
+    addCode(fieldInfo.getGetterVisibility(),
+            getFieldGetterDeclaration(type, getterName, false),
+            renderFieldGetterImpl(fieldInfo.getVarInfo().getName(),
+                                  type, getValueMethod, getterName));
+  }
 
     /**
      * @param fieldName
@@ -374,15 +364,17 @@ public class FieldRenderer {
      *            the name of the getter method
      * @return render of a getter implementation method of a field
      */
-    private String renderFieldGetterImpl(String fieldName, String type, String getValueMethod, String getterName) {
-        ST getterTemplate = stGroup.getInstanceOf(TEMPLATE_GETTER_IMPL);
-        assert getterTemplate != null; // ensure template exists
-        getterTemplate.add("type", type);
-        getterTemplate.add("getterName", getterName);
-        getterTemplate.add("fieldName", fieldName);
-        getterTemplate.add("getValueMethod", getValueMethod);
-        getterTemplate.add("recordName", recordSimpleName);
-        return getterTemplate.render();
+  private String renderFieldGetterImpl(String fieldName, String type,
+                                       String getValueMethod, String getterName)
+  {
+    return renderTemplate(TEMPLATE_GETTER_IMPL,
+                          t->{
+                            t.add("type", type);
+                            t.add("getterName", getterName);
+                            t.add("fieldName", fieldName);
+                            t.add("getValueMethod", getValueMethod);
+                            t.add("recordName", recordSimpleName);
+                          });
     }
 
     /**
@@ -392,13 +384,17 @@ public class FieldRenderer {
      *            the name of the getter
      * @return the render of a getter declaration
      */
-    private String getFieldGetterDeclaration(String type, String getterName) {
-        ST getterDecTemplate = stGroup.getInstanceOf(TEMPLATE_GETTER_DECLARATION);
-        assert getterDecTemplate != null; // ensure template exists
-        getterDecTemplate.add("type", type);
-        getterDecTemplate.add("getterName", getterName);
-        return getterDecTemplate.render();
-    }
+  private String getFieldGetterDeclaration(String type, String getterName,
+                                           boolean isFinal)
+  {
+    return renderTemplate(TEMPLATE_GETTER_DECLARATION,
+                          t->{
+                            t.add("type", type);
+                            t.add("getterName", getterName);
+                            t.add("fq_name", recordInfo.getFQName());
+                            t.add("isFinal", isFinal);
+                          });
+  }
 
     private String getPeekGetterName(String getterName) {
       if (getterName.startsWith("get") || getterName.startsWith("has")) {
@@ -425,31 +421,22 @@ public class FieldRenderer {
      * @param modifierSuffix
      *            suffix of method's name
      */
-    private void renderFieldModifier(String fieldName, Visibility visibility, String methodName, String typeParam,
-            String modifierSuffix) {
-        if (!Visibility.NO.equals(visibility)) {
-            String getAndMethodName = "getAnd"+firstCharUpperCase(methodName);
-            String modifierName = methodName + modifierSuffix;
-            String getAndModifierName = "getAnd"+firstCharUpperCase(modifierName);
-            addPrivateMethods(renderModifierImpl(fieldName, methodName, typeParam, modifierName));
-            addPrivateMethods(renderModifierImpl(fieldName, getAndMethodName, typeParam, getAndModifierName));
-            switch (visibility) {
-            case PUBLIC:
-                addPublicMethods(getFieldNumericModifierDeclaration(typeParam, modifierName));
-                addPublicMethods(getFieldNumericModifierDeclaration(typeParam, getAndModifierName));
-                break;
-            case PROTECTED:
-                addProtectedMethods(getFieldNumericModifierDeclaration(typeParam, modifierName));
-                addProtectedMethods(getFieldNumericModifierDeclaration(typeParam, getAndModifierName));
-                break;
-            case PRIVATE:// ignored, default implementation is at this
-                         // level
-                break;
-            default:
-                throw new IllegalStateException("Unsupported visibility type");
-            }
-        }
+  private void renderFieldModifier(String fieldName, Visibility visibility,
+                                   String methodName, String typeParam,
+                                   String modifierSuffix, boolean isFinal)
+  {
+    String modifierName = methodName + modifierSuffix;
+    addCode(visibility,
+            getFieldNumericModifierDeclaration(typeParam, modifierName),
+            renderModifierImpl(fieldName, methodName, typeParam, modifierName));
+    if (!isFinal) {
+      String getAndMethodName = "getAnd"+firstCharUpperCase(methodName);
+      String getAndModifierName = "getAnd"+firstCharUpperCase(modifierName);
+      addCode(visibility,
+              getFieldNumericModifierDeclaration(typeParam, getAndModifierName),
+              renderModifierImpl(fieldName, getAndMethodName, typeParam, getAndModifierName));
     }
+  }
 
     /**
      * Generates numeric field modifier declaration method
@@ -460,13 +447,13 @@ public class FieldRenderer {
      *            the name of the method
      * @return the render of the method
      */
-    private String getFieldNumericModifierDeclaration(String typeParam, String modifierName) {
-        ST declarationTemplate = stGroup.getInstanceOf(TEMPLATE_MODIFIER_DECLARATION);
-        assert declarationTemplate != null; // ensure template exists
-        declarationTemplate.add("typeParam", typeParam);
-        declarationTemplate.add("modifierName", modifierName);
-        return declarationTemplate.render();
-    }
+  private String getFieldNumericModifierDeclaration(String typeParam, String modifierName) {
+    return renderTemplate(TEMPLATE_MODIFIER_DECLARATION,
+                          t->{
+                            t.add("typeParam", typeParam);
+                            t.add("modifierName", modifierName);
+                          });
+  }
 
     /**
      * Generates the modifier default implementation
@@ -482,16 +469,18 @@ public class FieldRenderer {
      * 
      * @return the result of the rendering
      */
-    private String renderModifierImpl(String fieldName, String fieldMethod, String typeParam, String modifierName) {
-        ST implTemplate = stGroup.getInstanceOf(TEMPLATE_MODIFIER_IMPL);
-        assert implTemplate != null; // ensure template exists
-        implTemplate.add("typeParam", typeParam);
-        implTemplate.add("modifierName", modifierName);
-        implTemplate.add("fieldName", fieldName);
-        implTemplate.add("fieldMethod", fieldMethod);
-        implTemplate.add("recordName", recordSimpleName);
-        return implTemplate.render();
-    }
+  private String renderModifierImpl(String fieldName, String fieldMethod,
+                                    String typeParam, String modifierName)
+  {
+    return renderTemplate(TEMPLATE_MODIFIER_IMPL,
+                          t->{
+                            t.add("typeParam", typeParam);
+                            t.add("modifierName", modifierName);
+                            t.add("fieldName", fieldName);
+                            t.add("fieldMethod", fieldMethod);
+                            t.add("recordName", recordSimpleName);
+                          });
+  }
 
     /**
      * @param string
@@ -530,10 +519,23 @@ public class FieldRenderer {
         renderFieldPrimitiveDef(fieldInfo, canonicalName, dataTypeProps.getCreateFieldMethod());
         renderFieldMembers(fieldInfo, canonicalName, Arrays.asList(recordSimpleName));
         String managedType = dataTypeProps.getMngType().getCanonicalName();
-        renderFieldGetters(fieldInfo, managedType);
-        Visibility setterVisibility = fieldInfo.getSetterVisibility();
-        renderFieldModifier(fieldInfo.getVarInfo().getName(), setterVisibility, TypeProp.SET_FIELD_VALUE_METHOD,
-                managedType, firstCharUpperCase(fieldInfo.getMdsName()));
+        boolean isFinal = fieldInfo.isFinal();
+        if (isFinal) {
+          renderFinalField(managedType,
+                           fieldInfo.getGetterVisibility(),
+                           fieldInfo.getVarInfo().getName(),
+                           getGetterName(fieldInfo),
+                           fieldInfo.getMdsName(),
+                           TypeProp.PEEK_MNG_VALUE_METHOD,
+                           "null");
+        } else {
+          renderFieldGetters(fieldInfo, managedType);
+          Visibility setterVisibility = fieldInfo.getSetterVisibility();
+          // String mName = isFinal ? TypeProp.INIT_FIELD_VALUE_METHOD : TypeProp.SET_FIELD_VALUE_METHOD;
+          String mName = TypeProp.SET_FIELD_VALUE_METHOD;
+          renderFieldModifier(fieldInfo.getVarInfo().getName(), setterVisibility, mName,
+                              managedType, firstCharUpperCase(fieldInfo.getMdsName()), isFinal);
+        }
     }
 
     /**
@@ -547,14 +549,15 @@ public class FieldRenderer {
      *            method name to create the field
      */
     private void renderFieldPrimitiveDef(FieldInfo fieldInfo, String type, String creationMethod) {
-        ST template = stGroup.getInstanceOf(TEMPLATE_FIELD_DEF);
-        assert template != null; // ensure template exists
-        template.add("type", type);
-        template.add("typeParams", new String[] { recordSimpleName });
-        template.add("name", fieldInfo.getVarInfo().getName());
-        template.add("creationMethod", creationMethod);
-        template.add("methodArgs", new String[] { getMDSName(fieldInfo) });
-        addFieldDef(template.render());
+      addCode(this::addFieldDef,
+              renderTemplate(TEMPLATE_FIELD_DEF,
+                            t->{
+                              t.add("type", type);
+                              t.add("typeParams", new String[] { recordSimpleName });
+                              t.add("name", fieldInfo.getVarInfo().getName());
+                              t.add("creationMethod", creationMethod);
+                              t.add("methodArgs", new String[] { getMDSName(fieldInfo) });
+                             }));
     }
 
     /**
@@ -568,12 +571,30 @@ public class FieldRenderer {
     private void renderFieldCollection(FieldInfo fieldInfo, Properties dataType) {
         List<String> types = dataTypeRenderer.getTypes(fieldInfo.getVarInfo().getTypeParams());
         List<String> typeParams = getFieldCollectionTypeParams(recordSimpleName, types);
+        boolean isFinal = fieldInfo.isFinal();
+        String fullType = dataTypeRenderer
+          .renderTypeWithParameters(dataType.getMngType().getCanonicalName(), types);
         renderFieldCollectionDef(fieldInfo, dataType, types, typeParams);
         renderFieldMembers(fieldInfo, dataType.getFieldType().getCanonicalName(), typeParams);
-        String fullType = dataTypeRenderer.renderTypeWithParameters(dataType.getMngType().getCanonicalName(), types);
-        renderFieldGetters(fieldInfo, fullType);
-        renderFieldModifier(fieldInfo.getVarInfo().getName(), fieldInfo.getSetterVisibility(),
-                TypeProp.SET_FIELD_VALUE_METHOD, fullType, firstCharUpperCase(fieldInfo.getMdsName()));
+        if (isFinal) {
+          renderFinalField(fullType,
+                           fieldInfo.getGetterVisibility(),
+                           fieldInfo.getVarInfo().getName(),
+                           getGetterName(fieldInfo),
+                           fieldInfo.getMdsName(),
+                           TypeProp.PEEK_MNG_VALUE_METHOD,
+                           "null");
+        } else {
+          renderFieldGetters(fieldInfo, fullType);
+          // String setterName = isFinal ? TypeProp.INIT_FIELD_VALUE_METHOD
+          //   : TypeProp.SET_FIELD_VALUE_METHOD;
+          String setterName = TypeProp.SET_FIELD_VALUE_METHOD;
+          Visibility setterVisibility = fieldInfo.getSetterVisibility();
+          
+          renderFieldModifier(fieldInfo.getVarInfo().getName(), setterVisibility,
+                              setterName, fullType,
+                              firstCharUpperCase(fieldInfo.getMdsName()), isFinal);
+        }
     }
 
     /**
@@ -604,14 +625,15 @@ public class FieldRenderer {
      */
     private void renderFieldCollectionDef(FieldInfo fieldInfo, Properties dataType, List<String> argTypes,
             List<String> typeParams) {
-        ST template = stGroup.getInstanceOf(TEMPLATE_FIELD_DEF);
-        assert template != null; // ensure template exists
-        template.add("type", dataType.getFieldType().getCanonicalName());
-        template.add("typeParams", typeParams);
-        template.add("name", fieldInfo.getVarInfo().getName());
-        template.add("creationMethod", dataType.getCreateFieldMethod());
-        template.add("methodArgs", getFieldCollectionMethodArgs(fieldInfo, argTypes));
-        addFieldDef(template.render());
+      addCode(this::addFieldDef,
+              renderTemplate(TEMPLATE_FIELD_DEF,
+                             t->{
+                               t.add("type", dataType.getFieldType().getCanonicalName());
+                               t.add("typeParams", typeParams);
+                               t.add("name", fieldInfo.getVarInfo().getName());
+                               t.add("creationMethod", dataType.getCreateFieldMethod());
+                               t.add("methodArgs", getFieldCollectionMethodArgs(fieldInfo, argTypes));
+                             }));
     }
 
     /**
@@ -642,13 +664,70 @@ public class FieldRenderer {
         String canonicalName = dataType.getFieldType().getCanonicalName();
         renderFieldPrimitiveDef(fieldInfo, canonicalName, dataType.getCreateFieldMethod());
         renderFieldMembers(fieldInfo, canonicalName, Arrays.asList(recordSimpleName));
-        renderFieldPrimitiveGetters(fieldInfo, dataType);
-        String methodSuffix = firstCharUpperCase(fieldInfo.getMdsName());
-        renderFieldPrimitiveSetters(fieldInfo, dataType, methodSuffix);
-        if (dataType.isNumeric()) {
+        boolean preferPrim = !dataType.managedIsCheaper();
+        if (fieldInfo.isFinal()) {
+          if (preferPrim) {
+            renderFinalField(dataType.getPrimitiveType(),
+                             fieldInfo.getGetterVisibility(),
+                             fieldInfo.getVarInfo().getName(),
+                             primGetterName(fieldInfo),
+                             fieldInfo.getMdsName(),
+                             dataType.getPeekPrimitiveValueMethod(),
+                             dataType.defaultValue());
+            renderDelegatingManagedGetter(fieldInfo, dataType);
+            renderDelegatingManagedSetter(fieldInfo, dataType);
+          } else {
+            renderFinalField(dataType.getMngType().getCanonicalName(),
+                             fieldInfo.getGetterVisibility(),
+                             fieldInfo.getVarInfo().getName(),
+                             managedGetterName(fieldInfo),
+                             fieldInfo.getMdsName(),
+                             TypeProp.PEEK_MNG_VALUE_METHOD,
+                             "null");
+            renderDelegatingPrimGetter(fieldInfo, dataType);
+            renderDelegatingPrimSetter(fieldInfo, dataType);
+          }
+        } else {
+          if (preferPrim) {
+            renderPrimGetter(fieldInfo, dataType);
+            renderDelegatingManagedGetter(fieldInfo, dataType);
+          } else {
+            renderManagedGetter(fieldInfo, dataType);
+            renderDelegatingPrimGetter(fieldInfo, dataType);
+          }
+
+          String methodSuffix = firstCharUpperCase(fieldInfo.getMdsName());
+          renderFieldPrimitiveSetters(fieldInfo, dataType, methodSuffix);
+          if (dataType.isNumeric() && !fieldInfo.isFinal()) {
             renderFieldPrimitiveNumericModifiers(fieldInfo, dataType, methodSuffix);
+          }
         }
     }
+
+  private String primGetterName(FieldInfo fieldInfo) {
+    String name = fieldInfo.getMdsName();
+    if (fieldInfo.getVarInfo().isManaged()) {
+      name = "prim"+firstCharUpperCase(name);
+    }
+    String getterNameFormat = fieldInfo.getGetterNameFormat();
+    if (!getterNameFormat.startsWith("%s")) {
+      name = firstCharUpperCase(name);
+    }
+    return String.format(getterNameFormat, name);
+  }
+          
+  private String managedGetterName(FieldInfo fieldInfo) {
+    String name = fieldInfo.getMdsName();
+    if (!fieldInfo.getVarInfo().isManaged()) {
+      name = "managed"+firstCharUpperCase(name);
+    }
+    String getterNameFormat = fieldInfo.getGetterNameFormat();
+    if (!getterNameFormat.startsWith("%s")) {
+      name = firstCharUpperCase(name);
+    }
+    return String.format(getterNameFormat, name);
+  }
+          
 
     /**
      * Renders the getters for a primitive data type field
@@ -658,34 +737,108 @@ public class FieldRenderer {
      * @param dataType
      *            the properties of the data type
      */
-    private void renderFieldPrimitiveGetters(FieldInfo fieldInfo, Properties dataType) {
-        String fieldName = fieldInfo.getMdsName();
-        String managedGetter;
-        String primitiveGetter;
-        if (fieldInfo.getVarInfo().isManaged()) {
-            managedGetter = fieldName;
-            primitiveGetter = "prim" + firstCharUpperCase(fieldName);
-        } else {
-            managedGetter = "managed" + firstCharUpperCase(fieldName);
-            primitiveGetter = fieldName;
-        }
-        String getterNameFormat = fieldInfo.getGetterNameFormat();
-        if (!getterNameFormat.startsWith("%s")) {
-            managedGetter = firstCharUpperCase(managedGetter);
-            primitiveGetter = firstCharUpperCase(primitiveGetter);
-        }
-        managedGetter = String.format(getterNameFormat, managedGetter);
-        primitiveGetter = String.format(getterNameFormat, primitiveGetter);
-        String managedType = dataType.getMngType().getCanonicalName();
-        renderFieldGetter(fieldInfo, managedType, TypeProp.GET_MNG_VALUE_METHOD, managedGetter);
-        renderFieldGetter(fieldInfo, managedType, TypeProp.PEEK_MNG_VALUE_METHOD,
-                getPeekGetterName(managedGetter));
-        renderFieldGetter(fieldInfo, dataType.getPrimitiveType(), dataType.getGetPrimitiveValueMethod(),
-                primitiveGetter);
-        renderFieldGetter(fieldInfo, dataType.getPrimitiveType(), dataType.getPeekPrimitiveValueMethod(),
-                getPeekGetterName(primitiveGetter));
-    }
+  
+  // private void renderFieldPrimitiveGetters(FieldInfo fieldInfo, Properties dataType) {
+  //   renderPrimGetter(fieldInfo, dataType);
+  //   renderManagedGetter(fieldInfo, dataType);
+  // }
 
+  private void renderPrimGetter(FieldInfo fieldInfo, Properties dataType) {
+    String getter = primGetterName(fieldInfo);
+    renderFieldGetter(fieldInfo, dataType.getPrimitiveType(),
+                      dataType.getGetPrimitiveValueMethod(),
+                      getter);
+    renderFieldGetter(fieldInfo, dataType.getPrimitiveType(),
+                      dataType.getPeekPrimitiveValueMethod(),
+                      getPeekGetterName(getter));
+  }
+
+  private void renderManagedGetter(FieldInfo fieldInfo, Properties dataType) {
+    String getter = managedGetterName(fieldInfo);
+    renderFieldGetter(fieldInfo, dataType.getMngType().getCanonicalName(),
+                      TypeProp.GET_MNG_VALUE_METHOD,
+                      getter);
+    renderFieldGetter(fieldInfo, dataType.getMngType().getCanonicalName(),
+                      TypeProp.PEEK_MNG_VALUE_METHOD,
+                      getPeekGetterName(getter));
+  }
+
+  private void renderDelegatingManagedGetter(FieldInfo fieldInfo, Properties dataType) {
+    String getter = managedGetterName(fieldInfo);
+    String managedType = dataType.getMngType().getCanonicalName();
+    String primGetter = primGetterName(fieldInfo);
+    Visibility vis = fieldInfo.getGetterVisibility();
+    renderDelegatingManagedGetter(vis, managedType, getter, primGetter);
+    renderDelegatingManagedGetter(vis, managedType, getPeekGetterName(getter),
+                        getPeekGetterName(primGetter));
+  }
+
+  private void renderDelegatingManagedGetter(Visibility vis, String mType, 
+                                             String getterName,
+                                             String primGetter)
+  {
+    addCode(vis, getFieldGetterDeclaration(mType, getterName, false),
+            renderTemplate(TEMPLATE_MANAGED_GETTER_IMPL,
+                           t->{
+                             t.add("mType", mType);
+                             t.add("getter", getterName);
+                             t.add("primGetter", primGetter);
+                           }));
+  }
+  private void renderDelegatingManagedSetter(FieldInfo fieldInfo, Properties dataType) {
+    String setter = TypeProp.SET_FIELD_VALUE_METHOD
+      +firstCharUpperCase(fieldInfo.getMdsName());
+    String mType = dataType.getMngType().getCanonicalName();
+    String toPrim = dataType.getAsPrimitiveValueMethod();
+    addCode(this::addConstructingMethod,
+            renderTemplate(TEMPLATE_MANAGED_SETTER_IMPL,
+                           t->{
+                             t.add("mType", mType);
+                             t.add("setter", setter);
+                             t.add("toPrim", toPrim);
+                           }));
+  }
+  private void renderDelegatingPrimSetter(FieldInfo fieldInfo, Properties dataType) {
+    String setter = TypeProp.SET_FIELD_VALUE_METHOD
+      +firstCharUpperCase(fieldInfo.getMdsName());
+    String mType = dataType.getMngType().getCanonicalName();
+    String pType = dataType.getPrimitiveType();
+    String toPrim = dataType.getAsPrimitiveValueMethod();
+    addCode(this::addConstructingMethod,
+            renderTemplate(TEMPLATE_PRIM_SETTER_IMPL,
+                           t->{
+                             t.add("mType", mType);
+                             t.add("pType", pType);
+                             t.add("setter", setter);
+                             t.add("toPrim", toPrim);
+                           }));
+  }
+
+  private void renderDelegatingPrimGetter(FieldInfo fieldInfo, Properties dataType) {
+    String getter = primGetterName(fieldInfo);
+    String pType = dataType.getPrimitiveType();
+    String mGetter = managedGetterName(fieldInfo);
+    String toPrim = dataType.getAsPrimitiveValueMethod();
+    Visibility vis = fieldInfo.getGetterVisibility();
+    renderDelegatingManagedGetter(vis, pType, getter, mGetter, toPrim);
+    renderDelegatingManagedGetter(vis, pType, getPeekGetterName(getter),
+                                  getPeekGetterName(mGetter), toPrim);
+  }
+
+  private void renderDelegatingManagedGetter(Visibility vis, String pType, 
+                                             String getterName,
+                                             String mGetter,
+                                             String toPrim)
+  {
+    addCode(vis, getFieldGetterDeclaration(pType, getterName, false),
+            renderTemplate(TEMPLATE_PRIM_GETTER_IMPL,
+                           t->{
+                             t.add("pType", pType);
+                             t.add("getter", getterName);
+                             t.add("mGetter", mGetter);
+                             t.add("toPrim", toPrim);
+                           }));
+  }
     /**
      * Generates setters for primitive type fields
      * 
@@ -700,10 +853,12 @@ public class FieldRenderer {
         String primitiveType = dataType.getPrimitiveType();
         String managedType = dataType.getMngType().getCanonicalName();
         String fieldName = fieldInfo.getVarInfo().getName();
-        Visibility setterVisibility = fieldInfo.getSetterVisibility();
-        renderFieldModifier(fieldName, setterVisibility, TypeProp.SET_FIELD_VALUE_METHOD, managedType, modifierSuffix);
-        renderFieldModifier(fieldName, setterVisibility, TypeProp.SET_FIELD_VALUE_METHOD, primitiveType,
-                modifierSuffix);
+        boolean isFinal = fieldInfo.isFinal();
+        Visibility setterVisibility = isFinal ? Visibility.PRIVATE : fieldInfo.getSetterVisibility();
+        // String mName = isFinal ? TypeProp.INIT_FIELD_VALUE_METHOD : TypeProp.SET_FIELD_VALUE_METHOD;
+        String mName = TypeProp.SET_FIELD_VALUE_METHOD;
+        renderFieldModifier(fieldName, setterVisibility, mName, managedType, modifierSuffix, isFinal);
+        renderFieldModifier(fieldName, setterVisibility, mName, primitiveType, modifierSuffix, isFinal);
     }
 
     /**
@@ -721,15 +876,15 @@ public class FieldRenderer {
         String managedType = dataType.getMngType().getCanonicalName();
         String name = fieldInfo.getVarInfo().getName();
         renderFieldModifierNoArgs(name, fieldInfo.getIncVisibility(), "inc", primitiveType, modifierSuffix);
-        renderFieldModifier(name, fieldInfo.getIncVisibility(), "inc", primitiveType, modifierSuffix);
-        renderFieldModifier(name, fieldInfo.getIncVisibility(), "inc", managedType, modifierSuffix);
+        renderFieldModifier(name, fieldInfo.getIncVisibility(), "inc", primitiveType, modifierSuffix, false);
+        renderFieldModifier(name, fieldInfo.getIncVisibility(), "inc", managedType, modifierSuffix, false);
         renderFieldModifierNoArgs(name, fieldInfo.getDecVisibility(), "dec", primitiveType, modifierSuffix);
-        renderFieldModifier(name, fieldInfo.getDecVisibility(), "dec", primitiveType, modifierSuffix);
-        renderFieldModifier(name, fieldInfo.getDecVisibility(), "dec", managedType, modifierSuffix);
-        renderFieldModifier(name, fieldInfo.getMulVisibility(), "mult", primitiveType, modifierSuffix);
-        renderFieldModifier(name, fieldInfo.getMulVisibility(), "mult", managedType, modifierSuffix);
-        renderFieldModifier(name, fieldInfo.getDivVisibility(), "div", primitiveType, modifierSuffix);
-        renderFieldModifier(name, fieldInfo.getDivVisibility(), "div", managedType, modifierSuffix);
+        renderFieldModifier(name, fieldInfo.getDecVisibility(), "dec", primitiveType, modifierSuffix, false);
+        renderFieldModifier(name, fieldInfo.getDecVisibility(), "dec", managedType, modifierSuffix, false);
+        renderFieldModifier(name, fieldInfo.getMulVisibility(), "mult", primitiveType, modifierSuffix, false);
+        renderFieldModifier(name, fieldInfo.getMulVisibility(), "mult", managedType, modifierSuffix, false);
+        renderFieldModifier(name, fieldInfo.getDivVisibility(), "div", primitiveType, modifierSuffix, false);
+        renderFieldModifier(name, fieldInfo.getDivVisibility(), "div", managedType, modifierSuffix, false);
     }
 
     /**
@@ -747,26 +902,19 @@ public class FieldRenderer {
      * @param modifierSuffix
      *            suffix of method's name
      */
-    private void renderFieldModifierNoArgs(String fieldName, Visibility visibility, String methodName,
-            String primitiveType, String modifierSuffix) {
-        if (!Visibility.NO.equals(visibility)) {
-            String modifierName = methodName + modifierSuffix;
-            addPrivateMethods(renderModifierImplNoArgs(fieldName, methodName, modifierName, primitiveType));
-            switch (visibility) {
-            case PUBLIC:
-                addPublicMethods(getFieldNumericModifierDeclarationNoArgs(modifierName, primitiveType));
-                break;
-            case PROTECTED:
-                addProtectedMethods(getFieldNumericModifierDeclarationNoArgs(modifierName, primitiveType));
-                break;
-            case PRIVATE:// ignored, default implementation is at this
-                         // level
-                break;
-            default:
-                throw new IllegalStateException("Unsupported visibility type");
-            }
-        }
-    }
+  private void renderFieldModifierNoArgs(String fieldName, Visibility visibility, String methodName,
+                                         String primitiveType, String modifierSuffix)
+  {
+    String modifierName = methodName + modifierSuffix;
+    addCode(visibility,
+            getFieldNumericModifierDeclarationNoArgs(modifierName, primitiveType),
+            renderModifierImplNoArgs(fieldName, methodName, modifierName, primitiveType));
+    String getAndMethodName = "getAnd"+firstCharUpperCase(methodName);
+    String getAndModifierName = "getAnd"+firstCharUpperCase(modifierName);
+    addCode(visibility,
+            getFieldNumericModifierDeclarationNoArgs(getAndModifierName, primitiveType),
+            renderModifierImplNoArgs(fieldName, getAndMethodName, getAndModifierName, primitiveType));
+  }
 
     /**
      * Generates the modifier default implementation with no arguments
@@ -782,17 +930,18 @@ public class FieldRenderer {
      * 
      * @return the result of the rendering
      */
-    private String renderModifierImplNoArgs(String fieldName, String fieldMethod, String modifierName,
-            String primitiveType) {
-        ST implTemplate = stGroup.getInstanceOf(TEMPLATE_MODIFIER_IMPL_NO_ARGS);
-        assert implTemplate != null; // ensure template exists
-        implTemplate.add("modifierName", modifierName);
-        implTemplate.add("fieldName", fieldName);
-        implTemplate.add("fieldMethod", fieldMethod);
-        implTemplate.add("numType", primitiveType);
-        implTemplate.add("recordName", recordSimpleName);
-        return implTemplate.render();
-    }
+  private String renderModifierImplNoArgs(String fieldName, String fieldMethod, String modifierName,
+                                          String primitiveType)
+  {
+    return renderTemplate(TEMPLATE_MODIFIER_IMPL_NO_ARGS,
+                          t->{
+                            t.add("modifierName", modifierName);
+                            t.add("fieldName", fieldName);
+                            t.add("fieldMethod", fieldMethod);
+                            t.add("numType", primitiveType);
+                            t.add("recordName", recordSimpleName);
+                          });
+  }
 
     /**
      * Generates no argument numeric field modifier method declaration
@@ -803,12 +952,33 @@ public class FieldRenderer {
      *            data type of the return value
      * @return the render of the method
      */
-    private String getFieldNumericModifierDeclarationNoArgs(String modifierName, String numType) {
-        ST declarationTemplate = stGroup.getInstanceOf(TEMPLATE_MODIFIER_DECLARATION_NO_ARGS);
-        assert declarationTemplate != null; // ensure template exists
-        declarationTemplate.add("modifierName", modifierName);
-        declarationTemplate.add("typeParam", numType);
-        return declarationTemplate.render();
+  private String getFieldNumericModifierDeclarationNoArgs(String modifierName, String numType) {
+    return renderTemplate(TEMPLATE_MODIFIER_DECLARATION_NO_ARGS,
+                          t->{
+                            t.add("modifierName", modifierName);
+                            t.add("typeParam", numType);
+                          });
+  }
+
+  private void renderFinalsCommonCode(int nFields) {
+    addFinalFields(renderTemplate(TEMPLATE_FINAL_COMMON_VARS,
+                                  t->{
+                                    t.add("nFields", nFields);
+                                  }));
+  }
+
+  public void renderStaticFinals(List<ConstantInfo> fieldInfos) {
+    for (ConstantInfo fieldInfo : fieldInfos) {
+      String code = renderTemplate(TEMPLATE_STATIC_FINAL_DECL,
+                                   t->{
+                                     t.add("name", fieldInfo.getName());
+                                     t.add("type", fieldInfo.getType());
+                                     t.add("schema", recordInfo.getSchema());
+                                   });
+      Visibility vis = fieldInfo.getVisibility();
+      addCode(vis, code);
+      addCode(staticAdder(vis), code);
     }
+  }
 
 }

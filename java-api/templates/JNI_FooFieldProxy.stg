@@ -89,6 +89,7 @@ Java_com_hpl_mds_impl_$class$_getNameHandle
   (JNIEnv *jEnv, jobject, 
    jlong hIndex)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, get_name_handle<$kind$>, hIndex);
 }
 
@@ -99,6 +100,7 @@ Java_com_hpl_mds_impl_$class$_getRecTypeHandle
   (JNIEnv *jEnv, jobject, 
    jlong hIndex)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, get_rec_type_handle<$kind$>, hIndex);
 }
 
@@ -112,6 +114,7 @@ Java_com_hpl_mds_impl_$type.fieldName$Proxy_createFieldIn
    jlong recTypeHIndex, 
    jlong nameHIndex)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, create_field_in<$kind$>, recTypeHIndex, nameHIndex);
 }
 
@@ -121,10 +124,10 @@ JNICALL
 Java_com_hpl_mds_impl_$class$_getValue$whenString({Handle})$
   (JNIEnv *jEnv, jobject, 
    jlong hIndex,
-   jlong ctxtHIndex,
    jlong recHIndex)
 {
-  return exception_handler_wr(jEnv, get_value<$kind$>, hIndex, ctxtHIndex, recHIndex);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, get_value<$kind$>, hIndex, recHIndex);
 }
   
 JNIEXPORT 
@@ -133,10 +136,10 @@ JNICALL
 Java_com_hpl_mds_impl_$class$_peekValue$whenString({Handle})$
   (JNIEnv *jEnv, jobject, 
    jlong hIndex,
-   jlong ctxtHIndex,
    jlong recHIndex)
 {
-  return exception_handler_wr(jEnv, peek_value<$kind$>, hIndex, ctxtHIndex, recHIndex);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, peek_value<$kind$>, hIndex, recHIndex);
 }
   
 JNIEXPORT 
@@ -145,51 +148,79 @@ JNICALL
 Java_com_hpl_mds_impl_$class$_setValue$whenString({Handle})$
   (JNIEnv *jEnv, jobject, 
    jlong hIndex,
-   jlong ctxtHIndex,
    jlong recHIndex,
    $jni$ valArg)
 {
-  return exception_handler_wr(jEnv, set_value<$kind$>, hIndex, ctxtHIndex, recHIndex, valArg);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, [=] {
+      return set_value<$kind$>(hIndex, recHIndex, valArg);
+    });
 }
-
-JNIEXPORT
-void
-JNICALL
-Java_com_hpl_mds_impl_$class$_setToParent
-  (JNIEnv *jEnv, jobject,
+  
+JNIEXPORT 
+jboolean
+JNICALL 
+Java_com_hpl_mds_impl_$class$_initFinal
+  (JNIEnv *jEnv, jobject, 
    jlong hIndex,
-   jlong ctxtHIndex,
-   jlong recHIndex)
+   jlong recHIndex,
+   $jni$ valArg)
 {
-  exception_handler(jEnv, set_to_parent<kind::DOUBLE>, hIndex, ctxtHIndex, recHIndex);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, [=] {
+      return init_final<$kind$>(hIndex, recHIndex, valArg);
+    });
 }
 
-
-JNIEXPORT
-void
-JNICALL
-Java_com_hpl_mds_impl_$class$_rollback
-  (JNIEnv *jEnv, jobject,
+JNIEXPORT 
+$jni$
+JNICALL 
+Java_com_hpl_mds_impl_$class$_getAndSetValue$whenString({Handle})$
+  (JNIEnv *jEnv, jobject, 
    jlong hIndex,
-   jlong ctxtHIndex,
-   jlong recHIndex)
+   jlong recHIndex,
+   $jni$ valArg)
 {
-  exception_handler(jEnv, rollback<$kind$>, hIndex, ctxtHIndex, recHIndex);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, [=] {
+      return set_value<$kind$>(hIndex, recHIndex, valArg, ret_mode::prior_val);
+    });
 }
+
 
 $if(type.numeric)$
-$["add","sub","mul","div"]:{ func |
+$["add","sub","mul","div"],
+ ["inc","dec","mult","div"],
+ ["getAndInc","getAndDec","getAndMult","getAndDiv"]:{ op,func,getAndFunc |
 JNIEXPORT 
 jboolean
 JNICALL 
 Java_com_hpl_mds_impl_$class$_$func$Value
   (JNIEnv *jEnv, jobject, 
    jlong hIndex,
-   jlong ctxtHIndex,
    jlong recHIndex,
    $jni$ valArg)
 {
-  return exception_handler_wr(jEnv, modify_value<$kind$, ARITH_OP::$func$>, hIndex, ctxtHIndex, recHIndex, valArg);
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, [=] {
+      return modify_value<$kind$, ARITH_OP::$op$>(hIndex, recHIndex, valArg);
+    \});
+\}
+
+JNIEXPORT 
+jboolean
+JNICALL 
+Java_com_hpl_mds_impl_$class$_$getAndFunc$Value
+  (JNIEnv *jEnv, jobject, 
+   jlong hIndex,
+   jlong recHIndex,
+   $jni$ valArg)
+{
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, [=] {
+      return modify_value<$kind$, ARITH_OP::$op$>(hIndex, recHIndex, valArg,
+          ret_mode::prior_val);
+    \});
 \}
 
 }

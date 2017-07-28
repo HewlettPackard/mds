@@ -26,7 +26,7 @@
 
 package com.hpl.mds.impl;
 
-import com.hpl.mds.naming.Prior;
+import com.hpl.mds.*;
 
 public class PriorImpl implements Prior {
 	static final PriorImpl WAS_UNBOUND = new PriorImpl();

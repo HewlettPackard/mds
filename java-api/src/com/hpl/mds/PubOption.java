@@ -28,19 +28,69 @@ package com.hpl.mds;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+import java.util.function.Predicate;
 
 import com.hpl.mds.impl.PubOptionImpl;
+import com.hpl.mds.IsolationContext.ViewType;
+import com.hpl.mds.IsolationContext.ModificationType;;
+
 
 public interface PubOption {
-  static PubOption reRunNTimes(int n) {
-    return PubOptionImpl.reRunNTimes(n);
-  }
+  PubOption reRunIf(Supplier<BooleanSupplier> gen);
+  PubOption reRunIf(BooleanSupplier test);
+  PubOption alwaysReRun();
+  PubOption neverReRun();
+  PubOption reRunNTimes(int n);
+  PubOption reRunFor(Duration time);
+  PubOption reRunUntil(Instant time);
 
-  static PubOption reRunFor(Duration time) {
-    return PubOptionImpl.reRunFor(time);
+  PubOption resolveIf(Supplier<Predicate<PubResult>> gen);
+  PubOption resolveIf(Predicate<PubResult> test);
+  PubOption alwaysResolve();
+  PubOption neverResolve();
+  PubOption resolveNTimes(int n);
+  PubOption resolveFor(Duration time);
+  PubOption resolveUntil(Instant time);
+
+  PubOption reportTo(PublishReport report);
+
+  PubOption as(ViewType vt, ModificationType mt);
+
+default PubOption as(ViewType vt) { return as(vt, null); }
+default PubOption live() { return as(ViewType.Live); }
+default PubOption snapshot() { return as(ViewType.Snapshot); }
+
+default PubOption as(ModificationType mt) { return as(null, mt); }
+default PubOption publishable() { return as(ModificationType.Full); }
+default PubOption detached() { return as(ModificationType.Detached); }
+default PubOption readOnly() { return as(ModificationType.ReadOnly); }
+
+default PubOption publishableLive() {
+  return as(ViewType.Live, ModificationType.Full);
+}
+default PubOption detachedLive() {
+  return as(ViewType.Live, ModificationType.Detached);
+}
+default PubOption readOnlyLive(){
+  return as(ViewType.Live, ModificationType.ReadOnly);
+}
+
+default PubOption publishableSnapshot() {
+  return as(ViewType.Snapshot, ModificationType.Full);
+}
+default PubOption detachedSnapshot() {
+  return as(ViewType.Snapshot, ModificationType.Detached);
+}
+default PubOption readOnlySnapshot() {
+  return as(ViewType.Snapshot, ModificationType.ReadOnly);
+}
+
+  PubOption and(PubOption other);
+  
+  static PubOption defaultOpts() {
+    return PubOptionImpl.BASE;
   }
   
-  static PubOption reRunUntil(Instant time) {
-    return PubOptionImpl.reRunUntil(time);
-  }
 }

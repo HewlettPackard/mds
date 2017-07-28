@@ -29,8 +29,8 @@ package com.hpl.inventory;
 
 import static com.hpl.mds.IsolationContext.isolated;
 
-import com.hpl.mds.PubOption;
-import com.hpl.mds.exceptions.FailedTransactionException;
+import com.hpl.mds.Options;
+import com.hpl.mds.FailedTransactionException;
 
 public class Demo2_Conflict extends DemoBase {
 	
@@ -48,11 +48,13 @@ public class Demo2_Conflict extends DemoBase {
         		PubTrace trace = new PubTrace(1, "Buy 1 (with delay)", nRetries);
         		// ###########################
                 try {
-                    isolated(() -> {
-                        inventory.orderOut(1, p);
-                        p.printAll();
-                        block(2_000);
-                    }, trace, PubOption.reRunNTimes(nRetries));
+                  isolated(Options.reRunNTimes(nRetries)
+                           .reportTo(trace),
+                           () -> {
+                             inventory.orderOut(1, p);
+                             p.printAll();
+                             block(2_000);
+                           });
                 } catch (FailedTransactionException e) {
                     // ignored
                 }
@@ -67,10 +69,12 @@ public class Demo2_Conflict extends DemoBase {
         		PubTrace trace = new PubTrace(2, "Buy 5 ", nRetries);
         		// ###########################
                 try {
-                    isolated(() -> {
-                        inventory.orderOut(5, p);
-                        p.printAll();
-                    }, trace, PubOption.reRunNTimes(nRetries));
+                  isolated(Options.reRunNTimes(nRetries)
+                           .reportTo(trace),
+                           () -> {
+                             inventory.orderOut(5, p);
+                             p.printAll();
+                           });
                 } catch (FailedTransactionException e) {
                     // ignored
                 }

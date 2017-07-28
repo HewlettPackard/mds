@@ -38,9 +38,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import com.hpl.erk.util.ArrayUtils;
-import com.hpl.mds.naming.HName;
-import com.hpl.mds.naming.Namespace;
-import com.hpl.mds.string.ManagedString;
+import com.hpl.mds.*;
 
 
 public abstract class HNameImpl implements HName {
@@ -483,65 +481,6 @@ public abstract class HNameImpl implements HName {
     return newDir.new DirUseImpl();
   }
   
-  static class Change extends ChangeBase {
-  	
-  	/** 
-  	 * HNameImpl.Change represented by: 
-  	 *   objectId: Namespace handle
-  	 *   changeId: ManagedString handle
-  	 */
-  	private final long objectId;
-  	private final long changeId;
-  	
-  	@SuppressWarnings("unused")
-	private Namespace namespace;
-  	@SuppressWarnings("unused")
-	private ManagedString name;
-  	
-  	// constructor for calls from PubResultProxy.addNamespaceNameConflict, 
-  	// creating conflict change objects
-      public Change(long namespaceHandle, long nameHandle) {
-          this.objectId = namespaceHandle;
-          this.changeId = nameHandle;
-      }
-
-      public long objectId() {
-      	return objectId;
-      }
-      
-      public long changeId() {
-      	return changeId;
-      }
-      
-      public boolean equals(Object obj) {
-      	// check ChangeBase subtype equality first:
-      	// ensures an object of one ChangeBase subtype 
-      	// is never compared with an object of a different ChangeBase subtype
-      	if (obj != null && obj.getClass() == Change.class) {
-      		// then check equality of attribute values
-      		return ( this.objectId == ((Change)obj).objectId() &&
-      				 this.changeId == ((Change)obj).changeId() );
-      	}
-      	return false;
-      }
-      
-      // If you override equals() then override hashcode too...
-      public int hashCode() {
-      	return Objects.hash(objectId, changeId);
-      }
-      
-      public String toString() {
-      	return "objectId: " + objectId + " changeId: " + changeId;
-      }
-      
-      public void setToParent() {
-        // TODO: set_to_parent unimplemented on namespace
-      	// name.setToParent(namespace);
-    	Stub.notImplemented();
-      }
-
-  }  // end class Change  
-	
 
 }
  

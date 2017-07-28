@@ -41,63 +41,54 @@ namespace mds
 
       template<kind KIND>
 	inline api_type<KIND>
-	lookup_intern (api_type<kind::LONG> ctxtHIndex,
-		       api_type<kind::LONG> nsHIndex,
+	lookup_intern (api_type<kind::LONG> nsHIndex,
 		       api_type<kind::LONG> nameHIndex)
 	{
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<namespace_handle> ns
 	    { nsHIndex };
 	  indexed<interned_string_handle> name
 	    { nameHIndex };
-	  return ns->lookup (*ctxt, *name, managed_handle_by_kind<KIND> ());
+	  return ns->lookup (*name, managed_handle_by_kind<KIND> ());
 	}
 
       template<kind KIND>
 	inline typename str_to_long<KIND>::type
-	lookup (api_type<kind::LONG> ctxtHIndex, api_type<kind::LONG> nsHIndex,
+	lookup (api_type<kind::LONG> nsHIndex,
 		api_type<kind::LONG> nameHIndex)
 	{
-	  return lookup_intern<KIND> (ctxtHIndex, nsHIndex, nameHIndex);
+	  return lookup_intern<KIND> (nsHIndex, nameHIndex);
 	}
 
       template<>
 	inline typename str_to_long<kind::STRING>::type
-	lookup<kind::STRING> (api_type<kind::LONG> ctxtHIndex,
-			      api_type<kind::LONG> nsHIndex,
+	lookup<kind::STRING> (api_type<kind::LONG> nsHIndex,
 			      api_type<kind::LONG> nameHIndex)
 	{
 	  indexed<interned_string_handle> s
-	    { lookup_intern<kind::STRING> (ctxtHIndex, nsHIndex, nameHIndex) };
+          { lookup_intern<kind::STRING> (nsHIndex, nameHIndex) };
 	  return s.return_index ();
 	}
 
       template<kind KIND>
 	inline api_type<kind::BOOL>
-	bind_in (api_type<kind::LONG> ctxtHIndex, api_type<kind::LONG> nsHIndex,
+	bind_in (api_type<kind::LONG> nsHIndex,
 		 api_type<kind::LONG> nameHIndex,
 		 typename str_to_long<KIND>::type val)
 	{
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<namespace_handle> ns
 	    { nsHIndex };
 	  indexed<interned_string_handle> name
 	    { nameHIndex };
 	  api_type<KIND> v = val;
-	  return ns->bind<KIND> (*ctxt, *name, v);
+	  return ns->bind<KIND> (*name, v);
 	}
 
       template<>
 	inline api_type<kind::BOOL>
-	bind_in<kind::STRING> (api_type<kind::LONG> ctxtHIndex,
-			       api_type<kind::LONG> nsHIndex,
+	bind_in<kind::STRING> (api_type<kind::LONG> nsHIndex,
 			       api_type<kind::LONG> nameHIndex,
 			       typename str_to_long<kind::STRING>::type val)
 	{
-	  indexed<iso_context_handle> ctxt
-	    { ctxtHIndex };
 	  indexed<namespace_handle> ns
 	    { nsHIndex };
 	  indexed<interned_string_handle> name
@@ -105,7 +96,7 @@ namespace mds
 	  indexed<interned_string_handle> s
 	    { val };
 	  api_type<kind::STRING> v = *s;
-	  return ns->bind<kind::STRING> (*ctxt, *name, v);
+	  return ns->bind<kind::STRING> (*name, v);
 	}
     }
   }

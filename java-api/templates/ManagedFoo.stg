@@ -28,7 +28,7 @@ delimiters "$", "$"
 import "string.stg"
 import "type.stg"
 import "covariant.stg"
-package(type) ::= "com.hpl.mds.$ifString({string},{prim})$"
+package(type) ::= "com.hpl.mds"
 class(type) ::= "$type.managedName$"
 
 code(type,types) ::= <<
@@ -64,45 +64,11 @@ $body(class(type), type, type.managedName, type.boxedName, type.primName, type.f
 body(class, type, managed, boxed, prim, field, short, impl, types) ::= <<
 package $package(type)$;
 
-import com.hpl.mds.ManagedObject;
-
 import java.util.List;
 
-$if(type.numeric)$
-import com.hpl.mds.ManagedNumber;
-$endif$
-import com.hpl.mds.ManagedCollection;
-import com.hpl.mds.ManagedContainer;
-import com.hpl.mds.ManagedPrimitive;
-import com.hpl.mds.ManagedRecord;
-import com.hpl.mds.ManagedType;
-import com.hpl.mds.ManagedList;
-import com.hpl.mds.ManagedArray;
-import com.hpl.mds.ManagedOrdered;
-import com.hpl.mds.ManagedSet;
-import com.hpl.mds.ManagedMap;
-import com.hpl.mds.RecordType;
 import com.hpl.mds.impl.$impl$;
 import com.hpl.mds.impl.$managed$Type;
 
-$unlessString({
-import com.hpl.mds.prim.field.$field$;
-import com.hpl.mds.prim.container.set.Managed$type.shortName$Set;
-import com.hpl.mds.prim.container.array.Managed$type.shortName$Array;
-import com.hpl.mds.prim.container.list.Managed$type.shortName$List;
-import com.hpl.mds.prim.container.map.ManagedMapTo$type.shortName$;
-import com.hpl.mds.prim.container.map.ManagedStringTo$type.shortName$Map;
-import com.hpl.mds.string.ManagedString;
-import com.hpl.mds.string.ManagedMapFromString;
-})$
-$whenString({
-$types.primTypes: { t |
-import com.hpl.mds.prim.$t.managedName$;
-}$
-$types.primTypes: { t |
-import com.hpl.mds.prim.container.map.ManagedStringTo$t.shortName$Map;
-}$
-})$
 
 public interface $class$ extends ManagedPrimitive<$boxed$>,Comparable<$class$>$if(type.numeric)$, ManagedNumber$endif$$whenString({, CharSequence})$ {
 $if(type.bool)$
@@ -117,9 +83,6 @@ $endif$
 
     <RT extends ManagedRecord> $field$<RT> findFieldIn(RecordType<RT> recType, CharSequence name);
     
-import com.hpl.mds.naming.HName;
-import com.hpl.mds.naming.Namespace;  
-import com.hpl.mds.naming.Prior;  
 
     $val()$ lookupNameAs$short$(Namespace ns, CharSequence name);
     default $val()$ lookupNameAs$short$(HName name) {
@@ -303,6 +266,16 @@ $endif$
     return value == null ? $ifString({null},{$if(type.bool)$false$else$0$endif$})$ : value.as$type.shortName$();
   }
   
+$whenString({
+  $val()$ asStringNoCache();
+
+  static $val()$ asStringNoCache($class$ value) {
+    return value == null ? null : value.asStringNoCache();
+  \}
+
+  void clearCache();
+})$
+
   $bind(class, [])$
   
 }

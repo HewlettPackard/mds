@@ -69,26 +69,5 @@ extern "C"
     return exception_handler_wr(jEnv, get_rec_type_handle<kind::ARRAY>, hIndex);
   }
 
-  JNIEXPORT
-  void
-  JNICALL
-  Java_com_hpl_mds_impl_ArrayFieldProxy_setToParent (JNIEnv *jEnv, jobject,
-						     jlong hIndex,
-						     jlong ctxtHIndex,
-						     jlong recHIndex)
-  {
-    exception_handler(jEnv, set_to_parent<kind::ARRAY>, hIndex, ctxtHIndex, recHIndex);
-  }
-
-  JNIEXPORT
-  void
-  JNICALL
-  Java_com_hpl_mds_impl_ArrayFieldProxy_rollback (JNIEnv *jEnv, jobject,
-						  jlong hIndex,
-						  jlong ctxtHIndex,
-						  jlong recHIndex)
-  {
-    exception_handler(jEnv, rollback<kind::ARRAY>, hIndex, ctxtHIndex, recHIndex);
-  }
 }
 

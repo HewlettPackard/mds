@@ -32,7 +32,6 @@
 #include "mds-debug.h"
 #include <jni.h>
 #include "mds_core_api.h"                           // MDS Core API
-#include "pr_merge_result.h"
 #include "mds_jni.h"
 
 using namespace mds;
@@ -70,10 +69,24 @@ JNICALL Java_com_hpl_mds_impl_IsoContextProxy_parentHandle
   (JNIEnv *jEnv, jclass,
    jlong handleIndex)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, [=]{
 	indexed<iso_context_handle> self { handleIndex };
 	indexed<iso_context_handle> parent { self->parent() };
     return parent.return_index();});
+}
+
+JNIEXPORT
+jlong
+JNICALL Java_com_hpl_mds_impl_IsoContextProxy_topLevelTaskHandle
+  (JNIEnv *jEnv, jclass,
+   jlong handleIndex)
+{
+  ensure_thread_initialized(jEnv);
+  return exception_handler_wr(jEnv, [=]{
+	indexed<iso_context_handle> self { handleIndex };
+	indexed<task_handle> top_level_task { self->top_level_task() };
+    return top_level_task.return_index();});
 }
 
 /*
@@ -90,6 +103,7 @@ Java_com_hpl_mds_impl_IsoContextProxy_newChild
    jint viewType,
    jint modType)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, [=]{
 	indexed<iso_context_handle> self {handleIndex};
 	view_type vt = static_cast<view_type>(viewType);
@@ -114,6 +128,7 @@ JNICALL
 Java_com_hpl_mds_impl_IsoContextProxy_globalHandle
   (JNIEnv *jEnv, jclass)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, [](){
 	static indexed<iso_context_handle> gh { iso_context_handle::global() };
 //	std::cout << "Global is " << *gh << " (handle: " << gh.peek_index() << ")" << std::endl;
@@ -132,6 +147,7 @@ JNICALL
 Java_com_hpl_mds_impl_IsoContextProxy_processHandle
   (JNIEnv *jEnv, jclass)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, [](){
 	static indexed<iso_context_handle> ph { iso_context_handle::for_process() };
 	return ph.return_index();
@@ -146,13 +162,14 @@ Java_com_hpl_mds_impl_IsoContextProxy_processHandle
 JNIEXPORT
 jboolean
 JNICALL
-Java_com_hpl_mds_impl_IsoContextProxy_isMeregable
+Java_com_hpl_mds_impl_IsoContextProxy_isPublishable
   (JNIEnv *jEnv, jclass,
    jlong handleIndex)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, [=]{
 	indexed<iso_context_handle> self { handleIndex };
-	return self->is_mergeable();
+	return self->is_publishable();
   });
 }
 
@@ -167,6 +184,7 @@ JNICALL
 Java_com_hpl_mds_impl_IsoContextProxy_isSnapshot
   (JNIEnv *jEnv, jclass, jlong handleIndex)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, [=]{
 	indexed<iso_context_handle> self { handleIndex };
 	return self->is_snapshot();
@@ -186,6 +204,7 @@ Java_com_hpl_mds_impl_IsoContextProxy_isReadOnly
   (JNIEnv *jEnv, jclass,
    jlong handleIndex)
 {
+  ensure_thread_initialized(jEnv);
   return exception_handler_wr(jEnv, [=]{
 	indexed<iso_context_handle> self { handleIndex };
 	return self->is_read_only();
@@ -200,48 +219,47 @@ Java_com_hpl_mds_impl_IsoContextProxy_isReadOnly
  * Signature: (JJ)V
  */
 JNIEXPORT
-void
+jlong
 JNICALL
 Java_com_hpl_mds_impl_IsoContextProxy_publish
   (JNIEnv *jEnv, jclass,
-   jlong handleIndex,
-   jlong pubResHandle)
+   jlong handleIndex)
 {
-  exception_handler(jEnv, [=]{
-	indexed<iso_context_handle> self { handleIndex };
-	indexed<pr_merge_result *> mr { pubResHandle };
-	self->publish(**mr);
-  });
+  return exception_handler_wr(jEnv, [=]{
+      indexed<iso_context_handle> self { handleIndex };
+      indexed<publication_attempt_handle> pr{self->publish()};
+      return pr.return_index();
+    });
 }
 
-/*
- * Class:     com_hpl_mds_impl_IsoContextProxy
- * Method:    clearConflicts
- * Signature: (J)V
- */
 JNIEXPORT
-void
+jlong
 JNICALL
-Java_com_hpl_mds_impl_IsoContextProxy_clearConflicts
+Java_com_hpl_mds_impl_IsoContextProxy_push
   (JNIEnv *jEnv, jclass,
    jlong handleIndex)
 {
-  exception_handler(jEnv, [=]{
-	indexed<iso_context_handle> self { handleIndex };
-	self->clear_conflicts();
-  });
+  return exception_handler_wr(jEnv, [=]{
+      indexed<iso_context_handle> self { handleIndex };
+      //      std::cout << "Pushing into context " << self << std::endl;
+      indexed<task_handle> t{self->push_prevailing()};
+      //      std::cout << "Push returned task " << t << std::endl;
+      return t.return_index();
+    });
 }
 
-//JNIEXPORT
-//jint
-//JNICALL
-//Java_com_hpl_mds_impl_IsoContextProxy_numConflicts
-//  (JNIEnv *, jclass,
-//   jlong handleIndex)
-//{
-//	indexed<iso_context_handle> self { handleIndex };
-//    return self.num_conflicts();
-//}
-
+JNIEXPORT
+jboolean
+JNICALL
+Java_com_hpl_mds_impl_IsoContextProxy_hasConflicts
+  (JNIEnv *jEnv, jclass,
+   jlong handleIndex)
+{
+  return exception_handler_wr(jEnv, [=]{
+      indexed<iso_context_handle> self { handleIndex };
+      return self->has_conflicts();
+    });
+}
+  
 }
 

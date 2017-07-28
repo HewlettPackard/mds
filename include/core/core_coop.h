@@ -42,6 +42,7 @@
 #include "ruts/meta.h"
 #include "core/core_fwd.h"
 #include "mpgc/gc_virtuals.h"
+#include "ruts/util.h"
 #include <atomic>
 #include <memory>
 
@@ -52,6 +53,8 @@ namespace mds {
     public:
       using super = gc_allocated_with_virtuals<cooperative_task<Disc>, Disc>;
       using typename super::discriminator_type;
+
+      static void init_vf_table(typename super::vf_table &);
 
       struct virtuals : super::virtuals_base {
 	virtual void run(cooperative_task *self) = 0;
@@ -108,7 +111,7 @@ namespace mds {
     class task_run_state {
       std::atomic<State> _state{init};
 	State next_state(State s) {
-	  State ns = static_cast<State>(static_cast<std::size_t>(s)+1);
+          State ns = ruts::enum_plus(s, 1);
 	  auto rr = ruts::try_change_value(_state, s, ns);
 	  /*
 	   * If this fails, it means somebody else got there first.  Use the result in any case

@@ -68,24 +68,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Deque;
 
-import com.hpl.mds.ManagedCollection;
-import com.hpl.mds.ManagedContainer;
-import com.hpl.mds.usage.Operation;
 import com.hpl.mds.usage.UsageBase;
-import com.hpl.mds.usage.UsageMode;
+
 import com.hpl.mds.impl.Stub;
 
-
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.$elseif(type.string)$string.$endif$$type.managedName$;
-} 
-$
-
-$masked: { type |
-import com.hpl.mds.$if(type.prim)$prim.container.list.$elseif(type.string)$string.$endif$Managed$type.shortName$List;
-}
-$
 
 public interface ManagedList<T extends ManagedObject> extends ManagedCollection<T>, List<T> {
 $masked: { type |

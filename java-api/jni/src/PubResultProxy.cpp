@@ -24,192 +24,136 @@
  *
  */
 
-/* C++ code implementing native methods of Java class:
- *   com.hpl.mds.impl.IntFieldProxy
- */
 
 #include "mds-debug.h"
 #include <jni.h>
 #include "mds_core_api.h"                           // MDS Core API
-#include "pr_merge_result.h"
 #include "mds_jni.h"
 
 using namespace mds;
 using namespace mds::api;
 using namespace mds::jni;
 
-namespace
+
+
+extern "C" {
+
+
+JNIEXPORT
+void
+JNICALL Java_com_hpl_mds_impl_PubResultProxy_release
+  (JNIEnv *jEnv, jclass,
+   jlong handleIndex)
 {
-
-  inline jlong
-  get_context (jlong hindex, iso_context_handle
-  (pr_merge_result::*cfn) () const)
-  {
-    indexed<pr_merge_result *> mr
-      { hindex };
-    indexed<iso_context_handle> ctxt
-      { ((*mr)->*cfn) () };
-    return ctxt.return_index ();
-  }
-
+  exception_handler(jEnv, [=]{
+      indexed<publication_attempt_handle> self { handleIndex };
+      self.release();
+    });
 }
 
-extern "C"
+JNIEXPORT
+jboolean
+JNICALL
+Java_com_hpl_mds_impl_PubResultProxy_succeeded
+  (JNIEnv *jEnv, jclass,
+   jlong handleIndex)
 {
-
-  /*
-   * Class:     com_hpl_mds_impl_PubResultProxy
-   * Method:    constructMergeResult
-   * Signature: ()J
-   */
-  JNIEXPORT jlong JNICALL
-  Java_com_hpl_mds_impl_PubResultProxy_constructMergeResult (JNIEnv *jEnv,
-							     jclass)
-  {
-    return exception_handler_wr (jEnv, [=]
-      {
-	indexed<pr_merge_result *> mr
-	  { new pr_merge_result ()};
-	return mr.return_index ();
-      });
-  }
-
-  /*
-   * Class:     com_hpl_mds_impl_PubResultProxy
-   * Method:    initializeMergeResult
-   * Signature: ()V
-   */
-  JNIEXPORT void JNICALL
-  Java_com_hpl_mds_impl_PubResultProxy_initializeMergeResult (
-      JNIEnv *jEnv, jclass pubResultProxyClass, jobject pubResultProxyObject,
-      jlong hindex)
-  {
-
-    exception_handler (jEnv, [&]
-      {
-	indexed<pr_merge_result *> mr
-	  { hindex};
-
-	JavaVM *javaVM = NULL;
-	jEnv->GetJavaVM(&javaVM);
-	jclass cls = (jclass) jEnv->NewGlobalRef(pubResultProxyClass);
-	jobject obj = jEnv->NewGlobalRef(pubResultProxyObject);
-
-	(*mr)->initialize(jEnv, javaVM, cls, obj);
-      });
-  }
-
-  /*
-   * Class:     com_hpl_mds_impl_PubResultProxy
-   * Method:    destroyMergeResult
-   * Signature: (J)J
-   */
-  JNIEXPORT void JNICALL
-  Java_com_hpl_mds_impl_PubResultProxy_destroyMergeResult (JNIEnv *jEnv, jclass,
-							   jlong hindex)
-  {
-    exception_handler (jEnv, [=]
-      {
-	indexed<pr_merge_result *> mr
-	  { hindex};
-	mr.release ();
-	delete *mr;
-      });
-
-    // delete global refs to pubResultProxyClass, pubResultProxyObject
-  }
-
-  JNIEXPORT jboolean JNICALL
-  Java_com_hpl_mds_impl_PubResultProxy_succeeded (JNIEnv *jEnv, jclass,
-						  jlong hindex)
-  {
-    return exception_handler_wr (jEnv, [=]
-      {
-	indexed<pr_merge_result *> mr
-	  { hindex};
-	return (*mr)->succeeded_;
-      });
-  }
-
-  JNIEXPORT jint JNICALL
-  Java_com_hpl_mds_impl_PubResultProxy_numConflictsRemaining (JNIEnv *jEnv,
-							      jclass,
-							      jlong hindex)
-  {
-    return exception_handler_wr (jEnv, [=]
-      {
-	indexed<pr_merge_result *> mr
-	  { hindex};
-	return (*mr)->num_conflicts ();
-      });
-  }
-
-  /*
-   * Class:     com_hpl_mds_impl_PubResultProxy
-   * Method:    sourceContextIndex
-   * Signature: (J)J
-   */
-  JNIEXPORT jlong JNICALL
-  Java_com_hpl_mds_impl_PubResultProxy_sourceContextIndex (JNIEnv *jEnv, jclass,
-							   jlong hindex)
-  {
-    return exception_handler_wr (jEnv, get_context, hindex,
-				 &merge_result::source_context);
-  }
-
-  /*
-   * Class:     com_hpl_mds_impl_PubResultProxy
-   * Method:    targetContextIndex
-   * Signature: (J)J
-   */
-  JNIEXPORT jlong JNICALL
-  Java_com_hpl_mds_impl_PubResultProxy_targetContextIndex (JNIEnv *jEnv, jclass,
-							   jlong hindex)
-  {
-    return exception_handler_wr (jEnv, get_context, hindex,
-				 &merge_result::target_context);
-  }
-
-  /*
-   * Class:     com_hpl_mds_impl_PubResultProxy
-   * Method:    sourceSnapshotAtMergeIndex
-   * Signature: (J)J
-   */
-  JNIEXPORT jlong JNICALL
-  Java_com_hpl_mds_impl_PubResultProxy_sourceSnapshotAtMergeIndex (JNIEnv *jEnv,
-								   jclass,
-								   jlong hindex)
-  {
-    return exception_handler_wr (jEnv, get_context, hindex,
-				 &merge_result::source_at_merge);
-  }
-
-  /*
-   * Class:     com_hpl_mds_impl_PubResultProxy
-   * Method:    targetSnapshotAtMergeIndex
-   * Signature: (J)J
-   */
-  JNIEXPORT jlong JNICALL
-  Java_com_hpl_mds_impl_PubResultProxy_targetSnapshotAtMergeIndex (JNIEnv *jEnv,
-								   jclass,
-								   jlong hindex)
-  {
-    return exception_handler_wr (jEnv, get_context, hindex,
-				 &merge_result::target_at_merge);
-  }
-
-  /*
-   * Class:     com_hpl_mds_impl_PubResultProxy
-   * Method:    lastCommonSnapshotIndex
-   * Signature: (J)J
-   */
-  JNIEXPORT jlong JNICALL
-  Java_com_hpl_mds_impl_PubResultProxy_lastCommonSnapshotIndex (JNIEnv *jEnv,
-								jclass,
-								jlong hindex)
-  {
-    return exception_handler_wr (jEnv, get_context, hindex,
-				 &merge_result::last_common_snapshot);
-  }
-
+  return exception_handler_wr(jEnv, [=]{
+      indexed<publication_attempt_handle> self { handleIndex };
+      return self->succeeded();
+    });
 }
+
+JNIEXPORT
+jlong
+JNICALL Java_com_hpl_mds_impl_PubResultProxy_sourceContextIndex
+  (JNIEnv *jEnv, jclass,
+   jlong handleIndex)
+{
+  return exception_handler_wr(jEnv, [=]{
+      indexed<publication_attempt_handle> self { handleIndex };
+      indexed<iso_context_handle> ctxt { self->source_context() };
+      return ctxt.return_index();
+    });
+}
+
+JNIEXPORT
+jlong
+JNICALL
+Java_com_hpl_mds_impl_PubResultProxy_nToRedo
+  (JNIEnv *jEnv, jclass,
+   jlong handleIndex)
+{
+  return exception_handler_wr(jEnv, [=]{
+      indexed<publication_attempt_handle> self { handleIndex };
+      return self->n_to_redo();
+    });
+}
+
+  
+
+JNIEXPORT
+jlongArray
+JNICALL
+Java_com_hpl_mds_impl_PubResultProxy_redoTasksByStartTime
+  (JNIEnv *jEnv, jclass,
+   jlong handleIndex)
+{
+  // I originally erroneously had this returning a TaskProxy[].  I'm
+  // leaving the code here to remind myself how I did it.  After this,
+  // the array was created using NewObjectArray(), the TaskProxy using
+  // CallStaticObjectMethod(), and the element set using
+  // SetObjectArrayElement().
+
+  /*
+  static const jclass c = find_class(jEnv, "com/hpl/mds/impl/TaskProxy");
+  if (c == nullptr) {
+    return NULL; // exception thrown
+  }
+  static jmethodID m = find_static_method(jEnv, c,
+                                          "fromHandle",
+                                          "(J)Lcom/hpl/mds/impl/TaskProxy;");
+  if (m == nullptr) {
+    return NULL; // exception thrown;
+  }
+  */
+  return exception_handler_wr(jEnv, [=]{
+      indexed<publication_attempt_handle> self { handleIndex };
+      std::vector<task_handle> tasks { self->redo_tasks_by_start_time() };
+      int n = tasks.size();
+      //      std::cout << n << " tasks to redo" << std::endl;
+      jlongArray array = jEnv->NewLongArray(n);
+      for (int i=0; i<n; i++) {
+        //        std::cout << "Indexing task " << tasks[i] << std::endl;
+        indexed<task_handle> t{tasks[i]};
+        //        std::cout << "  Got " << t << std::endl;
+        /*
+         * We call return_index() rather than peek_index(), because
+         * we're handing a reference to fromHandle().  (Which it may
+         * release if it already has it.)
+         */
+        jlong task_index = t.return_index();
+        jEnv->SetLongArrayRegion(array, i, 1, &task_index);
+      }
+      //      std::cout << "Built the array" << std::endl;
+      return array;
+    });
+}
+
+JNIEXPORT
+jboolean
+JNICALL
+Java_com_hpl_mds_impl_PubResultProxy_prepareForRedo
+  (JNIEnv *jEnv, jclass,
+   jlong handleIndex)
+{
+  return exception_handler_wr(jEnv, [=]{
+      indexed<publication_attempt_handle> self { handleIndex };
+      return self->prepare_for_redo();
+    });
+}
+  
+}
+
+
+

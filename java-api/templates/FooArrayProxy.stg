@@ -63,12 +63,7 @@ body(class, type, managed, boxed, prim, field, short, jni, types) ::= <<
 package $package(type)$;
 
 import java.util.Iterator;
-import com.hpl.mds.ManagedObject;
-import com.hpl.mds.ManagedComposite;
-import com.hpl.mds.ManagedArray;
-import com.hpl.mds.NativeLibraryLoader;
-import com.hpl.mds.$ifString({string},{prim})$.$managed$;
-import com.hpl.mds.$ifString({string},{prim.container.array})$.$managed$Array;
+import com.hpl.mds.*;
 
 public class $class$ extends ArrayProxy<$managed$> implements $managed$Array {
 
@@ -77,19 +72,21 @@ public class $class$ extends ArrayProxy<$managed$> implements $managed$Array {
     private static native void release(long handle);
     private static native boolean isIdentical(long aHandle, long bHandle);
     private static native boolean isSameObject(long aHandle, long bHandle);
-    private static native boolean isSameViewOfSameObject(long aHandle, long bHandle, long ctxtHandle);
-    private static native long createArray(long ctxtHandle, long size);
+    private static native boolean isSameViewOfSameObject(long aHandle, long bHandle);
+    private static native long createArray(long size);
     
-    private static native $jniArg()$ read$whenString({Handle})$(long handle, long ctxtHandle, long index);
-    private static native $jniArg()$ write$whenString({Handle})$(long handle, long ctxtHandle, long index, $jniArg()$ val);
+    private static native $jniArg()$ get$whenString({Handle})$(long handle, long index);
+    private static native $jniArg()$ peek$whenString({Handle})$(long handle, long index);
+    private static native $jniArg()$ set$whenString({Handle})$(long handle, long index, $jniArg()$ val);
+    private static native $jniArg()$ getAndSet$whenString({Handle})$(long handle, long index, $jniArg()$ val);
     private static native long size(long handle);
 $if(type.numeric)$
-    private static native $jniArg()$ incValue(long handle, long ctxtHandle, long index, $jniArg()$ amt);
-    private static native $jniArg()$ decValue(long handle, long ctxtHandle, long index, $jniArg()$ amt);
-    private static native $jniArg()$ multValue(long handle, long ctxtHandle, long index, $jniArg()$ amt);
-    private static native $jniArg()$ divValue(long handle, long ctxtHandle, long index, $jniArg()$ amt);
-$endif$
-    private static native void setToParent(long handle, long ctxtHandle, long index);
+$["inc","dec","mult","div",
+ "getAndInc","getAndDec","getAndMult","getAndDiv"]:{ func |
+    private static native $jniArg()$ $func$Value(long handle, long index, $jniArg()$ val);
+}
+$
+$endif$	
     
   @Override
   void releaseHandleIndex(long index) {
@@ -106,9 +103,7 @@ $endif$
   }
   
   public $class$(long size) {
-    this(FromHandle.FROM_HANDLE,
-         createArray(IsoContextProxy.current().handleIndex(), size),
-         size);
+    this(FromHandle.FROM_HANDLE, createArray(size), size);
   }
   
 //  public $class$() {
@@ -170,43 +165,54 @@ $endif$
       return false;
     }
     $class$ dc = ($class$)other;
-    return isSameViewOfSameObject(handleIndex(), dc.handleIndex(),
-                                  IsoContextProxy.current().handleIndex());
+    return isSameViewOfSameObject(handleIndex(), dc.handleIndex());
   }
 
-import com.hpl.mds.task.Task;
 $ifString({  
   @Override
   public $managed$ get(long index) {
-    Task.addRead(this, index);
-    return $managed$Proxy.fromHandle(readHandle(handleIndex(), IsoContextProxy.current().handleIndex(), index));
+    return $managed$Proxy.fromHandle(getHandle(handleIndex(), index));
+  \}
+  @Override
+  public $managed$ peek(long index) {
+    return $managed$Proxy.fromHandle(peekHandle(handleIndex(), index));
   \}
   @Override
   public $managed$ set(long index, $managed$ val) {
-    Task.addWrite(this, index);
-    long old = writeHandle(handleIndex(), IsoContextProxy.current().handleIndex(), index, (($managed$Proxy)val).handleIndex());
+    long old = setHandle(handleIndex(), index, (($managed$Proxy)val).handleIndex());
+    return $managed$Proxy.fromHandle(old);
+  \}
+  @Override
+  public $managed$ getAndSet(long index, $managed$ val) {
+    long old = getAndSetHandle(handleIndex(), index, (($managed$Proxy)val).handleIndex());
     return $managed$Proxy.fromHandle(old);
   \}
 }, {
   @Override
   public $prim$ get$short$(long index) {
-    Task.addRead(this, index);
-    return read(handleIndex(), IsoContextProxy.current().handleIndex(), index);
+    return get(handleIndex(), index);
+  \}
+  @Override
+  public $prim$ peek$short$(long index) {
+    return peek(handleIndex(), index);
   \}
   @Override
   public $val()$ set(long index, $arg()$ val) {
-    Task.addWrite(this, index);
-    return write(handleIndex(), IsoContextProxy.current().handleIndex(), index, val);
+    return set(handleIndex(), index, val);
+  \}
+  @Override
+  public $val()$ getAndSet(long index, $arg()$ val) {
+    return getAndSet(handleIndex(), index, val);
   \}
   
 })$
   
 $if(type.numeric)$
-$["inc","dec","mult","div"]:{ func |
+$["inc","dec","mult","div",
+  "getAndInc","getAndDec","getAndMult","getAndDiv"]:{ func |
   @Override
   public $prim$ $func$(long index, $prim$ by) {
-    Task.addReadWrite(this, index);
-    return $func$Value(handleIndex_, IsoContextProxy.current().handleIndex(), index, by);
+    return $func$Value(handleIndex_, index, by);
   \}
 }
 $
@@ -244,8 +250,6 @@ $endif$
   
   
   
-  import com.hpl.mds.naming.Namespace;
-  import com.hpl.mds.naming.Prior;
   @Override
   public $class$ bindName(Prior prior, Namespace ns, CharSequence name) {
     return ($class$)type().bindIn(ns, name, this, prior);
@@ -266,11 +270,6 @@ $endif$
     return p == null ? 0 : p.handleIndex();  
   }
 
-  @Override
-  public void setToParent(long index) {
-    setToParent(handleIndex_, IsoContextProxy.global().handleIndex_, index);
-  }
-  
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
@@ -305,23 +304,6 @@ $endif$
   public UsagePlan usagePlan($managed$Array.Usage hint) {
     return Stub.notImplemented();
   }
-
-
-  static class Change extends ArrayProxy.Change<$managed$> {
-    public Change(long arrayHandle, long index) {
-      super(arrayHandle, index);
-    }
-
-    public Change($class$ array, long index) {
-      super(array, handleOf(array), index);
-    }
-  }
-
-  public Change createChange(long index) {
-    return new Change(this, index);
-  }
-
-
 
 }
 

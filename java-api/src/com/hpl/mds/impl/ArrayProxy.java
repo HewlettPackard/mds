@@ -29,17 +29,15 @@ package com.hpl.mds.impl;
 import java.util.Iterator;
 import java.util.Objects;
 
-import com.hpl.mds.ManagedArray;
-import com.hpl.mds.ManagedComposite;
-import com.hpl.mds.ManagedObject;
+import com.hpl.mds.*;
 
 public abstract class ArrayProxy<ET extends ManagedObject> extends Proxy implements ManagedArray<ET> {
 	protected long size = -1;
-	
-	protected ArrayProxy(long handle, long size) {
-		super(handle);
-		this.size = size;
-	}
+  
+  protected ArrayProxy(long handle, long size) {
+    super(handle, null);
+    this.size = size;
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -82,58 +80,5 @@ public abstract class ArrayProxy<ET extends ManagedObject> extends Proxy impleme
 		return sb.toString();
 	}
 	
-    abstract public void setToParent(long index);
-
-	
-	static class Change<ET extends ManagedObject> extends ChangeBase {
-		protected final long objectId;
-		protected final long index;
-
-		private ArrayProxy<ET> array;
-
-		protected Change(long arrayHandle, long index) {
-			this.objectId = arrayHandle;
-			this.index = index;
-		}
-
-		protected Change(ArrayProxy<ET> array, long arrayHandle, long index) {
-			this(arrayHandle, index);
-			this.array = array;
-		}
-
-		public long objectId() {
-			return objectId;
-		}
-
-		public long changeId() {
-			return index;
-		}
-
-		public boolean equals(Object obj) {
-			// check ChangeBase subtype equality first:
-			// ensures an object of one ChangeBase subtype 
-			// is never compared with an object of a different ChangeBase subtype
-			if (obj != null && obj.getClass() == getClass()) {
-				// then check equality of attribute values
-				return ( this.objectId == ((Change<?>)obj).objectId() &&
-						this.index == ((Change<?>)obj).changeId() );
-			}
-			return false;
-		}
-
-		// If you override equals() then override hashcode too...
-		public int hashCode() {
-			return Objects.hash(this.getClass(), objectId, index);
-		}
-		public String toString() {
-			return "objectId: " + objectId + " index: " + index;
-		}
-
-		public void setToParent() {
-			array.setToParent(index);
-		}
-	}  // end class Change
-
-	public abstract Change<ET> createChange(long index);
 
 }

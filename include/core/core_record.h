@@ -95,7 +95,7 @@ namespace mds {
     struct managed_record : public managed_composite, public with_uniform_id
     {
       const gc_ptr<const record_type> r_type;
-      using atomic_msv = std::atomic<gc_ptr<msv_base>>;
+      using atomic_msv = std::atomic<gc_ptr<msv>>;
       mutable gc_array_ptr<atomic_msv> fields;
       explicit managed_record(gc_token &, const gc_ptr<const record_type> &rt);
 
@@ -109,10 +109,16 @@ namespace mds {
         return d;
       }
 
+      template <kind K, typename Fn>
+      gc_ptr<typed_msv<K>> field(std::size_t i,
+                           const gc_ptr<const record_field<K>> &f,
+                           Fn &&create_if_null) const;
       template <kind K>
-      gc_ptr<msv<K>> field(std::size_t i,
-                           const gc_ptr<const record_field<K>> &field,
-                           bool create_if_null = false) const;
+      gc_ptr<typed_msv<K>> field(std::size_t i,
+                                 const gc_ptr<const record_field<K>> &f) const
+      {
+        return field<K>(i, f, []{ return false; });
+      }
     };
 
     template <kind K>
@@ -138,90 +144,65 @@ namespace mds {
         return d;
       }
 
-      kind_mv<K> read(const gc_ptr<const managed_record> &r,
-                      const gc_ptr<branch> &b,
-                      const gc_ptr<iso_context> &ctxt) const;
-      kind_mv<K> read_frozen(const gc_ptr<const managed_record> &r,
-                             const gc_ptr<branch> &b,
-                             const gc_ptr<iso_context> &ctxt) const;
+      void check_compatible(const gc_ptr<const managed_record> &r) const;
+
+      kind_mv<K> free_read(const gc_ptr<const managed_record> &r,
+                           const gc_ptr<view> &v) const;
+      kind_mv<K> frozen_read(const gc_ptr<const managed_record> &r,
+                             const gc_ptr<view> &v) const;
       bool has_value(const gc_ptr<const managed_record> &r,
-                     const gc_ptr<branch> &b,
-                     const gc_ptr<iso_context> &ctxt) const;
+                     const gc_ptr<view> &v) const;
       kind_mv<K> modify(const gc_ptr<const managed_record> &r,
-                  const gc_ptr<branch> &b,
-                  const gc_ptr<iso_context> &ctxt,
-                  modify_op op, const kind_mv<K> &arg, res_mode resolving = res_mode::non_resolving) const;
+                        const gc_ptr<view> &v,
+                        modify_op op,
+                        const kind_mv<K> &arg,
+                        ret_mode returning = ret_mode::resulting_val,
+                        const gc_ptr<mod_condition<K>> &guard = nullptr) const;
       kind_mv<K> write(const gc_ptr<const managed_record> &r,
-                 const gc_ptr<branch> &b,
-                 const gc_ptr<iso_context> &ctxt,
-                 const kind_mv<K> &val, res_mode resolving = res_mode::non_resolving) const {
-        return modify(r, b, ctxt, modify_op::set, val, resolving);
+                       const gc_ptr<view> &v,
+                       const kind_mv<K> &val,
+                       ret_mode returning = ret_mode::resulting_val,
+                       const gc_ptr<mod_condition<K>> &guard = nullptr) const
+      {
+        return modify(r, v, modify_op::set, val, returning, guard);
       }
       template <typename T = kind_mv<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
 	kind_mv<K> add(const gc_ptr<const managed_record> &r,
-                   const gc_ptr<branch> &b,
-                   const gc_ptr<iso_context> &ctxt,
-                   const kind_mv<K> &delta, res_mode resolving = res_mode::non_resolving) const
+                       const gc_ptr<view> &v,
+                       const kind_mv<K> &delta,
+                       ret_mode returning = ret_mode::resulting_val,
+                       const gc_ptr<mod_condition<K>> &guard = nullptr) const
       {
-        return modify(r, b, ctxt, modify_op::add, delta, resolving);
+        return modify(r, v, modify_op::add, delta, returning, guard);
       }
       template <typename T = kind_mv<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
 	kind_mv<K> sub(const gc_ptr<const managed_record> &r,
-                   const gc_ptr<branch> &b,
-                   const gc_ptr<iso_context> &ctxt,
-                   const kind_mv<K> &delta, res_mode resolving = res_mode::non_resolving) const
+                       const gc_ptr<view> &v,
+                       const kind_mv<K> &delta,
+                       ret_mode returning = ret_mode::resulting_val,
+                       const gc_ptr<mod_condition<K>> &guard = nullptr) const
       {
-        return modify(r, b, ctxt, modify_op::sub, delta, resolving);
+        return modify(r, v, modify_op::sub, delta, returning, guard);
       }
       template <typename T = kind_mv<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
 	kind_mv<K> mul(const gc_ptr<const managed_record> &r,
-                   const gc_ptr<branch> &b,
-                   const gc_ptr<iso_context> &ctxt,
-                   const kind_mv<K> &delta, res_mode resolving = res_mode::non_resolving) const
+                       const gc_ptr<view> &v,
+                       const kind_mv<K> &delta,
+                       ret_mode returning = ret_mode::resulting_val,
+                       const gc_ptr<mod_condition<K>> &guard = nullptr) const
       {
-        return modify(r, b, ctxt, modify_op::mul, delta, resolving);
+        return modify(r, v, modify_op::mul, delta, returning, guard);
       }
       template <typename T = kind_mv<K>, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
 	kind_mv<K> div(const gc_ptr<const managed_record> &r,
-                   const gc_ptr<branch> &b,
-                   const gc_ptr<iso_context> &ctxt,
-                   const kind_mv<K> &delta, res_mode resolving = res_mode::non_resolving) const
+                       const gc_ptr<view> &v,
+                       const kind_mv<K> &delta,
+                       ret_mode returning = ret_mode::resulting_val,
+                       const gc_ptr<mod_condition<K>> &guard = nullptr) const
       {
-        return modify(r, b, ctxt, modify_op::div, delta, resolving);
+        return modify(r, v, modify_op::div, delta, returning, guard);
       }
 
-      kind_mv<K> set_to_parent(const gc_ptr<const managed_record> &r,
-                         const gc_ptr<branch> &b,
-                         const gc_ptr<iso_context> &ctxt,
-                         res_mode resolving = res_mode::non_resolving) const
-      {
-        return modify(r, b, ctxt, modify_op::parent_val, kind_mv<K>{}, resolving);
-      }
-      kind_mv<K> resolve_to_parent(const gc_ptr<const managed_record> &r,
-                             const gc_ptr<branch> &b,
-                             const gc_ptr<iso_context> &ctxt) const
-      {
-        return set_to_parent(r, b, ctxt, res_mode::resolving);
-      }
-      kind_mv<K> resolve_to_current(const gc_ptr<const managed_record> &r,
-                              const gc_ptr<branch> &b,
-                              const gc_ptr<iso_context> &ctxt) const
-      {
-        return modify(r, b, ctxt, modify_op::current_val, kind_mv<K>{}, res_mode::resolving);
-      }
-      kind_mv<K> roll_back(const gc_ptr<const managed_record> &r,
-                     const gc_ptr<branch> &b,
-                     const gc_ptr<iso_context> &ctxt,
-                     res_mode resolving = res_mode::non_resolving) const
-      {
-        return modify(r, b, ctxt, modify_op::last_stable_val, kind_mv<K>{}, resolving);
-      }
-      kind_mv<K> resolve_by_rollback(const gc_ptr<const managed_record> &r,
-                               const gc_ptr<branch> &b,
-                               const gc_ptr<iso_context> &ctxt) const
-      {
-        return roll_back(r, b, ctxt, res_mode::resolving);
-      }
     };
 
 
@@ -398,8 +379,14 @@ namespace mds {
         auto to = _fields.end();
         auto fp = std::find_if(from, to,
                                [=](const gc_ptr<record_field_base> &f) {
-          return f->name == field_name;
-        });
+                                 bool val = f->name == field_name;
+                                 // if (!val) {
+                                 //   std::cout << "  Doesn't match "
+                                 //             << f->num << ": "
+                                 //             << f->name << std::endl;
+                                 // }
+                                 return val;
+                               });
         if (fp == to) {
           return nullptr;
         } else {
@@ -421,7 +408,7 @@ namespace mds {
         return f;
       }
 
-      managed_value<managed_record> create_record(const gc_ptr<iso_context> &ctxt) const;
+      managed_value<managed_record> create_record() const;
 
     };
 
@@ -431,30 +418,39 @@ namespace mds {
     gc_ptr<kind_field<K>>
     managed_type<K>::field_in(const gc_ptr<record_type> &rt,
                               const gc_ptr<interned_string> &name,
-                              bool create_if_absent) const {
+                              bool create_if_absent) const
+    {
+      // std::cout << "Looking for field " << rt->name() << "::" << name << std::endl;
       gc_ptr<record_field_base> f = rt->lookup_field(name);
       if (f != nullptr) {
+        // std::cout << "  Found field " << f->num << std::endl;
         if (same_type_as(f->f_type_base)) {
+          // std::cout << "  It's compatible" << std::endl;
           return std::static_pointer_cast<kind_field<K>>(f);
         } else {
+          // std::cout << "  It's NOT compatible" << std::endl;
           throw incompatible_type_ex{};
         }
       }
+      // std::cout << "  Didn't find it" << std::endl;
       /*
        * The field doesn't exist.
        */
       if (!create_if_absent) {
         return nullptr;
       }
+      // std::cout << "  Trying to create" << std::endl;
       /*
        * add_field() takes a field creator for once the record type has figured out the
        * index.  It will throw unmodifiable_record_type_exception if it can't be done,
        * which we pass through.
        */
-      return rt->add_field([=](std::size_t index) {
-        gc_ptr<const kind_type<K>> concrete_type = downcast();
-        return make_gc<kind_field<K>>(name,index,rt,concrete_type);
-      });
+      auto new_f = rt->add_field([=](std::size_t index) {
+          gc_ptr<const kind_type<K>> concrete_type = downcast();
+          return make_gc<kind_field<K>>(name,index,rt,concrete_type);
+        });
+      // std::cout << "  Created field " << new_f->num << std::endl;
+      return new_f;
     }
 
 
@@ -467,31 +463,31 @@ namespace mds {
 
     inline
     managed_value<managed_record>
-    record_type::create_record(const gc_ptr<iso_context> &ctxt) const
+    record_type::create_record() const
     {
       ensure_created();
       if (_forward != nullptr) {
-        return _forward->create_record(ctxt);
+        return _forward->create_record();
       }
       gc_ptr<managed_record> r = make_gc<managed_record>(GC_THIS);
-      gc_ptr<branch> b = ctxt->shadow(top_level_branch);
-      return managed_value<managed_record>{r, b};
+      gc_ptr<view> v = iso_context::shadowed(top_level_view);
+      return managed_value<managed_record>{r, v};
     }
 
-    template <kind K>
-    gc_ptr<msv<K>>
-    managed_record::field(std::size_t i, const gc_ptr<const record_field<K>> &field, bool create_if_null) const {
+    template <kind K, typename Fn>
+    gc_ptr<typed_msv<K>>
+    managed_record::field(std::size_t i, const gc_ptr<const record_field<K>> &field,
+                          Fn&& create_if_null) const
+    {
       atomic_msv &a = fields[i];
-      gc_ptr<msv_base> vb = a.load();
+      gc_ptr<msv> vb = a.load();
       if (vb != nullptr) {
         return vb->downcast<K>();
-      } else if (create_if_null) {
+      } else if (std::forward<Fn>(create_if_null)()) {
         /*
          * Need a non-const version of this in order to create the conflict generator.
          */
-        managed_record *nc_this = const_cast<managed_record *>(this);
-	auto cg = make_gc<typename field_conflict<K>::generator>(this_as_gc_ptr(nc_this), field);
-        gc_ptr<msv<K>> new_msv = make_gc<msv<K>>(cg);
+        gc_ptr<typed_msv<K>> new_msv = make_gc<typed_msv<K>>();
         auto rr = ruts::try_change_value(a, nullptr, new_msv);
         /*
          * If that didn't work, someone else got there first.
@@ -523,35 +519,8 @@ namespace mds {
 
     template <kind K>
     inline
-    kind_mv<K>
-    record_field<K>::read(const gc_ptr<const managed_record> &r,
-                          const gc_ptr<branch> &b,
-                          const gc_ptr<iso_context> &ctxt) const {
-//      std::cerr << "Reading field: " << this << ", rec: " << r << ", branch: " << b << ", ctxt: " << ctxt << std::endl;
-      if (!is_valid()) {
-        throw incompatible_record_type_ex{};
-      }
-      if (!r_type->is_super_of(r->r_type)) {
-        throw incompatible_record_type_ex{};
-      }
-//      std::cerr << "  It's compatible" << std::endl;
-      gc_ptr<msv<K>> val = r->field<K>(num, GC_THIS);
-//      std::cerr << "  val: " << val << std::endl;
-      if (val == nullptr) {
-        return kind_mv<K>{};
-      }
-      gc_ptr<branch> sb = ctxt->shadow(b);
-//      std::cerr << "  shadow branch: " << sb << std::endl;
-//      std::cout << "read in " << ctxt << " : " << b << " -> " << sb << std::endl;
-      return val->read(sb, ctxt);
-    }
-
-    template <kind K>
-    inline
-    kind_mv<K>
-    record_field<K>::read_frozen(const gc_ptr<const managed_record> &r,
-                                 const gc_ptr<branch> &b,
-                                 const gc_ptr<iso_context> &ctxt) const {
+    void
+    record_field<K>::check_compatible(const gc_ptr<const managed_record> &r) const {
       if (!is_valid()) {
         throw incompatible_record_type_ex{};
       }
@@ -561,51 +530,68 @@ namespace mds {
       if (!r_type->is_super_of(r->r_type)) {
         throw incompatible_record_type_ex{};
       }
-      gc_ptr<msv<K>> val = r->field<K>(num, GC_THIS);
+    }
+
+    template <kind K>
+    inline
+    kind_mv<K>
+    record_field<K>::free_read(const gc_ptr<const managed_record> &r,
+                               const gc_ptr<view> &v) const
+    {
+      check_compatible(r);
+      gc_ptr<typed_msv<K>> val = r->field<K>(num, GC_THIS);
       if (val == nullptr) {
         return kind_mv<K>{};
       }
-      gc_ptr<branch> sb = ctxt->shadow(b);
-      return val->read_frozen(sb, ctxt);
+      gc_ptr<view> sv = iso_context::shadowed(v);
+      return val->free_read(sv);
+    }
+
+    template <kind K>
+    inline
+    kind_mv<K>
+    record_field<K>::frozen_read(const gc_ptr<const managed_record> &r,
+                                 const gc_ptr<view> &v) const
+    {
+      check_compatible(r);
+      gc_ptr<view> sv = iso_context::shadowed(v);
+      gc_ptr<typed_msv<K>> val = r->field<K>(num, GC_THIS,
+                                             [&]{ return sv->need_msv_on_initial_read(); });
+      if (val == nullptr) {
+        return kind_mv<K>{};
+      }
+      return val->frozen_read(sv);
     }
 
     template <kind K>
     inline
     bool
     record_field<K>::has_value(const gc_ptr<const managed_record> &r,
-                               const gc_ptr<branch> &b,
-                               const gc_ptr<iso_context> &ctxt) const {
-      if (!is_valid()) {
-        throw incompatible_record_type_ex{};
-      }
-      if (!r_type->is_super_of(r->r_type)) {
-        throw incompatible_record_type_ex{};
-      }
-      gc_ptr<msv<K>> val = r->field<K>(num, GC_THIS);
+                               const gc_ptr<view> &v) const
+    {
+      check_compatible(r);
+      gc_ptr<typed_msv<K>> val = r->field<K>(num, GC_THIS);
       if (val == nullptr) {
         return false;
       }
-      gc_ptr<branch> sb = ctxt->shadow(b);
-      return val->has_value(sb, ctxt);
+      gc_ptr<view> sv = iso_context::shadowed(v);
+      return val->has_value(sv);
     }
 
     template <kind K>
     inline
     kind_mv<K>
     record_field<K>::modify(const gc_ptr<const managed_record> &r,
-                            const gc_ptr<branch> &b,
-                            const gc_ptr<iso_context> &ctxt,
-                            modify_op op, const kind_mv<K> &arg, res_mode resolving) const {
-      if (!is_valid()) {
-        throw incompatible_record_type_ex{};
-      }
-      if (!r_type->is_super_of(r->r_type)) {
-        throw incompatible_record_type_ex{};
-      }
-      gc_ptr<msv<K>> val = r->field<K>(num, GC_THIS, true);
-      gc_ptr<branch> sb = ctxt->shadow(b);
-//      std::cout << "write in " << ctxt << " : " << b << " -> " << sb << std::endl;
-      return val->modify(sb, ctxt, op, resolving, arg);
+                            const gc_ptr<view> &v,
+                            modify_op op,
+                            const kind_mv<K> &arg,
+                            ret_mode returning,
+                            const gc_ptr<mod_condition<K>> &guard) const
+    {
+      check_compatible(r);
+      gc_ptr<typed_msv<K>> val = r->field<K>(num, GC_THIS, []{ return true; });
+      gc_ptr<view> sv = iso_context::shadowed(v);
+      return val->modify(sv, op, arg, returning, guard);
 
     }
 
