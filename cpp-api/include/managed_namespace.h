@@ -475,9 +475,25 @@ namespace mds {
       auto as_int() const {
         return as(managed_int_type());
       }
+      auto as_float() const {
+        return as(managed_float_type());
+      }
+      auto as_double() const {
+        return as(managed_double_type());
+      }
+      auto as_unsigned() const {
+        return as(managed_uint_type());
+      }
+      auto as_bool() const {
+        return as(managed_bool_type());
+      }
       template <typename T>
       auto as() const {
 	return as(managed_type<T>());
+      }
+      template <typename T>
+      auto as_array() const {
+        return as<mds_array<T>>();
       }
       // and similarly for others.  If we go to C++14, we can just use auto for return
       template <typename T, typename = std::enable_if_t<is_managed_type<std::decay_t<T>>::value> >

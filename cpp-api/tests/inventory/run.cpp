@@ -266,7 +266,7 @@ int run(int argc, char *argv[], const string &inv_name, function<void()> usage) 
 
   atomic<size_t> next_txn{0};
 
-  mds_ptr<Inventory> inv = Inventory::lookup(inv_name);
+  mds_ptr<Inventory> inv = Inventory::lookup_name(inv_name);
   int max_product = find_max_product(inv);
   shared_ptr<Experiment> experiment = make_shared<Experiment>()
     ->add_action(1, [&](){

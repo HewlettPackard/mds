@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef JAVA_TESTS_H
-#define JAVA_TESTS_H
+#ifndef STORE_H
+#define STORE_H
 
 #include "mds.h"
 #include "util.h"
@@ -115,8 +115,8 @@ public:
   DECLARE_FIELD(Department, unsigned, sales_rank);
 
   RECORD_SETUP(Department, super, record_name("Department"),
-               REGISTER_FIELD(name)
-               REGISTER_FIELD(number)
+               REGISTER_FIELD(name),
+               REGISTER_FIELD(number),
                REGISTER_FIELD(sales_rank));
 
   Department(const rc_token &tok, unsigned num_, const string &name_)
@@ -135,10 +135,10 @@ public:
   DECLARE_FIELD(Product, unsigned, sales_rank);
 
   RECORD_SETUP(Product, super, record_name("Product"),
-               REGISTER_FIELD(name)
-               REGISTER_FIELD(number)
-               REGISTER_FIELD(dept)
-               REGISTER_FIELD(nbr_sold)
+               REGISTER_FIELD(name),
+               REGISTER_FIELD(number),
+               REGISTER_FIELD(dept),
+               REGISTER_FIELD(nbr_sold),
                REGISTER_FIELD(sales_rank));
 
   Product(const rc_token &tok,
@@ -219,10 +219,10 @@ public:
   DECLARE_FIELD(PerishableProduct, unsigned, wastage);
   DECLARE_CONST_FIELD(PerishableProduct, mds_array<unsigned>, stock_on_hand);
   RECORD_SETUP(PerishableProduct, super, record_name("PerishableProduct"),
-               REGISTER_FIELD(shelf_life)
-               REGISTER_FIELD(oldest)
-               REGISTER_FIELD(today)
-               REGISTER_FIELD(wastage)
+               REGISTER_FIELD(shelf_life),
+               REGISTER_FIELD(oldest),
+               REGISTER_FIELD(today),
+               REGISTER_FIELD(wastage),
                REGISTER_FIELD(stock_on_hand));
 
   PerishableProduct(const rc_token &tok,
@@ -317,7 +317,7 @@ public:
   DECLARE_FIELD(BasketItem, unsigned, quantity);
 
   RECORD_SETUP(BasketItem, super, record_name("BasketItem"),
-               REGISTER_FIELD(product)
+               REGISTER_FIELD(product),
                REGISTER_FIELD(quantity));
 
   BasketItem(const rc_token &tok, const mds_ptr<Product> &p, unsigned q)
@@ -397,8 +397,8 @@ public:
   DECLARE_CONST_FIELD(RecentPurchases, unsigned, window_size);
   
   RECORD_SETUP(RecentPurchases, super, record_name("RecentPurchases"),
-               REGISTER_FIELD(purchases)
-               REGISTER_FIELD(next_purchase)
+               REGISTER_FIELD(purchases),
+               REGISTER_FIELD(next_purchase),
                REGISTER_FIELD(window_size)
                );
 
@@ -529,11 +529,10 @@ public:
   DECLARE_CONST_FIELD(Store, RecentPurchases, recent_purchases);
 
   RECORD_SETUP(Store, super, record_name("Store"),
-               REGISTER_FIELD(depts)
-               REGISTER_FIELD(products)
-               REGISTER_FIELD(perishable)
-               REGISTER_FIELD(recent_purchases)
-               );
+               REGISTER_FIELD(depts),
+               REGISTER_FIELD(products),
+               REGISTER_FIELD(perishable),
+               REGISTER_FIELD(recent_purchases));
 
   template <typename Depts, typename Prods>
   Store(const rc_token &tok, Depts&& ds, Prods&& ps, unsigned window_size)
@@ -655,5 +654,5 @@ pair<mds_ptr<Store>, vector<double>> init_store();
 mds_ptr<Product> choose_product(const mds_ptr<Store> &, const vector<double>);
 mds_ptr<Basket> make_basket(unsigned n, const mds_ptr<Store> &, const vector<double>);
 
-#endif // JAVA_TESTS_H
+#endif // STORE_H
     

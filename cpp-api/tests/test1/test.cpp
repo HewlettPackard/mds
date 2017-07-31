@@ -59,9 +59,9 @@ public:
   DECLARE_FIELD(Item, Item, next)
   DECLARE_FIELD(Item, Prop, prop)
   RECORD_SETUP(Item, super, "Item",
-	       REGISTER_FIELD(count)
-	       REGISTER_FIELD(name)
-	       REGISTER_FIELD(next)
+	       REGISTER_FIELD(count),
+	       REGISTER_FIELD(name),
+	       REGISTER_FIELD(next),
 	       REGISTER_FIELD(prop))
   
   Item(const rc_token &tok, int c = 0, const mds_ptr<Item> n = nullptr);
@@ -79,7 +79,7 @@ auto &operator<<(basic_ostream<C,Tr> &s, const mds_ptr<Item> &item) {
 class Sub : public Item {
   using super = Item;
 public:
-  RECORD_SETUP(Sub, super, "Sub")
+  RECORD_SETUP(Sub, super, "Sub", NO_FIELDS)
   
   Sub(const rc_token &tok, int c = 0, const mds_ptr<Item> n = nullptr)
     : super(tok, c, n)
@@ -159,7 +159,7 @@ public:
   DECLARE_FIELD(Pair, int, first)
   DECLARE_FIELD(Pair, int, second)
   RECORD_SETUP(Pair, super, "Pair",
-	       REGISTER_FIELD(first)
+	       REGISTER_FIELD(first),
 	       REGISTER_FIELD(second))
   
   Pair(const rc_token &tok, int a, int b, const mds_ptr<PrintableList> &n = nullptr)

@@ -125,6 +125,15 @@ namespace mds {
     static mds_ptr<mds_array> create(std::size_t n) {
       return new_array<T>(n);
     }
+
+    template <typename Iter>
+      static mds_ptr<mds_array> create(Iter from, Iter to) {
+      return new_array<T>(from, to);
+    }
+
+    
+
+
     uniform_key uuid() const {
       return _handle.uuid();
     }
@@ -216,7 +225,7 @@ namespace mds {
       }
 
       template <typename U=T, typename = std::enable_if_t<std::is_arithmetic<U>::value> >
-      value_type fetch_addsub(value_type rhs)  {
+      value_type fetch_add(value_type rhs)  {
 	return from_core(_array_handle.add(_offset, to_core(rhs),
                                            api::ret_mode::prior_val));
       }
@@ -566,6 +575,20 @@ namespace mds {
       array->at(i) = *from++;
     }
     return array;
+  }
+
+  template <typename T>
+  inline
+  mds_array_ptr<T>
+  make_mds_array(std::size_t n) {
+    return new_array<T>(n);
+  }
+    
+  template <typename T, typename Iter>
+  inline
+  mds_array_ptr<T>
+  make_mds_array(Iter from, Iter to) {
+    return new_array<T>(from, to);
   }
     
   // template <typename T>

@@ -190,10 +190,16 @@ namespace mds {
     }
 
     template <typename First, typename...Cpts>
-    void bind(First &&first, Cpts &&...cpts) const {
-      mds_namespace::current()->at(std::forward<First>(first),
-                                   std::forward<Cpts>(cpts)...)
+    void bind_in(const mds_ptr<mds_namespace> &ns, First &&first, Cpts &&...cpts) const {
+      ns->at(std::forward<First>(first), std::forward<Cpts>(cpts)...)
         .template as<mds_record>().bind(THIS_RECORD);
+    }
+
+    template <typename First, typename...Cpts>
+    void bind_to_name(First &&first, Cpts &&...cpts) const {
+      bind_in(mds_namespace::current(),
+              std::forward<First>(first),
+              std::forward<Cpts>(cpts)...);
     }
 
   };
@@ -281,6 +287,11 @@ namespace mds {
     typed_rc_token<R> tok;
     new R(tok, std::forward<Args>(args)...);
     return mds_ptr<R>::__from_shared(tok.cached_shared_ptr());
+  }
+
+  template <typename R, typename...Args, typename=enable_if_record<R>>
+  inline mds_ptr<R> make_mds(Args&&...args) {
+    return new_record<R>(std::forward<Args>(args)...);
   }
 
   struct creator_cache {
@@ -724,6 +735,12 @@ namespace mds {
     {
       write(T::create(n));
     }
+    template <typename Iter, typename U=T, typename=std::enable_if_t<is_mds_array<U>::value> >
+    explicit record_member(Iter from, Iter to) 
+      : record_member()
+    {
+      write(T::create(from, to));
+    }
     value_type operator =(const record_member &other)
     {
       return write(other);
@@ -907,6 +924,11 @@ namespace mds {
       : record_const_member(T::create(n))
     {
     }
+    template <typename Iter, typename U=T, typename=std::enable_if_t<is_mds_array<U>::value> >
+    explicit record_const_member(Iter from, Iter to) 
+      : record_const_member(T::create(from, to))
+    {
+    }
 
     value_type read() const {
       if (!_is_cached) {
@@ -990,14 +1012,19 @@ namespace mds {
   name(const rc_token &tok, const typename super::handle_type &h) : super{tok, h} {} \
   name(const rc_token &tok, typename super::handle_type &&h) : super{tok, std::move(h)} {} \
   static rt_decl<name, super> &type_decl() {                    \
-    static rt_decl<name, super> td__(tname fields);\
+    static rt_decl<name, super> td__(tname, fields);            \
     return td__; \
   } \
   template <typename First, typename...Cpts> \
-  static auto lookup(First &&first, Cpts &&...cpts) { \
-    return mds_namespace::current()->at(std::forward<First>(first), \
-                                        std::forward<Cpts>(cpts)...) \
+  static auto lookup_in(const mds_ptr<mds_namespace> &ns, First &&first, Cpts &&...cpts) { \
+    return ns->at(std::forward<First>(first), std::forward<Cpts>(cpts)...) \
       .template as<name>().get(); \
+  } \
+  template <typename First, typename...Cpts> \
+  static auto lookup_name(First &&first, Cpts &&...cpts) { \
+    return lookup_in(mds_namespace::current(), \
+                       std::forward<First>(first), \
+                       std::forward<Cpts>(cpts)...); \
   }
     
 
@@ -1015,8 +1042,9 @@ namespace mds {
   }\
   record_const_member<rtype, ftype, &rtype::FIELD_VAR(name)> name;
 
-#define REGISTER_FIELD_AS(field, name) , &FIELD_VAR(field)(), name
-#define REGISTER_FIELD(name) REGISTER_FIELD_AS(name, #name)  
+#define REGISTER_FIELD_AS(field, name) std::make_pair(&FIELD_VAR(field)(), mds_string(name))
+#define REGISTER_FIELD(name) REGISTER_FIELD_AS(name, #name)
+#define NO_FIELDS rt_decl_no_fields{}  
 
   template <typename C, typename T, typename R, typename X>
   std::basic_ostream<C, T> &
@@ -1029,6 +1057,8 @@ namespace mds {
   // operator <<(std::basic_ostream<C, T> &os, const typename record_field<R,X>::reference &ref) {
   //   return os << ref.peek();
   // }
+
+  struct rt_decl_no_fields{};
 
   template <typename R, typename ... Supers>
   class rt_decl {
@@ -1066,9 +1096,12 @@ namespace mds {
 
     void note_fields() {}
 
+    void note_fields(rt_decl_no_fields) {}
+
     template <typename ...More>
-    void note_fields(record_field_base__*f, const mds_string &name, More&&...more) {
-      _field_decls.emplace_back(name, f);
+    void note_fields(const std::pair<record_field_base__*, const mds_string &> &fn_pair,
+                     More&&...more) {
+      _field_decls.emplace_back(fn_pair.second, fn_pair.first);
       note_fields(std::forward<More>(more)...);
     }
     //    template <typename ...More>

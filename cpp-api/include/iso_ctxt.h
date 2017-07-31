@@ -297,8 +297,8 @@ namespace mds {
 
     template <typename Fn>
     constexpr static auto task_fn(Fn &&fn) {
-      return [fn=std::forward<Fn>(fn)](auto...args) {
-        as_task([=]() {
+      return [fn=std::forward<Fn>(fn)](auto...args) mutable {
+        as_task([=]() mutable {
             fn(args...);
           });
       };
@@ -631,6 +631,7 @@ namespace mds {
     auto bind(const std::function<Ret(Args...)> &fn) {
       iso_ctxt me = *this;
       return [=](Args&&...args) {
+        ensure_thread_initialized();
 	return me.call([&]{
 	    return fn(std::forward<Args>(args)...);
 	  });
@@ -820,8 +821,20 @@ namespace mds {
     }
 
     template <typename Fn, typename...Args>
+    auto call_read_only(Fn &&fn, Args&&...args) {
+      return create_nested_read_only().call(std::forward<Fn>(fn),
+                                           std::forward<Args>(args)...);
+    }
+
+    template <typename Fn, typename...Args>
     auto call_detached(Fn &&fn, Args&&...args) {
       return create_nested_detached().call(std::forward<Fn>(fn),
+                                           std::forward<Args>(args)...);
+    }
+
+    template <typename Fn, typename...Args>
+    auto call_in_detached_snapshot(Fn &&fn, Args&&...args) {
+      return create_detached_snapshot().call(std::forward<Fn>(fn),
                                            std::forward<Args>(args)...);
     }
 
@@ -895,8 +908,13 @@ namespace mds {
   }
   template <typename Fn>
   inline
+  auto in_detached_snapshot(Fn &&fn) {
+    return iso_ctxt::current().call_in_detached_snapshot(std::forward<Fn>(fn));
+  }
+  template <typename Fn>
+  inline
   auto in_read_only_snapshot(Fn &&fn) {
-    return iso_ctxt::current().call_in_snapshot(std::forward<Fn>(fn));
+    return iso_ctxt::current().call_in_read_only_snapshot(std::forward<Fn>(fn));
   }
 
 

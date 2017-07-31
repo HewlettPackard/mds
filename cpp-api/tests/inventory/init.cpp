@@ -115,7 +115,7 @@ int init(int argc, char *argv[], const string &inv_name, function<void()> usage)
   // cout << "  max_quant = " << max_quant << endl;
 
   mds_ptr<Inventory> inv = new_record<Inventory>();
-  inv->bind(inv_name);
+  inv->bind_to_name(inv_name);
   for (size_t i=0; i<max_prod_no; i += gap_size+1) {
     string pname = Product::to_name(i);
     int q = uniform_int_distribution<>(min_quant, max_quant+1)(tl_rand());

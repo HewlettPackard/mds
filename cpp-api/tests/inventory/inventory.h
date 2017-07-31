@@ -60,17 +60,17 @@ public:
   DECLARE_FIELD(Product, Product, next);
   DECLARE_FIELD(Product, Product, prev);
   RECORD_SETUP(Product, super, "Product",
-               REGISTER_FIELD(name)
-               REGISTER_FIELD(count)
-               REGISTER_FIELD(count_target)
-               REGISTER_FIELD(value)
-               REGISTER_FIELD(sale_value)
-               REGISTER_FIELD(sale_flag)
-               REGISTER_FIELD(asset_value)
-               REGISTER_FIELD(nbr_sold)
-               REGISTER_FIELD(revenue)
-               REGISTER_FIELD(revenue_percentage)
-               REGISTER_FIELD(next)
+               REGISTER_FIELD(name),
+               REGISTER_FIELD(count),
+               REGISTER_FIELD(count_target),
+               REGISTER_FIELD(value),
+               REGISTER_FIELD(sale_value),
+               REGISTER_FIELD(sale_flag),
+               REGISTER_FIELD(asset_value),
+               REGISTER_FIELD(nbr_sold),
+               REGISTER_FIELD(revenue),
+               REGISTER_FIELD(revenue_percentage),
+               REGISTER_FIELD(next),
                REGISTER_FIELD(prev));
                
   Product(const rc_token &tok,
@@ -118,7 +118,7 @@ public:
   DECLARE_FIELD(ListOfProducts, int, size);
   DECLARE_FIELD(ListOfProducts, Product, head);
   RECORD_SETUP(ListOfProducts, super, "ListOfProducts",
-               REGISTER_FIELD(size)
+               REGISTER_FIELD(size),
                REGISTER_FIELD(head));
 
   explicit ListOfProducts(const rc_token &tok) : super{tok} {}

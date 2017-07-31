@@ -37,6 +37,7 @@
 #include "mds_common.h"
 #include "ruts/linked_thread.h"
 #include "iso_ctxt.h"
+#include "managed_namespace.h"
 
 #include <thread>
 #include <utility>
@@ -47,10 +48,12 @@ namespace mds {
 
   class thread_local_data {
     task *current_task_ptr = &task::_current();
+    mds_ptr<mds_namespace> *current_namespace = &mds_namespace::current();
 
     thread_local_data() = default;
     thread_local_data(const thread_local_data &other) {
       *current_task_ptr = *other.current_task_ptr;
+      *current_namespace = *other.current_namespace;
     }
     
     static thread_local_data &current() {
