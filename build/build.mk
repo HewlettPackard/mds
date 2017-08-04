@@ -237,7 +237,7 @@ $(project_name)_CXXFLAGS ?= $(CXXFLAGS)
 LDFLAGS ?=
 $(project_name)_LDFLAGS ?= $(LDFLAGS)
 
-LIBS ?= -lstdc++ -lpthread
+LIBS ?= -lstdc++ -lpthread -lm
 $(project_name)_LIBS ?= $(LIBS)
 
 ######################################

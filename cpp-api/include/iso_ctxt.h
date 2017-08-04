@@ -35,6 +35,7 @@
 #define ISO_CTXT_H_
 
 #include "mds_common.h"
+#include "ruts/util.h"
 #include <functional>
 #include <tuple>
 #include <memory>
@@ -227,6 +228,13 @@ namespace mds {
       }
     }
 
+    void add_dependent(const weak_handle<task> &other) {
+      task t = other.lock();
+      if (t != nullptr) {
+        add_dependent(t);
+      }
+    }
+
     void depends_on(task t) {
       t.add_dependent(*this);
     }
@@ -242,6 +250,11 @@ namespace mds {
       for (task &t : tasks) {
         t.add_dependent(*this);
       }
+    }
+
+    template <typename Iter>
+    void depends_on_all(const Iter &from, const Iter &to) const {
+      depends_on(ruts::range_over(from, to));
     }
 
     void always_redo() {

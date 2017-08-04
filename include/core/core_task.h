@@ -52,6 +52,8 @@ namespace mds {
         std::uint64_t start = 0;
         std::int64_t end_or_minus_depth = 0;
 
+        bounds() noexcept {}
+
         static const auto &descriptor() {
           using this_class = bounds;
           static gc_descriptor d =
