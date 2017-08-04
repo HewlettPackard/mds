@@ -322,3 +322,11 @@ Other tools for programming with non-volatile memory include:
 - [Atlas](https://github.com/HewlettPackard/Atlas): Fault-tolerant programming model for non-volatile memory
 - [FOEDUS](https://github.com/hkimura/foedus): Fast optimistic engine for data unification services
 
+## Release History
+
+- **1.0** *2016-11-15*
+  - Initial release.  MDS core.  Java API
+  
+- **2.0** *2017-08-07*
+  - Added C++ API
+  - Significant internal redesign for performance and correctness.
