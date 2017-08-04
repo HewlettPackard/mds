@@ -276,17 +276,17 @@ namespace std {
   template <typename T, typename U>
   mds::mds_ptr<T>
   static_pointer_cast(const mds::mds_ptr<U> &r) noexcept {
-    return r.static_pointer_cast<T>();
+    return r.template static_pointer_cast<T>();
   }
   template <typename T, typename U>
   mds::mds_ptr<T>
   dynamic_pointer_cast(const mds::mds_ptr<U> &r) noexcept {
-    return r.dynamic_pointer_cast<T>();
+    return r.template dynamic_pointer_cast<T>();
   }
   template <typename T, typename U>
   mds::mds_ptr<T>
   const_pointer_cast(const mds::mds_ptr<U> &r) noexcept {
-    return r.const_pointer_cast<T>();
+    return r.template const_pointer_cast<T>();
   }
   // Also want the atomic ops
 }

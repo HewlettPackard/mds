@@ -125,3 +125,7 @@ void test(const mds_array_ptr<unsigned> &a) {
   cout << tc.get() << endl;
   
 }
+
+int main() {
+  cout << "This code is used to ensure that the tutorial examples compile" << endl;
+}
