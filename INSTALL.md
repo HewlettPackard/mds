@@ -11,11 +11,16 @@ Author: Susan Spence (susan.spence@hpe.com)
 
 64-bit, Linux, C++ 14, JDK1.8, pthreads
 
-- g++ 4.9.2, or g++ 5.4.0 or later   
-  Note that MDS is known **not** to work with gcc 5.0, because of bugs in that version related to compilation of templates, which we use extensively.
+- g++ 4.9.2, g++ 5.4.0 or 6.4.0 
 
-- Java JDK 1.8   
+   - Note that MDS is known **not** to work with gcc 5.0, because of bugs in that version related to compilation of templates, which we use extensively.
+   
+   - g++ 5.4 builds the system slowly and uses much more memory.  If you use this version, you will probably have to reduce the `-j` argument to `make`.
+
+- Java JDK 1.8 (only needed for the Java API)
   Note that you must use a Java JDK, not a more minimal Java installation.  This is needed for use of the JNI code.
+  
+- Apache Ant (only needed for the Java API)
 
 - Managed Data Structures (MDS)
 
@@ -29,9 +34,22 @@ Author: Susan Spence (susan.spence@hpe.com)
 
     * Compiled from: source downloaded from mirror via https://gcc.gnu.org/
 
+* g++ 5.4.0 /usr/local/gcc-5.4.0/bin/gcc
+
+    * Compiled from: source downloaded from mirror via https://gcc.gnu.org/
+
+* g++ 6.4.0 /usr/local/gcc-6.4.0/bin/gcc
+
+    * Compiled from: source downloaded from mirror via https://gcc.gnu.org/
+
 * jdk 1.8 /opt/jdk/jdk1.8.0_25/bin/java
 
     * Installed from: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
+
+* Apache Ant 1.9.2
+
+    * Installed via `apt-get`
+    * Source available via http://ant.apache.org/
 
 * MDS: https://github.com/HewlettPackard/mds
 

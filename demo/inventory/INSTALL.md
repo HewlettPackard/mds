@@ -20,7 +20,7 @@ for building MDS.  See: [MDS INSTALL.md - Prerequisites section](https://github.
 
 ## Build process: 
 
-1. To build MPGC and MDS, follow the instructions in [MDS INSTALL.md - Build process section](INSTALL.md#Buildprocess).
+1. To build MPGC and MDS, follow the instructions in [MDS INSTALL.md - Java API Build process section](INSTALL.md#build-process-mds-java-api).
 
 
 2. Build the createheap tool, which is used by MDS applications 
@@ -28,23 +28,26 @@ to create a "Managed Space" to hold persistent managed data structures.
 Where {mpgc build} is mpgc/build/intel-opt for optimised build, 
 or mpgc/build/intel-debug for debug build:  
 
+~~~sh
     cd {mpgc build}
     make tools/createheap
-
+~~~
 
 3. Set up demo access to MDS dependencies and libraries: 
 
-    cd mds/demo/inventory/   
-    mkdir libs      
+~~~sh
+    cd mds/demo/inventory/
     cd libs
+~~~
 
-   In order to compile the project you will need to create some symbolic links the MDS dependencies and libraries.  
-Where {mds} is the top-level directory of the mds installation, 
+   In order to compile the project you will need to create some symbolic links the MDS dependencies and libraries.
+Where {mds} is the top-level directory of the mds installation, {mpgc build} is as above,
 and {mds build} is mds/java-api/build/intel-opt for optimised build,
 or mds/java-api/build/intel-debug for debug build:
 
    Use the ln command to create links to these files:
 
+~~~sh
         ln -s {mds}/java-api/jars/mds-java-api.jar
 
         ln -s {mds}/java-api/jars/mds-annotations-processor.jar
@@ -54,11 +57,13 @@ or mds/java-api/build/intel-debug for debug build:
         ln -s {mds}/java-api/external/commons-compress-1.1.jar
 
         ln -s {mpgc build}/tools/createheap
-
+~~~
    Finally, create the symbolic link to the MDS Library inside of the native folder, if not exist create one:
 
+~~~sh
         cd demo/inventory/libs/native   
         ln -s {mds build}/libs/libmds-jni.so
+~~~
 
 **NB:** If you change build configuration, say from optimised to debug, 
 ensure that the correct build of the mds library libmds-jni.so 
