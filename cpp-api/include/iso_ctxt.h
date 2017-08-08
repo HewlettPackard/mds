@@ -1009,6 +1009,12 @@ namespace mds {
   void for_each_in_tasks(Iter from, Iter to, Fn&& fn) {
     std::for_each(from, to, task::task_fn(std::forward<Fn>(fn)));
   }
+
+  template <typename A>
+  void __rollback_by_sub(A &me, const A &them) {
+    me -= them;
+  }
+    
 }
 
 namespace std {

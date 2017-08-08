@@ -225,6 +225,56 @@ int test6(int argc, char *argv[], const string &name) {
   return 0;
 }
 
+/*
+ * Tests 7 and 8 are inapplicable to C++
+ */
+
+/*
+ * Test 9: Testing accumulators
+ */
+int test9(int argc, char *argv[], const string &name) {
+  unsigned n = 10;
+  mds_array_ptr<unsigned> array = make_mds_array<unsigned>(n);
+  for (unsigned i=0; i<n; i++) {
+    array[i] = i;
+  }
+
+  shared_ptr<pause::button> button1 = make_shared<pause::button>();
+  shared_ptr<pause::button> button2 = make_shared<pause::button>();
+
+  unsigned sum;
+  
+  mds_thread t([&]{
+    isolated([&]{
+        accumulator<unsigned> accum;
+        for (unsigned i=0; i<n; i++) {
+          unsigned j=i;
+          as_task([=]() mutable{
+              unsigned k = array[j];
+              cout << task::current() << ": Adding value " << j << ": " << k << endl;
+              accum += k;
+            });
+        }
+        as_task([accum, &sum]() mutable{
+            sum = accum;
+            cout << task::current() << ": Reading sum: " << sum << endl;
+          });
+        button1->press();
+        pause::on(button2, "after change: ");
+      });
+    });
+  pause::on(button1, "before change: ");
+  cout << task::current() << ": Conflicting change: array[5] = 0" << endl;
+  array[5] = 0;
+  button2->press();
+  t.join();
+  cout << "Final sum: " << sum << endl;
+
+  return 0;
+}
+
+
+
 int pausetest(int argc, char *argv[], const string &name) {
   cout << "Hi" << endl;
   pause::time(3s);
@@ -239,5 +289,6 @@ void register_tests() {
   register_test("4", test4);
   register_test("5", test5);
   register_test("6", test6);
+  register_test("9", test9);
 }
 

@@ -95,6 +95,9 @@ namespace mds {
     std::size_t hash() const noexcept {
       return std::hash<handle_type>()(_handle);
     }
+    uniform_key uuid() const {
+      return _handle.uuid();
+    }
   };
 
   template <typename T>

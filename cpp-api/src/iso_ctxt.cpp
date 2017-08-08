@@ -213,7 +213,7 @@ bool pub_result::resolve(const report_opts &reports) const {
    */
   for (const auto &p : infos) {
     const task &t = p.first;
-    cout << "Reestablishing task " << t << endl;
+    // cout << "Reestablishing task " << t << endl;
     const std::shared_ptr<task::info> &ti = p.second;
     t.establish_and_run(ti->function);
   }
