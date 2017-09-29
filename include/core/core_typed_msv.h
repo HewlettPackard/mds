@@ -35,6 +35,7 @@
 #define CORE_TYPED_MSV_H_
 
 #include "ruts/runtime_array.h"
+#include "ruts/weak_key.h"
 #include "core/core_msv.h"
 #include "core/core_coop.h"
 #include <type_traits>
@@ -221,6 +222,9 @@ namespace mds {
       struct value : core::value {
         struct publish_t {};
         const val_type val;
+        using prior_ptr_t = versioned_gc_ptr<value, 1>;
+        // set when we've patched around a value.
+        static constexpr typename prior_ptr_t::template flag_id<0> patched_around_flag{};
         gc_ptr<value> prior;
 
         static bool need_single_modifier(const gc_ptr<task> &t,
@@ -234,11 +238,18 @@ namespace mds {
             return t==v->write_task && v->single_modifier();
           }
         }
-        
-        value(gc_token &gc, timestamp_t time, const val_type &v, const gc_ptr<value> &p,
+
+        static prior_ptr_t make_prior(const gc_ptr<value> &p, bool patches_around) {
+          prior_ptr_t res = p;
+          res[patched_around_flag] = patches_around;
+          return res;
+        }
+
+        value(gc_token &gc, timestamp_t time, const val_type &v,
+              const gc_ptr<value> &p, bool patches_around,
               const gc_ptr<task> &t = nullptr)
           : core::value{gc, time, false, need_single_modifier(t,p), t},
-            val{v}, prior{p}
+            val{v}, prior{make_prior(p, patches_around)}
         {}
         value(gc_token &gc, timestamp_t time, publish_t, const gc_ptr<value> &p)
           : core::value{gc, time, true, false, nullptr}, val{}, prior{p}
@@ -347,10 +358,19 @@ namespace mds {
 
       
     private:
-      using vc_array_ptr_t = versioned_gc_ptr<gc_array<value_chain>, 1>;
+      using cp_vc = contingent_gc_ptr<view, value_chain>;
+      using vc_array_ptr_t = versioned_gc_ptr<gc_array<cp_vc>, 1>;
       static constexpr typename vc_array_ptr_t::template flag_id<0> replaced_by_map{};
+
+      /*
+       * I originally had this as a map from uniform_key to cp_vc, but
+       * that wound up with a hole in the descriptor.  Until I add a
+       * way to establish padding in the descriptor, I'll change it to
+       * a weak_key and let the weak pointer fill the hole.
+       */
+
       using vc_map_ptr_t
-      = gc_ptr<small_gc_cuckoo_map<ruts::uniform_key, gc_ptr<value_chain>>>;
+      = gc_ptr<small_gc_cuckoo_map<ruts::weak_key<weak_gc_ptr<view>>, cp_vc> >;
 
       std::atomic<gc_ptr<value_chain>> _top_level_vc{nullptr};
       typename vc_array_ptr_t::atomic_pointer _vc_array;
@@ -403,15 +423,15 @@ namespace mds {
          */
         vc_map_ptr_t m = _vc_map;
         if (m != nullptr) {
-          gc_ptr<value_chain> vc = (*m)[v->uuid()];
+          gc_ptr<value_chain> vc = (*m)[v].lock();
           if (vc != nullptr) {
             assert(vc->get_view() == v);
             return vc;
           } 
         } else {
-          gc_array_ptr<value_chain> a = _vc_array;
+          gc_array_ptr<cp_vc> a = _vc_array;
           if (a != nullptr && a.size() >= v->level()) {
-            gc_ptr<value_chain> vc = a[v->level()-1];
+            gc_ptr<value_chain> vc = a[v->level()-1].lock();
             if (vc != nullptr && vc->get_view() == v) {
               return vc;
             }
@@ -546,36 +566,43 @@ namespace mds {
       /*
        * We think we need to create one.  
        */
+      // std::cout << "Creating a new VC for " << v
+      //           << " (" << v->uuid() << ")"
+      //           << " in " << GC_THIS << std::endl;
       vc_array_ptr_t old_array = _vc_array.contents();
       gc_ptr<value_chain> tlvc = lookup_top_level();
-      gc_array_ptr<value_chain> new_vcs;
-      gc_array_ptr<value_chain> old_vcs;
+      gc_array_ptr<cp_vc> new_vcs;
+      gc_array_ptr<cp_vc> old_vcs;
       auto level = v->level();
       /*
-       * Does it go in the array slot?
+       * Does it go in the array slot?  If the first entry is expired
+       * then so are all the rest.
        */
-      if (old_array == nullptr && !old_array[replaced_by_map]) {
+      if ((old_array == nullptr || old_array->at(0).expired()) && !old_array[replaced_by_map]) {
         /*
          * maybe.  Let's try.  If we're going to succeed, then none of
          * the ancestors have value chains, so we won't bother
          * checking.
          */
-        new_vcs = make_gc_array<value_chain>(level);
+        new_vcs = make_gc_array<cp_vc>(level);
         gc_ptr<value_chain> pvc = tlvc;
         std::size_t i = 0;
         for (auto a : v->ancestors) {
           gc_ptr<value_chain> new_vc = value_chain::for_view(a, pvc, GC_THIS);
-          new_vcs[i++] = new_vc;
+          new_vcs[i++] = cp_vc(a, new_vc);
           pvc = new_vc;
         }
         gc_ptr<value_chain> result_vc = value_chain::for_view(v, pvc, GC_THIS);
-        new_vcs[i] = result_vc;
+        new_vcs[i] = cp_vc(v, result_vc);
+        assert(new_vcs[i].lock() != nullptr);
+        assert(new_vcs[i].lock() == result_vc);
         auto rr = _vc_array.change(old_array, new_vcs);
         if (rr) {
           /*
            * We installed it.
            */
           assert(result_vc != nullptr);
+          // std::cout << GC_THIS << "[" << v << "] = " << result_vc << std::endl;
           return result_vc;
         } else {
           /*
@@ -589,7 +616,7 @@ namespace mds {
            * by a map, it's size will show as zero.
            */
           if (old_vcs.size() > i) {
-            gc_ptr<value_chain> vc = old_vcs[i];
+            gc_ptr<value_chain> vc = old_vcs[i].lock();
             if (vc->get_view() == v) {
               assert(vc != nullptr);
               return vc;
@@ -613,9 +640,13 @@ namespace mds {
         /*
          * Everything from the old array goes in
          */
-        gc_array_ptr<value_chain> vcs = old_array;
-        for (auto vc : vcs) {
-          (*new_map)[vc->get_view()->uuid()] = vc;
+        gc_array_ptr<cp_vc> vcs = old_array;
+        for (const auto &cp : vcs) {
+          auto vc = cp.lock();
+          auto vc_v = vc->get_view();
+          if (vc != nullptr) {
+            (*new_map)[vc_v] = cp_vc(vc_v, vc);
+          }
         }
         auto rr = ruts::try_change_value(_vc_map, nullptr, new_map);
         current_map = rr.resulting_value();
@@ -639,7 +670,7 @@ namespace mds {
       /*
        * first we check if the map contains the one we're looking for.
        */
-      gc_ptr<value_chain> vc = (*current_map)[v->uuid()];
+      gc_ptr<value_chain> vc = (*current_map)[v].lock();
       if (vc != nullptr) {
         return vc;
       }
@@ -653,23 +684,25 @@ namespace mds {
          */
         gc_ptr<value_chain> pvc = tlvc;
         for (auto a : v->ancestors) {
-          vc = (*current_map)[a->uuid()];
+          vc = (*current_map)[a].lock();
           if (vc == nullptr) {
             vc = value_chain::for_view(a, pvc, GC_THIS);
-            auto rr = current_map->put_new(a->uuid(), vc);
-            pvc = rr.resulting_value;
+            auto rr = current_map->put_new(a, cp_vc(a, vc));
+            pvc = rr.resulting_value.lock();
           } else {
             pvc = vc;
           }
         }
-        vc = (*current_map)[v->uuid()];
+        vc = (*current_map)[v].lock();
         if (vc != nullptr) {
           return vc;
         }
         vc = value_chain::for_view(v, pvc, GC_THIS);
-        auto rr = current_map->put_new(v->uuid(), vc);
-        assert(rr.resulting_value != nullptr);
-        return rr.resulting_value;
+        cp_vc c(v, vc);
+        assert(c.lock() != nullptr);
+        auto rr = current_map->put_new(v, c);
+        assert(rr.resulting_value.lock() != nullptr);
+        return rr.resulting_value.lock();
       } else {
         /*
          * We have candidates in new_vcs.  As long as we can add them
@@ -679,16 +712,22 @@ namespace mds {
          */
         bool need_new = false;
         gc_ptr<value_chain> last_vc = nullptr;
-        for (auto nvc : new_vcs) {
+        for (const auto &cp : new_vcs) {
+          auto nvc = cp.lock();
+          /*
+           * Since we're holding onto v, all of its ancestors should
+           * still be there.
+           */
+          assert(nvc != nullptr);
           gc_ptr<view> vcv = nvc->get_view();
           if (need_new) {
             nvc = value_chain::for_view(vcv, last_vc, GC_THIS);
           }
-          auto rr = current_map->put_new(vcv->uuid(), nvc);
+          auto rr = current_map->put_new(vcv, cp_vc(vcv, nvc));
           if (!rr) {
             need_new = true;
           }
-          last_vc = rr.resulting_value;
+          last_vc = rr.resulting_value.lock();
         }
         assert(last_vc != nullptr);
         return last_vc;

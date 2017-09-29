@@ -193,6 +193,19 @@ namespace mds {
         
     }; // ross_vc
 
+
+    /*
+     * The value we found was pointed to by a prior link with the
+     * patched_arround_flag set.  This means that we can't trust that
+     * it's the right one.  Note that this will only happen when we're
+     * looking up because of a modification timestamp, not because
+     * we're following a snapshot time.
+     */
+    struct uncertain_value_ex {
+      const timestamp_t ts;
+      uncertain_value_ex(timestamp_t t) : ts{t} {}
+    };
+
     template <kind K>
     struct typed_msv<K>::non_ross_vc : value_chain {
       using base = value_chain;
@@ -232,8 +245,21 @@ namespace mds {
 
       typename latest_ptr_t::atomic_pointer _latest;
       const parent_ptr_t _parent;
-      gc_atomic_stack<gc_ptr<value_chain>> _contingent_children;
-      std::atomic<gc_ptr<modification>> _pending_modification;
+
+      /* 
+       * If a contingent child gets collected, that means the view
+       * (and its context) is gone, so we don't need to worry about
+       * conflicts below.
+       */
+      gc_atomic_stack<weak_gc_ptr<value_chain>> _contingent_children;
+
+      /*
+       * The pending modification only has to live as long as the
+       * thread that started it cares.  Otherwise, it will have died
+       * either before or after modifing the chain.  Either one is
+       * okay.
+       */
+      std::atomic<weak_gc_ptr<modification>> _pending_modification;
 
 
       static parent_ptr_t compute_parent_ptr(const gc_ptr<view> &v,
@@ -388,14 +414,26 @@ namespace mds {
       }
 
       gc_ptr<value> value_before(timestamp_t ts) const {
-        for (gc_ptr<value> v = _latest;
+        bool last_val_patched = false;
+        gc_ptr<value> head = _latest;
+        timestamp_t last_ts = 0;
+        for (typename value::prior_ptr_t v = head;
              v != nullptr;
              v = v->prior)
           {
-            if (v->timestamp() < ts) {
+            timestamp_t this_ts = v->timestamp();
+            if (this_ts < ts) {
+              if (last_val_patched) {
+                throw uncertain_value_ex{last_ts};
+              }
               return v;
             }
+            last_val_patched = v[value::patched_around_flag];
+            last_ts = this_ts;
           }
+        if (last_val_patched) {
+          throw uncertain_value_ex{last_ts};
+        }
         return nullptr;
       }
 
@@ -589,8 +627,9 @@ namespace mds {
          * contingent children.  We pop as we go to handle any that
          * are added while we're working.  
          */
-        _contingent_children.apply_and_pop_all([=](const auto &child) {
-            if (child != except) {
+        _contingent_children.apply_and_pop_all([=](const auto &child_wp) {
+            auto child = child_wp.lock();
+            if (child != nullptr && child != except) {
               // std::cout << "Adding conflict to " << child << std::endl;
               child->receive_conflict(bm);
             } else {
@@ -616,6 +655,11 @@ namespace mds {
       }
 
       bool has_contingent_children() const {
+        /*
+         * For now, I'm not going to go through and check that they
+         * all lock non-null.  It's almost certainly not worth the
+         * work.
+         */
         return !_contingent_children.empty();
       }
 
@@ -716,10 +760,46 @@ namespace mds {
          * If there was a value at that timestamp, we can patch around it.
          */
         gc_ptr<value> prior_val = latest;
-        if (prior_val->timestamp() == rollup_ts) {
-          prior_val = prior_val->prior;
+        bool can_patch_around_latest = false;
+        /*
+         * If we're closed or there's a snapshot between, we can't
+         * prune.  (Strictly speaking, we could if we were the same
+         * task and we had the same value.)
+         */
+        if (latest[is_closed_flag]) {
+          // std::cout << "Can't patch around closed marker during roll-up" << std::endl;
+        } else if (snapshot_between(rollup_ts, prior_val->timestamp())) {
+          // std::cout << "Can't patch around snapshot in [" << rollup_ts
+          //           << ", " << prior_val->timestamp() << "] during roll-up" << std::endl;
+        } else if (t == prior_val->write_task) {
+          /*
+           * The chain is open and was last written in this task.
+           * If there's no snapshot between , we don't have to worry
+           * about roll-forward, so we can prune around.
+           */
+          can_patch_around_latest = true;
+          // std::cout << "Patching around same task val during roll-up" << std::endl;
+        } else if (!is_publishable()) {
+          /*
+           * If we're not publishable, we don't have to worry about
+           * roll-forward, so we can patch around.
+           */
+          can_patch_around_latest = true;
+          // std::cout << "Patching around val in non-pub VC during roll-up" << std::endl;
+        } else {
+          // std::cout << "Can't patch around val during roll-up" << std::endl;
         }
-        gc_ptr<value> new_v = make_gc<value>(rollup_ts, val, prior_val, t);
+        if (can_patch_around_latest) {
+          prior_val = prior_val->prior;
+          // std::cout << "Patched around val during roll-up" << std::endl;
+        }
+        gc_ptr<value> new_v = make_gc<value>(rollup_ts, val, prior_val, prior_val != latest, t);
+
+        // std::size_t len = 0;
+        // for (auto p = new_v; p != nullptr; p=p->prior) {
+        //   len++;
+        // }
+        // std::cout << "Roll-up VC length == " << len << std::endl;
 
         // std::cout << "Rolling up " << child_val
         //           << " to " << val
@@ -764,7 +844,7 @@ namespace mds {
           /*
            * There was already one there.
            */
-          gc_ptr<modification> current = rr.prior_value;
+          gc_ptr<modification> current = rr.prior_value.lock();
           if (current == mod) {
             /*
              * Two threads tried to install the same event (as part of its execution)
@@ -842,30 +922,51 @@ namespace mds {
         bool task_notified = false;
         bool same_task = replacing->write_task == write_task;
 
-        if (!is_closed && same_task) {
-          /*
-           * The chain is open and was last written in this task.
-           *
-           * We've told the task unless we were cached.
-           */
-          task_notified = !is_cached;
-          if (val == replacing->val) {
+        bool can_patch_around_latest = false;
+
+        /*
+         * If we're closed or there's a snapshot between, we can't
+         * prune.  (Strictly speaking, we could if we were the same
+         * task and we had the same value.)
+         */
+        if (!is_closed && !snapshot_between(ts, replacing->timestamp())) {
+          if (same_task) {
             /*
-             * The value hasn't changed.  So there's nothing to do.
-             * Either we've already notified the task and the
-             * context or we're cached and this would be cached,
-             * too.  So we can just return.
+             * The chain is open and was last written in this task.
+             * If there's no snapshot between , we don't have to worry
+             * about roll-forward, so we can prune around.
+             *
+             * We've told the task unless we were cached.
              */
-            return nullptr;
-          } else if (ts == replacing->timestamp()) {
+            task_notified = !is_cached;
+            if (val == replacing->val) {
+              /*
+               * The value hasn't changed.  So there's nothing to do.
+               * Either we've already notified the task and the
+               * context or we're cached and this would be cached,
+               * too.  So we can just return.
+               */
+              return nullptr;
+            }
+            can_patch_around_latest = true;
+          } else if (!is_publishable()) {
             /*
-             * The value has changed, but we're in the same
-             * timestamp, so we can patch around.  [TODO: Check on
-             * whether read-in-snapshot is still necessary.]
+             * If we're not publishable, we don't have to worry about
+             * roll-forward, so we can patch around.
              */
-            prior = replacing->prior;
+            can_patch_around_latest = true;
           }
         }
+        /*
+         * The value has changed, but we're in the same
+         * timestamp, so we can patch around.  [TODO: Check on
+         * whether read-in-snapshot is still necessary.]
+         */
+        if (can_patch_around_latest) {
+          // std::cout << "Patched around val during assignment" << std::endl;
+          prior = replacing->prior;
+        }
+       
         if (!task_notified && is_publishable()) {
           /*
            * If there are notifications needed, we need to do them
@@ -896,7 +997,7 @@ namespace mds {
         //             << std::endl;
         }
 
-        latest_ptr_t new_value = make_gc<value>(ts, val, prior, write_task);
+        latest_ptr_t new_value = make_gc<value>(ts, val, prior, prior != replacing, write_task);
         new_value[is_cached_flag] = caches_parent;
         bool called_first_modification = !is_closed;
         _latest.try_update([=](latest_ptr_t p) {
@@ -1372,7 +1473,10 @@ namespace mds {
          * pending queue for a context created in a task that needs to
          * be redone, so we process the roll-ups first.
          */
-        gc_ptr<msv> in_msv = mvc->in_msv;
+        gc_ptr<msv> in_msv = mvc->in_msv.lock();
+        if (in_msv == nullptr) {
+          return;
+        }
         in_msv->process_rollups();
         /*
          * TODO: I guess it's possible that there might still be such
@@ -1430,7 +1534,7 @@ namespace mds {
       void add_conflict() {
         gc_ptr<redo_task_set> rts = _redo_task_set;
         if (rts != nullptr) {
-          rts->set_conflict(make_gc<conflict>(GC_THIS, rts->redo_task()),
+          rts->set_conflict(make_gc<conflict>(rts->redo_task()),
                             get_context());
           _redo_task_set.set_flag(has_conflict_flag);
         }
@@ -1986,6 +2090,7 @@ namespace mds {
       }
     }; // ro_live_vc
 
+
     template <kind K>
     class typed_msv<K>::modification : public core::modification {
     public:
@@ -1995,8 +2100,7 @@ namespace mds {
       {
         block_publication,
           process_rollups,
-          get_old_value,
-          add_to_value_chain,
+          establish_value,
           clean_up,
           done
           };
@@ -2098,7 +2202,7 @@ namespace mds {
         /*
          * If the timestamp is already non-zero, we don't change it.
          */
-        ruts::try_change_value(_timestamp, 0, *current_version);
+        ruts::try_change_value(_timestamp, 0, current_value_timestamp());
         _msv->process_rollups();
         /*
          * We cache the current value node here to make sure that we
@@ -2110,19 +2214,45 @@ namespace mds {
         ruts::try_change_value(_current, gc_ptr<value>{}, vn);
       }
 
-      void get_old_value() {
-        timestamp_t ts = _timestamp;
+      void establish_value() {
         /*
-         * We grab an old value node we might need in order to tell
-         * if we need to add a redo task set.  Everybody who does
-         * this should get the same answer, so we don't worry about
-         * doing this atomically.  If you get to the next phase,
-         * it's there.
+         * We know coming in that everything in the MSV is processed
+         * up through (at least) _timestamp.  That's our initial guess
+         * as to what we will use, but due to pruning, we may need to
+         * use a later timestamp.
          */
-        _old_val = _chain->needed_value(_op, _returning, ts);
-        if (_old_val != nullptr && _chain->is_publishable()) {
-          assert(_old_val->write_task != nullptr);
-          gc_ptr<task> ovwt = _old_val->write_task;
+        timestamp_t ts = _timestamp;
+        if (_op == modify_op::roll_forward) {
+          /*
+           * If we're rolling forward, we don't need to establish the
+           * old value.
+           */
+          _chain->roll_forward(ts, _current, _msv);
+          return;
+        }
+        gc_ptr<value> old_val_node;
+        while (true) {
+          try {
+            old_val_node = _chain->needed_value(_op, _returning, ts);
+            break;
+          } catch (const uncertain_value_ex &ex) {
+            /*
+             * We found a value following a patched_around link.  The
+             * timestamp in the exception is the timestamp of the
+             * value node containing the patched_around prior, so we
+             * know that everything's processed up to that point and
+             * we can use it for our next try.  Note that this can
+             * only happen when we're looking up through live chains
+             * using the timestamp we guessed, since we never patch
+             * around snapshot times.
+             */
+            ts = ex.ts;
+          }
+        }
+        bool had_old_val = old_val_node != nullptr;
+        if (had_old_val && _chain->is_publishable()) {
+          assert(old_val_node->write_task != nullptr);
+          gc_ptr<task> ovwt = old_val_node->write_task;
           /*
            * If we're writing in a different task than the one that
            * wrote the value we read, put a dependency between the
@@ -2131,10 +2261,6 @@ namespace mds {
            */
           _chain->handle_task_dependencies(ovwt, _write_task);
         }
-      }
-
-      void add_to_value_chain() {
-        bool had_old_val = _old_val != nullptr;
         
         /*
          * We can't just use the prevailing context, since this thread
@@ -2143,7 +2269,7 @@ namespace mds {
          */
         gc_ptr<iso_context> ctxt = _chain->get_context();
         val_type old_val = ctxt->shadowed_val(had_old_val 
-                                              ? _old_val->val
+                                              ? old_val_node->val
                                               : val_type{});
         val_type computed_val;
         std::tie(computed_val, _exception_state) = op_traits<val_type>::compute(_op, old_val, _arg);
@@ -2159,10 +2285,8 @@ namespace mds {
         // std::cout << "Changing val from '" << old_val << "' to '"
         //           << new_val << "' in " << _chain << std::endl;
         _ret_val = _returning==ret_mode::resulting_val ? new_val : old_val;
-        if (_op == modify_op::roll_forward) {
-          _chain->roll_forward(_timestamp, _current, _msv);
-        } else if (_guard != nullptr
-                   && !_guard->test(had_old_val, old_val, new_val)) {
+        
+        if (_guard != nullptr && !_guard->test(had_old_val, old_val, new_val)) {
           /*
            * If the guard failed, we set a flag to throw an exception
            * when the value is retrieved.
@@ -2185,7 +2309,7 @@ namespace mds {
            * are notified of the modification if it can't prove they
            * already know.
            */
-          _chain->ensure_value(new_val, _timestamp, _current,
+          _chain->ensure_value(new_val, ts, _current,
                                _write_task, _msv, _modifies);
         }
       }
@@ -2208,11 +2332,8 @@ namespace mds {
         case write_phase::process_rollups:
           process_rollups();
           return;
-        case write_phase::get_old_value:
-          get_old_value();
-          return;
-        case write_phase::add_to_value_chain:
-          add_to_value_chain();
+        case write_phase::establish_value:
+          establish_value();
           return;
         case write_phase::clean_up:
           clean_up();

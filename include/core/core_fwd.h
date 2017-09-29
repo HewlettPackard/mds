@@ -78,7 +78,6 @@ namespace mds {
     class unimplemented {};
     class control;
 
-    using current_version_t = std::atomic<std::uint64_t>;
     class exportable : public gc_allocated {
       using gc_allocated::gc_allocated;
     };
@@ -191,8 +190,9 @@ namespace mds {
 
     static constexpr std::size_t initial_record_type_table_capacity = 1000;
     using record_type_table_t = gc_cuckoo_map<gc_ptr<interned_string>, gc_ptr<const record_type>,
-                                              ruts::hash1<gc_ptr<interned_string>>,
-                                              ruts::hash2<gc_ptr<interned_string>>, 5>;
+                                              cuckoo_map_traits<gc_ptr<interned_string>,
+                                                                gc_ptr<const record_type>>,
+                                              5>;
 
 
 

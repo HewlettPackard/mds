@@ -611,6 +611,15 @@ namespace mds {
       return _handle.publish();
     }
 
+    /*
+     * After forget_tasks() is called, the iso_ctxt can still be
+     * published, but if the publication attempt fails, conflict
+     * resolution cannot succeed, as the context has dropped all of
+     * its references to the tasks and, consequently, no longer knows
+     * how to re-run them.
+     */
+    void forget_tasks();
+
     pub_result publish(const resolve_opts &resolve_opts, const report_opts &reports) {
       using namespace std;
       pub_result pr = try_publish();
@@ -703,6 +712,12 @@ namespace mds {
       auto val = call(mask_void<Fn,Args...>(std::forward<Fn>(fn), true),
                       std::forward<Args>(args)...);
       bool worked = publish(resolve_opts, reports);
+      /*
+       * At this point, we've either succeeded in publishing or we've
+       * given up resolving.  In either case, we no longer need the
+       * tasks that were created during the run.
+       */
+      forget_tasks();
       // std::cout << "publish " << (worked ? "succeeded" : "failed") << std::endl;
       return std::make_pair(val, worked);
     }
@@ -1020,6 +1035,15 @@ namespace mds {
 namespace std {
   template<> struct hash<mds::task> : mds::__intrinsic_hash<mds::task> {};
   template<> struct hash<mds::iso_ctxt> : mds::__intrinsic_hash<mds::iso_ctxt> {};
+}
+
+namespace ruts {
+  template<>
+  struct stable_key<mds::task> {
+    auto operator()(const mds::task &t) const {
+      return t.uuid();
+    }
+  };
 }
 
 

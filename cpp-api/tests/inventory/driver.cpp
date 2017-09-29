@@ -78,7 +78,7 @@ int main(int argc, char *argv[]) {
   string inv_name = "OurInventory";
 
   while (true) {
-    int c = getopt_long(argc, argv, "+n:h", long_options, nullptr);
+    int c = getopt_long(argc, argv, "+n:hm", long_options, nullptr);
     if (c == -1) {
       break;
     }

@@ -61,6 +61,7 @@ extern "C"
   Java_com_hpl_mds_impl_RecordArrayProxy_isIdentical (JNIEnv *jEnv, jclass,
                                                       jlong aHIndex, jlong bHIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, is_same_as<kind::RECORD>, aHIndex,
 				 bHIndex);
   }
@@ -70,6 +71,7 @@ extern "C"
   Java_com_hpl_mds_impl_RecordArrayProxy_isSameObject (JNIEnv *jEnv, jclass,
                                                        jlong aHIndex, jlong bHIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, is_same_object<kind::RECORD>, aHIndex,
 				 bHIndex);
   }
@@ -79,6 +81,7 @@ extern "C"
   Java_com_hpl_mds_impl_RecordArrayProxy_isSameViewOfSameObject (JNIEnv *jEnv, jclass,
                                                                  jlong aHIndex, jlong bHIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, is_same_view_same_object<kind::RECORD>,
                                  aHIndex, bHIndex);
   }
@@ -89,6 +92,7 @@ extern "C"
 						      jlong size,
 						      jlong arrayTypeHIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<array_type_handle<kind::RECORD>> type
@@ -105,6 +109,7 @@ extern "C"
                                                     jlong handleIndex,
                                                     jlong index)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<managed_array_handle<kind::RECORD>> a
@@ -122,6 +127,7 @@ extern "C"
 						     jlong handleIndex,
 						     jlong index)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<managed_array_handle<kind::RECORD>> a
@@ -139,6 +145,7 @@ extern "C"
                                                     jlong handleIndex,
                                                     jlong index, jlong valArg)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<managed_array_handle<kind::RECORD>> a
@@ -161,6 +168,7 @@ extern "C"
                                                           jlong handleIndex,
                                                           jlong index, jlong valArg)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, [=]
       {
 	indexed<managed_array_handle<kind::RECORD>> a
@@ -182,6 +190,7 @@ extern "C"
   Java_com_hpl_mds_impl_RecordArrayProxy_size (JNIEnv *jEnv, jclass,
 					       jlong handleIndex)
   {
+    ensure_thread_initialized(jEnv);
     return exception_handler_wr (jEnv, size<kind::RECORD>, handleIndex);
   }
 }

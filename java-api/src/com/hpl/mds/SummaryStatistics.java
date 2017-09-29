@@ -53,7 +53,7 @@ public class SummaryStatistics {
     double mean() { return sum/count; }
     double variance() {
       double m = mean();
-      return (1/(count-1))*(sumSq-2*m*sum+m*m);
+      return (1.0/(count-1))*(sumSq-2*m*sum+m*m*count);
     }
     double sd() {
       return Math.sqrt(variance());

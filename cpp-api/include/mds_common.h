@@ -36,6 +36,7 @@
 
 #include "mds_types.h"
 #include "mds_core_api.h"
+#include "ruts/weak_key.h"
 
 namespace mds {
   template <typename T, typename Enable = void>
@@ -124,7 +125,49 @@ namespace mds {
     H lock() const {
       return H(_wh.lock());
     }
+    bool expired() const {
+      return _wh.expired();
+    }
   };
+
+}
+
+namespace ruts {
+  
+  template <typename H>
+  struct weak_key_traits<mds::weak_handle<H>>
+  {
+    using weak_type = mds::weak_handle<H>;
+    using strong_type = H;
+    static weak_type convert(const strong_type &p) noexcept {
+      return p;
+    }
+    static strong_type lock(const weak_type &p) noexcept {
+      return p.lock();
+    }
+    static bool expired(const weak_type &p) noexcept {
+      return p.expired();
+    }
+    static bool equals(const weak_type &lhs, const weak_type &rhs) noexcept {
+      /*
+       * We don't want to lock unless we have to.
+       */
+      if (lhs.expired()) {
+        return rhs.expired();
+      }
+      if (rhs.expired()) {
+        return false;
+      }
+      return lock(lhs) == lock(rhs);
+    }
+    static auto extract_stable(const strong_type &h) {
+      return stable_key<H>()(h);
+    }
+
+    using stable_key_type = std::decay_t<decltype(extract_stable(std::declval<strong_type>()))>;
+
+  };
+
 
 }
 

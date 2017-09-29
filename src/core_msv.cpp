@@ -226,15 +226,25 @@ namespace mds {
 
     void pending_rollup::add_to_published(process_state &pstate)
     {
-      const timestamp_t ts = publish_time();
-      pstate.add_to_published(ts, GC_THIS);
-      /*
-       * If the parent VC is closed and was published after this one,
-       * we need to create a new rollup and call it recursively.
-       */
-      gc_ptr<value_chain> parent = _value_chain->get_parent();
+      gc_ptr<value_chain> parent = _value_chains.lock_control();
       //      if (parent != nullptr && parent->is_publishable() && parent->is_closed()) {
+      /*
+       * If we lock to null, that means that there's no reason to roll up.
+       */
       if (parent != nullptr) {
+        /*
+         * publish_time() requires that the pending state lock to
+         * non-null.  If we're here, it's published and so lives as
+         * long as the context, and if we locked the control (the
+         * parent VC), then the source VC (the controlled pointer) is
+         * still here, and it's holding onto the context.
+         */
+        const timestamp_t ts = publish_time();
+        pstate.add_to_published(ts, GC_THIS);
+        /*
+         * If the parent VC is closed and was published after this one,
+         * we need to create a new rollup and call it recursively.
+         */
         //        gc_ptr<const iso_context::published_state>
         //          s = parent->get_view()->context->first_publish_after(ts);
         gc_ptr<const iso_context::published_state> s = parent->pub_state_after(ts);
@@ -249,7 +259,11 @@ namespace mds {
       if (processed()) {
         return;
       }
-      _value_chain->do_rollup(_pending_state->timestamp());
+      gc_ptr<value_chain> vc = _value_chains.lock();
+      if (vc != nullptr) {
+        // assert(vc->get_context()->is_publishable());
+        vc->do_rollup(publish_time());
+      }
       mark_processed();
     }
 
