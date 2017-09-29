@@ -45,7 +45,6 @@
 #include "ruts/ms_forward.h"
 #include "mpgc/gc.h"
 #include "mpgc/gc_cuckoo_map.h"
-#include "mpgc/gc_stack.h"
 
 namespace mds {
   namespace core {
@@ -65,12 +64,9 @@ namespace mds {
       RECORD,
       BINDING,
       ARRAY,
-      NAMESPACE,
       n_kinds
     };
     constexpr std::size_t n_kinds = static_cast<std::size_t>(kind::n_kinds);
-
-    
 
     using timestamp_t = std::size_t;
 
@@ -90,43 +86,42 @@ namespace mds {
     : std::true_type
       {};
 
+    class branch;
+
     /*
      * parent_view is used in merging.  If C extends P, a parent view child of C sees the parent
-     * view of whatever view would see.
+     * branch of whatever branch C would see.
      */
     enum class view_type : unsigned char {
-      live, snapshot
+      live, snapshot, parent_view
     };
 
     enum class mod_type : unsigned char {
-      publishable, detached, read_only
+      full, detached, read_only
     };
 
     class iso_context;
-    class view;
-    class publication_attempt;
-
     class snapshot;
     template <kind K> class record_field;
     class managed_type_base;
     template <kind K> class managed_type;
     class record_type;
     class conflict;
-    using conflict_list = gc_threaded_list<gc_ptr<const conflict>>;
+    class conflict_list;
     class interned_string;
-    template <std::size_t S> class interned_string_table;
+    template <typename Traits> class interned_string_table;
 
     class managed_object : public exportable {
     public:
       using exportable::exportable;
     };
-    class view_dependent_value : public managed_object {
+    class branch_dependent_value : public managed_object {
     public:
       using managed_object::managed_object;
     };
-    class managed_composite : public view_dependent_value {
+    class managed_composite : public branch_dependent_value {
     public:
-      explicit managed_composite(gc_token &gc) : view_dependent_value{gc} {}
+      explicit managed_composite(gc_token &gc) : branch_dependent_value{gc} {}
     };
 
     class managed_record;
@@ -161,38 +156,32 @@ namespace mds {
     };
     class unbound_name_ex {};
     class read_only_context_ex {};
-    class unpublishable_context_ex {};
+    class unmergeable_context_ex {};
 
     template <kind K> struct kind_traits;
     template <kind K> using kind_val = typename kind_traits<K>::val_type;
     template <kind K> using kind_type = typename kind_traits<K>::type_t;
     template <kind K> using kind_field = typename kind_traits<K>::field_t;
 
-    static constexpr std::size_t n_string_table_segments = 2;
-    static constexpr std::size_t initial_string_table_capacity = 10000;
-    using string_table_t = interned_string_table<n_string_table_segments>;
+    struct _string_table_traits : gc_cm_traits {
+      constexpr static std::size_t seg_bits = 2;
+    };
+    static constexpr std::size_t initial_string_table_capacity = 10000; 
+    using string_table_t = interned_string_table<_string_table_traits>;
     template <> struct is_exportable<interned_string> : std::true_type {};
 
-    class msv;
-    template <kind K> class typed_msv;
-    class value_chain;
-    class task;
-    class pending_rollup;
-    class modified_value_chain;
-    class modification;
-    class blocking_mod;
-    
+    class msv_base;
+    template <kind K> class msv;
 
     class name_space;
     class binding;
 
-    template <kind K> class mod_condition;
-
-
+    struct _rec_table_traits : gc_cm_traits {
+      constexpr static std::size_t seg_bits = 5;
+    };
     static constexpr std::size_t initial_record_type_table_capacity = 1000;
     using record_type_table_t = gc_cuckoo_map<gc_ptr<interned_string>, gc_ptr<const record_type>,
-                                              ruts::hash1<gc_ptr<interned_string>>,
-                                              ruts::hash2<gc_ptr<interned_string>>, 5>;
+                                              _rec_table_traits>;
 
 
 
@@ -215,46 +204,26 @@ namespace mds {
     };
 
     template <typename T>
-    struct vd_value {
+    struct bd_value {
       gc_ptr<T> value;
-      gc_ptr<view> in_view;
-      vd_value(const gc_ptr<T> &v, const gc_ptr<view> &b) : value{v}, in_view{b} {
-        assert( (value == nullptr) == (in_view == nullptr) );
+      gc_ptr<branch> on_branch;
+      bd_value(const gc_ptr<T> &v, const gc_ptr<branch> &b) : value{v}, on_branch{b} {
+        assert( (value == nullptr) == (on_branch == nullptr) );
       }
-      vd_value(nullptr_t)
-        : value{nullptr}, in_view{nullptr}
-      {}
-      vd_value() : value{nullptr}, in_view{nullptr} {}
+      bd_value() : value{nullptr}, on_branch{nullptr} {}
       static const auto &descriptor() {
         static gc_descriptor d =
-	  GC_DESC(vd_value)
-	  .template WITH_FIELD(&vd_value::value)
-	  .template WITH_FIELD(&vd_value::in_view);
+	  GC_DESC(bd_value)
+	  .template WITH_FIELD(&bd_value::value)
+	  .template WITH_FIELD(&bd_value::on_branch);
         return d;
-      }
-
-      bool operator ==(const vd_value &rhs) const {
-        return value == rhs.value && in_view == rhs.in_view;
-      }
-      bool operator !=(const vd_value &rhs) const {
-        return !((*this) == rhs);
       }
     };
 
-    template <typename T, typename = void>
-    struct managed_value_is_view_dependent : std::false_type
-    {};
-
     template <typename T>
-      struct managed_value_is_view_dependent<T, std::enable_if_t<std::is_base_of<managed_composite, T>::value>>
-      : std::true_type
-      {};
-              
-
-    template <typename T>
-    struct managed_value_wrapper<T, std::enable_if_t<managed_value_is_view_dependent<T>::value>>
+    struct managed_value_wrapper<T, std::enable_if_t<std::is_base_of<managed_composite, T>::value>>
     {
-      using type = vd_value<T>;
+      using type = bd_value<T>;
     };
 
     enum class validity : unsigned char {
@@ -270,87 +239,15 @@ namespace mds {
       return v == validity::valid;
     }
 
-
   }
 }
 
 namespace std {
   template <typename C, typename Tr, typename T>
   basic_ostream<C,Tr> &
-  operator <<(basic_ostream<C,Tr> &os, const mds::core::vd_value<T> &v) {
-    return os << v.value << "{" << v.in_view << "}";
+  operator <<(basic_ostream<C,Tr> &os, const mds::core::bd_value<T> &v) {
+    return os << v.value << "{" << v.on_branch << "}";
   }
-
-  template <typename C, typename Tr>
-  basic_ostream<C,Tr> &
-  operator <<(basic_ostream<C,Tr> &os, mds::core::kind k) {
-    using namespace mds::core;
-    switch (k) {
-    case kind::BOOL:
-      return os << "BOOL";
-    case kind::BYTE:
-      return os << "BYTE";
-    case kind::UBYTE:
-      return os << "UBYTE";
-    case kind::SHORT:
-      return os << "SHORT";
-    case kind::USHORT:
-      return os << "USHORT";
-    case kind::INT:
-      return os << "INT";
-    case kind::UINT:
-      return os << "UINT";
-    case kind::LONG:
-      return os << "LONG";
-    case kind::ULONG:
-      return os << "ULONG";
-    case kind::FLOAT:
-      return os << "FLOAT";
-    case kind::DOUBLE:
-      return os << "DOUBLE";
-    case kind::STRING:
-      return os << "STRING";
-    case kind::RECORD:
-      return os << "RECORD";
-    case kind::BINDING:
-      return os << "BINDING";
-    case kind::ARRAY:
-      return os << "ARRAY";
-    default:
-      return os << "kind[" << static_cast<int>(k) << "]";
-    }
-  }
-
-  template <typename C, typename Tr>
-  basic_ostream<C,Tr> &
-  operator <<(basic_ostream<C,Tr> &os, mds::core::view_type vt) {
-    using namespace mds::core;
-    switch (vt) {
-    case view_type::live:
-      return os << "live";
-    case view_type::snapshot:
-      return os << "snapshot";
-    default:
-      return os << "view_type[" << static_cast<int>(vt) << "]";
-    }
-  }
-
-  template <typename C, typename Tr>
-  basic_ostream<C,Tr> &
-  operator <<(basic_ostream<C,Tr> &os, mds::core::mod_type mt) {
-    using namespace mds::core;
-    switch (mt) {
-    case mod_type::publishable:
-      return os << "full";
-    case mod_type::detached:
-      return os << "detached";
-    case mod_type::read_only:
-      return os << "read_only";
-    default:
-      return os << "mod_type[" << static_cast<int>(mt) << "]";
-    }
-  }
-
 }
 
 

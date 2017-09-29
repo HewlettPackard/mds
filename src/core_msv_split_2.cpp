@@ -24,47 +24,31 @@
  *
  */
 
-package test;
+/*
+ * core_msv_split_2.cpp
+ *
+ *  Created on: Nov 28, 2014
+ *      Author: evank
+ */
 
-import com.hpl.erk.RandomChoice;
-import com.hpl.erk.config.*;
-import com.hpl.erk.config.ex.*;
-import com.hpl.mds.*;
-import java.io.*;
-import java.util.*;
-import java.util.function.*;
-import java.util.stream.*;
-import org.apache.log4j.Logger;
-import static com.hpl.mds.MDS.*;
+#include "core_msv_split.h"
 
-public class Test5 extends TestBase {
-  static final Logger log = Logger.getLogger(Test5.class);
-  static final RunContext rc = testRC.subContext("test5").activate();
-
-
-  public static void main(String[] args)
-    throws ConfigErrorsSeen, IOException
-  {
-    args = RunConfig.process(Test5.class, args);
-
-    initStore();
-
-    Basket b = makeBasket(5);
-    Pause.Button pause = new Pause.Button();
-    Thread t = new Thread(()->{
-        store.restock(p->5, pause);
-      });
-    t.start();
-    Pause.forSeconds(5);
-    store.purchase(b);
-    pause.press();
-    Pause.untilDone(t);
-
-    Product[] ranked = store.rankedProducts();
-    for (int i=0; i<ranked.length; i++) {
-      Product p = ranked[i];
-      System.out.format("%,3d %s%n", i, p);
+namespace mds {
+  namespace core {
+    namespace msv_split {
+      void write_task_init_2(mpgc::gc_allocated_with_virtuals<mds::core::cooperative_task<core::wm_task_disc>, core::wm_task_disc>::vf_table &ctable) {
+        ctable.bind<msv<kind::LONG>::write_task>();
+        ctable.bind<msv<kind::ULONG>::write_task>();
+        ctable.bind<msv<kind::FLOAT>::write_task>();
+        ctable.bind<msv<kind::DOUBLE>::write_task>();
+        ctable.bind<msv<kind::STRING>::write_task>();
+        ctable.bind<msv<kind::RECORD>::write_task>();
+        ctable.bind<msv<kind::BINDING>::write_task>();
+      }
     }
-
   }
 }
+
+
+
+

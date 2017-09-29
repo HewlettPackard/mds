@@ -11,16 +11,11 @@ Author: Susan Spence (susan.spence@hpe.com)
 
 64-bit, Linux, C++ 14, JDK1.8, pthreads
 
-- g++ 4.9.2, g++ 5.4.0 or 6.4.0 
+- g++ 4.9.2, or g++ 5.4.0 or later   
+  Note that MDS is known **not** to work with gcc 5.0, because of bugs in that version related to compilation of templates, which we use extensively.
 
-   - Note that MDS is known **not** to work with gcc 5.0, because of bugs in that version related to compilation of templates, which we use extensively.
-   
-   - g++ 5.4 builds the system slowly and uses much more memory.  If you use this version, you will probably have to reduce the `-j` argument to `make`.
-
-- Java JDK 1.8 (only needed for the Java API)
+- Java JDK 1.8   
   Note that you must use a Java JDK, not a more minimal Java installation.  This is needed for use of the JNI code.
-  
-- Apache Ant (only needed for the Java API)
 
 - Managed Data Structures (MDS)
 
@@ -28,17 +23,9 @@ Author: Susan Spence (susan.spence@hpe.com)
 
 ## Installations tested
 
-* Linux: Debian Jessie (8.6), Ubuntu Xenial Xerus (16.04.1 LTS) on x86_64 architecture, [linux-l4fame](https://github.com/FabricAttachedMemory/linux-l4fame)
+* Linux: Debian Jessie (8.6), Ubuntu Xenial Xerus (16.04.1 LTS) on x86_64 architecture, [https://github.com/FabricAttachedMemory/linux-l4fame](linux-l4fame)
 
 * g++ 4.9.2 /usr/local/gcc-4.9.2/bin/gcc
-
-    * Compiled from: source downloaded from mirror via https://gcc.gnu.org/
-
-* g++ 5.4.0 /usr/local/gcc-5.4.0/bin/gcc
-
-    * Compiled from: source downloaded from mirror via https://gcc.gnu.org/
-
-* g++ 6.4.0 /usr/local/gcc-6.4.0/bin/gcc
 
     * Compiled from: source downloaded from mirror via https://gcc.gnu.org/
 
@@ -46,120 +33,21 @@ Author: Susan Spence (susan.spence@hpe.com)
 
     * Installed from: http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html
 
-* Apache Ant 1.9.2
-
-    * Installed via `apt-get`
-    * Source available via http://ant.apache.org/
-
 * MDS: https://github.com/HewlettPackard/mds
 
 * MPGC: https://github.com/HewlettPackard/mpgc
 
 MDS runs on 64-bit Linux; it has been tested on x86 and ARM architectures.
 
-**NB**: MDS has not been tested on Windows.  Early attempts to
-  get the JNI component of the MDS Java API to compile and run proved
-  fruitless.  Early versions of the MDS C++ API did run under Windows,
-  but we have not attempted that configuration with recent code.
+**NB**: MDS does not compile on Windows. We tried compiling it on Windows (we tried
+really quite hard) but there are compilation problems with libraries we use. So
+don't waste your time trying to compile on Windows; just compile on Linux!
 
-**NB**: MDS won't run on a virtual machine if the virtual machine doesn't support a shared mmap file.
+**NB**: MDS won't run on a virtual machine, if the virtual machine doesn't support a shared mmap file.
 
-## Building and Using the MDS C++ API
+## Build process
 
-### Build process (MDS C++ API)
-
-This assumes that `<mds>` and `<mpgc>` are sibling directories,
-respectively named `mds` and `mpgc` containing the MDS and MPGC source
-files and `<config>` is a build configuration, e.g., **intel-debug**
-to create debuggable libraries or ***intel-opt** to create optimized
-libraries.
-
-1. Go the the appropriate build directory in `<mds>/cpp-api`:
-~~~bash
-cd <mds>/cpp-api/build/<config>
-~~~
-
-1. Build and install the library:
-~~~bash
-make -j8 install-recursive
-~~~
-  
-   This will build all needed libraries (`libmds_cpp_api.a`,
-   `libmds_core.a`, `libmpgc.a`, and `libruts.a`) and move all
-   necessary libraries, header files, and tools to a sibling of `mds`
-   and `mpgc` called `install`.  This target can be changed by setting
-   `$(install_dir)`.
-
-   It is strongly encouraged to use a `-j` parameter to allow parallel
-   builds.  **The argument should not exceed the number of hyperthreads
-   on the machine.**
-   
-
-### Using the MDS library (MDS C++ API)
-
-To compile a C++ program that uses MDS, 
-
-1. The source files should be compiled with `-I<install>/include`.
-
-1. The program must link against the following libraries
-   * `<install>/lib/libmds-cpp.a`
-   * `<install>/lib/libmds_core.a`
-   * `<install>/lib/libmpgc.a`
-   * `<install>/lib/libruts.a`
-
-1. The source code must
-~~~cpp
-#include "mds.h"
-~~~
-For detailed information on the MDS C++ API, see the documentation:
-  https://github.com/HewlettPackard/mds/blob/master/doc/MDS%20C++%20API.pdf
-  
-### Demo and Test using MDS (C++)
-
-Example programs using the MDS C++ API can be found in `<mds>/cpp-api/tests`.  To test out the implementation, we recommend building and running the `inventory` demo.  To build it the demo:
-
-~~~bash
-cd <mds>/cpp-api/build/<config>
-make -j8 tests/inventory
-~~~
-
-This builds one application, `tests/inventory` that has two
-subcommands, `init` and `run`.  To run the demo, within the `<config>`
-directory, first create the MDS heap:
-
-~~~
-<install>/bin/createheap 10G
-~~~
-
-The parameter should be the desired heap size.  It should be less than
-the amount of memory on the machine.
-
-Next, initialize the demo:
-
-~~~
-./tests/inventory init
-~~~
-
-Finally, run the demo:
-
-~~~
-./tests/inventory run
-~~~
-
-Once the demo has been initialized, any number of `run` processes can
-be created, and they can be killed and restarted at any time.  (Note
-that eventually, the heap will fill up.)  By default, each process
-runs with 5 worker threads in addition to a GC thread.  The number of
-worker threads can be changed by specifying a `--nthreads` argument
-**following** the `run` command.
-
-  
-
-## Building and Using the MDS Java API
-
-### Build process (MDS Java API)
-
-Set environment variable JAVA_HOME to point to the top-level directory of your JDK 1.8 installation.
+Set environment variable JDKHOME to point to the top-level directory of your JDK 1.8 installation.
 
 Ensure the top-level MDS directory is called "mds".  (If you downloaded the zip file, it will be called mds-master and you will need to move it to mds instead.)
 
@@ -171,7 +59,7 @@ Assuming MDS and its dependency MPGC have been cloned to the same top-level dire
 The build will take about 30-40 minutes to complete on an average Linux server.
 
     
-### Build details (MDS Java API)
+## Build details
 
 We use ant at the top level and in our demo directories, with build files that were handcrafted by one of our developers.
 
@@ -190,36 +78,40 @@ where "ruts" stands for "Really Useful ToolS".
 
 The MDS library libmds-jni.so can be built either optimised or debug.
 By default it is built optimised; to build debug instead: 
-
-    cd mds/java-api    
-    ant -f build-all.xml -Dbuild=debug    
+    cd mds/java-api
+    ant -f build-all.xml -Dbuild=debug
 
 To see if the build has completed successfully, 
-where <build> is either "opt" or "debug", 
 check for the existence of the following files: 
 
-    mds/java-api/jars/mds-annotations-processor.jar
-    mds/java-api/jars/mds-java-api.jar
-    mds/java-api/build/intel-<build>/libs/libmds-jni.so    
+- when built optimized: 
+
+    mds/java-api/build/intel-opt/libs/libmds-jni.so
+    mds-annotations-processor.jar
+    mds-java-api.jar
+
+- when built debug:
+    mds/java-api/build/intel-debug/libmds-jni.so
+    mds-annotations-processor.jar
+    mds-java-api.jar
 
 If you have a problem, and need to clean the build and start again: 
-
     cd mds/java-api
     ant -f build-all.xml clean
 
 
-### Using the MDS library (MDS Java API)
+## Using the MDS library
 
 To compile a Java application that uses MDS, the programmer uses the JAR files for the MDS Java API.
 
 See the Usage section of [README.md](README.md) for a few simple code examples that illustrate basic use of MDS.
 
-For more detailed information on the MDS Java API, see the documentation:
+For more detailed information on the MDS API, see the documentation:
   https://github.com/HewlettPackard/mds/blob/master/doc/MDS%20Java%20API.pdf
 
 
-### Demo using MDS (Java)
+## Demo using MDS
 
-To see an example Java program using MDS, have a look at the MDS Inventory Demo in: [demo/inventory](demo/inventory).  
+To see an example program using MDS, have a look at the MDS Inventory Demo in: [demo/inventory](demo/inventory).  
 Follow the instructions in [demo/inventory/INSTALL.md](demo/inventory/INSTALL.md) to compile the demo sources and run the MDS Inventory demo.  
 

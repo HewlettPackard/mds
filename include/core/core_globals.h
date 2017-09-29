@@ -69,12 +69,11 @@ namespace mds
 
     //    extern external_gc_ptr<control> control_block;
     extern current_version_t *current_version;
-    extern external_gc_ptr<view> top_level_view;
+    extern external_gc_ptr<branch> top_level_branch;
     extern external_gc_ptr<iso_context> global_context;
     extern external_gc_ptr<string_table_t> string_table;
     extern external_gc_ptr<record_type_table_t> record_type_table;
     extern external_gc_ptr<name_space> global_namespace;
-    extern std::size_t *next_task_number;
 
     template<kind KIND>
       inline external_gc_ptr<const managed_type<KIND>> global_managed_type();

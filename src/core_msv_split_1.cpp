@@ -24,32 +24,33 @@
  *
  */
 
-package test;
+/*
+ * core_msv_split_1.cpp
+ *
+ *  Created on: Nov 28, 2014
+ *      Author: evank
+ */
 
-import com.hpl.mds.annotations.*;
-import com.hpl.mds.*;
+#include "core_msv_split.h"
 
-@RecordSchema
-@TypeName(name="mds-test-%1$s")
-public interface PrivASchema {
-  @Private int x();
-
-  static void PrivA(PrivA.Constructing self) {
-    self.setX(5);
-    System.out.format("In PrivA ctor: %s%n", self);
+namespace mds {
+  namespace core {
+    namespace msv_split {
+      void write_task_init_1(mpgc::gc_allocated_with_virtuals<mds::core::cooperative_task<core::wm_task_disc>, core::wm_task_disc>::vf_table &ctable) {
+        ctable.bind<iso_context::merge_task>();
+        ctable.bind<msv<kind::BOOL>::write_task>();
+        ctable.bind<msv<kind::BYTE>::write_task>();
+        ctable.bind<msv<kind::UBYTE>::write_task>();
+        ctable.bind<msv<kind::SHORT>::write_task>();
+        ctable.bind<msv<kind::USHORT>::write_task>();
+        ctable.bind<msv<kind::INT>::write_task>();
+        ctable.bind<msv<kind::UINT>::write_task>();
+        ctable.bind<msv<kind::ARRAY>::write_task>();
+      }
+    }
   }
-
-  @Private static void foo(PrivA.Private self) {
-    self.incX(100);
-    System.out.format("In PrivA.foo(): %s%n", self);
-  }
-
-  static int aVal(PrivA.Private self) {
-    return self.getX();
-  }
-
-  static void doAStuff(PrivA.Private self) {
-    self.foo();
-  }
-
 }
+
+
+
+

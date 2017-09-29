@@ -28,5 +28,3 @@ optlevel ?= 3
 debuglevel ?= 0
 
 include ../project.mk
-#As we use 16-byte atomics, following flag is required on x86-64.
-extra_cxx_flags += -mcx16

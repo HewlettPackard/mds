@@ -138,7 +138,7 @@ namespace mds {
 
     };
 
-    template <std::size_t Segments=10>
+    template <typename Traits>
     class interned_string_table : public gc_allocated {
     public:
       using char_type = char16_t;
@@ -161,7 +161,7 @@ namespace mds {
         return uniform_key{accums};
       }
 
-      using map_type = gc_cuckoo_map<key_type, value_type, ruts::hash1<key_type>, ruts::hash2<key_type>, Segments>;
+      using map_type = gc_cuckoo_map<key_type, value_type, Traits>;
       const gc_ptr<map_type> _map;
       constexpr static const char_type *ncp_() {
         return nullptr;

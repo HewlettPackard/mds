@@ -25,18 +25,40 @@
  */
 
 /*
- * mds_thread.cpp
+ * core_msv_split.h
  *
- *  Created on: Mar 15, 2015
+ *  Created on: Nov 28, 2014
  *      Author: evank
  */
 
-#include "mds_thread.h"
+#ifndef CORE_MSV_SPLIT_H_
+#define CORE_MSV_SPLIT_H_
 
-using namespace mds;
+/*
+ * I had to split write_task's init_conversion_table into separate functions
+ * because otherwise on Windows, with Debugging, I got
+ *     Fatal error: can't write src/core_msv.o: File too big
+ *     too many sections (32880)
+ *     Fatal error: can't close src/core_msv.o: File too big
+ */
 
-//thread_local mds_thread::context mds::mds_thread::ctxt{};
+#include "core/core_coop.h"
+#include "core/core_msv.h"
+#include "core/core_kind.h"
+#include "core/core_record.h"
+#include "core/core_naming.h"
+#include "core/core_array.h"
+
+namespace mds {
+  namespace core {
+    namespace msv_split {
+      extern void write_task_init_1(mpgc::gc_allocated_with_virtuals<mds::core::cooperative_task<core::wm_task_disc>, core::wm_task_disc>::vf_table &);
+      extern void write_task_init_2(mpgc::gc_allocated_with_virtuals<mds::core::cooperative_task<core::wm_task_disc>, core::wm_task_disc>::vf_table &);
+    }
+  }
+}
 
 
 
 
+#endif /* CORE_MSV_SPLIT_H_ */

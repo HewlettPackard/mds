@@ -31,16 +31,116 @@
  *      Author: evank
  */
 
-#include "core/core_conflict.h"
 #include "core/core_context.h" // include core_conflict.h
+#include "core/core_record.h"  // managed_record
+#include "core/core_array.h"  // managed_record
+#include "core/core_naming.h"  // name_space
 
 namespace mds {
   namespace core {
+    void
+    conflict::mark_resolved() {
+      _resolved = true;
+      _branch->context->conflict_resolved(GC_THIS);
+    }
+
+    // template <kind K>
+    // long
+    // field_conflict<K>::data_type::id() {
+    //   return _record->uuid().high;
+    // }
+
+    // long
+    // bound_name_conflict::data_type::id() {
+    //   return _namespace->uuid().high;
+    // }
+
+    // template <kind K>
+    // gc_ptr<interned_string>
+    // field_conflict<K>::data_type::name() {
+    //   return _field->name;
+    // }
+
+    // gc_ptr<interned_string>
+    // bound_name_conflict::data_type::name() {
+    //   return _name;
+    // }
 
   }
 }
 
+namespace mpgc {
+  template <>
+  void gc_allocated_with_virtuals<mds::core::conflict_generator, mds::core::cg_disc>
+  ::init_vf_table(vf_table &ctable) {
+    using namespace mds::core;
+    ctable.bind<bound_name_conflict::generator>();
+    ctable.bind<field_conflict<kind::BOOL>::generator>();
+    ctable.bind<field_conflict<kind::BYTE>::generator>();
+    ctable.bind<field_conflict<kind::UBYTE>::generator>();
+    ctable.bind<field_conflict<kind::SHORT>::generator>();
+    ctable.bind<field_conflict<kind::USHORT>::generator>();
+    ctable.bind<field_conflict<kind::INT>::generator>();
+    ctable.bind<field_conflict<kind::UINT>::generator>();
+    ctable.bind<field_conflict<kind::LONG>::generator>();
+    ctable.bind<field_conflict<kind::ULONG>::generator>();
+    ctable.bind<field_conflict<kind::FLOAT>::generator>();
+    ctable.bind<field_conflict<kind::DOUBLE>::generator>();
+    ctable.bind<field_conflict<kind::STRING>::generator>();
+    ctable.bind<field_conflict<kind::RECORD>::generator>();
+    ctable.bind<field_conflict<kind::ARRAY>::generator>();
+    ctable.bind<array_elmt_conflict<kind::BOOL>::generator>();
+    ctable.bind<array_elmt_conflict<kind::BYTE>::generator>();
+    ctable.bind<array_elmt_conflict<kind::UBYTE>::generator>();
+    ctable.bind<array_elmt_conflict<kind::SHORT>::generator>();
+    ctable.bind<array_elmt_conflict<kind::USHORT>::generator>();
+    ctable.bind<array_elmt_conflict<kind::INT>::generator>();
+    ctable.bind<array_elmt_conflict<kind::UINT>::generator>();
+    ctable.bind<array_elmt_conflict<kind::LONG>::generator>();
+    ctable.bind<array_elmt_conflict<kind::ULONG>::generator>();
+    ctable.bind<array_elmt_conflict<kind::FLOAT>::generator>();
+    ctable.bind<array_elmt_conflict<kind::DOUBLE>::generator>();
+    ctable.bind<array_elmt_conflict<kind::STRING>::generator>();
+    ctable.bind<array_elmt_conflict<kind::RECORD>::generator>();
+    ctable.bind<array_elmt_conflict<kind::ARRAY>::generator>();
+  }
 
+  template <>
+  void gc_allocated_with_virtuals<mds::core::conflict, mds::core::cb_disc>
+  ::init_vf_table(vf_table &ctable) {
+    using namespace mds::core;
+    ctable.bind<bound_name_conflict>();
+    ctable.bind<field_conflict<kind::BOOL>>();
+    ctable.bind<field_conflict<kind::BYTE>>();
+    ctable.bind<field_conflict<kind::UBYTE>>();
+    ctable.bind<field_conflict<kind::SHORT>>();
+    ctable.bind<field_conflict<kind::USHORT>>();
+    ctable.bind<field_conflict<kind::INT>>();
+    ctable.bind<field_conflict<kind::UINT>>();
+    ctable.bind<field_conflict<kind::LONG>>();
+    ctable.bind<field_conflict<kind::ULONG>>();
+    ctable.bind<field_conflict<kind::FLOAT>>();
+    ctable.bind<field_conflict<kind::DOUBLE>>();
+    ctable.bind<field_conflict<kind::STRING>>();
+    ctable.bind<field_conflict<kind::RECORD>>();
+    ctable.bind<field_conflict<kind::ARRAY>>();
+    ctable.bind<array_elmt_conflict<kind::BOOL>>();
+    ctable.bind<array_elmt_conflict<kind::BYTE>>();
+    ctable.bind<array_elmt_conflict<kind::UBYTE>>();
+    ctable.bind<array_elmt_conflict<kind::SHORT>>();
+    ctable.bind<array_elmt_conflict<kind::USHORT>>();
+    ctable.bind<array_elmt_conflict<kind::INT>>();
+    ctable.bind<array_elmt_conflict<kind::UINT>>();
+    ctable.bind<array_elmt_conflict<kind::LONG>>();
+    ctable.bind<array_elmt_conflict<kind::ULONG>>();
+    ctable.bind<array_elmt_conflict<kind::FLOAT>>();
+    ctable.bind<array_elmt_conflict<kind::DOUBLE>>();
+    ctable.bind<array_elmt_conflict<kind::STRING>>();
+    ctable.bind<array_elmt_conflict<kind::RECORD>>();
+    ctable.bind<array_elmt_conflict<kind::ARRAY>>();
+  }
+
+}
 
 
 

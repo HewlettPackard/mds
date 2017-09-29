@@ -34,532 +34,1674 @@
 #ifndef CORE_MSV_H_
 #define CORE_MSV_H_
 
-#include "ruts/packed_word.h"
-#include "core/core_task.h"
 #include "core/core_context.h"
+#include "mpgc/gc_vector.h"
+#include "ruts/versioned_ptr.h"
+#include <queue>
+#include <vector>
+#include <type_traits>
+#include <tuple>
+
+/*
+ * Invariants:
+ *
+ * - Values returned from MSV accessors (if branch-relative) are in
+     some branch whose context is the context specified as an
+     argument.
+ *
+ * - All branch-relative values on a BVC are in branches off the BVC's
+     branch's context.
+ *
+ * - When processing a merge, the value that rolls up is the parent of
+     the value's branch.
+ */
 
 namespace mds {
   namespace core {
+
+    enum class res_mode {
+      resolving, non_resolving
+    };
+
     enum class modify_op {
       set, clear, add, sub, mul, div,
-        current_val, 
-        frozen_current, roll_forward
-        }; // modify_op
+      parent_val, current_val, last_stable_val,
+      frozen_current
 
-    enum class ret_mode {
-      resulting_val, prior_val
-        }; // ret_mode
-    
+    };
+
     struct incompatible_modify_op {
       modify_op op;
       incompatible_modify_op(modify_op o) : op{o} {}
-    }; // incompatible_modify_op
-
-    struct modification_ex {};
-    struct computation_ex : modification_ex {};
-    struct div_by_zero_ex : computation_ex {};
-    struct guard_failure_ex : modification_ex {};
-    struct unknown_modification_ex : modification_ex {
-      std::size_t status_code;
-      unknown_modification_ex(std::size_t c) : status_code{c} {}
     };
-      
 
-
-    class value : public gc_allocated {
-      using data_t = ruts::packed_word<std::uint64_t,
-                                       ruts::pw_field<bool, 1>,
-                                       ruts::pw_field<bool, 1>,
-                                       ruts::pad,
-                                       ruts::pw_field<timestamp_t, 62>>;
-      constexpr static std::size_t marks_publish_field = 0;
-      constexpr static std::size_t single_modifier_field = 0;
-      constexpr static std::size_t timestamp_field = 2;
-      data_t _data;
+    template <typename T>
+    class computed_val {
+      bool _need_write;
+      T _val;
     public:
-      const gc_ptr<task> write_task;
-      value(gc_token &gc, timestamp_t time,
-            bool marks_publish, bool single_modifier,
-            const gc_ptr<task> &t = nullptr)
-        : gc_allocated{gc},
-          _data{marks_publish, single_modifier, time},
-          write_task{t}
-      {
-        assert(marks_publish == (t == nullptr));
+      computed_val(const T&v, bool nw = true) : _need_write{nw}, _val{v} {}
+      bool needs_write() const {
+        return _need_write;
       }
-      const static auto &descriptor() {
-        static gc_descriptor d =
-          GC_DESC(value)
-          .WITH_FIELD(&value::_data)
-          .WITH_FIELD(&value::write_task);
-        return d;
+      T value() const {
+        return _val;
       }
-      bool marks_publish() const {
-        return _data.field<marks_publish_field>();
+      operator T() const {
+        return value();
+      }
+      static computed_val no_write() {
+        return computed_val{T{}, false};
       }
 
-      bool single_modifier() const {
-        return _data.field<single_modifier_field>();
-      }
-      
-      timestamp_t timestamp() const {
-        return _data.field<timestamp_field>();
-      }
-    }; // value
 
-    class redo_task_set : public gc_allocated {
-      std::atomic<gc_ptr<conflict>> _conflict;
-      const gc_ptr<task> _redo_task;
-      const gc_ptr<task> _source_task;
-      /*
-       * May need the ability to have extended lists of these tasks.
-       */
-    public:
-      redo_task_set(gc_token &gc,
-                    const gc_ptr<task> &rt,
-                    const gc_ptr<task> &st)
-        : gc_allocated{gc},
-          _conflict{nullptr},
-          _redo_task{rt}, _source_task{st}
-      {}
-
-      const static auto &descriptor() {
-        static gc_descriptor d =
-          GC_DESC(redo_task_set)
-          .WITH_FIELD(&redo_task_set::_conflict)
-          .WITH_FIELD(&redo_task_set::_redo_task)
-          .WITH_FIELD(&redo_task_set::_source_task);
-        return d;
+    };
+    template <typename T, typename = void>
+    struct modification {
+      using cv = computed_val<T>;
+      template <typename ParentFunc, typename StableFunc>
+      static cv compute(modify_op op, const T &current, ParentFunc &&pf, StableFunc &&sf, const T &arg) {
+        switch (op) {
+        case modify_op::set:
+          return arg;
+        case modify_op::parent_val:
+          return pf();
+        case modify_op::current_val:
+          return cv::no_write();
+        case modify_op::last_stable_val:
+          return sf();
+        case modify_op::frozen_current:
+          return current;
+        default:
+          throw incompatible_modify_op{op};
+        }
       }
+    };
 
-      void set_conflict(const gc_ptr<conflict> c,
-                        const gc_ptr<iso_context> &ctxt)
-      {
-        /*
-         * We have to be a bit careful here.  We've got the context
-         * blocked at this point, so if we die, the context will
-         * finish us up before it can publish.  But if we made adding
-         * the conflict to the context contingent on setting it here,
-         * we could successfully set here and then die before adding
-         * to the context, and it would think it was done and wouldn't
-         * do it.  And if we don't check null, then both would try to
-         * add to the context.  So we do it in a try_cas, which allows
-         * us to do both cheaply.  We can still get multiples, but it
-         * should be less common.
-         */
-        ruts::try_cas(_conflict,
-                      [](const auto &old) {
-                        return old == nullptr;
-                      },
-                      [&](const auto &old) {
-                        ctxt->add_conflict(c);
-                        return c;
-                      });
-        /*
-         * If that fails, it means somebody already added one.
-         */
+    template <typename T>
+    struct modification<T, std::enable_if_t<std::is_arithmetic<T>::value>> {
+      using cv = computed_val<T>;
+      template <typename ParentFunc, typename StableFunc>
+      static cv compute(modify_op op, const T &current, ParentFunc &&pf, StableFunc &&sf, const T &arg) {
+        switch (op) {
+        case modify_op::set:
+          return arg;
+        case modify_op::parent_val:
+          return pf();
+        case modify_op::current_val:
+          return cv::no_write();
+        case modify_op::last_stable_val:
+          return sf();
+        case modify_op::frozen_current:
+          return current;
+        case modify_op::add:
+          if (arg == 0) {
+            return cv::no_write();
+          }
+          return current + arg;
+        case modify_op::sub:
+          if (arg == 0) {
+            return cv::no_write();
+          }
+          return current - arg;
+        case modify_op::mul:
+          if (arg == 1) {
+            return cv::no_write();
+          }
+          return current * arg;
+        case modify_op::div:
+          if (arg == 1) {
+            return cv::no_write();
+          }
+          return current / arg;
+        default:
+          throw incompatible_modify_op{op};
+        }
       }
+    };
 
-      gc_ptr<task> source_task() const {
-        return _source_task;
-      }
-
-      gc_ptr<task> redo_task() const {
-        return _redo_task;
-      }
-
-      gc_ptr<conflict> get_conflict() const {
-        return _conflict;
-      }
-
-    }; // redo_task_set
 
     /*
-     * The discriminator is of the form Kind*10+ViewType*2+ModType.
+     * This is horrendously expensive.  We're trying to get the semantics
+     * right first.  Then we'll work on making it efficient
      */
-    class value_chain : public gc_allocated_with_virtuals<value_chain> {
-      using base = gc_allocated_with_virtuals<value_chain>;
+    struct msv_base : gc_allocated {
+      using gc_allocated::gc_allocated;
+      template <kind K>
+      gc_ptr<msv<K>> downcast();
 
-    protected:
-      static constexpr discriminator_type to_disc(mod_type mt, view_type vt, kind k) {
-        return ruts::index(k)*10+ruts::index(vt)*2+ruts::index(mt);
+      template <typename T>
+      static bd_value<T> val_after_merge(const bd_value<T> &val) {
+	return val.on_branch == nullptr ? bd_value<T>() : bd_value<T>(val.value, val.on_branch->parent);
       }
-
-      using published_state = iso_context::published_state;
-      const gc_ptr<view> _view;
-
-    public:
-      static void init_vf_table(typename base::vf_table &);
-      
-      value_chain(gc_token &gc, const gc_ptr<view> &v, discriminator_type d)
-        : base{gc, d}, _view{v}
-      {}
-      const static auto &descriptor() {
-        static gc_descriptor d =
-          GC_DESC(value_chain)
-          .WITH_SUPER(base)
-          .WITH_FIELD(&value_chain::_view)
-          ;
-        return d;
+      template <typename T>
+      static T val_after_merge(const T &val) {
+	return val;
       }
+    };
 
-      struct virtuals : virtuals_base {
-        using impl = value_chain;
-        virtual void receive_conflict(value_chain *self, const gc_ptr<blocking_mod> &bm) = 0;
-        virtual void do_rollup(value_chain *self, timestamp_t closed_ts) = 0;
-        virtual void prepare_for_publish(value_chain *self,
-                                         const gc_ptr<msv> &in_msv,
-                                         const gc_ptr<const published_state> &new_state) = 0;
-        virtual void add_contingent_child(value_chain *self, const gc_ptr<value_chain> &child) = 0;
-        virtual gc_ptr<value_chain> get_parent(const value_chain *self) const = 0;
-        virtual void prepare_for_redo(value_chain *self,
-                                      const gc_ptr<modified_value_chain> &mvc)
-        {
-          return self->call_non_virtual(&impl::prepare_for_redo_impl, mvc);
-        }
-
-        /*
-         * This is specifically the publish state after the timestamp
-         * associated with a child being published.  It can only be
-         * non-null for a publishable VC and should probably fail an
-         * assertion for a read-only VC.  Note that we only care about
-         * it if the chain is closed.  If it's open, its prior publish
-         * has already been taken care of.  This is to check for
-         * publish in a closed parent after a child.
-         */
-        virtual gc_ptr<const iso_context::published_state> pub_state_after(const value_chain *self,
-                                                                           timestamp_t ts) const
-        {
-          return self->call_non_virtual(&impl::pub_state_after_impl, ts);
-        }
-
-        virtual void note_publishable_child(value_chain *self) {
-          // By default, nothing to do.
+    template <kind K>
+    struct msv : msv_base {
+      using val_type = kind_mv<K>;
+    private:
+      /*******************************
+       *
+       * branch_value
+       *
+       * A linked list of value/timestamp pairs representing values on
+       * a particular branch.  Timestamps monotonically decrease.
+       *
+       *******************************/
+      struct branch_value : gc_allocated {
+        timestamp_t timestamp;
+        const val_type val;
+        gc_ptr<branch_value> next;
+        branch_value(gc_token &gc, timestamp_t time, const val_type &v, const gc_ptr<branch_value> &n)
+        : gc_allocated{gc}, timestamp{time}, val{v}, next{n}
+        {}
+        const static auto &descriptor() {
+          static gc_descriptor d =
+	    GC_DESC(branch_value)
+	    .template WITH_FIELD(&branch_value::timestamp)
+	    .template WITH_FIELD(&branch_value::val)
+	    .template WITH_FIELD(&branch_value::next);
+          return d;
         }
       };
 
-      void receive_conflict(const gc_ptr<blocking_mod> &bm = nullptr) {
-        call_virtual(this, &virtuals::receive_conflict, bm);
-      }
-
-      void do_rollup(timestamp_t closed_ts) {
-        call_virtual(this, &virtuals::do_rollup, closed_ts);
-      }
-
-      void prepare_for_publish(const gc_ptr<msv> &in_msv,
-                               const gc_ptr<const published_state> &new_state)
-      {
-        call_virtual(this, &virtuals::prepare_for_publish, in_msv, new_state);
-      }
-
-      void add_contingent_child(const gc_ptr<value_chain> &child) {
-        call_virtual(this, &virtuals::add_contingent_child, child);
-      }
-
-      gc_ptr<value_chain> get_parent() const {
-        return call_virtual(this, &virtuals::get_parent);
-      }
-
-      void prepare_for_redo(const gc_ptr<modified_value_chain> &mvc)
-      {
-        return call_virtual(this, &virtuals::prepare_for_redo, mvc);
-      }
-
-      gc_ptr<const iso_context::published_state> pub_state_after(timestamp_t ts) const {
-        return call_virtual(this, &virtuals::pub_state_after, ts);
-      }
-
-      void note_publishable_child() {
-        call_virtual(this, &virtuals::note_publishable_child);
-      }
-
-      gc_ptr<const iso_context::published_state> pub_state_after_impl(timestamp_t ts) const
-      {
-        // Default behavior
-        return nullptr;
-      }
       
+      /*******************************
+       *
+       * bv_ptr_type
+       *
+       * Type used in branch_value_chain to point to the head of the
+       * list.  No version number, but the following flags:
+       * 
+       * - read_in_snapshot: The most recent value was read, but it
+       *                     was read in a snapshot.  Normally, when
+       *                     we add a value, if the old head has the
+       *                     current timestamp, we drop the old head.
+       *                     If that head was read in a snapshot,
+       *                     however, we can't do that, and we go
+       *                     around and read a new timestamp.
+       *
+       * - was_frozen_read: The most recent value was the result of a
+       *                    frozen read (or other similar
+       *                    non-modifying operation, such as adding
+       *                    zero).  Frozen reads don't need to be
+       *                    propagated on merge, can be dropped after
+       *                    merge, and don't cause conflicts with
+       *                    descendents' frozen reads.
+       *
+       * -removed_frozen_read: A frozen read was dropped.  A thread
+       *                       that sees this when adding conflicts
+       *                       can be confident that the write context
+       *                       was published, and so the write must
+       *                       have been finished, so adding conflicts
+       *                       need not be further attempted.
+       *
+       *******************************/
+      using bv_ptr_type = versioned_gc_ptr<branch_value,3>;
+      static constexpr typename bv_ptr_type::template flag_id<0> read_in_snapshot{};
+      static constexpr typename bv_ptr_type::template flag_id<1> was_frozen_read{};
+      static constexpr typename bv_ptr_type::template flag_id<2> removed_frozen_read{};
 
-      void prepare_for_redo_impl(const gc_ptr<modified_value_chain> &mvc)
-      {
-        assert(ruts::fail("prepare_for_redo() called on unpublishable VC"));
-      }
-
-      gc_ptr<view> get_view() const {
-        return _view;
-      }
-
-      gc_ptr<iso_context> get_context() const {
-        return get_view()->context;
-      }
-    }; // value_chain
-
-    struct modified_value_chain : public gc_allocated {
-      gc_ptr<value_chain> chain;
-      gc_ptr<msv> in_msv;
-
-      modified_value_chain(gc_token &gc,
-                           const gc_ptr<value_chain> &vc,
-                           const gc_ptr<msv> &m)
-        : gc_allocated{gc}, chain{vc}, in_msv{m}
-      {}
-
-      const static auto &descriptor() {
-        static gc_descriptor d =
-          GC_DESC(modified_value_chain)
-          .WITH_FIELD(&modified_value_chain::chain)
-          .WITH_FIELD(&modified_value_chain::in_msv);
-        return d;
-      }
-
-      bool cleared() const {
-        return chain == nullptr;
-      }
-
-      void clear() {
-        in_msv = nullptr;
-        chain = nullptr;
-      }
-    }; // modified_value_chain
-
-    class pending_rollup : public gc_allocated {
-      const gc_ptr<value_chain> _value_chain;
-      const gc_ptr<iso_context> _ctxt;
-      const gc_ptr<const iso_context::published_state> _pending_state;
-
-      using next_ptr_t = versioned_gc_ptr<pending_rollup, 2>;
-      static constexpr next_ptr_t::flag_id<0> this_processed_flag{};
-      static constexpr next_ptr_t::flag_id<1> following_processed_flag{};
-
-      /*
-       * The flags on _next are for *this* pending_rollup
-       */
-      next_ptr_t _next;
+      
+      /*******************************
+       *
+       * branch_ptr_type
+       *
+       * Type used in branch_value_chain to point to its branch.  No
+       * version number, but the following flags:
+       * 
+       * - is_mergeable: The branch is on a mergeable context.
+       *
+       * - is_snapshot: The branch is on a snapshot context.
+       *
+       *******************************/
+      using branch_ptr_type = versioned_gc_ptr<branch,2>;
+      static constexpr typename branch_ptr_type::template flag_id<0> is_mergeable_flag{};
+      static constexpr typename branch_ptr_type::template flag_id<1> is_snapshot_flag{};
 
 
-      class process_state;
-      friend class process_state;
+      
+      /*******************************
+       *
+       * branch_value_chain
+       *
+       * A representation of the history of values along a particular
+       * branch.  The same BVC is referred to in all MSV states, which
+       * allows multiple threads to assist in closing a given state.  
+       *
+       * Contains a (const) branch (with flags) and a pointer to a
+       * most recent branch value (with flags).  For branch-dependent
+       * values, all values along the entire chain must be in some
+       * branch of the same context as the BVC's branch.
+       *
+       * Also contains a pointer to a conflict.  This is used to note
+       * that a conflict has already been noted as well as to resolve
+       * the conflict on resolving modifications.
+       *
+       *******************************/
+      
+      struct branch_value_chain : gc_allocated {
+        /*
+         * The logic for adding a conflict to a BVC is that first we
+         * add it to the context and then try to add here.  If we
+         * can't add here, since we wouldn't have tried if there had
+         * already been a conflict, it means that somebody else took
+         * care of it, so we mark the conflict we're trying to add as
+         * resolved.  It's possible that we did both (add to context
+         * and set here) after the write completed, the conflict (set
+         * by another thread) was resolved, and the context was
+         * merged.  In that case, we have a false positive conflict.
+         * Oh, well.
+         */
+        std::atomic<gc_ptr<conflict>> _conflict{nullptr};
+        const branch_ptr_type flagged_branch;
+        typename bv_ptr_type::atomic_pointer latest;
 
-      bool triage(process_state &pstate);
-      bool triage_unknown(process_state &pstate, bool &moved);
-      void add_to_published(process_state &);
-      void do_rollup();
-    public:
-      using status_t = iso_context::published_state::status_t;
-      pending_rollup(gc_token &gc,
-                     const gc_ptr<value_chain> &vc,
-                     const gc_ptr<iso_context> &ctxt,
-                     const gc_ptr<const iso_context::published_state> &s,
-                     const gc_ptr<pending_rollup> &n = nullptr)
-         : gc_allocated{gc}, _value_chain{vc}, _ctxt{ctxt},
-           _pending_state{s}, _next{n}
-      {
-      }
-      pending_rollup(gc_token &gc,
-                     const gc_ptr<value_chain> &vc,
-                     const gc_ptr<const iso_context::published_state> &s,
-                     const gc_ptr<pending_rollup> &n = nullptr)
-        : pending_rollup{gc, vc, vc->get_context(), s, n}
-      {}
-      const static auto &descriptor() {
-        static gc_descriptor d =
-          GC_DESC(pending_rollup)
-          .WITH_FIELD(&pending_rollup::_value_chain)
-          .WITH_FIELD(&pending_rollup::_ctxt)
-          .WITH_FIELD(&pending_rollup::_pending_state)
-          .WITH_FIELD(&pending_rollup::_next);
+	static branch_ptr_type branch_with_flags(const gc_ptr<branch> &b) {
+	  branch_ptr_type p{b};
+	  if (b->context->is_snapshot()) {
+	    p[is_snapshot_flag] = true;
+	  }
+	  if (b->context->is_mergeable()) {
+	    p[is_mergeable_flag] = true;
+	  }
+	  return p;
+	}
 
-        return d;
-      }
+        explicit branch_value_chain(gc_token &gc, const gc_ptr<branch> &b)
+        : gc_allocated{gc},
+	  flagged_branch{branch_with_flags(b)},
+	  latest{nullptr}
+	{}
 
-      gc_ptr<pending_rollup> next() const {
-        return _next;
-      }
+        static const auto &descriptor() {
+          static gc_descriptor d =
+	    GC_DESC(branch_value_chain)
+	    .template WITH_FIELD(&branch_value_chain::_conflict)
+	    .template WITH_FIELD(&branch_value_chain::flagged_branch)
+	    .template WITH_FIELD(&branch_value_chain::latest);
+          return d;
+        }
 
-      void set_next(const gc_ptr<pending_rollup> &n) {
-        _next = n;
-      }
+	gc_ptr<branch> on_branch() const {
+	  return flagged_branch.pointer();
+	}
 
-      bool processed() const {
-        return _next[this_processed_flag];
-      }
+	bool is_snapshot() const {
+	  return flagged_branch[is_snapshot_flag];
+	}
 
-      void mark_processed() {
-        _next[this_processed_flag] = true;
-      }
+	bool is_mergeable() const {
+	  return flagged_branch[is_mergeable_flag];
+	}
 
-      bool following_processed() const {
-        return _next[following_processed_flag];
-      }
+	bool has_conflcit() const {
+	  return _conflict.load() != nullptr;
+	}
 
-      void mark_following_processed() {
-        _next[following_processed_flag] = true;
-      }
-
-      timestamp_t publish_time() const {
-        return _pending_state->_timestamp;
-      }
-
-      status_t status() {
-        status_t s = _pending_state->_status;
-        if (s == status_t::Pending) {
-          gc_ptr<const iso_context::state_t> current_state = _ctxt->_state;
-          if (_pending_state == current_state) {
-            s = status_t::Published;
-            _pending_state->_status = status_t::Published;
-          } else {
-            /*
-             * We need to check again to guard against the situation
-             * in which we weren't the current state when we checked,
-             * but between the time we checked our status and the time
-             * we read the current state, the publish succeeded
-             * (making us Published and the current state) and a
-             * conflict was detected, making current_state not us and
-             * having a conflict.  In that situation, we should be
-             * Published, but we'd read as Failed unless we do the
-             * second read.
-             *
-             * Alternatively, we could read the current_state
-             * unconditionally and then read the status.  This would
-             * always be right, but would always require two atomic
-             * reads (instead of sometimes one and sometimes three).
-             * Since we can assume that most of the time the status
-             * will resolve reasonably quickly into Pending or Failed,
-             * this probably isn't worth it.
-             */
-            s = _pending_state->_status;
-            if (s == status_t::Pending) {
-              if (!current_state->conflicts().empty()) {
-                s = status_t::Failed;
-                _pending_state->_status = status_t::Failed;
-                _next[this_processed_flag] = true;
+	/*********
+	 * value(): Read the most recent value before the given
+	 *          timestamp.
+	 *********/
+	
+        gc_ptr<branch_value> value(timestamp_t before) {
+          bv_ptr_type mrvp = latest.contents();
+          gc_ptr<branch_value> bvp = mrvp.pointer();
+          gc_ptr<branch_value> mr = bvp;
+          for (; bvp != nullptr; bvp = bvp->next) {
+            if (bvp->timestamp < before) {
+              if (bvp == mr && before != most_recent) {
+                /*
+                 * We got the most recent value but we were looking in
+                 * a snapshot.
+                 */
+                if (!mrvp[read_in_snapshot]) {
+                  /*
+                   * We don't already know (or didn't when we read),
+                   * that this has been read in a snapshot.  We need
+                   * to set the flag.  If we can't, that's okay; it
+                   * just means that either somebody else did or a new
+                   * value was added.
+                   */
+                  latest.change_flag(mrvp, read_in_snapshot, true);
+                }
               }
+              return bvp;
+            }
+          }
+          return nullptr;
+        }
+
+        template <typename X>
+        void check_correct_branch(const X &) {}
+
+        template <typename X>
+        void check_correct_branch(const bd_value<X> &v) {
+          assert(v.value == nullptr || v.on_branch->context == flagged_branch->context);
+        }
+
+        template <typename X>
+        X in_correct_branch(const X &val) const {
+          return val;
+        }
+
+        template <typename X>
+        bd_value<X> in_correct_branch(const bd_value<X> &val) const {
+          if (val.value == nullptr) {
+            return val;
+          }
+          auto his_branch = val.on_branch;
+          auto my_branch = on_branch();
+          if (his_branch == my_branch) {
+            return val;
+          }
+          if (his_branch == my_branch->parent) {
+            return bd_value<X>(val.value, my_branch);
+          }
+          return bd_value<X>(val.value, my_branch->context->shadow(his_branch));
+        }
+
+        gc_ptr<branch_value> add_value(const val_type &val, bool frozen_readp) {
+          val_type v = in_correct_branch(val);
+          check_correct_branch(v);
+          gc_ptr<branch_value> new_bv = nullptr;
+          auto rr = latest.update([&](bv_ptr_type current){
+            /*
+             * Since we read the old value (as the parameter) before
+             * we check the current time, we know that either the
+             * read-in-snapshot flag is clear or the timestamp has
+             * been incremented If read-in-snapshot subsequently gets
+             * set, the write will fail, and we'll go around again and
+             * read a new value.
+             */
+            timestamp_t now = *current_version;
+            gc_ptr<branch_value> next = (current != nullptr && current->timestamp == now) ? current->next : current.pointer();
+            if (new_bv == nullptr) {
+              new_bv = make_gc<branch_value>(now, v, next);
+            } else {
+              new_bv->timestamp = now;
+              new_bv->next = next;
+            }
+            current.inc_and_set(new_bv);
+            current[read_in_snapshot] = false;
+	    current[was_frozen_read] = frozen_readp;
+            current[removed_frozen_read] = false;
+            assert(current.pointer() != nullptr);
+            return current;
+          });
+          gc_ptr<branch_value> result = rr.resulting_value().pointer();
+          assert(result != nullptr);
+          return result;
+        }
+
+      };
+
+      /********
+       *
+       * slot is an alias for gc_ptr to BVC.  Originally, there was more to it.
+       *
+       ********/
+      using slot = gc_ptr<branch_value_chain>;
+
+
+      class state;
+
+      /*************************
+       * state_chain_pair
+       *
+       * Holds a pointer to a state and a pointer to a chain to use
+       * for writing.  Used as the return value for
+       * close_merged_branches() and add_slot()
+       *
+       * Now we're also adding a boolean indicator of whether the
+       * chain was open when we found it.  Not, strictly speaking, a
+       * pair anymore.
+       ************************/
+      struct state_chain_pair {
+        gc_ptr<state> state_to_use;
+        gc_ptr<branch_value_chain> chain;
+	bool was_open;
+      };
+
+      using state_ptr_type = versioned_gc_ptr<state>;
+
+      /**************************
+       * to_merge_pair
+       * to_merge_set
+       *
+       * An ordered collection of branches that need to be closed,
+       * processed from least-recently closed to most-recently closed.
+       *
+       * We hold the index of the BVC in the list of open mergeable
+       * slots.
+       **************************/
+      struct to_merge_pair {
+	timestamp_t merge_time;
+	std::size_t open_index;
+	
+	to_merge_pair(timestamp_t ts, std::size_t i)
+	  : merge_time{ts}, open_index{i}
+	{}
+	
+	bool operator >(const to_merge_pair &rhs) const {
+	  return merge_time > rhs.merge_time;
+	}
+      };
+      using to_merge_set = std::priority_queue<to_merge_pair,
+					       std::vector<to_merge_pair>,
+					       std::greater<to_merge_pair> >;
+
+
+      /**************************
+       *
+       * state
+       *
+       * Holds an array of slots (BVC ptrs) sorted as follows:
+       *    - Top-Level Branch.  May not be null.
+       *    - Other unmergeable branches.
+       *    - Open mergeable branches.
+       *    - Closed mergeable branches.
+       *
+       * Also holds the number of unmergeable branches (including
+       * TLB) and the number of open mergeable branches.
+       *
+       **************************/
+      struct state : gc_allocated {
+        const gc_array_ptr<slot> _slots;
+        const std::size_t n_unmergeable;
+        const std::size_t n_open;
+
+	using const_iterator = typename gc_array<slot>::const_iterator;
+
+        state(gc_token &gc, const gc_array_ptr<slot> &array,
+	      std::size_t nu, std::size_t no)
+        : gc_allocated{gc},
+          _slots(array),
+	  n_unmergeable{nu},
+          n_open{no}
+        {
+	}
+
+	/**
+	 * Create an empty state
+	 */
+        explicit state(gc_token &gc) : state{gc, nullptr, 0, 0} {}
+	
+	
+        static const auto &descriptor() {
+          static gc_descriptor d =
+	    GC_DESC(state)
+	    .template WITH_FIELD(&state::_slots)
+	    .template WITH_FIELD(&state::n_unmergeable)
+	    .template WITH_FIELD(&state::n_open);
+          return d;
+        }
+
+	static state_chain_pair with_one_open_branch(const gc_ptr<branch> &b) {
+	  using namespace std;
+	  gc_ptr<branch_value_chain> bvc = make_gc<branch_value_chain>(b);
+	  size_t size = b==top_level_branch ? 1 : 2;
+	  bool mergeable_branch = bvc->is_mergeable();
+	  size_t n_u = mergeable_branch ? 1 : size;
+	  size_t n_o = mergeable_branch ? 1 : 0;
+	  gc_array_ptr<slot> array{size};
+	  auto p = array.begin();
+	  if (b != top_level_branch) {
+	    *p++ = make_gc<branch_value_chain>(top_level_branch);
+	  }
+	  *p = bvc;
+	  gc_ptr<state> new_state = make_gc<state>(array, n_u, n_o);
+	  return state_chain_pair{new_state, bvc, false};
+	}
+
+        gc_array_ptr<slot> slots() {
+          return _slots;
+        }
+        gc_ptr<const gc_array<slot>> slots() const {
+          return _slots;
+        }
+
+
+        state_chain_pair close_merged_branches(to_merge_set &queue,
+					       const gc_ptr<branch> &write_branch) const;
+
+
+	const_iterator begin() const {
+	  return _slots.begin();
+	}
+	const_iterator end() const {
+	  return _slots.end();
+	}
+	ruts::range<const_iterator> all_branches() const {
+	  return ruts::range_over(begin(), end());
+	}
+
+	const_iterator begin_unmergeable() const {
+	  return begin();
+	}
+	const_iterator end_unmergeable() const {
+	  return begin_unmergeable()+n_unmergeable;;
+	}
+	ruts::range<const_iterator> unmergeable_branches() const {
+	  return ruts::range_over(begin_unmergeable(), end_unmergeable());
+	}
+
+	
+	const_iterator begin_open_mergeable() const {
+	  return end_unmergeable();
+	}
+	const_iterator end_open_mergeable() const {
+	  return begin_open_mergeable()+n_open;;
+	}
+	ruts::range<const_iterator> open_mergeable_branches() const {
+	  return ruts::range_over(begin_open_mergeable(), end_open_mergeable());
+	}
+
+	
+	const_iterator begin_closed() const {
+	  return end_open_mergeable();
+	}
+	const_iterator end_closed() const {
+	  return end();
+	}
+	ruts::range<const_iterator> closed_branches() const {
+	  return ruts::range_over(begin_closed(), end_closed());
+	}
+
+
+	const_iterator begin_open() const {
+	  return begin_unmergeable();
+	}
+	const_iterator end_open() const {
+	  return end_open_mergeable();
+	}
+	ruts::range<const_iterator> open_branches() const {
+	  return ruts::range_over(begin_open(), end_open());
+	}
+	
+	const_iterator begin_mergeable() const {
+	  return begin_open_mergeable();
+	}
+	const_iterator end_mergeable() const {
+	  return end_closed();
+	}
+	ruts::range<const_iterator> mergeable_branches() const {
+	  return ruts::range_over(begin_mergeable(), end_mergeable());
+	}
+
+	std::tuple<gc_ptr<branch_value_chain>, bool>
+	find_unmergeable_bvc(const gc_ptr<branch> &b,
+			     gc_vector<branch_value_chain> &extras) const
+	{
+	  using namespace std;
+	  const auto for_branch = [&](const auto &bvc) {
+	    return bvc->on_branch() == b;
+	  };
+
+	  auto in_old = find_if(begin_unmergeable()+1,
+				end_unmergeable(),
+				for_branch);
+	  if (in_old != end_unmergeable()) {
+	    /*
+	     * It's one of our old unmergeable branches.
+	     */
+	    return make_tuple(*in_old, true);
+	  } 
+	  auto in_new = find_if(extras.begin(),
+				extras.end(),
+				for_branch);
+	  if (in_new != extras.end()) {
+	    /*
+	     * It's one we've already added.
+	     */
+	    return make_tuple(*in_new, true);
+	  }
+	  /*
+	   * It's a new one.  Add it to the list
+	   */
+	  gc_ptr<branch_value_chain> bvc = make_gc<branch_value_chain>(b);
+	  extras.push_back(bvc);
+	  return make_tuple(bvc, false);
+	}
+
+	std::tuple<gc_ptr<branch_value_chain>, std::size_t, bool>
+	find_mergeable_bvc(const gc_ptr<branch> &b,
+			   std::vector<gc_ptr<branch_value_chain> > &open,
+			   std::vector<gc_ptr<branch_value_chain> > &closed,
+			   gc_vector<branch_value_chain> &extras,
+			   std::size_t &no, std::size_t &nc) const
+	{
+	  using namespace std;
+	  const auto for_branch = [&](const auto &bvc) {
+	    return bvc != nullptr && bvc->on_branch() == b;
+	  };
+	  auto in_open = find_if(open.begin(), open.end(), for_branch);
+	  if (in_open != open.end()) {
+	    /*
+	     * It's already open.
+	     */
+	    return make_tuple(*in_open, in_open-open.begin(), true);
+	  }
+	  gc_ptr<branch_value_chain> closed_bvc;
+	  if (closed.empty()) {
+	    // We haven't changed the set of closed branches yet.
+	    auto in_closed = find_if(begin_closed(), end_closed(), for_branch);
+	    if (in_closed != end_closed()) {
+	      closed_bvc = *in_closed;
+	      // Now we need to copy the vector so that we can null it out.
+	      closed.assign(begin_closed(), end_closed());
+	      auto in_vec = closed.begin()+(in_closed-begin_closed());
+	      *in_vec = nullptr;
+	    }
+	  } else {
+	    auto in_closed = find_if(closed.begin(), closed.end(), for_branch);
+	    if (in_closed != closed.end()) {
+	      closed_bvc = *in_closed;
+	      *in_closed = nullptr;
+	    }
+	  }
+	  if (closed_bvc == nullptr) {
+	    // We didn't find it, so we create a new one.
+	    closed_bvc = make_gc<branch_value_chain>(b);
+	    extras.push_back(closed_bvc);
+	  } else {
+	    nc--;
+	  }
+	  no++;
+	  open.push_back(closed_bvc);
+	  return make_tuple(closed_bvc, open.size()-1, false);
+	}
+	
+
+	gc_ptr<state> add_unmergeable(const gc_ptr<branch_value_chain> &bvc) {
+	  gc_array_ptr<slot> array{_slots.size()+1};
+	  auto p = array.begin();
+	  p = std::copy(begin_unmergeable(), end_unmergeable(), p);
+	  *p++ = bvc;
+	  std::copy(begin_mergeable(), end_mergeable(), p);
+	  return make_gc<state>(array, n_unmergeable+1, n_open);
+	}
+	gc_ptr<state> add_open(const gc_ptr<branch_value_chain> &bvc) {
+	  gc_array_ptr<slot> array{_slots.size()+1};
+	  auto p = array.begin();
+	  p = std::copy(begin_open(), end_open(), p);
+	  *p++ = bvc;
+	  std::copy(begin_closed(), end_closed(), p);
+	  return make_gc<state>(array, n_unmergeable, n_open+1);
+	}
+	gc_ptr<state> reopen(const_iterator bvcp) {
+	  gc_array_ptr<slot> array{_slots.size()};
+	  auto p = array.begin();
+	  p = std::copy(begin_open(), end_open(), p);
+	  *p++ = *bvcp;
+	  p = std::copy(begin_closed(), bvcp, p);
+	  std::copy(bvcp+1, end_closed(), p);
+	  return make_gc<state>(array, n_unmergeable, n_open);
+	}
+
+	state_chain_pair with_open_branch(const gc_ptr<branch> &write_branch) {
+	  using namespace std;
+	  if (write_branch == top_level_branch) {
+	    // If we want the top-level branch, we know where to find it.
+	    return state_chain_pair{GC_THIS, _slots[0]};
+	  }
+	  if (!write_branch->context->is_mergeable()) {
+	    // If it's an unmergeable branch, either it's one of the
+	    // unmergeable branches there or we have to add it
+	    for (const auto &slot : unmergeable_branches()) {
+	      if (slot->on_branch() == write_branch) {
+		// Found it.
+		return state_chain_pair{GC_THIS, slot, true};
+	      }
+	    }
+	    // No, it wasn't one we had.
+	    gc_ptr<branch_value_chain> bvc = make_gc<branch_value_chain>(write_branch);
+	    gc_ptr<state> new_state = add_unmergeable(bvc);
+	    return state_chain_pair{new_state, bvc, false};
+	  } else {
+	    // Okay, it's mergeable and it's not open.  Maybe it's
+	    // closed and we have to reopen it.
+	    const_iterator p = find_if(begin_closed(), end_closed(),
+				       [=](const auto &slot) {
+					 return slot->on_branch() == write_branch;
+				       });
+	    if (p != end_closed()) {
+	      // Found it.  Reopen
+	      gc_ptr<state> new_state = reopen(p);
+	      return state_chain_pair{new_state, *p, false};
+	    } else {
+	      // Nope.  It's a new one.
+	      gc_ptr<branch_value_chain> bvc = make_gc<branch_value_chain>(write_branch);
+	      gc_ptr<state> new_state = add_open(bvc);
+	      return state_chain_pair{new_state, bvc, false};
+	    }
+	  }
+	}
+
+	/**
+	 *
+	 * Find the BVC for a given branch, possibly restricting to only open branches
+	 *
+	 */
+        gc_ptr<branch_value_chain> values(const gc_ptr<branch> &b, bool open_only) const {
+	  if (b == top_level_branch) {
+	    return _slots == nullptr ? gc_ptr<branch_value_chain>{} : (*_slots)[0];
+	  }
+          /*
+           * If the branch is in a read-only context, we know we're
+           * not going to find anything
+           */
+          if (b->context->is_read_only()) {
+            return nullptr;
+          }
+          auto oslots = open_only ? open_branches() : all_branches();
+          const_iterator p = std::find_if(oslots.begin(), oslots.end(),
+					  [=](const slot &s){
+					    return s->on_branch() == b;
+					  });
+          gc_ptr<branch_value_chain> bvc = p == oslots.end() ? gc_ptr<branch_value_chain>{} : *p;
+          return bvc;
+        }
+
+        /*
+	 * Find the value appropriate for a particular branch as of a
+	 * particular timestamp, walking up the branch's parentage if
+	 * necessary.
+	 *
+         * Returns a pointer to the branch_value object (or null if
+         * none found) and an indication of whether this value is only
+         * guaranteed if the state hasn't changed.
+         */
+        std::tuple<bool,gc_ptr<branch_value> >
+	  current_value(gc_ptr<branch> b, timestamp_t before) const
+	{
+          unsigned level = 0;
+          /*
+           * This value might be wrong if this is no longer the
+           * current state and the value was obtained via a
+           * grandparent or above looking for the most recent value of
+           * a grandparent or above *and* there was no chain in this
+           * state for that branch.  That is, somebody may have added
+           * something we should've seen in the middle.
+           */
+          bool need_to_check_state_change = false;
+          for (; b != nullptr; b = b->parent, level++) {
+	    // If we're looking for the most recent value, we only check open branches.
+            gc_ptr<branch_value_chain> bvc = values(b, before == most_recent);
+            if (bvc != nullptr) {
+              gc_ptr<branch_value> bv = bvc->value(before);
+	      // If there was no value that early on this chain, we check the parent.
+              if (bv != nullptr) {
+                return std::make_tuple(need_to_check_state_change, bv);
+              }
+            } else if (level > 0 && before == most_recent && !b->context->is_read_only()) {
+              /*
+               * We didn't find it in the branch or its parent, and
+               * we're looking for a most recent value, so somebody
+               * could've stuck something in in a more recent state.
+               * Unless the context we're skipping is read-only, in
+               * which case don't worry about it.
+               */
+              need_to_check_state_change = true;
+            }
+            /*
+             * There was no value found on that branch.  We need to
+             * establish the parent branch and the new time limit.  If
+             * the branch's context is a snapshot, we move back to the
+             * the last merge before the target (which may be the
+             * creation).  Otherwise, we stay the same.
+             */
+            gc_ptr<const iso_context> ctxt = b->context;
+            if (ctxt->is_snapshot()) {
+              before = ctxt->merge_before(before);
+            }
+          }
+          return std::make_tuple(false,nullptr);
+        }
+
+	to_merge_set
+	find_need_close(const gc_ptr<branch> &write_branch,
+			gc_ptr<branch_value_chain> &write_bvc)
+	{
+	  to_merge_set _set;
+	  std::size_t i = 0;
+	  for (const auto &slot : open_mergeable_branches()) {
+	    const gc_ptr<branch> b = slot->on_branch();
+	    if (b == write_branch) {
+	      write_bvc = slot;
+	    }
+	    const bv_ptr_type latest = slot->latest.contents();
+	    /*
+	     * For now we're just ignoring it possibly being marked
+	     * already merged, because it might actually still need
+	     * more merges.
+	     */
+	    if (latest != nullptr) {
+	      bool merged;
+	      timestamp_t merge_time;
+	      const timestamp_t val_time = latest->timestamp;
+	      std::tie(merged, merge_time) = b->context->merge_after(val_time);
+	      if (merged) {
+		_set.emplace(merge_time, i);
+	      }
+	    }
+	    i++;
+	  }
+	  return _set;
+	}
+      };
+
+    public:
+      /*****************
+       *
+       * write_task
+       *
+       * The mechanism by which the modifications get made
+       *
+       ******************/
+      struct write_task : write_or_merge_task {
+        static const wm_task_disc discrim = static_cast<wm_task_disc>(static_cast<unsigned char>(wm_task_disc::write_val_DiscBase)+
+                                                                  static_cast<unsigned char>(K));
+        enum class phase {
+          cache_state,
+          install_context_events,
+          add_value_to_bvc,
+          add_conflicts,
+          done
+        };
+
+	
+        task_run_state<phase, phase::cache_state, phase::done> _run_state;
+	const gc_ptr<msv> _msv;
+	const gc_ptr<branch_value_chain> _write_bvc;
+	bool _wrote = false;
+	const modify_op _op;
+	const res_mode _resolve_conflict;
+	const val_type _arg;
+	std::atomic<gc_ptr<state>> _state{nullptr};
+	std::atomic<timestamp_t> _start_time{0};
+	std::atomic<std::size_t> _ice_next_slot{0};
+	std::atomic<std::size_t> _ac_next_slot{0};
+	val_type _result;
+
+	
+	explicit write_task(gc_token &gc,
+			    const gc_ptr<msv> &msv,
+			    const gc_ptr<branch_value_chain> &wbvc,
+			    modify_op op,
+			    res_mode resolve_conflict,
+			    const val_type &arg,
+			    discriminator_type d = discrim)
+          : write_or_merge_task{gc, d},
+	    _msv{msv}, _write_bvc{wbvc}, _op{op}, _resolve_conflict{resolve_conflict}, _arg{arg}
+	{}
+	
+	static const auto &descriptor() {
+	  static gc_descriptor d =
+	    GC_DESC(write_task)
+	    .template WITH_SUPER(write_or_merge_task)
+	    .template WITH_FIELD(&write_task::_run_state)
+	    .template WITH_FIELD(&write_task::_msv)
+	    .template WITH_FIELD(&write_task::_write_bvc)
+	    .template WITH_FIELD(&write_task::_wrote)
+	    .template WITH_FIELD(&write_task::_op)
+	    .template WITH_FIELD(&write_task::_resolve_conflict)
+	    .template WITH_FIELD(&write_task::_arg)
+	    .template WITH_FIELD(&write_task::_state)
+	    .template WITH_FIELD(&write_task::_start_time)
+	    .template WITH_FIELD(&write_task::_ice_next_slot)
+	    .template WITH_FIELD(&write_task::_ac_next_slot)
+	    .template WITH_FIELD(&write_task::_result);
+	  return d;
+	}
+	
+	void note_conflict(const gc_ptr<branch_value_chain> &bvc, bool remove_task) {
+	  gc_ptr<branch> b = bvc->on_branch();
+	  gc_ptr<conflict> c = _msv->generate_conflict(b, bvc);
+	  gc_ptr<iso_context> ctxt = b->context;
+	  ctxt->add_conflict(c);
+	  if (remove_task) {
+	    ctxt->remove(GC_THIS);
+	  }
+	}
+
+
+        static void perform(atomic_holder &loc) {
+          install_and_run(loc);
+        }
+
+	struct virtuals : write_or_merge_task::virtuals {
+	  void run(cooperative_task<wm_task_disc> *self) override {
+	    return self->call_non_virtual(&write_task::run_impl);
+	  }
+	};
+
+
+        void run_impl() {
+	  if (!is_done()) {
+	    _run_state.run(this, &write_task::dispatch);
+	  }
+	  set_done();
+        }
+
+        struct merge_before_install_during_write_ex{};
+        val_type value_for(const gc_ptr<branch> &b, timestamp_t before = most_recent) {
+          gc_ptr<state> s = _state;
+          gc_ptr<branch_value> bv;
+          std::tie(std::ignore, bv) = s->current_value(b, before);
+          return bv == nullptr ? val_type{} : bv->val;
+        }
+
+        void cache_state() {
+          timestamp_t now = *current_version;
+          ruts::try_change_value(_start_time, 0, now);
+          /*
+           * If that fails, somebody already set it.  We'll go with
+           * the earlier time.
+           */
+          gc_ptr<state> s = _msv->current_state;
+          ruts::try_change_value(_state, nullptr, s);
+          /*
+           * If that fails, it means somebody else found one (probably
+           * the same one).
+           */
+          /*
+           * At this point, we know that if a context didn't merge
+           * after the start time, it certainly didn't merge in a way
+           * that could affect the state.
+           */
+        }
+
+        timestamp_t update_state(timestamp_t old_ts, const gc_ptr<iso_context> &ctxt) {
+          timestamp_t current_ts = _start_time;
+          if (current_ts > old_ts) {
+            /*
+             * Somebody may already have handled this.
+             */
+            if (!ctxt->was_merged_after(current_ts)) {
+              return current_ts;
+            }
+          }
+          /*
+           * We need to create a new one.  Since we've already
+           * installed the task on the context, we know we don't have
+           * to worry about its merge time changing.
+           */
+          timestamp_t new_ts = *current_version;
+          gc_ptr<branch> b = _write_bvc->on_branch();
+          ruts::cas_loop(_state, [&](const gc_ptr<state> &current_state){
+            return _msv->close_merged_branches(b, true).state_to_use;
+          });
+          /*
+           * Single try to update as long as it's greater than what
+           * was there.
+           */
+          auto rr = ruts::try_cas(_start_time, [=](timestamp_t ts) {
+            return ts < new_ts;
+          }, [=](timestamp_t) {
+            return new_ts;
+          });
+          new_ts = rr.resulting_value();
+          /*
+           * Now we need to actually install it in the MSV.
+           */
+
+          return new_ts;
+        }
+
+        void install_context_events() {
+          /*
+           * To start out, we're going to simply add write events to
+           * every open mergeable slot.  We're trying to prevent a
+           * merge on an open branch, and so we don't have to worry
+           * about either closed branches or unmergeable branches.
+           */
+          gc_ptr<state> s = _state;
+          assert(s != nullptr);
+          timestamp_t stime = _start_time;
+          ruts::range<typename state::const_iterator> slots = s->open_mergeable_branches();
+	  auto install_this= [&](const slot &slot) {
+	    gc_ptr<branch_value_chain> bv = slot;
+	    /*
+	     * If it has a conflict already, it won't be able to merge
+	     * before resolving it.
+	     */
+	    assert(bv != nullptr);
+	    if (!bv->has_conflcit()) {
+	      assert(bv->on_branch() != nullptr);
+	      gc_ptr<iso_context> ctxt = bv->on_branch()->context;
+	      ctxt->install(GC_THIS);
+	      if (ctxt->was_merged_after(stime)) {
+		/*
+		 * There was a merge after we started, which we will
+		 * have to take into account by changing the state.
+		 */
+		stime = update_state(stime, ctxt);
+	      }
+	    }};
+	  ruts::process_onceish(_ice_next_slot, slots.begin(), slots.end(),
+				     install_this);
+        }
+
+        void add_value_to_bvc() {
+          modify_op op = _op;
+          // auto val_func = [&]() {
+          //   gc_ptr<branch> b = _write_bvc->on_branch();
+          //   return value_for(b);
+          // };
+          auto parent_val_func = [&]() {
+            gc_ptr<branch> b = _write_bvc->on_branch();
+            gc_ptr<branch> p = b == top_level_branch ? b : b->parent;
+            return value_for(p);
+          };
+          auto last_stable_func = [&]() {
+            gc_ptr<branch> b = _write_bvc->on_branch();
+            timestamp_t ts = b->context->last_stable_time();
+            return value_for(b, ts);
+          };
+          val_type current = value_for(_write_bvc->on_branch());
+          _result = current;
+          computed_val<val_type> val = modification<val_type>::compute(op, current, parent_val_func, last_stable_func, _arg);
+          val_type v = val.value();
+          bool nw = val.needs_write();
+	  bool set_frozen_read_flag = !nw;
+          gc_ptr<branch_value_chain> wbvc = _write_bvc;
+          if (!nw && op != modify_op::current_val) {
+            gc_ptr<branch_value> bv = wbvc->latest;
+            nw = bv == nullptr || wbvc->on_branch()->context->was_merged_after(bv->timestamp);
+          }
+          if (nw) {
+            wbvc->add_value(v, set_frozen_read_flag);
+            /*
+             * We need to set "_wrote" to true even if this is
+             * (logically) a frozen read, because even frozen reads
+             * can induce conflicts (which is what the _wrote flag is
+             * used to determine).  If a child has already written,
+             * this read induces a conflict in it (unless it was also
+             * a frozen read).  If this is a snapshot, then what we
+             * read was back in time, and a later ancestor write
+             * induces a snapshot in us.
+             */
+            _wrote = true;
+          }
+          if (_resolve_conflict == res_mode::resolving) {
+            gc_ptr<branch_value_chain> bvc = _write_bvc;
+            gc_ptr<conflict> c = bvc->_conflict;
+            if (c != nullptr) {
+              c->mark_resolved();
+            }
+            bvc->_conflict = nullptr;
+          }
+        }
+
+        void add_conflicts() {
+          const gc_ptr<branch_value_chain> wbvc = _write_bvc;
+          assert(wbvc != nullptr);
+          const gc_ptr<branch> wb = wbvc->on_branch();
+          assert(wb != nullptr);
+          const gc_ptr<iso_context> wc = wb->context;
+          const bool modifiable_snapshot = wc->is_snapshot() && wc->is_mergeable();
+          bool check_for_snapshot_conflicts = modifiable_snapshot && _resolve_conflict==res_mode::non_resolving && wbvc->_conflict.load() == nullptr;
+          timestamp_t last_merge = check_for_snapshot_conflicts ? wc->merge_before(most_recent) : timestamp_t{};
+          /*
+           * Even if it's a modifiable snapshot, we don't have to
+           * check for conflicts if we're resolving or if there's
+           * already a conflict there.
+           */
+
+          const gc_ptr<state> s = _state;
+          assert(s != nullptr);
+          ruts::range<typename state::const_iterator> slots = s->open_branches();
+          if (slots.size() > 1) {
+            // We check for needing to add contingent conflicts if
+            // this is the first time we've written to this branch or
+            // the first time following a merge.
+
+            if (_wrote) {
+	      bv_ptr_type wbv = wbvc->latest.contents();
+              if (wbv[removed_frozen_read]) {
+                /*
+                 * If we come across a removed_frozen_read flag, that
+                 * indicates that the write context was merged, which
+                 * further implies that this particular write task was
+                 * finished by other threads.  (This includes removing
+                 * the task from all of the possibly conflicted
+                 * contexts.  So there's nothing further for us to
+                 * do.)
+                 */
+                assert(_run_state.current() == phase::done);
+                return;
+              }
+              assert(wbv.pointer() != nullptr);
+              gc_ptr<branch_value> prior = wbv->next;
+	      timestamp_t prior_ts = prior==nullptr ? timestamp_t{} : prior->timestamp;
+	      const gc_ptr<branch> wbp = wb->parent;
+              bool check_for_siblings = wbvc->is_mergeable();
+	      bool frozen_readp = wbv[was_frozen_read];
+              ruts::process_onceish(_ac_next_slot, slots.begin(), slots.end(),
+                            [&](const slot &slot) {
+                gc_ptr<branch_value_chain> bvc = slot;
+                assert(bvc != nullptr);
+		gc_ptr<branch> b = bvc->on_branch();
+		assert(b!=nullptr);
+		bv_ptr_type bv = bvc->latest.contents();
+		timestamp_t bvcts = bv==nullptr ? timestamp_t{} : bv->timestamp;
+		bool both_frozen_reads = frozen_readp && bv[was_frozen_read];
+		/*
+		 * We skip this branch and any branch that was last
+		 * written before the last time this one was (we took
+		 * care of it last time)
+		 */
+		if (bvc != wbvc && bvcts >= prior_ts) {
+                  bool bm = bvc->is_mergeable();
+                  if (bm && !both_frozen_reads && !bvc->has_conflcit() && b->has_ancestor(wb)){
+		    /* 
+		     * If it's mergeable, doesn't already have a
+		     * conflict, and we're an ancestor of it, this
+		     * write induces a conflict on it.  Note that if
+		     * there's more than one link and this branch
+		     * doesn't already have a conflict, that means
+		     * that there are no writes in between yet.  If
+		     * both we an the other branch are frozen reads,
+		     * we don't worry about it, since either they read
+		     * the same parent value or the other branch
+		     * already has a conflict.
+		     */
+		    note_conflict(bvc, true);
+		  } else if (check_for_siblings && bm && !both_frozen_reads && b->parent == wbp) {
+		    /* 
+		     * If we share a parent, then when either of us
+		     * merges, this becomes a conflict on the other
+		     * side.  This is done by adding a contingent
+		     * conflict for us to their context and vice
+		     * versa.  Note that if we already have a
+		     * conflict, we don't have to add the contingent
+		     * conflict to the other side.  If both are frozen
+		     * reads, either they both read the same value or
+		     * the other branch already has a conflict, so we
+		     * don't need to worry about it.  (It can't merge
+		     * without asserting a new value and we don't have
+		     * to worry about giving a conflict to it.)
+		     */
+                    assert(_msv != nullptr);
+		    if (wbvc->_conflict.load() == nullptr) {
+		      gc_ptr<conflict> c1 = _msv->generate_conflict(wb, wbvc);
+		      b->context->add_contingent_conflict(c1);
+		    }
+		    if (bvc->_conflict.load() == nullptr) {
+		      gc_ptr<conflict> c2 = _msv->generate_conflict(b, bvc);
+		      wc->add_contingent_conflict(c2);
+		    }
+                  } else if (check_for_snapshot_conflicts
+			     && bvcts > last_merge 
+			     && wb->has_ancestor(b))
+
+                  {
+		    /*
+		     * If we're a mergeable snapshot, this is an
+		     * ancestor of us, and the last write on this
+		     * branch was after our last merge, the write
+		     * induces a conflict on us.  But we don't have to
+		     * check for any others.
+		     * 
+		     * TODO: Check how frozen reads work here.
+		     */
+                    note_conflict(wbvc, false);
+                    check_for_snapshot_conflicts = false;
+                  }
+                }
+                /*
+                 * In any case, we can now remove the task if it's
+                 * still there, except for the branch we're writing
+                 * on.
+                 */
+                assert(bvc != nullptr);
+                assert(bvc->on_branch() != nullptr);
+                assert(&bvc->on_branch()->context != nullptr);
+		if (bvc != wbvc) {
+		  bvc->on_branch()->context->remove(GC_THIS);
+		}
+              });
+            } else {
+              /*
+               * If we didn't write anything, we can just remove the
+               * task, since we couldn't have introduced a conflict.
+               */
+              std::for_each(slots.begin(), slots.end(),
+                            [&](const slot &slot) {
+                gc_ptr<branch_value_chain> bvc = slot;
+		if (bvc != wbvc) {
+		  bvc->on_branch()->context->remove(GC_THIS);
+		}
+              });
             }
           }
         }
-        return s;
-      }
 
-      static void process(const gc_ptr<pending_rollup> &prs,
-                          std::atomic<gc_ptr<pending_rollup>> &msv_rollups);
-      
-    }; // pending_rollup
-
-    class msv : public gc_allocated {
-      std::atomic<gc_ptr<pending_rollup>> _rollups;
-
-      void process_rollups(const gc_ptr<pending_rollup> &head);
-    public:
-      using gc_allocated::gc_allocated;
-
-      explicit msv(gc_token &gc)
-	: gc_allocated{gc}, _rollups{nullptr}
-      {
-      }
-
-      const static auto &descriptor() {
-        static gc_descriptor d =
-          GC_DESC(msv)
-          .WITH_FIELD(&msv::_rollups);
-
-        return d;
-      }
-
-      void process_rollups() {
-        gc_ptr<pending_rollup> prs = _rollups;
-        if (prs != nullptr) {
-          pending_rollup::process(prs, _rollups);
+        void dispatch(phase p) {
+          switch (p) {
+          case phase::cache_state:
+            cache_state();
+            break;
+          case phase::install_context_events:
+            install_context_events();
+            break;
+          case phase::add_value_to_bvc:
+            add_value_to_bvc();
+            break;
+          case phase::add_conflicts:
+            add_conflicts();
+            break;
+          case phase::done:
+            // Shouldn't happen, but if it does, no problem
+            break;
+          }
         }
-      }
-
-      void add_rollup(const gc_ptr<value_chain> &vc,
-                      const gc_ptr<iso_context> &ctxt,
-                      const gc_ptr<const iso_context::published_state> &state)
-      {
-        gc_ptr<pending_rollup> ru = make_gc<pending_rollup>(vc, ctxt, state);
-        ruts::cas_loop(_rollups, [&](const auto &head) {
-            ru->set_next(head);
-            return ru;
-          });
-      }
-
-      template <kind K>
-      gc_ptr<typed_msv<K>> downcast();
-    }; // msv
-
-    class modification : public gc_allocated_with_virtuals<modification, kind> {
-      using base = gc_allocated_with_virtuals<modification, kind>;
-    public:
-      static void init_vf_table(typename base::vf_table &);
-
-      modification(gc_token &gc, discriminator_type d) : base{gc, d} {}
-      const static auto &descriptor() {
-        static gc_descriptor d =
-          GC_DESC(modification)
-          .WITH_SUPER(base);
-        return d;
-      }
-
-      struct virtuals : virtuals_base {
-        virtual void perform(modification *self) = 0;
       };
+    private:
 
-      void perform() {
-        call_virtual(this, &virtuals::perform);
+
+
+      typename state_ptr_type::atomic_pointer current_state;
+      typename write_task::atomic_holder _pre_write_task;
+      gc_ptr<conflict_generator> _conflict_generator;
+
+      gc_ptr<conflict> generate_conflict(const gc_ptr<branch> &b, 
+					 const gc_ptr<branch_value_chain> &bvc)	{
+	using locref = gc_sub_ptr<std::atomic<gc_ptr<conflict>>>;
+	return _conflict_generator->generate(b, locref(&branch_value_chain::_conflict, bvc));
       }
-    }; // modification
-      
-    class blocking_mod : public gc_allocated {
-      std::atomic<gc_ptr<modification>> _mod;
-    public:
-      blocking_mod(gc_token &gc, const gc_ptr<modification> &mod)
-        : gc_allocated{gc}, _mod{mod}
-      {}
 
-      const static auto &descriptor() {
+      bool install_new_state(state_ptr_type from, const gc_ptr<state> &to) {
+        auto rr = current_state.inc_and_change(from, to);
+        return rr;
+      }
+
+      state_chain_pair close_merged_branches(const gc_ptr<branch> &write_branch,
+					     bool in_write_p = false) {
+	using namespace std;
+        state_ptr_type s = current_state.contents();
+        /*
+         * It's possible that a write operation opened a branch in the
+         * state and hasn't yet put a value in it, which would make it
+         * look as though it needs to be closed and makes the write
+         * wind up in a closed branch and not be seen by subsequent
+         * reads.  So if there's a write task pending, we help it out
+         * before reading.
+         *
+         * TODO: There's still a race condition here since there's
+         * time between the installation of the new state and the
+         * installation of the task.  Sigh.
+         */
+        /*
+         * If we're called from within a write, because we noticed a
+         * merge after we read the state but before we installed the
+         * write task in the context, we can't go help the write, but
+         * we don't have to worry about it, because we know that we
+         * will have a non-null write_branch, which will ensure that
+         * it stays open.  TODO: What if we're calling from the past
+         * and the one that's there now is a different task?  In that
+         * case, the write task we're called from won't do any damage,
+         * because it's already done.  (It can add tasks, but it will
+         * see a DONE state next, and the next thing to add a task to
+         * the context will remove this one.)  But we can wind up
+         * closing a branch that a current write task is expecting to
+         * be open.  Will have to address this.
+         */
+        if (!in_write_p) {
+          for (auto wtd = _pre_write_task.load(); wtd != nullptr; wtd = _pre_write_task.load()) {
+            wtd->run_and_remove(_pre_write_task);
+            s = current_state.contents();
+          }
+        }
+	state_chain_pair scp;
+	
+        if (s == nullptr) {
+          // No values yet.  If we don't need a write branch, we can just return.
+          if (write_branch == nullptr) {
+            return state_chain_pair{nullptr, nullptr, false};
+          }
+          // Otherwise we have to create one.
+          scp = state::with_one_open_branch(write_branch);
+        } else {
+	  gc_ptr<branch_value_chain> write_bvc;
+	  to_merge_set need_close = s->find_need_close(write_branch, write_bvc);
+	  if (need_close.empty()) {
+	    // Nothing to close.  
+	    if (write_branch == nullptr || write_bvc != nullptr) {
+	      // If we don't need a write bvc or we found
+	      // one, we can just return the state we found
+	      return state_chain_pair{s, write_bvc, write_bvc != nullptr};
+	    } else {
+	      scp = s->with_open_branch(write_branch);
+	      if (scp.state_to_use == s) {
+		return scp;
+	      }
+	    }
+	  } else {
+	    scp = s->close_merged_branches(need_close, write_branch);
+	  }
+	}
+	if (!install_new_state(s, scp.state_to_use)) {
+	  /*
+	   *  Damn.  Somebody changed it while we were working.
+	   *  Nothing we can do but start again.
+	   */
+	  return close_merged_branches(write_branch, in_write_p);
+	}
+        return scp;
+      }
+    public:
+
+      explicit msv(gc_token &gc,
+		   const gc_ptr<conflict_generator> &cgen)
+	: msv_base{gc}, _pre_write_task{nullptr}, _conflict_generator{cgen} {
+	}
+      
+      std::pair<bool, gc_ptr<branch_value> > read_once(const gc_ptr<branch> &b,
+						       timestamp_t as_of)
+      {
+	  gc_ptr<state> s = close_merged_branches(nullptr).state_to_use;
+	  if (s == nullptr) {
+	    return std::make_pair(true, gc_ptr<branch_value>{});
+	  }
+	  bool need_to_check_state_change;
+	  gc_ptr<branch_value> v;
+	  std::tie(need_to_check_state_change, v) = s->current_value(b, as_of);
+	  /*
+	   * If need_to_check_state_change is true, then the value is
+	   * only valid if the state hasn't changed.  If it has, we'll
+	   * have to go around the loop again.
+	   */
+	  bool is_valid = !need_to_check_state_change || s == current_state;
+	  return std::make_pair(is_valid, v);
+	}
+	
+	gc_ptr<branch_value> read_loop(const gc_ptr<branch> &b, timestamp_t as_of) {
+	  while (true) {
+	    bool is_valid;
+	    gc_ptr<branch_value> v;
+	    std::tie(is_valid, v) = read_once(b, as_of);
+	    if (is_valid) {
+	      return v;
+	    }
+	  }
+	  return nullptr;
+	}
+      val_type read(const gc_ptr<branch> &b,
+                    const gc_ptr<iso_context> &ctxt,
+                    timestamp_t as_of = most_recent) {
+	bool is_valid;
+	gc_ptr<branch_value> v;
+	std::tie(is_valid, v) = read_once(b, as_of);
+	if (!is_valid) {
+	  v = read_loop(b, as_of);
+	}
+        return v == nullptr ? val_type{} : ctxt->shadowed_val(v->val);
+      }
+
+      static const auto &descriptor() {
         static gc_descriptor d =
-          GC_DESC(blocking_mod)
-          .WITH_FIELD(&blocking_mod::_mod);
+	  GC_DESC(msv)
+	  .template WITH_SUPER(msv_base)
+	  .template WITH_FIELD(&msv::current_state)
+	  .template WITH_FIELD(&msv::_pre_write_task)
+	  .template WITH_FIELD(&msv::_conflict_generator);
         return d;
       }
 
-      bool pending() const {
-        return _mod.load() != nullptr;
-      }
-
-      void remove() {
-        gc_ptr<modification> m = _mod;
-        if (m != nullptr) {
-          m->perform();
-          /*
-           * performing the modification will mark it as done.
-           */
+      bool has_value(const gc_ptr<branch> &b, const gc_ptr<iso_context> &ctxt, timestamp_t as_of = most_recent) {
+        gc_ptr<state> s = close_merged_branches(nullptr).state_to_use;
+        if (s == nullptr) {
+          return false;
         }
+        gc_ptr<branch_value> v;
+        /*
+         * We don't need to worry about whether we got the right value
+         * or not.  Either there was one or there wasn't in the
+         * branches there at the time the state was created.
+         */
+        std::tie(std::ignore, v) = s->current_value(b, as_of);
+        return v != nullptr;
+      }
+      val_type modify(const gc_ptr<branch_value_chain> &write_chain, modify_op op, res_mode resolvep, const val_type &arg) {
+        gc_ptr<write_task> wtd = make_gc<write_task>(GC_THIS, write_chain, op, resolvep, arg);
+        wtd->install_and_run(_pre_write_task);
+        return wtd->_result;
       }
 
-      void mark_done() {
-        _mod = nullptr;
+      val_type modify(const gc_ptr<branch> &b, const gc_ptr<iso_context> &ctxt, modify_op op, res_mode resolvep, const val_type &arg) {
+        if (b->context->is_read_only()) {
+          throw read_only_context_ex{};
+        }
+        state_chain_pair scp = close_merged_branches(b);
+        gc_ptr<branch_value_chain> write_chain = scp.chain;
+        return ctxt->shadowed_val(modify(write_chain, op, resolvep, ctxt->shadowed_val(arg)));
       }
-      
-    }; // blocking_mod
-      
-      
-    
 
+      void write(const gc_ptr<branch> &b, const gc_ptr<iso_context> &ctxt, res_mode resolvep, const val_type &new_val) {
+        modify(b, ctxt, modify_op::set, resolvep, new_val);
+      }
+      val_type read_frozen(const gc_ptr<branch> &b, const gc_ptr<iso_context> &ctxt) {
+        state_chain_pair scp = close_merged_branches(b);
+        gc_ptr<branch_value_chain> write_chain = scp.chain;
+        /*
+         * If there's already a value on the write chain and it's
+         * after the last merge, that's the one we want, and we don't
+         * have to do anything.  This will be the case if the BVC
+         * isn't flagged as having been merged (since we read after
+         * closing branches).  
+         */
+        assert(write_chain != nullptr);
+        bv_ptr_type v = write_chain->latest.contents();
+	if (scp.was_open && v != nullptr) {
+          return v->val;
+        }
+        /*
+         * Otherwise, we need to find and cache the actual value
+         */
+        return modify(write_chain, modify_op::frozen_current, res_mode::non_resolving, val_type{});
+      }
+    };
+
+    template <kind K>
+    inline
+    gc_ptr<msv<K>>
+    msv_base::downcast() {
+      gc_ptr<msv_base> me = GC_THIS;
+      return std::static_pointer_cast<msv<K>>(me);
+    }
+
+
+
+    template <kind K>
+    typename msv<K>::state_chain_pair
+    msv<K>::state::
+    close_merged_branches(to_merge_set &queue,
+			  const gc_ptr<branch> &write_branch) const {
+      using namespace std;
+      /*
+       * There are almost certainly more efficient ways to do this,
+       * but for now we'll brute-force it.
+       */
+
+      /*
+       * om_slots contains all of the open mergeable branches, with
+       * nulls where branches have been closed.  Everything in
+       * om_slots is either in this state or has been added to
+       * new_om_bvcs, so we know that everything remains reachable.
+       * 
+       * We know there's at least one open branch that needs to close,
+       * so we'll just make a copy here.
+       *
+       */
+      static thread_local vector<gc_ptr<branch_value_chain> > om_slots;
+      om_slots.assign(begin_open_mergeable(), end_open_mergeable());
+      auto clear_om_slots = ruts::cleanup([&]{
+	  om_slots.clear();
+	});
+      gc_vector<branch_value_chain> new_om_bvcs;
+
+      /*
+       * new_ou_bvcs holds newly-discovered unmergeable branches.
+       */
+      gc_vector<branch_value_chain> new_ou_bvcs;
+
+      static thread_local vector<gc_ptr<branch_value_chain> > closed_slots;
+      auto clear_closed_slots = ruts::cleanup([&]{
+	  closed_slots.clear();
+	});
+
+      size_t new_n_open = om_slots.size();
+      size_t new_n_closed = closed_branches().size();
+
+      while (!queue.empty()) {
+	to_merge_pair tm_pair = queue.top();
+	queue.pop();
+	const gc_ptr<branch_value_chain> child_bvc = om_slots[tm_pair.open_index];
+	assert(child_bvc != nullptr);
+	const gc_ptr<branch> child_branch = child_bvc->on_branch();
+	const gc_ptr<branch> parent_branch = child_branch->parent;
+	const bool parent_mergeable = parent_branch->context->is_mergeable();
+	gc_ptr<branch_value_chain> parent_bvc;
+	size_t parent_open_index;
+
+	if (parent_branch == top_level_branch) {
+	  // we know where the top_level_bvc is.
+	  parent_bvc = slots()[0];
+	} else if (parent_mergeable) {
+	  tie(parent_bvc, parent_open_index, ignore)
+	    = find_mergeable_bvc(parent_branch, om_slots, closed_slots, new_om_bvcs,
+				 new_n_open, new_n_closed);
+	} else {
+	  tie(parent_bvc, ignore) = find_unmergeable_bvc(parent_branch, new_ou_bvcs);
+	}
+
+	// Take the bvc out of the open list.
+	om_slots[tm_pair.open_index] = nullptr;
+	new_n_open--;
+	bv_ptr_type last_val = child_bvc->latest.contents();
+	if (last_val[was_frozen_read]) {
+	  /*
+	   * If the value is a frozen read, we don't have to do
+	   * anything and can pop the value.
+	   */
+	  bv_ptr_type new_val = last_val;
+	  new_val.inc_and_set(last_val->next);
+	  new_val[was_frozen_read] = false;
+          new_val[removed_frozen_read] = true;
+	  child_bvc->latest.change(last_val, new_val);
+	  if (last_val->next == nullptr) {
+	    /*
+	     * There's no point in even putting it on the closed list.
+	     */
+	    continue;
+	  }
+	} else {
+	    /*
+	     * Now we have to be careful.  We're sharing the same
+	     * branch_value_chain, so somebody else may have already
+	     * closed this.  We only replace if the current pointer is
+	     * null or points to something older and only if it hasn't
+	     * changed.  Since this process is deterministic, all older
+	     * merges for this value have already been done (by us or
+	     * somebody else), so there's no possibility that somebody
+	     * else put in something between the one we read and the one
+	     * we wrote.  So if the write doesn't succeed, we know that
+	     * somebody took care of the one we're trying to do.
+	     */
+	  bv_ptr_type parent_last = parent_bvc->latest.contents();
+	  /*
+	   * The timestamp to use is the one before the merge (since
+	   * the stable snapshot will be at the merge).  We know this
+	   * is in the past, so we don't have to worry about the
+	   * read_in_snapshot flag (since there couldn't have been a
+	   * write since the merge or we would have done this before
+	   * it).
+	   */
+	  timestamp_t ts = tm_pair.merge_time-1;
+	  if (parent_last == nullptr || parent_last->timestamp < ts) {
+	    gc_ptr<branch_value> prior = parent_last.pointer();
+	    if (prior != nullptr && prior->timestamp == ts) {
+	      prior = prior->next;
+	    }
+	    val_type on_child = (last_val.pointer() == nullptr) ? val_type{} : last_val->val;
+	    val_type for_parent = val_after_merge(on_child);
+	    gc_ptr<branch_value> new_bv = make_gc<branch_value>(ts, for_parent, prior);
+	    
+	    // If this fails, somebody already did it.
+	    parent_bvc->latest.inc_and_change(parent_last, new_bv);
+	  }
+
+	  // Now we check to see if the parent has been merged since this point.
+	  if (parent_mergeable) {
+	    bool parent_needs_merge;
+	    timestamp_t parent_merge_time;
+	    tie(parent_needs_merge, parent_merge_time)
+	      = parent_branch->context->merge_after(ts);
+	    if (parent_needs_merge) {
+	      queue.emplace(parent_merge_time, parent_open_index);
+	    }
+	  }
+	}
+	// Now add the branch to the closed list.
+	if (closed_slots.empty()) {
+	  closed_slots.assign(begin_closed(), end_closed());
+	}
+	closed_slots.push_back(child_bvc);
+	new_n_closed++;
+      }
+
+      gc_ptr<branch_value_chain> write_bvc = nullptr;
+      bool wbvc_was_open = false;
+      if (write_branch == nullptr) {
+	// nothing
+      } else if (write_branch == top_level_branch) {
+	write_bvc = slots()[0];
+	wbvc_was_open = true;
+      } else if (write_branch->context->is_mergeable()) {
+	tie(write_bvc, ignore, wbvc_was_open)
+	  = find_mergeable_bvc(write_branch, om_slots, closed_slots, new_om_bvcs,
+			       new_n_open, new_n_closed);
+      } else {
+	tie(write_bvc, wbvc_was_open)
+	  = find_unmergeable_bvc(write_branch, new_ou_bvcs);
+      }
+
+      size_t new_n_unmergeable = n_unmergeable+new_ou_bvcs.size();
+      size_t new_size = new_n_unmergeable+new_n_open+new_n_closed;
+      gc_array_ptr<slot> new_slots{new_size};
+      {
+	auto p = new_slots.begin();
+	p = copy(begin_unmergeable(), end_unmergeable(), p);
+	p = copy(new_ou_bvcs.begin(), new_ou_bvcs.end(), p);
+	p = copy_if(om_slots.begin(), om_slots.end(), p,
+		    [](const auto &p) {
+		      return p != nullptr;
+		    });
+	if (closed_slots.empty()) {
+	  p = copy(begin_closed(), end_closed(), p);
+	} else {
+	  p = copy_if(closed_slots.begin(), closed_slots.end(), p,
+		      [](const auto &p) {
+			return p != nullptr;
+		      });
+	}
+      }
+      gc_ptr<state> new_state = make_gc<state>(new_slots, new_n_unmergeable, new_n_open);
+      return state_chain_pair{new_state, write_bvc, wbvc_was_open};
+    }
+
+    template <kind K>
+    constexpr typename msv<K>::bv_ptr_type::template flag_id<0> msv<K>::read_in_snapshot;
+    template <kind K>
+    constexpr typename msv<K>::bv_ptr_type::template flag_id<1> msv<K>::was_frozen_read;
     
   }
-}
-
-namespace std {
-  template <>
-  struct hash<mpgc::gc_ptr<mds::core::modified_value_chain>> {
-    size_t operator()(const mpgc::gc_ptr<mds::core::modified_value_chain> &mvc) const {
-      using namespace std;
-      using namespace mds::core;
-      return hash<gc_ptr<value_chain>>()(mvc->chain)
-        ^ hash<gc_ptr<msv>>()(mvc->in_msv);
-    }
-  };
 }
 
 
