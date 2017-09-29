@@ -35,36 +35,12 @@
 #define MDS_ACCUM_H_
 
 #include "iso_ctxt.h"
+#include "ruts/weak_key.h"
 #include <unordered_set>
 
 namespace mds {
   template <typename A, void(*RBFn)(A&,const A&) = __rollback_by_sub<A> >
   class accumulator {
-    struct key {
-      const uniform_key _uuid;
-      const weak_handle<task> _task;
-
-      key(const task &t)
-        : _uuid{t.uuid()},
-          _task{t}
-      {
-        // std::cout << " ** creating key for " << _uuid << " -> " << t << std::endl
-        //           << "  * got " << _task.lock() << std::endl;
-      }
-
-      bool operator ==(const key &other) const {
-        /*
-         * We could lock both tasks and check.  Is it worth it?
-         */
-        return _uuid==other._uuid;
-      }
-
-      struct hash {
-        auto operator()(const key &k) const noexcept {
-          return k._uuid.high;
-        }
-      };
-    };
     struct node {
       const std::shared_ptr<node> parent;
       A accum;
@@ -90,15 +66,17 @@ namespace mds {
       }
     };
 
-    struct state {
+    struct state : std::enable_shared_from_this<state> {
       const std::function<std::shared_ptr<node>(const std::shared_ptr<node>)> creation_fn;
       const task top_level_task;
       const std::shared_ptr<node> top_level;
       /*
        * Mutable so that we can erase expired keys during get.
        */
-      mutable std::unordered_set<key, typename key::hash> writers;
-      mutable std::unordered_map<key, std::shared_ptr<node>, typename key::hash> nodes;
+      using key = ruts::weak_key<weak_handle<task>>;
+      mutable std::unordered_set<key> writers;
+      mutable std::unordered_map<key, std::shared_ptr<node>> nodes;
+      using std::enable_shared_from_this<state>::shared_from_this;
       /*
        * I'm assuming that the number of readers will be relatively
        * small, so it's probably not worth using a shared_mutex.  And
@@ -130,10 +108,21 @@ namespace mds {
            * If the accumulator's gone, we don't want to hold onto its nodes.
            */
           std::weak_ptr<node> wn = n;
-          t.on_prepare_for_redo([wn]{
+          std::weak_ptr<state> ws = shared_from_this();
+          t.on_prepare_for_redo([wn, ws](const task &t){
               auto n = wn.lock();
               if (n != nullptr) {
                 n->roll_back();
+              }
+              auto s = ws.lock();
+              if (s != nullptr) {
+                /*
+                 * If the state is still there when we redo the task,
+                 * the task is no longer a writer and we don't use its
+                 * node.
+                 */
+                s->nodes.erase(t);
+                s->writers.erase(t);
               }
             });
         }
@@ -154,7 +143,7 @@ namespace mds {
           std::lock_guard<std::mutex> lck(mtx);
           task me = task::current();
           for (auto kp = writers.begin(); kp != writers.end(); ) {
-            task t = kp->_task.lock();
+            task t = kp->lock();
             if (t == nullptr) {
               nodes.erase(*kp);
               kp = writers.erase(kp);
@@ -316,7 +305,7 @@ namespace mds {
 
       double variance() const {
         double m = mean();
-        return (1/(_count-1))*(_sum_sq-2*m*_sum+m*m);
+        return (1.0/(_count-1))*(_sum_sq-2*m*_sum+m*m*_count);
       }
 
       double std_dev() const {
@@ -348,7 +337,7 @@ namespace mds {
       add(val);
     }
 
-    std::size_t count() {
+    std::size_t count() const {
       return accum.get(std::mem_fn(&state::count));
     }
 

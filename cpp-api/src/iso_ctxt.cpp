@@ -108,9 +108,18 @@ namespace {
       }
       return p->second;
     }
+    void forget(const iso_ctxt &ctxt) {
+      lock_guard<mutex> lock(_mutex);
+      _map.erase(ctxt);
+    }
   };
 
   ctxt_task_map ctm;
+}
+
+void
+iso_ctxt::forget_tasks() {
+  ctm.forget(*this);
 }
 
 shared_ptr<task::info>

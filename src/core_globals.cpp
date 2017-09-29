@@ -38,7 +38,7 @@ namespace mds {
   namespace core {
     bool process_registered = false;
 
-    current_version_t *current_version;
+    std::atomic<gc_ptr<timestamp_record>> *_current_timestamp;
     external_gc_ptr<view> top_level_view;
     external_gc_ptr<iso_context> global_context;
     external_gc_ptr<string_table_t> string_table;
@@ -63,7 +63,7 @@ namespace mds {
       friend bool register_process();
       const static mpgc::persistent_root_key gc_root_key;
 
-      current_version_t _current_version { 0 };
+      std::atomic<gc_ptr<timestamp_record>> _current_timestamp;
       gc_ptr<iso_context> _global_context = make_gc<iso_context>(iso_context::private_ctor{}, iso_context::global);
       gc_ptr<view> _top_level_view = make_gc<view>(_global_context, nullptr);
       gc_ptr<string_table_t> _string_table = make_gc<string_table_t>(initial_string_table_capacity);
@@ -86,13 +86,13 @@ namespace mds {
 
     public:
 
-      control(gc_token &gc) : gc_allocated(gc) {}
+      control(gc_token &gc) : gc_allocated(gc), _current_timestamp(timestamp_record::initial()) {}
       // QUESTION:  Can I do this in registration and then simply assume that it's all initialized and
       // just use static vars?
       static const auto &descriptor() {
         static gc_descriptor d =
 	  GC_DESC(control)
-	  .WITH_FIELD(&control::_current_version)
+	  .WITH_FIELD(&control::_current_timestamp)
 	  .WITH_FIELD(&control::_global_context)
 	  .WITH_FIELD(&control::_top_level_view)
 	  .WITH_FIELD(&control::_string_table)
@@ -130,7 +130,7 @@ namespace mds {
         control_block = mpgc::persistent_roots().find_or_create<control>(control::gc_root_key);
         control &cb = *control_block;
 	
-        current_version = &cb._current_version;
+        _current_timestamp = &cb._current_timestamp;
         top_level_view = cb._top_level_view;
 	assert(top_level_view.value().is_valid());
         global_context = cb._global_context;

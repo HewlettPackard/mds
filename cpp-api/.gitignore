@@ -41,6 +41,7 @@ build/*/templates-run
 build/*/tests
 build/*/heaps
 build/*/createheap
+build/*/products.csv
 
 perf.data*
 perf.hist*

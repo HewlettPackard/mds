@@ -35,6 +35,7 @@
 #include "ruts/util.h"
 #include "inventory.h"
 #include "experiment.h"
+#include <iomanip>
 
 
 using namespace std;
@@ -60,6 +61,26 @@ namespace {
     size_t which = uniform_int_distribution<size_t>{1, bound+1}(tl_rand());
     string name = Product::to_name(which);
     return name;
+  }
+
+  void spawn_mem_thread() {
+    mds_thread mt([]{
+        const auto start = system_clock::now();
+        const auto tick = 5s;
+        auto next = start;
+        while (true) {
+          this_thread::sleep_until(next);
+          auto now = system_clock::now();
+          if (now >= next) {
+            auto after_start = duration_cast<duration<double>>(now-start);
+            cout << mem_stats::now()
+                 << " " << after_start.count()
+                 << endl;
+            next += tick;
+          }
+        }
+      });
+    mt.detach();
   }
 }
 
@@ -170,6 +191,7 @@ int run(int argc, char *argv[], const string &inv_name, function<void()> usage) 
     {"max_retries",      required_argument, 0, 'r' },
     {"stop_after",       required_argument, 0, 'S' },
     {"max_transactions", required_argument, 0, 'T' },
+    {"mem",              no_argument,       0, 'M' },
     {0,              0,                 0,  0 }
   };
 
@@ -189,6 +211,7 @@ int run(int argc, char *argv[], const string &inv_name, function<void()> usage) 
   size_t max_retries = 3;
   milliseconds run_length = 300s;
   size_t max_transactions = 100000;
+  bool show_mem = false;
 
   // using fast defaults
   p_block = 0;
@@ -235,6 +258,9 @@ int run(int argc, char *argv[], const string &inv_name, function<void()> usage) 
         break;
       case 'm':
         mean_delay = milliseconds(stoul(optarg));
+        break;
+      case 'M':
+        show_mem = true;
         break;
       case 's':
         sd_delay = milliseconds(stoul(optarg));
@@ -292,10 +318,10 @@ int run(int argc, char *argv[], const string &inv_name, function<void()> usage) 
     ->add_action(10, [&](){
         // sell
         string pname = choose_product(max_product, p_hot_transactions, n_hot_products);
-        string desc = format([&](auto &os) {
-            os << "OUT: " << setw(4) << restock_amt << " of " << pname;
-          });
         size_t units = uniform_int_distribution<size_t>{min_quant, max_quant}(tl_rand());
+        string desc = format([&](auto &os) {
+            os << "OUT: " << setw(4) << units << " of " << pname;
+          });
         // size_t txn = ++next_txn;
         auto trace = make_shared<pub_trace>(++next_txn, desc, max_retries, shop_name);
         try {
@@ -311,6 +337,9 @@ int run(int argc, char *argv[], const string &inv_name, function<void()> usage) 
     ->set_delay(mean_delay, sd_delay)
     ->stop_after(run_length)
     ->stop_after_n(max_transactions);
+  if (show_mem) {
+    spawn_mem_thread();
+  }
   experiment->start(n_threads);
   pub_trace::report_final_result();
   return 0;

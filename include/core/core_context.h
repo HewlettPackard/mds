@@ -40,6 +40,7 @@
 #include "core/core_globals.h"
 #include "core/core_conflict.h"
 #include "core/core_task.h"
+#include "ruts/weak_key.h"
 #include <unordered_map>
 #include <cassert>
 
@@ -97,24 +98,11 @@ namespace mds {
       bool need_msv_on_initial_read() const;
     }; // view
 
-    class shadow_cache {
-      using shadow_map = std::unordered_map<external_gc_ptr<view>,
-                                            external_gc_ptr<view>>;
-      using context_map = std::unordered_map<external_gc_ptr<iso_context>,
-                                             shadow_map>;
-      gc_ptr<iso_context> _last_context = nullptr;
-      gc_ptr<view> _last_view = nullptr;
-      gc_ptr<view> _last_shadow = nullptr;
-      shadow_map *_last_shadow_map = nullptr;
-      context_map _context_map;
-    public:
-      gc_ptr<view> lookup(const gc_ptr<iso_context> c,
-                          const gc_ptr<view> v);
-      static shadow_cache &instance() {
-        static thread_local shadow_cache sc;
-        return sc;
-      }
-    }; //shadow_cache
+    class shadow_cache;
+
+    static gc_ptr<view> shadow_cache_lookup(const gc_ptr<iso_context> &c,
+                                            const gc_ptr<view> &v);
+
 
 
     class publication_attempt : public exportable, public with_uniform_id {
@@ -436,8 +424,8 @@ namespace mds {
     private:
 
       struct shadow_node : public gc_allocated {
-        const gc_ptr<view> base;
-        const gc_ptr<view> shadow;
+        const weak_gc_ptr<view> base;
+        const weak_gc_ptr<view> shadow;
         gc_ptr<shadow_node> next;
         shadow_node(gc_token &gc, const gc_ptr<view> &b,
                     const gc_ptr<view> &s,
@@ -505,11 +493,12 @@ namespace mds {
 
       iso_context(gc_token &gc,
                   private_ctor, const gc_ptr<iso_context> &p,
-		  view_type vt, mod_type mt, timestamp_t ts = most_recent)
+		  view_type vt, mod_type mt)
         : exportable(gc),
           _parent{p},
           _creation_task{compute_creation_task(p)},
-          _state{make_gc<published_state>(new_snapshot_time(ts))},
+          _state{make_gc<published_state>(vt == view_type::snapshot ? new_value_timestamp(GC_THIS)
+                                          : current_value_timestamp())},
           _view_type{vt}, _mod_type{mt},
           _shadows{nullptr}, _has_publishable_children{false}
           {
@@ -568,7 +557,7 @@ namespace mds {
         if (v->context == this) {
           return v;
         }
-        return shadow_cache::instance().lookup(GC_THIS, v);
+        return shadow_cache_lookup(GC_THIS, v);
       }
 
       static gc_ptr<view> shadowed(const gc_ptr<view> &v) {
@@ -585,10 +574,6 @@ namespace mds {
       template <typename T>
       const T &shadowed_val(const T &val) {
 	return val;
-      }
-
-      static timestamp_t new_snapshot_time(timestamp_t ts) {
-        return ts == most_recent ? ++(*current_version) : ts;
       }
 
       mod_type get_mod_type() const {
@@ -668,7 +653,7 @@ namespace mds {
         return s == nullptr ? 0 : s->timestamp();
       }
 
-      gc_ptr<iso_context> as_of(timestamp_t ts, view_type vt, mod_type mt) const {
+      gc_ptr<iso_context> new_child(view_type vt, mod_type mt) {
         if (mt == mod_type::publishable && is_read_only()) {
           throw read_only_context_ex{};
         }
@@ -677,11 +662,7 @@ namespace mds {
          * TODO: Should this method be non-const?
          */
         iso_context *nc_this = const_cast<iso_context*>(this);
-        return make_gc<iso_context>(private_ctor{}, this_as_gc_ptr(nc_this), vt, mt, ts);
-      }
-
-      gc_ptr<iso_context> new_child(view_type vt, mod_type mt) {
-        return as_of(most_recent, vt, mt);
+        return make_gc<iso_context>(private_ctor{}, this_as_gc_ptr(nc_this), vt, mt);
       }
 
       gc_ptr<publication_attempt> publish();
@@ -785,20 +766,76 @@ namespace mds {
         && (!context->is_snapshot()
             || context->is_publishable());
     }
+  }
+}
+
+namespace ruts {
+  template <> struct stable_key<mds::core::iso_context>
+    : uniform_id_stable_key<mds::core::iso_context> {};
+  template <> struct stable_key<mds::core::view>
+    : uniform_id_stable_key<mds::core::view> {};
+}
+
+namespace mds {
+  namespace core {
+    class shadow_cache {
+      /*
+       * The keys of these maps should be weak as well.
+       */
+      using shadow_map = std::unordered_map<ruts::weak_key<external_weak_gc_ptr<view>>,
+                                            external_weak_gc_ptr<view>>;
+      using context_map = std::unordered_map<ruts::weak_key<external_weak_gc_ptr<iso_context>>,
+                                             shadow_map>;
+
+      struct recent : gc_allocated {
+        weak_gc_ptr<iso_context> _last_context = nullptr;
+        weak_gc_ptr<view> _last_view = nullptr;
+        weak_gc_ptr<view> _last_shadow = nullptr;
+        explicit recent(gc_token &tok) : gc_allocated{tok} {}
+        static const auto &descriptor() {
+          static gc_descriptor d =
+            GC_DESC(recent)
+            .WITH_SUPER(gc_allocated)
+            .WITH_FIELD(&recent::_last_context)
+            .WITH_FIELD(&recent::_last_view)
+            .WITH_FIELD(&recent::_last_shadow)
+            ;
+          return d;
+        }
+        
+      };
+      const external_gc_ptr<recent> _recent = make_gc<recent>();
+      shadow_map *_last_shadow_map = nullptr;
+      context_map _context_map;
+    public:
+      gc_ptr<view> lookup(const gc_ptr<iso_context> &c,
+                          const gc_ptr<view> &v);
+      static shadow_cache &instance() {
+        static thread_local shadow_cache sc;
+        return sc;
+      }
+    }; //shadow_cache
 
 
     inline
     gc_ptr<view>
-    shadow_cache::lookup(const gc_ptr<iso_context> c,
-                         const gc_ptr<view> v)
+    shadow_cache::lookup(const gc_ptr<iso_context> &c,
+                         const gc_ptr<view> &v)
     {
-      if (c != _last_context) {
+      gc_ptr<iso_context> last_context = _recent->_last_context.lock();
+      if (c != last_context) {
+        // ext_c = c;
         _last_shadow_map = &_context_map[c];
-        _last_context = c;
-        _last_view = nullptr;
+        _recent->_last_context = c;
+        _recent->_last_view = nullptr;
       }
-      if (v != _last_view) {
-        external_gc_ptr<view> esv = (*_last_shadow_map)[v];
+      gc_ptr<view> last_view = _recent->_last_view.lock();
+      gc_ptr<view> last_shadow;
+      if (v == last_view) {
+        last_shadow = _recent->_last_shadow.lock();
+      }
+      if (last_shadow == nullptr) {
+        external_gc_ptr<view> esv = (*_last_shadow_map)[v].lock();
         if (esv == nullptr) {
           /*
            * We have to be careful here, becase our call to
@@ -811,20 +848,31 @@ namespace mds {
            * value in explicitly.
            */
           esv = c->find_shadow(v);
-          if (c != _last_context) {
+          if (c != _recent->_last_context.lock()) {
             _last_shadow_map = &_context_map[c];
-            _last_context = c;
+            _recent->_last_context = c;
           }
           (*_last_shadow_map)[v] = esv;
         }
-        _last_shadow = esv;
-        _last_view = v;
+        last_shadow = esv;
+        _recent->_last_shadow = esv;
+        _recent->_last_view = v;
       }
-      return _last_shadow;
+      return last_shadow;
     }
+
+    inline
+    gc_ptr<view>
+    shadow_cache_lookup(const gc_ptr<iso_context> &c,
+                        const gc_ptr<view> &v)
+    {
+      return shadow_cache::instance().lookup(c, v);
+    }
+    
 
   }
 }
+
 
 
 #endif /* CORE_CONTEXT_H_ */

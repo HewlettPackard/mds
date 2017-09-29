@@ -44,6 +44,6 @@
 #include "iso_ctxt.h"
 #include "mds_array.h"
 #include "accum.h"
-
+#include "mem_stats.h"
 
 #endif /* MDS_H_ */

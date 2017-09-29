@@ -273,6 +273,17 @@ int test9(int argc, char *argv[], const string &name) {
   return 0;
 }
 
+/*
+ * Test 10: Tests mem_stats
+ */
+int test10(int argc, char *argv[], const string &name) {
+  mds_ptr<Store> store;
+  vector<double> popularity;
+  tie(store, popularity) = init_store();
+  cout << mem_stats::now() << endl;
+
+  return 0;
+}
 
 
 int pausetest(int argc, char *argv[], const string &name) {
@@ -290,5 +301,6 @@ void register_tests() {
   register_test("5", test5);
   register_test("6", test6);
   register_test("9", test9);
+  register_test("10", test10);
 }
 

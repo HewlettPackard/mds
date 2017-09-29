@@ -161,7 +161,9 @@ namespace mds {
         return uniform_key{accums};
       }
 
-      using map_type = gc_cuckoo_map<key_type, value_type, ruts::hash1<key_type>, ruts::hash2<key_type>, Segments>;
+      using map_type = gc_cuckoo_map<key_type, value_type,
+                                     cuckoo_map_traits<key_type, value_type>,
+                                     Segments>;
       const gc_ptr<map_type> _map;
       constexpr static const char_type *ncp_() {
         return nullptr;

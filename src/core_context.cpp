@@ -272,8 +272,11 @@ namespace mds {
         _modified_vcs.for_each(mvcs_processed,
                                [&](const gc_ptr<modified_value_chain> &mvc) {
                                  if (!mvc->cleared()) {
-                                   mvc->chain->prepare_for_publish(mvc->in_msv,
-                                                                   new_state);
+                                   gc_ptr<value_chain> vc = mvc->chain.lock();
+                                   gc_ptr<msv> m = mvc->in_msv.lock();
+                                   if (vc != nullptr && m != nullptr) {
+                                     vc->prepare_for_publish(m, new_state);
+                                   }
                                  }
                                });
         return std::make_pair(GC_THIS, prior_published_state);
@@ -286,10 +289,13 @@ namespace mds {
     }; // unpublished_state
 
     struct iso_context::in_process_inbound_publish : gc_allocated {
-      std::atomic<gc_ptr<iso_context>> child;
+      /*
+       * If it's gone, the publish was abandoned, so we don't care.
+       */
+      std::atomic<weak_gc_ptr<iso_context>> child;
 
       bool is_done() const {
-        return child.load() == nullptr;
+        return child.lock() == nullptr;
       }
 
       void mark_done() {
@@ -334,31 +340,93 @@ namespace mds {
 
     gc_ptr<view>
     iso_context::find_shadow(const gc_ptr<view> &v) {
+      // std::cout << "Looking for " << GC_THIS << "'s"
+      //           << " shadow for " << v
+      //           << std::endl;
       gc_ptr<shadow_node> new_shadow = nullptr;
+      gc_ptr<view> found_shadow = nullptr;
       while (true) {
         gc_ptr<shadow_node> current_shadows = _shadows;
+        gc_ptr<shadow_node> first_valid = nullptr;
+        gc_ptr<shadow_node> last_valid = nullptr;
+        bool skipped_any = false;
         for (gc_ptr<shadow_node> sn = current_shadows;
              sn != nullptr;
              sn = sn->next)
           {
-            if (sn->base == v) {
-              return sn->shadow;
+            gc_ptr<view> base = sn->base.lock();
+            if (base != nullptr) {
+              gc_ptr<view> sv = sn->shadow.lock();
+              if (sv != nullptr) {
+                if (first_valid == nullptr) {
+                  first_valid = sn;
+                  skipped_any = false;
+                } else if (last_valid != nullptr) {
+                  if (skipped_any) {
+                    /*
+                     * We can do this unconditionally and without
+                     * locking.  As long as we hold base and sv, this
+                     * node remains valid, so any other thread racing us
+                     * will come to the same conclusion.
+                     */
+                    last_valid->next = sn;
+                    skipped_any = false;
+                  }
+                  last_valid = sn;
+                }
+                if (base == v) {
+                  if (first_valid != current_shadows) {
+                    ruts::try_change_value(_shadows, current_shadows, first_valid);
+                  }
+                  // std::cout << "Found " << GC_THIS << "'s"
+                  //   << " shadow for " << v
+                  //   << " as " << found_shadow
+                  //   << std::endl;
+                  return sv;
+                }
+                continue;
+              }
             }
+            /*
+             * If we get here, the node isn't valid.
+             */
+            skipped_any = true;
           }
+        /*
+         * If we get here and we skipped any, then last_valid should
+         * be the last one in the list.
+         */
+        if (skipped_any && last_valid != nullptr) {
+          last_valid->next = nullptr;
+        }
+          
         if (new_shadow == nullptr) {
-          const gc_ptr<view> psv = is_global() ? v : _parent->shadow(v);
-          const gc_ptr<view> spsv = (psv == v)
-            ? make_gc<view>(GC_THIS, psv) : shadow(psv);
-          new_shadow = make_gc<shadow_node>(v, spsv, current_shadows);
+          if (found_shadow == nullptr) {
+            const gc_ptr<view> psv = is_global() ? v : _parent->shadow(v);
+            /*
+             * If our parent's shadow is the one we're looking for
+             * (either because we're global or because we're shadowing
+             * something in our parent's view), we create a new one to
+             * avoid an infinite loop.  Otherwise, we may already have
+             * an entry for the shadow for this one, so we go around
+             * again to check.  Note that we can't have to go around
+             * more than once, since psv (if not v) is necessarily in
+             * our parent's context, so the next time, we'll take the
+             * other branch.
+             */
+            found_shadow = (psv == v)
+              ? make_gc<view>(GC_THIS, psv) : shadow(psv);
+          }
+          new_shadow = make_gc<shadow_node>(v, found_shadow, first_valid);
           // std::cout << GC_THIS << "'s"
           //           << " shadow for " << v
-          //           << " is " << spsv
+          //           << " is " << found_shadow
           //           << std::endl;
         } else {
-          new_shadow->next = current_shadows;
+          new_shadow->next = first_valid;
         }
         if (ruts::try_change_value(_shadows, current_shadows, new_shadow)) {
-          return new_shadow->shadow;
+          return found_shadow;
         }
       }
     }
@@ -384,7 +452,7 @@ namespace mds {
           return ip->is_done();
         });
       _in_process.for_each([&](const auto &ip) {
-          gc_ptr<iso_context> child = ip->child;
+          gc_ptr<iso_context> child = ip->child.lock();
           if (child != nullptr) {
             child->block_publication(bm);
           }
@@ -405,8 +473,8 @@ namespace mds {
       gc_ptr<in_process_inbound_publish>
         ip = make_gc<in_process_inbound_publish>(child);
       _in_process.prune_and_push(ip, [](const auto &ip) {
-            return ip->is_done();
-          });
+          return ip->is_done();
+        });
       /*
        * But there may have been some new ones that arrived in between
        * the time we finished draining and the time we put the ipip on
@@ -448,8 +516,9 @@ namespace mds {
       struct already_published{};
       gc_ptr<published_state> new_state = make_gc<published_state>();
       gc_ptr<const unpublished_state> last;
-      timestamp_t start_time = *current_version;
+      timestamp_t start_time = current_value_timestamp();
       timestamp_t publish_time;
+      gc_ptr<iso_context> ss = is_snapshot() ? GC_THIS : gc_ptr<iso_context>{};
       try {
         /*
          * We want to hold off calling prepare() as long as possible,
@@ -477,7 +546,7 @@ namespace mds {
               publish_time = new_prior->timestamp();
               throw already_published{};
             }
-            publish_time = ++(*current_version);
+            publish_time = new_value_timestamp(ss);
             new_state->set_ts_and_prior(publish_time, new_prior);
             /*
              * If it's already changed, we don't bother creating the
@@ -682,7 +751,10 @@ namespace mds {
             t->for_each_modification([&](const gc_ptr<modified_value_chain> &mvc) {
                 // std::cout << "Need to visit VC " << mvc->chain << std::endl;
                 if (!mvc->cleared()) {
-                  vcs_to_visit[mvc->chain] = mvc;
+                  gc_ptr<value_chain> vc = mvc->chain.lock();
+                  if (vc != nullptr) {
+                    vcs_to_visit[vc] = mvc;
+                  }
                 }
               });
             
@@ -858,7 +930,7 @@ namespace mds {
          * TODO: What about things that happened between the time we
          * rolled individual VCs and now?
          */
-        timestamp_t now = ++(*current_version);
+        timestamp_t now = new_value_timestamp(_context);
         _context->roll_snapshot_forward(now);
       }
       _context->note_resolved(_conflicts);

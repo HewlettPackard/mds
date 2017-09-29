@@ -34,7 +34,8 @@
 #ifndef CORE_GLOBALS_H_
 #define CORE_GLOBALS_H_
 
-#include<functional>
+#include <functional>
+#include <map>
 
 #include "core/core_fwd.h"
 
@@ -67,14 +68,223 @@ namespace mds
 
     class control;
 
+    struct timestamp_record : gc_allocated {
+      timestamp_t ts;
+      /*
+       * The first entry in the list may be created with a null
+       * snapshot.
+       */
+      weak_gc_ptr<iso_context> snapshot;
+      gc_ptr<timestamp_record> prior;
+      timestamp_record(gc_token &gc, gc_ptr<iso_context> ss)
+        : gc_allocated(gc), snapshot(ss)
+      {
+      }
+
+      static const auto &descriptor() {
+        using this_class = timestamp_record;
+        static gc_descriptor d =
+	  GC_DESC(this_class)
+	  .WITH_FIELD(&this_class::ts)
+	  .WITH_FIELD(&this_class::snapshot)
+	  .WITH_FIELD(&this_class::prior)
+          ;
+        return d;
+      }
+
+      static gc_ptr<timestamp_record> initial() {
+        gc_ptr<timestamp_record> tsr = make_gc<timestamp_record>(nullptr);
+        tsr->ts = 0;
+        return tsr;
+      }
+
+      bool expired() const {
+        return snapshot.expired();
+      }
+
+      static gc_ptr<timestamp_record> prune(gc_ptr<timestamp_record> tsr) {
+        while (tsr != nullptr && tsr->expired()) {
+          tsr = tsr->prior;
+        }
+        return tsr;
+      }
+
+      gc_ptr<timestamp_record> prune() {
+        return prune(GC_THIS);
+      }
+
+      gc_ptr<timestamp_record> prior_record() {
+        gc_ptr<timestamp_record> p = prior;
+        gc_ptr<timestamp_record> pruned = prune(p);
+        if (p != pruned) {
+          prior = pruned;
+        }
+        return pruned;
+      }
+
+      timestamp_t after(const gc_ptr<timestamp_record> &tsr) {
+        prior = tsr->prune();
+        ts = tsr->ts+1;
+        return ts;
+      }
+    };
+
+    class local_snapshot_map {
+      timestamp_t last_ts_seen = 0;
+      timestamp_t last_snapshot_seen = 0;
+      /*
+       * By using std::greater, the iterators run from latest to earliest.
+       */
+      std::map<timestamp_t, external_weak_gc_ptr<iso_context>, std::greater<timestamp_t>> snapshots;
+      std::map<timestamp_t, external_gc_ptr<timestamp_record>, std::greater<timestamp_t>> unprocessed;
+      void processed(const auto &from, timestamp_t last_seen) {
+        auto to = unprocessed.upper_bound(last_seen);
+        unprocessed.erase(from, to);
+      }
+    public:
+      void note(gc_ptr<timestamp_record> tsr) {
+        if (tsr != nullptr) {
+          timestamp_t ts = tsr->ts;
+          if (ts > last_ts_seen) {
+            last_ts_seen = ts;
+            /*
+             * If tsr is expired, it probably means that this wasn't
+             * actually a new snapshot.  We'll go one more down.
+             */
+            if (tsr->expired()) {
+              tsr = tsr->prior;
+              if (tsr == nullptr) {
+                return;
+              }
+              ts=tsr->ts;
+            }
+            if (ts > last_snapshot_seen) {
+              last_snapshot_seen = ts;
+              unprocessed[ts] = tsr;
+            }
+          }
+        }
+      }
+
+      static local_snapshot_map &for_thread() {
+        static thread_local local_snapshot_map m;
+        return m;
+      }
+
+      
+      bool snapshot_between(timestamp_t later, timestamp_t earlier) {
+        /*
+         * We first loop from the first snapshot time we know about
+         * that could be the one we're looking for.
+         */
+        for (auto p = snapshots.upper_bound(later+1);
+             p != snapshots.end();
+             p = snapshots.erase(p))
+          {
+            timestamp_t ts = p->first;
+            if (ts <= earlier) {
+              break;
+            }
+            if (!p->second.expired()) {
+              return true;
+            }
+          }
+        /*
+         * If we get here, we know we didn't know about any snapshots
+         * in the range, but there may be some in the unprocessed
+         * list.  The timestamps there can start before the later time
+         * or any time up to the earlier time.
+         */
+        auto first_iterator = unprocessed.lower_bound(later);
+        if (first_iterator == unprocessed.end()) {
+          /*
+           * There was nothing since later.  We'll start with the
+           * first one after it.
+           */
+          first_iterator = unprocessed.upper_bound(later);
+          if (first_iterator == unprocessed.end()) {
+            return false;
+          }
+        }
+        timestamp_t earliest_ts_seen = most_recent;
+        for (auto p = first_iterator;
+             p != unprocessed.end() && earliest_ts_seen > earlier;
+             p++)
+          {
+            gc_ptr<timestamp_record> tsr = p->second->prune();
+            for (; tsr != nullptr; tsr = tsr->prior_record()) {
+              timestamp_t ts = tsr->ts;
+              if (ts >= earliest_ts_seen) {
+                /*
+                 * This is necessarily part of one we've already done.
+                 */
+                break;
+              }
+              earliest_ts_seen = ts;
+              if (ts <= earlier) {
+                /*
+                 * We've gone as far as we can and didn't find one.
+                 * We'll put back the rest and return false.  
+                 */
+                processed(first_iterator, ts);
+                unprocessed[ts] = tsr;
+                return false;
+              }
+              snapshots[ts] = tsr->snapshot;
+              if (ts >= later) {
+                /*
+                 * TODO: We found one in the correct range.
+                 */
+                processed(first_iterator, ts);
+                return true;
+              }
+            }
+          }
+        processed(first_iterator, earliest_ts_seen);
+        return false;
+      }
+    };
+
+
+
     //    extern external_gc_ptr<control> control_block;
-    extern current_version_t *current_version;
+    extern std::atomic<gc_ptr<timestamp_record>> *_current_timestamp;
     extern external_gc_ptr<view> top_level_view;
     extern external_gc_ptr<iso_context> global_context;
     extern external_gc_ptr<string_table_t> string_table;
     extern external_gc_ptr<record_type_table_t> record_type_table;
     extern external_gc_ptr<name_space> global_namespace;
     extern std::size_t *next_task_number;
+
+    inline timestamp_t current_value_timestamp() {
+      const gc_ptr<timestamp_record> cts = *_current_timestamp;
+      local_snapshot_map::for_thread().note(cts);
+      return cts->ts;
+    }
+
+    inline timestamp_t new_value_timestamp(const gc_ptr<iso_context> &ctxt) {
+      gc_ptr<timestamp_record> cts = *_current_timestamp;
+      gc_ptr<timestamp_record> nts = make_gc<timestamp_record>(ctxt);
+      timestamp_t ts;
+      do {
+        ts = nts->after(cts);
+      } while (!_current_timestamp->compare_exchange_strong(cts, nts));
+      return ts;
+    }
+
+    /*
+     * If we're adding a value @ later and the old value was
+     * established at @ earlier, is there something that would mean
+     * that we need to keep around the old one.  This will be the case
+     * if there's a living snapshot corresponding to a timestamp
+     * that's > earlier and <= later.
+     */
+    inline bool snapshot_between(timestamp_t later, timestamp_t earlier) {
+      if (later == earlier) {
+        return false;
+      }
+      return local_snapshot_map::for_thread().snapshot_between(later, earlier);
+    }
 
     template<kind KIND>
       inline external_gc_ptr<const managed_type<KIND>> global_managed_type();

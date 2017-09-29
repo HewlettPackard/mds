@@ -38,23 +38,24 @@
 
 namespace mds {
   namespace core {
+    /*
+     * We originally held the value chain as well, but now we just
+     * walk through the MVCs of the tasks to be redone.
+     */
 
     class conflict : public gc_allocated {
-      const gc_ptr<value_chain> _value_chain;
       const gc_ptr<task> _redo_task;
       mutable bool _resolved = false;
     public:
 
       conflict(gc_token &gc,
-               const gc_ptr<value_chain> &vc,
                const gc_ptr<task> &rt)
-        : gc_allocated{gc}, _value_chain{vc}, _redo_task{rt}
+        : gc_allocated{gc}, _redo_task{rt}
       {}
 
       const static auto &descriptor() {
         static gc_descriptor d =
           GC_DESC(conflict)
-          .WITH_FIELD(&conflict::_value_chain)
           .WITH_FIELD(&conflict::_redo_task)
           .WITH_FIELD(&conflict::_resolved)
           ;
@@ -80,9 +81,6 @@ namespace mds {
         return _redo_task;
       }
 
-      gc_ptr<value_chain> get_vc() const {
-        return _value_chain;
-      }
       
     };
     

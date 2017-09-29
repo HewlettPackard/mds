@@ -81,7 +81,15 @@ struct pause {
       }
       duration<double> secs = d;
       cout << prefix << "Pausing for " << secs.count() << " seconds" << endl;
-      this_thread::sleep_for(d);
+      /*
+       * There appears to be a weird interaction between
+       * this_thread::sleep_for(d) and signals that's letting it wake
+       * up early.  So we'll brute force it.
+       */
+      auto target = system_clock::now()+d;
+      while (system_clock::now() < target) {
+        this_thread::sleep_until(target);
+      }
       if (announce_back) {
         cout << prefix << "Back from " << secs.count() << " second pause" << endl;
       }

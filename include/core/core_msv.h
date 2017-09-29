@@ -295,8 +295,11 @@ namespace mds {
     }; // value_chain
 
     struct modified_value_chain : public gc_allocated {
-      gc_ptr<value_chain> chain;
-      gc_ptr<msv> in_msv;
+    private:
+      bool _cleared = false;
+    public:
+      weak_gc_ptr<value_chain> chain;
+      weak_gc_ptr<msv> in_msv;
 
       modified_value_chain(gc_token &gc,
                            const gc_ptr<value_chain> &vc,
@@ -308,24 +311,41 @@ namespace mds {
         static gc_descriptor d =
           GC_DESC(modified_value_chain)
           .WITH_FIELD(&modified_value_chain::chain)
-          .WITH_FIELD(&modified_value_chain::in_msv);
+          .WITH_FIELD(&modified_value_chain::in_msv)
+          .WITH_FIELD(&modified_value_chain::_cleared)
+          ;
         return d;
       }
 
       bool cleared() const {
-        return chain == nullptr;
+        return _cleared;
       }
 
       void clear() {
         in_msv = nullptr;
         chain = nullptr;
+        _cleared = true;
       }
     }; // modified_value_chain
 
     class pending_rollup : public gc_allocated {
-      const gc_ptr<value_chain> _value_chain;
-      const gc_ptr<iso_context> _ctxt;
-      const gc_ptr<const iso_context::published_state> _pending_state;
+      /*
+       * We need a small object before the contingent pointer so that
+       * all of the slots are mentioned by the descriptor.  (The
+       * descriptor object itself, from gc_allocated, is in word 0.)
+       */
+      const weak_gc_ptr<iso_context> _ctxt;
+      /*
+       * The controlling pointer is the target, and the controlled
+       * pointer is the source.  If teh target is gone, there's no
+       * point in holding onto the source or going through the
+       * roll-up.  (Note that if we have a live <A,B> pair and a <B,C>
+       * pair, and B and C are otherwise garbage, the first pair will
+       * cause B to be marked, which will mean that the second pair is
+       * live and both roll-ups will happen.)
+       */
+      const contingent_gc_ptr<value_chain, value_chain> _value_chains;
+      const weak_gc_ptr<const iso_context::published_state> _pending_state;
 
       using next_ptr_t = versioned_gc_ptr<pending_rollup, 2>;
       static constexpr next_ptr_t::flag_id<0> this_processed_flag{};
@@ -335,6 +355,7 @@ namespace mds {
        * The flags on _next are for *this* pending_rollup
        */
       next_ptr_t _next;
+      
 
 
       class process_state;
@@ -351,9 +372,11 @@ namespace mds {
                      const gc_ptr<iso_context> &ctxt,
                      const gc_ptr<const iso_context::published_state> &s,
                      const gc_ptr<pending_rollup> &n = nullptr)
-         : gc_allocated{gc}, _value_chain{vc}, _ctxt{ctxt},
+        : gc_allocated{gc}, _ctxt{ctxt}, _value_chains{vc->get_parent(), vc}, 
            _pending_state{s}, _next{n}
       {
+        // std::cout << "Created pending rollup for " << vc << std::endl;
+        // assert(ctxt->is_publishable());
       }
       pending_rollup(gc_token &gc,
                      const gc_ptr<value_chain> &vc,
@@ -364,10 +387,11 @@ namespace mds {
       const static auto &descriptor() {
         static gc_descriptor d =
           GC_DESC(pending_rollup)
-          .WITH_FIELD(&pending_rollup::_value_chain)
+          .WITH_FIELD(&pending_rollup::_value_chains)
           .WITH_FIELD(&pending_rollup::_ctxt)
           .WITH_FIELD(&pending_rollup::_pending_state)
-          .WITH_FIELD(&pending_rollup::_next);
+          .WITH_FIELD(&pending_rollup::_next)
+          ;
 
         return d;
       }
@@ -397,16 +421,43 @@ namespace mds {
       }
 
       timestamp_t publish_time() const {
-        return _pending_state->_timestamp;
+        const gc_ptr<const iso_context::published_state> ps = _pending_state.lock();
+        assert(ps != nullptr);
+        return ps->_timestamp;
       }
 
       status_t status() {
-        status_t s = _pending_state->_status;
+        const gc_ptr<const iso_context::published_state> ps = _pending_state.lock();
+        if (ps == nullptr) {
+          /*
+           * If the pending state is gone, the publish failed or was
+           * abandoned or the context is gone (which means that the
+           * target VC is also gone, see comment below).  In any case,
+           * there's nothing to do here.
+           */
+          _next[this_processed_flag] = true;
+          return status_t::Failed;
+        }
+        status_t s = ps->_status;
         if (s == status_t::Pending) {
-          gc_ptr<const iso_context::state_t> current_state = _ctxt->_state;
-          if (_pending_state == current_state) {
+          gc_ptr<iso_context> c = _ctxt.lock();
+          if (c == nullptr) {
+            /*
+             * If the context is gone, it may not actually have
+             * failed, but we know that by now we don't have to worry
+             * about it.  If the context is gone, that means that the
+             * value chain we'd roll up is gone, and that can only
+             * happen if the target VC is also gone, so if the context
+             * is gone, we have no place left to roll up to.
+             */
+            ps->_status = status_t::Failed;
+            _next[this_processed_flag] = true;
+            return status_t::Failed;
+          }
+          gc_ptr<const iso_context::state_t> current_state = c->_state;
+          if (ps == current_state) {
             s = status_t::Published;
-            _pending_state->_status = status_t::Published;
+            ps->_status = status_t::Published;
           } else {
             /*
              * We need to check again to guard against the situation
@@ -427,11 +478,11 @@ namespace mds {
              * will resolve reasonably quickly into Pending or Failed,
              * this probably isn't worth it.
              */
-            s = _pending_state->_status;
+            s = ps->_status;
             if (s == status_t::Pending) {
               if (!current_state->conflicts().empty()) {
                 s = status_t::Failed;
-                _pending_state->_status = status_t::Failed;
+                ps->_status = status_t::Failed;
                 _next[this_processed_flag] = true;
               }
             }
@@ -510,7 +561,13 @@ namespace mds {
     }; // modification
       
     class blocking_mod : public gc_allocated {
-      std::atomic<gc_ptr<modification>> _mod;
+      /*
+       * If the modification is gone (without being cleared), then
+       * either the MSV being modified has been collected or the
+       * thread doing the modification died while performing it, and
+       * therefore doesn't care whether it's completed or not.
+       */
+      std::atomic<weak_gc_ptr<modification>> _mod;
     public:
       blocking_mod(gc_token &gc, const gc_ptr<modification> &mod)
         : gc_allocated{gc}, _mod{mod}
@@ -524,11 +581,11 @@ namespace mds {
       }
 
       bool pending() const {
-        return _mod.load() != nullptr;
+        return _mod.lock() != nullptr;
       }
 
       void remove() {
-        gc_ptr<modification> m = _mod;
+        gc_ptr<modification> m = _mod.lock();
         if (m != nullptr) {
           m->perform();
           /*
@@ -556,8 +613,8 @@ namespace std {
     size_t operator()(const mpgc::gc_ptr<mds::core::modified_value_chain> &mvc) const {
       using namespace std;
       using namespace mds::core;
-      return hash<gc_ptr<value_chain>>()(mvc->chain)
-        ^ hash<gc_ptr<msv>>()(mvc->in_msv);
+      return hash<gc_ptr<value_chain>>()(mvc->chain.lock())
+        ^ hash<gc_ptr<msv>>()(mvc->in_msv.lock());
     }
   };
 }

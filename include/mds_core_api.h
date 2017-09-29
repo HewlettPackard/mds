@@ -420,6 +420,9 @@ namespace mds {
        S lock() const {
          return S(_ptr.lock());
        }
+       bool expired() const {
+         return _ptr.expired();
+       }
      };
    };
 
