@@ -1057,7 +1057,7 @@ static int __pyx_pf_3mds_9namespace_9Namespace___setitem__(struct __pyx_obj_3mds
  *     def __setitem__(self, str key, value):
  *         # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
  *         cdef interned_string_handle ish = convert_py_to_ish(key)             # <<<<<<<<<<<<<<
- *         self._handle.bind_ushort(ish, <uint16_t> value)
+ *         self._handle.bind(ish, <uint16_t> value)
  * 
  */
   __pyx_v_ish = __pyx_f_3mds_4core_11api_strings_convert_py_to_ish(__pyx_v_key);
@@ -1065,12 +1065,12 @@ static int __pyx_pf_3mds_9namespace_9Namespace___setitem__(struct __pyx_obj_3mds
   /* "mds/namespace.pyx":43
  *         # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
  *         cdef interned_string_handle ish = convert_py_to_ish(key)
- *         self._handle.bind_ushort(ish, <uint16_t> value)             # <<<<<<<<<<<<<<
+ *         self._handle.bind(ish, <uint16_t> value)             # <<<<<<<<<<<<<<
  * 
  *     def __getitem__(self, str key):
  */
   __pyx_t_1 = __Pyx_PyInt_As_uint16_t(__pyx_v_value); if (unlikely((__pyx_t_1 == ((uint16_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L1_error)
-  __pyx_v_self->_handle.bind<mds::api::kind::USHORT>(__pyx_v_ish, ((uint16_t)__pyx_t_1));
+  __pyx_v_self->_handle.bind<mds::api::kind::DOUBLE>(__pyx_v_ish, ((uint16_t)__pyx_t_1));
 
   /* "mds/namespace.pyx":40
  *     cdef namespace_handle _handle
@@ -1092,7 +1092,7 @@ static int __pyx_pf_3mds_9namespace_9Namespace___setitem__(struct __pyx_obj_3mds
 }
 
 /* "mds/namespace.pyx":45
- *         self._handle.bind_ushort(ish, <uint16_t> value)
+ *         self._handle.bind(ish, <uint16_t> value)
  * 
  *     def __getitem__(self, str key):             # <<<<<<<<<<<<<<
  *         cdef:
@@ -1130,22 +1130,22 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_2__getitem__(struct __pyx_o
  *             uint16_t retval
  *             interned_string_handle ish = convert_py_to_ish(key)             # <<<<<<<<<<<<<<
  * 
- *         retval = self._handle.lookup_ushort(ish, managed_ushort_type_handle())
+ *         retval = self._handle.lookup(ish, managed_ushort_type_handle())
  */
   __pyx_v_ish = __pyx_f_3mds_4core_11api_strings_convert_py_to_ish(__pyx_v_key);
 
   /* "mds/namespace.pyx":50
  *             interned_string_handle ish = convert_py_to_ish(key)
  * 
- *         retval = self._handle.lookup_ushort(ish, managed_ushort_type_handle())             # <<<<<<<<<<<<<<
+ *         retval = self._handle.lookup(ish, managed_ushort_type_handle())             # <<<<<<<<<<<<<<
  *         return retval
  * 
  */
-  __pyx_v_retval = __pyx_v_self->_handle.lookup<mds::api::kind::USHORT,mds::core::kind_type<mds::api::kind::USHORT>,false,true>(__pyx_v_ish, mds::api::managed_type_handle<mds::api::kind::USHORT>());
+  __pyx_v_retval = __pyx_v_self->_handle.lookup(__pyx_v_ish, mds::api::managed_type_handle<mds::api::kind::USHORT>());
 
   /* "mds/namespace.pyx":51
  * 
- *         retval = self._handle.lookup_ushort(ish, managed_ushort_type_handle())
+ *         retval = self._handle.lookup(ish, managed_ushort_type_handle())
  *         return retval             # <<<<<<<<<<<<<<
  * 
  *     def create_child(self, str child_id, bint create_if_missing=True):
@@ -1158,7 +1158,7 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_2__getitem__(struct __pyx_o
   goto __pyx_L0;
 
   /* "mds/namespace.pyx":45
- *         self._handle.bind_ushort(ish, <uint16_t> value)
+ *         self._handle.bind(ish, <uint16_t> value)
  * 
  *     def __getitem__(self, str key):             # <<<<<<<<<<<<<<
  *         cdef:

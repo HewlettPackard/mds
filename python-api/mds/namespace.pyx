@@ -40,14 +40,20 @@ cdef class Namespace(object):
     def __setitem__(self, str key, value):
         # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
         cdef interned_string_handle ish = convert_py_to_ish(key)
-        self._handle.bind_ushort(ish, <uint16_t> value)
+
+        if not issubclass(value, MDSObject):
+            raise TypeError('Cannot commit a non-MDS type into a MDS namespace')
+
+        # TODO: get the boxed item to release its wrapped value into bind...
+        self._handle.bind(ish, <uint16_t> value)
 
     def __getitem__(self, str key):
+        # TODO: Need some type inference here, require explicit third param?
         cdef:
             uint16_t retval
             interned_string_handle ish = convert_py_to_ish(key)
 
-        retval = self._handle.lookup_ushort(ish, managed_ushort_type_handle())
+        retval = self._handle.lookup(ish, managed_ushort_type_handle())
         return retval
 
     def create_child(self, str child_id, bint create_if_missing=True):
@@ -60,6 +66,10 @@ cdef class Namespace(object):
     @staticmethod
     def from_path(path):
         pass
+
+    @staticmethod
+    def get_current():
+        pass  # TODO: mds_namespace::current()
 
     @staticmethod
     def get_global():

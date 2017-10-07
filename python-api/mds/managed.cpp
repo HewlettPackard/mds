@@ -752,11 +752,11 @@ struct __pyx_obj_3mds_7managed_MDSObject {
 struct __pyx_obj_3mds_7managed_Record {
   struct __pyx_obj_3mds_7managed_MDSObject __pyx_base;
   mds::api::managed_record_handle _handle;
-  mds::api::record_type_handle _type;
+  mds::api::record_type_handle _declared_type;
 };
 
 
-/* "mds/managed.pyx":78
+/* "mds/managed.pyx":96
  * 
  * 
  * cdef class MDSArrayBase(MDSObject):             # <<<<<<<<<<<<<<
@@ -768,7 +768,7 @@ struct __pyx_obj_3mds_7managed_MDSArrayBase {
 };
 
 
-/* "mds/managed.pyx":190
+/* "mds/managed.pyx":208
  * 
  * 
  * cdef class MDSIntArrayBase(MDSArrayBase):             # <<<<<<<<<<<<<<
@@ -780,7 +780,7 @@ struct __pyx_obj_3mds_7managed_MDSIntArrayBase {
 };
 
 
-/* "mds/managed.pyx":208
+/* "mds/managed.pyx":226
  * 
  * 
  * cdef class MDSFloatArrayBase(MDSArrayBase):             # <<<<<<<<<<<<<<
@@ -792,7 +792,7 @@ struct __pyx_obj_3mds_7managed_MDSFloatArrayBase {
 };
 
 
-/* "mds/managed.pyx":215
+/* "mds/managed.pyx":233
  * 
  * 
  * cdef class MDSReferenceBase(MDSObject):             # <<<<<<<<<<<<<<
@@ -804,7 +804,7 @@ struct __pyx_obj_3mds_7managed_MDSReferenceBase {
 };
 
 
-/* "mds/managed.pyx":220
+/* "mds/managed.pyx":238
  * 
  * 
  * cdef class MDSPrimitiveBase(MDSObject):             # <<<<<<<<<<<<<<
@@ -816,7 +816,7 @@ struct __pyx_obj_3mds_7managed_MDSPrimitiveBase {
 };
 
 
-/* "mds/managed.pyx":246
+/* "mds/managed.pyx":264
  * 
  * 
  * cdef class UnderflowError(Exception):             # <<<<<<<<<<<<<<
@@ -828,7 +828,7 @@ struct __pyx_obj_3mds_7managed_UnderflowError {
 };
 
 
-/* "mds/managed.pyx":251
+/* "mds/managed.pyx":269
  * 
  * 
  * cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):             # <<<<<<<<<<<<<<
@@ -840,7 +840,7 @@ struct __pyx_obj_3mds_7managed_MDSIntPrimitiveBase {
 };
 
 
-/* "mds/managed.pyx":276
+/* "mds/managed.pyx":294
  * 
  * 
  * cdef class MDSFloatPrimitiveBase(MDSPrimitiveBase):             # <<<<<<<<<<<<<<
@@ -852,7 +852,7 @@ struct __pyx_obj_3mds_7managed_MDSFloatPrimitiveBase {
 };
 
 
-/* "mds/managed.pyx":283
+/* "mds/managed.pyx":301
  * # START INJECTION
  * 
  * cdef class Bool(MDSPrimitiveBase):             # <<<<<<<<<<<<<<
@@ -865,7 +865,7 @@ struct __pyx_obj_3mds_7managed_Bool {
 };
 
 
-/* "mds/managed.pyx":297
+/* "mds/managed.pyx":315
  * 
  * 
  * cdef class BoolArray(MDSArrayBase):             # <<<<<<<<<<<<<<
@@ -878,7 +878,7 @@ struct __pyx_obj_3mds_7managed_BoolArray {
 };
 
 
-/* "mds/managed.pyx":345
+/* "mds/managed.pyx":363
  * 
  * 
  * cdef class Byte(MDSIntPrimitiveBase):             # <<<<<<<<<<<<<<
@@ -891,7 +891,7 @@ struct __pyx_obj_3mds_7managed_Byte {
 };
 
 
-/* "mds/managed.pyx":367
+/* "mds/managed.pyx":385
  * 
  * 
  * cdef class ByteArray(MDSIntArrayBase):             # <<<<<<<<<<<<<<
@@ -904,7 +904,7 @@ struct __pyx_obj_3mds_7managed_ByteArray {
 };
 
 
-/* "mds/managed.pyx":411
+/* "mds/managed.pyx":429
  * 
  * 
  * cdef class UByte(MDSIntPrimitiveBase):             # <<<<<<<<<<<<<<
@@ -917,7 +917,7 @@ struct __pyx_obj_3mds_7managed_UByte {
 };
 
 
-/* "mds/managed.pyx":433
+/* "mds/managed.pyx":451
  * 
  * 
  * cdef class UByteArray(MDSIntArrayBase):             # <<<<<<<<<<<<<<
@@ -930,7 +930,7 @@ struct __pyx_obj_3mds_7managed_UByteArray {
 };
 
 
-/* "mds/managed.pyx":477
+/* "mds/managed.pyx":495
  * 
  * 
  * cdef class Short(MDSIntPrimitiveBase):             # <<<<<<<<<<<<<<
@@ -943,7 +943,7 @@ struct __pyx_obj_3mds_7managed_Short {
 };
 
 
-/* "mds/managed.pyx":499
+/* "mds/managed.pyx":517
  * 
  * 
  * cdef class ShortArray(MDSIntArrayBase):             # <<<<<<<<<<<<<<
@@ -956,7 +956,7 @@ struct __pyx_obj_3mds_7managed_ShortArray {
 };
 
 
-/* "mds/managed.pyx":543
+/* "mds/managed.pyx":561
  * 
  * 
  * cdef class UShort(MDSIntPrimitiveBase):             # <<<<<<<<<<<<<<
@@ -969,7 +969,7 @@ struct __pyx_obj_3mds_7managed_UShort {
 };
 
 
-/* "mds/managed.pyx":565
+/* "mds/managed.pyx":583
  * 
  * 
  * cdef class UShortArray(MDSIntArrayBase):             # <<<<<<<<<<<<<<
@@ -982,7 +982,7 @@ struct __pyx_obj_3mds_7managed_UShortArray {
 };
 
 
-/* "mds/managed.pyx":609
+/* "mds/managed.pyx":627
  * 
  * 
  * cdef class Int(MDSIntPrimitiveBase):             # <<<<<<<<<<<<<<
@@ -995,7 +995,7 @@ struct __pyx_obj_3mds_7managed_Int {
 };
 
 
-/* "mds/managed.pyx":631
+/* "mds/managed.pyx":649
  * 
  * 
  * cdef class IntArray(MDSIntArrayBase):             # <<<<<<<<<<<<<<
@@ -1008,7 +1008,7 @@ struct __pyx_obj_3mds_7managed_IntArray {
 };
 
 
-/* "mds/managed.pyx":675
+/* "mds/managed.pyx":693
  * 
  * 
  * cdef class UInt(MDSIntPrimitiveBase):             # <<<<<<<<<<<<<<
@@ -1021,7 +1021,7 @@ struct __pyx_obj_3mds_7managed_UInt {
 };
 
 
-/* "mds/managed.pyx":697
+/* "mds/managed.pyx":715
  * 
  * 
  * cdef class UIntArray(MDSIntArrayBase):             # <<<<<<<<<<<<<<
@@ -1034,7 +1034,7 @@ struct __pyx_obj_3mds_7managed_UIntArray {
 };
 
 
-/* "mds/managed.pyx":741
+/* "mds/managed.pyx":759
  * 
  * 
  * cdef class Long(MDSIntPrimitiveBase):             # <<<<<<<<<<<<<<
@@ -1047,7 +1047,7 @@ struct __pyx_obj_3mds_7managed_Long {
 };
 
 
-/* "mds/managed.pyx":763
+/* "mds/managed.pyx":781
  * 
  * 
  * cdef class LongArray(MDSIntArrayBase):             # <<<<<<<<<<<<<<
@@ -1060,7 +1060,7 @@ struct __pyx_obj_3mds_7managed_LongArray {
 };
 
 
-/* "mds/managed.pyx":807
+/* "mds/managed.pyx":825
  * 
  * 
  * cdef class ULong(MDSIntPrimitiveBase):             # <<<<<<<<<<<<<<
@@ -1073,7 +1073,7 @@ struct __pyx_obj_3mds_7managed_ULong {
 };
 
 
-/* "mds/managed.pyx":829
+/* "mds/managed.pyx":847
  * 
  * 
  * cdef class ULongArray(MDSIntArrayBase):             # <<<<<<<<<<<<<<
@@ -1086,7 +1086,7 @@ struct __pyx_obj_3mds_7managed_ULongArray {
 };
 
 
-/* "mds/managed.pyx":873
+/* "mds/managed.pyx":891
  * 
  * 
  * cdef class Float(MDSFloatPrimitiveBase):             # <<<<<<<<<<<<<<
@@ -1099,7 +1099,7 @@ struct __pyx_obj_3mds_7managed_Float {
 };
 
 
-/* "mds/managed.pyx":887
+/* "mds/managed.pyx":905
  * 
  * 
  * cdef class FloatArray(MDSFloatArrayBase):             # <<<<<<<<<<<<<<
@@ -1112,7 +1112,7 @@ struct __pyx_obj_3mds_7managed_FloatArray {
 };
 
 
-/* "mds/managed.pyx":931
+/* "mds/managed.pyx":949
  * 
  * 
  * cdef class Double(MDSFloatPrimitiveBase):             # <<<<<<<<<<<<<<
@@ -1125,7 +1125,7 @@ struct __pyx_obj_3mds_7managed_Double {
 };
 
 
-/* "mds/managed.pyx":945
+/* "mds/managed.pyx":963
  * 
  * 
  * cdef class DoubleArray(MDSFloatArrayBase):             # <<<<<<<<<<<<<<
@@ -1138,7 +1138,7 @@ struct __pyx_obj_3mds_7managed_DoubleArray {
 };
 
 
-/* "mds/managed.pyx":1000
+/* "mds/managed.pyx":1018
  * """
  * 
  * cdef class String(MDSObject):             # <<<<<<<<<<<<<<
@@ -1707,7 +1707,6 @@ static const char __pyx_k_center[] = "center";
 static const char __pyx_k_create[] = "create";
 static const char __pyx_k_double[] = "double";
 static const char __pyx_k_encode[] = "encode";
-static const char __pyx_k_fields[] = "__fields";
 static const char __pyx_k_format[] = "format";
 static const char __pyx_k_handle[] = "_handle";
 static const char __pyx_k_import[] = "__import__";
@@ -1748,6 +1747,7 @@ static const char __pyx_k_rpartition[] = "rpartition";
 static const char __pyx_k_startswith[] = "startswith";
 static const char __pyx_k_collections[] = "collections";
 static const char __pyx_k_default_val[] = "default_val";
+static const char __pyx_k_field_decls[] = "_field_decls";
 static const char __pyx_k_isprintable[] = "isprintable";
 static const char __pyx_k_mds_managed[] = "mds.managed";
 static const char __pyx_k_in_container[] = " in container ";
@@ -1819,7 +1819,7 @@ static PyObject *__pyx_n_s_encode;
 static PyObject *__pyx_n_s_end;
 static PyObject *__pyx_n_s_endswith;
 static PyObject *__pyx_n_s_expandtabs;
-static PyObject *__pyx_n_s_fields;
+static PyObject *__pyx_n_s_field_decls;
 static PyObject *__pyx_n_s_find;
 static PyObject *__pyx_n_u_float;
 static PyObject *__pyx_n_s_format;
@@ -2271,11 +2271,11 @@ static PyObject *__pyx_pf_3mds_7managed_9MDSObject_4uuid___get__(CYTHON_UNUSED s
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":56
- *     cdef record_type_handle _type
+/* "mds/managed.pyx":67
+ *     #std::vector<field_decl> _field_decls;
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
- *         self.__fields = []
+ *         self._field_decls = []
  * 
  */
 
@@ -2301,23 +2301,23 @@ static int __pyx_pf_3mds_7managed_6Record___cinit__(struct __pyx_obj_3mds_7manag
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/managed.pyx":57
+  /* "mds/managed.pyx":68
  * 
  *     def __cinit__(self):
- *         self.__fields = []             # <<<<<<<<<<<<<<
+ *         self._field_decls = []             # <<<<<<<<<<<<<<
  * 
- *     def _register_field(self, klass, label, make_const=False, default_value=None):
+ *    # template <typename ...More>
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_fields, __pyx_t_1) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_field_decls, __pyx_t_1) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":56
- *     cdef record_type_handle _type
+  /* "mds/managed.pyx":67
+ *     #std::vector<field_decl> _field_decls;
  * 
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
- *         self.__fields = []
+ *         self._field_decls = []
  * 
  */
 
@@ -2333,11 +2333,11 @@ static int __pyx_pf_3mds_7managed_6Record___cinit__(struct __pyx_obj_3mds_7manag
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":59
- *         self.__fields = []
+/* "mds/managed.pyx":77
+ *    # }
  * 
  *     def _register_field(self, klass, label, make_const=False, default_value=None):             # <<<<<<<<<<<<<<
- *         self.__fields.append(LocalRecordField(klass, label, make_const, default_value))
+ *         self._field_decls.append(LocalRecordField(klass, label, make_const, default_value))
  *         # Need to store in this in some container mapping labels to field types
  */
 
@@ -2375,7 +2375,7 @@ static PyObject *__pyx_pw_3mds_7managed_6Record_3_register_field(PyObject *__pyx
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_label)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_register_field", 0, 2, 4, 1); __PYX_ERR(0, 59, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_register_field", 0, 2, 4, 1); __PYX_ERR(0, 77, __pyx_L3_error)
         }
         case  2:
         if (kw_args > 0) {
@@ -2389,7 +2389,7 @@ static PyObject *__pyx_pw_3mds_7managed_6Record_3_register_field(PyObject *__pyx
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_register_field") < 0)) __PYX_ERR(0, 59, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_register_field") < 0)) __PYX_ERR(0, 77, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2408,7 +2408,7 @@ static PyObject *__pyx_pw_3mds_7managed_6Record_3_register_field(PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_register_field", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 59, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_register_field", 0, 2, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 77, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.Record._register_field", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2433,16 +2433,16 @@ static PyObject *__pyx_pf_3mds_7managed_6Record_2_register_field(struct __pyx_ob
   int __pyx_t_7;
   __Pyx_RefNannySetupContext("_register_field", 0);
 
-  /* "mds/managed.pyx":60
+  /* "mds/managed.pyx":78
  * 
  *     def _register_field(self, klass, label, make_const=False, default_value=None):
- *         self.__fields.append(LocalRecordField(klass, label, make_const, default_value))             # <<<<<<<<<<<<<<
+ *         self._field_decls.append(LocalRecordField(klass, label, make_const, default_value))             # <<<<<<<<<<<<<<
  *         # Need to store in this in some container mapping labels to field types
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_fields); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_field_decls); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_LocalRecordField); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_LocalRecordField); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   __pyx_t_5 = 0;
@@ -2459,7 +2459,7 @@ static PyObject *__pyx_pf_3mds_7managed_6Record_2_register_field(struct __pyx_ob
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[5] = {__pyx_t_4, __pyx_v_klass, __pyx_v_label, __pyx_v_make_const, __pyx_v_default_value};
-    __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 4+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 4+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_2);
   } else
@@ -2467,13 +2467,13 @@ static PyObject *__pyx_pf_3mds_7managed_6Record_2_register_field(struct __pyx_ob
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
     PyObject *__pyx_temp[5] = {__pyx_t_4, __pyx_v_klass, __pyx_v_label, __pyx_v_make_const, __pyx_v_default_value};
-    __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 4+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-__pyx_t_5, 4+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_2);
   } else
   #endif
   {
-    __pyx_t_6 = PyTuple_New(4+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_6 = PyTuple_New(4+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 78, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     if (__pyx_t_4) {
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -2490,20 +2490,20 @@ static PyObject *__pyx_pf_3mds_7managed_6Record_2_register_field(struct __pyx_ob
     __Pyx_INCREF(__pyx_v_default_value);
     __Pyx_GIVEREF(__pyx_v_default_value);
     PyTuple_SET_ITEM(__pyx_t_6, 3+__pyx_t_5, __pyx_v_default_value);
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_7 = __Pyx_PyObject_Append(__pyx_t_1, __pyx_t_2); if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_Append(__pyx_t_1, __pyx_t_2); if (unlikely(__pyx_t_7 == -1)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mds/managed.pyx":59
- *         self.__fields = []
+  /* "mds/managed.pyx":77
+ *    # }
  * 
  *     def _register_field(self, klass, label, make_const=False, default_value=None):             # <<<<<<<<<<<<<<
- *         self.__fields.append(LocalRecordField(klass, label, make_const, default_value))
+ *         self._field_decls.append(LocalRecordField(klass, label, make_const, default_value))
  *         # Need to store in this in some container mapping labels to field types
  */
 
@@ -2524,7 +2524,7 @@ static PyObject *__pyx_pf_3mds_7managed_6Record_2_register_field(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":74
+/* "mds/managed.pyx":92
  *         pass
  * 
  *     def create_record(self):             # <<<<<<<<<<<<<<
@@ -2557,7 +2557,7 @@ static PyObject *__pyx_pf_3mds_7managed_6Record_4create_record(CYTHON_UNUSED str
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":80
+/* "mds/managed.pyx":98
  * cdef class MDSArrayBase(MDSObject):
  * 
  *     def _index_bounds_check(self, index):             # <<<<<<<<<<<<<<
@@ -2590,58 +2590,58 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase__index_bounds_check(struc
   __Pyx_RefNannySetupContext("_index_bounds_check", 0);
   __Pyx_INCREF(__pyx_v_index);
 
-  /* "mds/managed.pyx":82
+  /* "mds/managed.pyx":100
  *     def _index_bounds_check(self, index):
  *          # TODO: Need to handle slices. Should this be a new array?
  *         cdef long l = <long> len(self)             # <<<<<<<<<<<<<<
  * 
  *         if index >= l or index < -l:
  */
-  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 100, __pyx_L1_error)
   __pyx_v_l = ((long)__pyx_t_1);
 
-  /* "mds/managed.pyx":84
+  /* "mds/managed.pyx":102
  *         cdef long l = <long> len(self)
  * 
  *         if index >= l or index < -l:             # <<<<<<<<<<<<<<
  *             raise IndexError('list index out of range')
  * 
  */
-  __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_v_l); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_v_l); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyObject_RichCompare(__pyx_v_index, __pyx_t_3, Py_GE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_4 = PyObject_RichCompare(__pyx_v_index, __pyx_t_3, Py_GE); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (!__pyx_t_5) {
   } else {
     __pyx_t_2 = __pyx_t_5;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_4 = __Pyx_PyInt_From_long((-__pyx_v_l)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_long((-__pyx_v_l)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_v_index, __pyx_t_4, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_v_index, __pyx_t_4, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_2 = __pyx_t_5;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":85
+    /* "mds/managed.pyx":103
  * 
  *         if index >= l or index < -l:
  *             raise IndexError('list index out of range')             # <<<<<<<<<<<<<<
  * 
  *         if index < 0:
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_IndexError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 85, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_IndexError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 85, __pyx_L1_error)
+    __PYX_ERR(0, 103, __pyx_L1_error)
 
-    /* "mds/managed.pyx":84
+    /* "mds/managed.pyx":102
  *         cdef long l = <long> len(self)
  * 
  *         if index >= l or index < -l:             # <<<<<<<<<<<<<<
@@ -2650,34 +2650,34 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase__index_bounds_check(struc
  */
   }
 
-  /* "mds/managed.pyx":87
+  /* "mds/managed.pyx":105
  *             raise IndexError('list index out of range')
  * 
  *         if index < 0:             # <<<<<<<<<<<<<<
  *             index += l
  * 
  */
-  __pyx_t_3 = PyObject_RichCompare(__pyx_v_index, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 87, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_v_index, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":88
+    /* "mds/managed.pyx":106
  * 
  *         if index < 0:
  *             index += l             # <<<<<<<<<<<<<<
  * 
  *         return index
  */
-    __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_v_l); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_v_l); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyNumber_InPlaceAdd(__pyx_v_index, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_InPlaceAdd(__pyx_v_index, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF_SET(__pyx_v_index, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "mds/managed.pyx":87
+    /* "mds/managed.pyx":105
  *             raise IndexError('list index out of range')
  * 
  *         if index < 0:             # <<<<<<<<<<<<<<
@@ -2686,7 +2686,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase__index_bounds_check(struc
  */
   }
 
-  /* "mds/managed.pyx":90
+  /* "mds/managed.pyx":108
  *             index += l
  * 
  *         return index             # <<<<<<<<<<<<<<
@@ -2698,7 +2698,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase__index_bounds_check(struc
   __pyx_r = __pyx_v_index;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":80
+  /* "mds/managed.pyx":98
  * cdef class MDSArrayBase(MDSObject):
  * 
  *     def _index_bounds_check(self, index):             # <<<<<<<<<<<<<<
@@ -2719,7 +2719,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase__index_bounds_check(struc
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":92
+/* "mds/managed.pyx":110
  *         return index
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -2746,20 +2746,20 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_2_to_python(CYTHON_UNUSED
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":93
+  /* "mds/managed.pyx":111
  * 
  *     def _to_python(self, index):
  *         raise NotImplementedError('Specialization of MDSList required')             # <<<<<<<<<<<<<<
  * 
  *     def _to_mds(self, index, value):
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 93, __pyx_L1_error)
+  __PYX_ERR(0, 111, __pyx_L1_error)
 
-  /* "mds/managed.pyx":92
+  /* "mds/managed.pyx":110
  *         return index
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -2777,7 +2777,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_2_to_python(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":95
+/* "mds/managed.pyx":113
  *         raise NotImplementedError('Specialization of MDSList required')
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -2813,11 +2813,11 @@ static PyObject *__pyx_pw_3mds_7managed_12MDSArrayBase_5_to_mds(PyObject *__pyx_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 95, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 113, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 95, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 113, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2830,7 +2830,7 @@ static PyObject *__pyx_pw_3mds_7managed_12MDSArrayBase_5_to_mds(PyObject *__pyx_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 95, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 113, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.MDSArrayBase._to_mds", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2849,20 +2849,20 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_4_to_mds(CYTHON_UNUSED st
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_mds", 0);
 
-  /* "mds/managed.pyx":96
+  /* "mds/managed.pyx":114
  * 
  *     def _to_mds(self, index, value):
  *         raise NotImplementedError('Specialization of MDSList required')             # <<<<<<<<<<<<<<
  * 
  *     def __getitem__(self, index):
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 96, __pyx_L1_error)
+  __PYX_ERR(0, 114, __pyx_L1_error)
 
-  /* "mds/managed.pyx":95
+  /* "mds/managed.pyx":113
  *         raise NotImplementedError('Specialization of MDSList required')
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -2880,7 +2880,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_4_to_mds(CYTHON_UNUSED st
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":98
+/* "mds/managed.pyx":116
  *         raise NotImplementedError('Specialization of MDSList required')
  * 
  *     def __getitem__(self, index):             # <<<<<<<<<<<<<<
@@ -2911,14 +2911,14 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_6__getitem__(struct __pyx
   __Pyx_RefNannySetupContext("__getitem__", 0);
   __Pyx_INCREF(__pyx_v_index);
 
-  /* "mds/managed.pyx":99
+  /* "mds/managed.pyx":117
  * 
  *     def __getitem__(self, index):
  *         index = self._index_bounds_check(index)             # <<<<<<<<<<<<<<
  *         return self._to_python(index)
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_index_bounds_check); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_index_bounds_check); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -2931,13 +2931,13 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_6__getitem__(struct __pyx
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_index};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -2945,19 +2945,19 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_6__getitem__(struct __pyx
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_index};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 117, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_index);
       __Pyx_GIVEREF(__pyx_v_index);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_index);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -2966,7 +2966,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_6__getitem__(struct __pyx
   __Pyx_DECREF_SET(__pyx_v_index, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":100
+  /* "mds/managed.pyx":118
  *     def __getitem__(self, index):
  *         index = self._index_bounds_check(index)
  *         return self._to_python(index)             # <<<<<<<<<<<<<<
@@ -2974,7 +2974,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_6__getitem__(struct __pyx
  *     def __setitem__(self, index, value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_to_python); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_to_python); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -2987,13 +2987,13 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_6__getitem__(struct __pyx
     }
   }
   if (!__pyx_t_4) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_v_index};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -3001,19 +3001,19 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_6__getitem__(struct __pyx
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_v_index};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 100, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 118, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4); __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_v_index);
       __Pyx_GIVEREF(__pyx_v_index);
       PyTuple_SET_ITEM(__pyx_t_3, 0+1, __pyx_v_index);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
@@ -3023,7 +3023,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_6__getitem__(struct __pyx
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":98
+  /* "mds/managed.pyx":116
  *         raise NotImplementedError('Specialization of MDSList required')
  * 
  *     def __getitem__(self, index):             # <<<<<<<<<<<<<<
@@ -3046,7 +3046,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_6__getitem__(struct __pyx
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":102
+/* "mds/managed.pyx":120
  *         return self._to_python(index)
  * 
  *     def __setitem__(self, index, value):             # <<<<<<<<<<<<<<
@@ -3078,14 +3078,14 @@ static int __pyx_pf_3mds_7managed_12MDSArrayBase_8__setitem__(struct __pyx_obj_3
   __Pyx_RefNannySetupContext("__setitem__", 0);
   __Pyx_INCREF(__pyx_v_index);
 
-  /* "mds/managed.pyx":103
+  /* "mds/managed.pyx":121
  * 
  *     def __setitem__(self, index, value):
  *         index = self._index_bounds_check(index)             # <<<<<<<<<<<<<<
  *         self._to_mds(index, value)
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_index_bounds_check); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_index_bounds_check); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -3098,13 +3098,13 @@ static int __pyx_pf_3mds_7managed_12MDSArrayBase_8__setitem__(struct __pyx_obj_3
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_index};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -3112,19 +3112,19 @@ static int __pyx_pf_3mds_7managed_12MDSArrayBase_8__setitem__(struct __pyx_obj_3
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_index};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 103, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 121, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_index);
       __Pyx_GIVEREF(__pyx_v_index);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_index);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -3133,14 +3133,14 @@ static int __pyx_pf_3mds_7managed_12MDSArrayBase_8__setitem__(struct __pyx_obj_3
   __Pyx_DECREF_SET(__pyx_v_index, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":104
+  /* "mds/managed.pyx":122
  *     def __setitem__(self, index, value):
  *         index = self._index_bounds_check(index)
  *         self._to_mds(index, value)             # <<<<<<<<<<<<<<
  * 
  *     def __delitem__(self, index):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_to_mds); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 104, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_to_mds); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 122, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   __pyx_t_5 = 0;
@@ -3157,7 +3157,7 @@ static int __pyx_pf_3mds_7managed_12MDSArrayBase_8__setitem__(struct __pyx_obj_3
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_v_index, __pyx_v_value};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -3165,13 +3165,13 @@ static int __pyx_pf_3mds_7managed_12MDSArrayBase_8__setitem__(struct __pyx_obj_3
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_v_index, __pyx_v_value};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_3 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 104, __pyx_L1_error)
+    __pyx_t_3 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (__pyx_t_4) {
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4); __pyx_t_4 = NULL;
@@ -3182,14 +3182,14 @@ static int __pyx_pf_3mds_7managed_12MDSArrayBase_8__setitem__(struct __pyx_obj_3
     __Pyx_INCREF(__pyx_v_value);
     __Pyx_GIVEREF(__pyx_v_value);
     PyTuple_SET_ITEM(__pyx_t_3, 1+__pyx_t_5, __pyx_v_value);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 122, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":102
+  /* "mds/managed.pyx":120
  *         return self._to_python(index)
  * 
  *     def __setitem__(self, index, value):             # <<<<<<<<<<<<<<
@@ -3213,7 +3213,7 @@ static int __pyx_pf_3mds_7managed_12MDSArrayBase_8__setitem__(struct __pyx_obj_3
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":106
+/* "mds/managed.pyx":124
  *         self._to_mds(index, value)
  * 
  *     def __delitem__(self, index):             # <<<<<<<<<<<<<<
@@ -3245,7 +3245,7 @@ static int __pyx_pf_3mds_7managed_12MDSArrayBase_10__delitem__(CYTHON_UNUSED str
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":110
+/* "mds/managed.pyx":128
  *         pass
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -3278,7 +3278,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_12__iter__(CYTHON_UNUSED 
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":113
+/* "mds/managed.pyx":131
  *         pass
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
@@ -3311,7 +3311,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_14__next__(CYTHON_UNUSED 
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":116
+/* "mds/managed.pyx":134
  *         pass
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -3338,20 +3338,20 @@ static Py_ssize_t __pyx_pf_3mds_7managed_12MDSArrayBase_16__len__(CYTHON_UNUSED 
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "mds/managed.pyx":117
+  /* "mds/managed.pyx":135
  * 
  *     def __len__(self):
  *         raise NotImplementedError('Specialization of MDSArrayBase required')             # <<<<<<<<<<<<<<
  * 
  *     def insert(self, index, value):
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 117, __pyx_L1_error)
+  __PYX_ERR(0, 135, __pyx_L1_error)
 
-  /* "mds/managed.pyx":116
+  /* "mds/managed.pyx":134
  *         pass
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -3368,7 +3368,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_12MDSArrayBase_16__len__(CYTHON_UNUSED 
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":119
+/* "mds/managed.pyx":137
  *         raise NotImplementedError('Specialization of MDSArrayBase required')
  * 
  *     def insert(self, index, value):             # <<<<<<<<<<<<<<
@@ -3404,11 +3404,11 @@ static PyObject *__pyx_pw_3mds_7managed_12MDSArrayBase_19insert(PyObject *__pyx_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("insert", 1, 2, 2, 1); __PYX_ERR(0, 119, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("insert", 1, 2, 2, 1); __PYX_ERR(0, 137, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "insert") < 0)) __PYX_ERR(0, 119, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "insert") < 0)) __PYX_ERR(0, 137, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -3421,7 +3421,7 @@ static PyObject *__pyx_pw_3mds_7managed_12MDSArrayBase_19insert(PyObject *__pyx_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("insert", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 119, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("insert", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 137, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.MDSArrayBase.insert", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3440,20 +3440,20 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_18insert(CYTHON_UNUSED st
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("insert", 0);
 
-  /* "mds/managed.pyx":120
+  /* "mds/managed.pyx":138
  * 
  *     def insert(self, index, value):
  *         raise NotImplementedError('Unable to grow fixed-size array')             # <<<<<<<<<<<<<<
  * 
  *     def remove(self, value):
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 120, __pyx_L1_error)
+  __PYX_ERR(0, 138, __pyx_L1_error)
 
-  /* "mds/managed.pyx":119
+  /* "mds/managed.pyx":137
  *         raise NotImplementedError('Specialization of MDSArrayBase required')
  * 
  *     def insert(self, index, value):             # <<<<<<<<<<<<<<
@@ -3471,7 +3471,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_18insert(CYTHON_UNUSED st
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":122
+/* "mds/managed.pyx":140
  *         raise NotImplementedError('Unable to grow fixed-size array')
  * 
  *     def remove(self, value):             # <<<<<<<<<<<<<<
@@ -3498,20 +3498,20 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_20remove(CYTHON_UNUSED st
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("remove", 0);
 
-  /* "mds/managed.pyx":123
+  /* "mds/managed.pyx":141
  * 
  *     def remove(self, value):
  *         raise NotImplementedError('Unable to shrink fixed-size array')             # <<<<<<<<<<<<<<
  * 
  *     def pop(self, index=-1):
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 123, __pyx_L1_error)
+  __PYX_ERR(0, 141, __pyx_L1_error)
 
-  /* "mds/managed.pyx":122
+  /* "mds/managed.pyx":140
  *         raise NotImplementedError('Unable to grow fixed-size array')
  * 
  *     def remove(self, value):             # <<<<<<<<<<<<<<
@@ -3529,7 +3529,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_20remove(CYTHON_UNUSED st
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":125
+/* "mds/managed.pyx":143
  *         raise NotImplementedError('Unable to shrink fixed-size array')
  * 
  *     def pop(self, index=-1):             # <<<<<<<<<<<<<<
@@ -3565,7 +3565,7 @@ static PyObject *__pyx_pw_3mds_7managed_12MDSArrayBase_23pop(PyObject *__pyx_v_s
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "pop") < 0)) __PYX_ERR(0, 125, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "pop") < 0)) __PYX_ERR(0, 143, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3578,7 +3578,7 @@ static PyObject *__pyx_pw_3mds_7managed_12MDSArrayBase_23pop(PyObject *__pyx_v_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("pop", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 125, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("pop", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 143, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.MDSArrayBase.pop", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3597,20 +3597,20 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_22pop(CYTHON_UNUSED struc
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("pop", 0);
 
-  /* "mds/managed.pyx":126
+  /* "mds/managed.pyx":144
  * 
  *     def pop(self, index=-1):
  *         raise NotImplementedError('Unable to shrink fixed-size array')             # <<<<<<<<<<<<<<
  * 
  *     def clear(self):
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 126, __pyx_L1_error)
+  __PYX_ERR(0, 144, __pyx_L1_error)
 
-  /* "mds/managed.pyx":125
+  /* "mds/managed.pyx":143
  *         raise NotImplementedError('Unable to shrink fixed-size array')
  * 
  *     def pop(self, index=-1):             # <<<<<<<<<<<<<<
@@ -3628,7 +3628,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_22pop(CYTHON_UNUSED struc
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":128
+/* "mds/managed.pyx":146
  *         raise NotImplementedError('Unable to shrink fixed-size array')
  * 
  *     def clear(self):             # <<<<<<<<<<<<<<
@@ -3661,7 +3661,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_24clear(CYTHON_UNUSED str
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":131
+/* "mds/managed.pyx":149
  *         pass
  * 
  *     def index(self, start=None, end=None):             # <<<<<<<<<<<<<<
@@ -3705,7 +3705,7 @@ static PyObject *__pyx_pw_3mds_7managed_12MDSArrayBase_27index(PyObject *__pyx_v
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "index") < 0)) __PYX_ERR(0, 131, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "index") < 0)) __PYX_ERR(0, 149, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3720,7 +3720,7 @@ static PyObject *__pyx_pw_3mds_7managed_12MDSArrayBase_27index(PyObject *__pyx_v
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("index", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 131, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("index", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 149, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.MDSArrayBase.index", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3745,7 +3745,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_26index(CYTHON_UNUSED str
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":134
+/* "mds/managed.pyx":152
  *         pass
  * 
  *     def count(self, value):             # <<<<<<<<<<<<<<
@@ -3781,34 +3781,34 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_28count(struct __pyx_obj_
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("count", 0);
 
-  /* "mds/managed.pyx":137
+  /* "mds/managed.pyx":155
  *         # TODO: Handle len 0, should this even be instantiable?
  *         # TODO: Bool still a str-literal here
  *         if not isinstance(value, type(self[0])):             # <<<<<<<<<<<<<<
  *             raise TypeError("value to be searched for must match list-type `bool`")
  * 
  */
-  __pyx_t_1 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyObject_IsInstance(__pyx_v_value, ((PyObject *)Py_TYPE(__pyx_t_1))); if (unlikely(__pyx_t_2 == -1)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_t_2 = PyObject_IsInstance(__pyx_v_value, ((PyObject *)Py_TYPE(__pyx_t_1))); if (unlikely(__pyx_t_2 == -1)) __PYX_ERR(0, 155, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = ((!(__pyx_t_2 != 0)) != 0);
   if (__pyx_t_3) {
 
-    /* "mds/managed.pyx":138
+    /* "mds/managed.pyx":156
  *         # TODO: Bool still a str-literal here
  *         if not isinstance(value, type(self[0])):
  *             raise TypeError("value to be searched for must match list-type `bool`")             # <<<<<<<<<<<<<<
  * 
  *         cdef:
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 156, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 138, __pyx_L1_error)
+    __PYX_ERR(0, 156, __pyx_L1_error)
 
-    /* "mds/managed.pyx":137
+    /* "mds/managed.pyx":155
  *         # TODO: Handle len 0, should this even be instantiable?
  *         # TODO: Bool still a str-literal here
  *         if not isinstance(value, type(self[0])):             # <<<<<<<<<<<<<<
@@ -3817,7 +3817,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_28count(struct __pyx_obj_
  */
   }
 
-  /* "mds/managed.pyx":141
+  /* "mds/managed.pyx":159
  * 
  *         cdef:
  *             size_t i = 0, l = len(self), c = 0             # <<<<<<<<<<<<<<
@@ -3825,11 +3825,11 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_28count(struct __pyx_obj_
  *         for i in range(l):
  */
   __pyx_v_i = 0;
-  __pyx_t_4 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_4 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(0, 159, __pyx_L1_error)
   __pyx_v_l = __pyx_t_4;
   __pyx_v_c = 0;
 
-  /* "mds/managed.pyx":143
+  /* "mds/managed.pyx":161
  *             size_t i = 0, l = len(self), c = 0
  * 
  *         for i in range(l):             # <<<<<<<<<<<<<<
@@ -3840,22 +3840,22 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_28count(struct __pyx_obj_
   for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
     __pyx_v_i = __pyx_t_6;
 
-    /* "mds/managed.pyx":144
+    /* "mds/managed.pyx":162
  * 
  *         for i in range(l):
  *             if self[i] == value:             # <<<<<<<<<<<<<<
  *                 c += 1
  * 
  */
-    __pyx_t_1 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 144, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 162, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_7 = PyObject_RichCompare(__pyx_t_1, __pyx_v_value, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 144, __pyx_L1_error)
+    __pyx_t_7 = PyObject_RichCompare(__pyx_t_1, __pyx_v_value, Py_EQ); __Pyx_XGOTREF(__pyx_t_7); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 162, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 144, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_7); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 162, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     if (__pyx_t_3) {
 
-      /* "mds/managed.pyx":145
+      /* "mds/managed.pyx":163
  *         for i in range(l):
  *             if self[i] == value:
  *                 c += 1             # <<<<<<<<<<<<<<
@@ -3864,7 +3864,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_28count(struct __pyx_obj_
  */
       __pyx_v_c = (__pyx_v_c + 1);
 
-      /* "mds/managed.pyx":144
+      /* "mds/managed.pyx":162
  * 
  *         for i in range(l):
  *             if self[i] == value:             # <<<<<<<<<<<<<<
@@ -3874,7 +3874,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_28count(struct __pyx_obj_
     }
   }
 
-  /* "mds/managed.pyx":147
+  /* "mds/managed.pyx":165
  *                 c += 1
  * 
  *         return c             # <<<<<<<<<<<<<<
@@ -3882,13 +3882,13 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_28count(struct __pyx_obj_
  *     def sort(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_7 = __Pyx_PyInt_FromSize_t(__pyx_v_c); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 147, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyInt_FromSize_t(__pyx_v_c); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __pyx_r = __pyx_t_7;
   __pyx_t_7 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":134
+  /* "mds/managed.pyx":152
  *         pass
  * 
  *     def count(self, value):             # <<<<<<<<<<<<<<
@@ -3908,7 +3908,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_28count(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":149
+/* "mds/managed.pyx":167
  *         return c
  * 
  *     def sort(self):             # <<<<<<<<<<<<<<
@@ -3941,7 +3941,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_30sort(CYTHON_UNUSED stru
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":152
+/* "mds/managed.pyx":170
  *         pass  # TODO
  * 
  *     def reverse(self):             # <<<<<<<<<<<<<<
@@ -3974,7 +3974,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_32reverse(CYTHON_UNUSED s
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":155
+/* "mds/managed.pyx":173
  *         pass  # TODO
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -4001,20 +4001,20 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_34copy(CYTHON_UNUSED stru
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("copy", 0);
 
-  /* "mds/managed.pyx":156
+  /* "mds/managed.pyx":174
  * 
  *     def copy(self):
  *         raise NotImplementedError('Specialization of MDSArrayBase required')             # <<<<<<<<<<<<<<
  * 
  *     @staticmethod
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 174, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 156, __pyx_L1_error)
+  __PYX_ERR(0, 174, __pyx_L1_error)
 
-  /* "mds/managed.pyx":155
+  /* "mds/managed.pyx":173
  *         pass  # TODO
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -4032,7 +4032,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_34copy(CYTHON_UNUSED stru
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":159
+/* "mds/managed.pyx":177
  * 
  *     @staticmethod
  *     def create(dtype, length):             # <<<<<<<<<<<<<<
@@ -4069,11 +4069,11 @@ static PyObject *__pyx_pw_3mds_7managed_12MDSArrayBase_37create(CYTHON_UNUSED Py
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_length)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("create", 1, 2, 2, 1); __PYX_ERR(0, 159, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("create", 1, 2, 2, 1); __PYX_ERR(0, 177, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 159, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 177, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -4086,7 +4086,7 @@ static PyObject *__pyx_pw_3mds_7managed_12MDSArrayBase_37create(CYTHON_UNUSED Py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 159, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 177, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.MDSArrayBase.create", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -4110,17 +4110,17 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
   PyObject *__pyx_t_6 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
 
-  /* "mds/managed.pyx":160
+  /* "mds/managed.pyx":178
  *     @staticmethod
  *     def create(dtype, length):
  *         if dtype == "bool":             # <<<<<<<<<<<<<<
  *             return BoolArray_Init(create_bool_marray(length))
  *         elif dtype == "byte":
  */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_bool, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 160, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_bool, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 178, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":161
+    /* "mds/managed.pyx":179
  *     def create(dtype, length):
  *         if dtype == "bool":
  *             return BoolArray_Init(create_bool_marray(length))             # <<<<<<<<<<<<<<
@@ -4128,14 +4128,14 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  *             return ByteArray_Init(create_byte_marray(length))
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3mds_7managed_BoolArray_Init(mds::python::types::create_bool_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3mds_7managed_BoolArray_Init(mds::python::types::create_bool_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 179, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":160
+    /* "mds/managed.pyx":178
  *     @staticmethod
  *     def create(dtype, length):
  *         if dtype == "bool":             # <<<<<<<<<<<<<<
@@ -4144,17 +4144,17 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  */
   }
 
-  /* "mds/managed.pyx":162
+  /* "mds/managed.pyx":180
  *         if dtype == "bool":
  *             return BoolArray_Init(create_bool_marray(length))
  *         elif dtype == "byte":             # <<<<<<<<<<<<<<
  *             return ByteArray_Init(create_byte_marray(length))
  *         elif dtype == "ubyte":
  */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_byte, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 162, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_byte, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 180, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":163
+    /* "mds/managed.pyx":181
  *             return BoolArray_Init(create_bool_marray(length))
  *         elif dtype == "byte":
  *             return ByteArray_Init(create_byte_marray(length))             # <<<<<<<<<<<<<<
@@ -4162,14 +4162,14 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  *             return UByteArray_Init(create_ubyte_marray(length))
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 163, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3mds_7managed_ByteArray_Init(mds::python::types::create_byte_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 163, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 181, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3mds_7managed_ByteArray_Init(mds::python::types::create_byte_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 181, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":162
+    /* "mds/managed.pyx":180
  *         if dtype == "bool":
  *             return BoolArray_Init(create_bool_marray(length))
  *         elif dtype == "byte":             # <<<<<<<<<<<<<<
@@ -4178,17 +4178,17 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  */
   }
 
-  /* "mds/managed.pyx":164
+  /* "mds/managed.pyx":182
  *         elif dtype == "byte":
  *             return ByteArray_Init(create_byte_marray(length))
  *         elif dtype == "ubyte":             # <<<<<<<<<<<<<<
  *             return UByteArray_Init(create_ubyte_marray(length))
  *         elif dtype == "short":
  */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_ubyte, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 164, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_ubyte, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 182, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":165
+    /* "mds/managed.pyx":183
  *             return ByteArray_Init(create_byte_marray(length))
  *         elif dtype == "ubyte":
  *             return UByteArray_Init(create_ubyte_marray(length))             # <<<<<<<<<<<<<<
@@ -4196,14 +4196,14 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  *             return ShortArray_Init(create_short_marray(length))
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 165, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3mds_7managed_UByteArray_Init(mds::python::types::create_ubyte_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3mds_7managed_UByteArray_Init(mds::python::types::create_ubyte_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 183, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":164
+    /* "mds/managed.pyx":182
  *         elif dtype == "byte":
  *             return ByteArray_Init(create_byte_marray(length))
  *         elif dtype == "ubyte":             # <<<<<<<<<<<<<<
@@ -4212,17 +4212,17 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  */
   }
 
-  /* "mds/managed.pyx":166
+  /* "mds/managed.pyx":184
  *         elif dtype == "ubyte":
  *             return UByteArray_Init(create_ubyte_marray(length))
  *         elif dtype == "short":             # <<<<<<<<<<<<<<
  *             return ShortArray_Init(create_short_marray(length))
  *         elif dtype == "ushort":
  */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_short, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_short, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 184, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":167
+    /* "mds/managed.pyx":185
  *             return UByteArray_Init(create_ubyte_marray(length))
  *         elif dtype == "short":
  *             return ShortArray_Init(create_short_marray(length))             # <<<<<<<<<<<<<<
@@ -4230,14 +4230,14 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  *             return UShortArray_Init(create_ushort_marray(length))
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 167, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3mds_7managed_ShortArray_Init(mds::python::types::create_short_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 167, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 185, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3mds_7managed_ShortArray_Init(mds::python::types::create_short_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 185, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":166
+    /* "mds/managed.pyx":184
  *         elif dtype == "ubyte":
  *             return UByteArray_Init(create_ubyte_marray(length))
  *         elif dtype == "short":             # <<<<<<<<<<<<<<
@@ -4246,17 +4246,17 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  */
   }
 
-  /* "mds/managed.pyx":168
+  /* "mds/managed.pyx":186
  *         elif dtype == "short":
  *             return ShortArray_Init(create_short_marray(length))
  *         elif dtype == "ushort":             # <<<<<<<<<<<<<<
  *             return UShortArray_Init(create_ushort_marray(length))
  *         elif dtype == "int":
  */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_ushort, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 168, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_ushort, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 186, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":169
+    /* "mds/managed.pyx":187
  *             return ShortArray_Init(create_short_marray(length))
  *         elif dtype == "ushort":
  *             return UShortArray_Init(create_ushort_marray(length))             # <<<<<<<<<<<<<<
@@ -4264,14 +4264,14 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  *             return IntArray_Init(create_int_marray(length))
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3mds_7managed_UShortArray_Init(mds::python::types::create_ushort_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 169, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3mds_7managed_UShortArray_Init(mds::python::types::create_ushort_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 187, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":168
+    /* "mds/managed.pyx":186
  *         elif dtype == "short":
  *             return ShortArray_Init(create_short_marray(length))
  *         elif dtype == "ushort":             # <<<<<<<<<<<<<<
@@ -4280,17 +4280,17 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  */
   }
 
-  /* "mds/managed.pyx":170
+  /* "mds/managed.pyx":188
  *         elif dtype == "ushort":
  *             return UShortArray_Init(create_ushort_marray(length))
  *         elif dtype == "int":             # <<<<<<<<<<<<<<
  *             return IntArray_Init(create_int_marray(length))
  *         elif dtype == "uint":
  */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_int, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 170, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_int, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 188, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":171
+    /* "mds/managed.pyx":189
  *             return UShortArray_Init(create_ushort_marray(length))
  *         elif dtype == "int":
  *             return IntArray_Init(create_int_marray(length))             # <<<<<<<<<<<<<<
@@ -4298,14 +4298,14 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  *             return UIntArray_Init(create_uint_marray(length))
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 171, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3mds_7managed_IntArray_Init(mds::python::types::create_int_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 171, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 189, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3mds_7managed_IntArray_Init(mds::python::types::create_int_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 189, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":170
+    /* "mds/managed.pyx":188
  *         elif dtype == "ushort":
  *             return UShortArray_Init(create_ushort_marray(length))
  *         elif dtype == "int":             # <<<<<<<<<<<<<<
@@ -4314,17 +4314,17 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  */
   }
 
-  /* "mds/managed.pyx":172
+  /* "mds/managed.pyx":190
  *         elif dtype == "int":
  *             return IntArray_Init(create_int_marray(length))
  *         elif dtype == "uint":             # <<<<<<<<<<<<<<
  *             return UIntArray_Init(create_uint_marray(length))
  *         elif dtype == "long":
  */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_uint, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 172, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_uint, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 190, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":173
+    /* "mds/managed.pyx":191
  *             return IntArray_Init(create_int_marray(length))
  *         elif dtype == "uint":
  *             return UIntArray_Init(create_uint_marray(length))             # <<<<<<<<<<<<<<
@@ -4332,14 +4332,14 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  *             return LongArray_Init(create_long_marray(length))
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 173, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3mds_7managed_UIntArray_Init(mds::python::types::create_uint_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 173, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 191, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3mds_7managed_UIntArray_Init(mds::python::types::create_uint_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 191, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":172
+    /* "mds/managed.pyx":190
  *         elif dtype == "int":
  *             return IntArray_Init(create_int_marray(length))
  *         elif dtype == "uint":             # <<<<<<<<<<<<<<
@@ -4348,17 +4348,17 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  */
   }
 
-  /* "mds/managed.pyx":174
+  /* "mds/managed.pyx":192
  *         elif dtype == "uint":
  *             return UIntArray_Init(create_uint_marray(length))
  *         elif dtype == "long":             # <<<<<<<<<<<<<<
  *             return LongArray_Init(create_long_marray(length))
  *         elif dtype == "ulong":
  */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_long, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 174, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_long, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 192, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":175
+    /* "mds/managed.pyx":193
  *             return UIntArray_Init(create_uint_marray(length))
  *         elif dtype == "long":
  *             return LongArray_Init(create_long_marray(length))             # <<<<<<<<<<<<<<
@@ -4366,14 +4366,14 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  *             return ULongArray_Init(create_ulong_marray(length))
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 175, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3mds_7managed_LongArray_Init(mds::python::types::create_long_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 175, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 193, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3mds_7managed_LongArray_Init(mds::python::types::create_long_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 193, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":174
+    /* "mds/managed.pyx":192
  *         elif dtype == "uint":
  *             return UIntArray_Init(create_uint_marray(length))
  *         elif dtype == "long":             # <<<<<<<<<<<<<<
@@ -4382,17 +4382,17 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  */
   }
 
-  /* "mds/managed.pyx":176
+  /* "mds/managed.pyx":194
  *         elif dtype == "long":
  *             return LongArray_Init(create_long_marray(length))
  *         elif dtype == "ulong":             # <<<<<<<<<<<<<<
  *             return ULongArray_Init(create_ulong_marray(length))
  *         elif dtype == "float":
  */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_ulong, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_ulong, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 194, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":177
+    /* "mds/managed.pyx":195
  *             return LongArray_Init(create_long_marray(length))
  *         elif dtype == "ulong":
  *             return ULongArray_Init(create_ulong_marray(length))             # <<<<<<<<<<<<<<
@@ -4400,14 +4400,14 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  *             return FloatArray_Init(create_float_marray(length))
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 177, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3mds_7managed_ULongArray_Init(mds::python::types::create_ulong_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 177, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 195, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3mds_7managed_ULongArray_Init(mds::python::types::create_ulong_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 195, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":176
+    /* "mds/managed.pyx":194
  *         elif dtype == "long":
  *             return LongArray_Init(create_long_marray(length))
  *         elif dtype == "ulong":             # <<<<<<<<<<<<<<
@@ -4416,17 +4416,17 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  */
   }
 
-  /* "mds/managed.pyx":178
+  /* "mds/managed.pyx":196
  *         elif dtype == "ulong":
  *             return ULongArray_Init(create_ulong_marray(length))
  *         elif dtype == "float":             # <<<<<<<<<<<<<<
  *             return FloatArray_Init(create_float_marray(length))
  *         elif dtype == "double":
  */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_float, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_float, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":179
+    /* "mds/managed.pyx":197
  *             return ULongArray_Init(create_ulong_marray(length))
  *         elif dtype == "float":
  *             return FloatArray_Init(create_float_marray(length))             # <<<<<<<<<<<<<<
@@ -4434,14 +4434,14 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  *             return DoubleArray_Init(create_double_marray(length))
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3mds_7managed_FloatArray_Init(mds::python::types::create_float_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 179, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 197, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3mds_7managed_FloatArray_Init(mds::python::types::create_float_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":178
+    /* "mds/managed.pyx":196
  *         elif dtype == "ulong":
  *             return ULongArray_Init(create_ulong_marray(length))
  *         elif dtype == "float":             # <<<<<<<<<<<<<<
@@ -4450,17 +4450,17 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  */
   }
 
-  /* "mds/managed.pyx":180
+  /* "mds/managed.pyx":198
  *         elif dtype == "float":
  *             return FloatArray_Init(create_float_marray(length))
  *         elif dtype == "double":             # <<<<<<<<<<<<<<
  *             return DoubleArray_Init(create_double_marray(length))
  * 
  */
-  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_double, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 180, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_dtype, __pyx_n_u_double, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 198, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":181
+    /* "mds/managed.pyx":199
  *             return FloatArray_Init(create_float_marray(length))
  *         elif dtype == "double":
  *             return DoubleArray_Init(create_double_marray(length))             # <<<<<<<<<<<<<<
@@ -4468,14 +4468,14 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  *         raise TypeError(f'Cannot create an array of unknown type `{dtype}`')
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 181, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3mds_7managed_DoubleArray_Init(mds::python::types::create_double_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 181, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_2 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 199, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3mds_7managed_DoubleArray_Init(mds::python::types::create_double_marray(__pyx_t_2)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 199, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":180
+    /* "mds/managed.pyx":198
  *         elif dtype == "float":
  *             return FloatArray_Init(create_float_marray(length))
  *         elif dtype == "double":             # <<<<<<<<<<<<<<
@@ -4484,14 +4484,14 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
  */
   }
 
-  /* "mds/managed.pyx":183
+  /* "mds/managed.pyx":201
  *             return DoubleArray_Init(create_double_marray(length))
  * 
  *         raise TypeError(f'Cannot create an array of unknown type `{dtype}`')             # <<<<<<<<<<<<<<
  * 
  *     property dtype:
  */
-  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 183, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = 0;
   __pyx_t_5 = 127;
@@ -4499,7 +4499,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
   __pyx_t_4 += 40;
   __Pyx_GIVEREF(__pyx_kp_u_Cannot_create_an_array_of_unknow);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_kp_u_Cannot_create_an_array_of_unknow);
-  __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_v_dtype, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 183, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_FormatSimple(__pyx_v_dtype, __pyx_empty_unicode); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_5 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) > __pyx_t_5) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_6) : __pyx_t_5;
   __pyx_t_4 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_6);
@@ -4510,22 +4510,22 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
   __pyx_t_4 += 1;
   __Pyx_GIVEREF(__pyx_kp_u__10);
   PyTuple_SET_ITEM(__pyx_t_3, 2, __pyx_kp_u__10);
-  __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 183, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyUnicode_Join(__pyx_t_3, 3, __pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 183, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_6);
   PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_6);
   __pyx_t_6 = 0;
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 183, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_Raise(__pyx_t_6, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __PYX_ERR(0, 183, __pyx_L1_error)
+  __PYX_ERR(0, 201, __pyx_L1_error)
 
-  /* "mds/managed.pyx":159
+  /* "mds/managed.pyx":177
  * 
  *     @staticmethod
  *     def create(dtype, length):             # <<<<<<<<<<<<<<
@@ -4545,7 +4545,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_36create(PyObject *__pyx_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":186
+/* "mds/managed.pyx":204
  * 
  *     property dtype:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4572,20 +4572,20 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_5dtype___get__(CYTHON_UNU
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":187
+  /* "mds/managed.pyx":205
  *     property dtype:
  *         def __get__(self):
  *             raise NotImplementedError('Specialization of MDSArrayBase required')             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 187, __pyx_L1_error)
+  __PYX_ERR(0, 205, __pyx_L1_error)
 
-  /* "mds/managed.pyx":186
+  /* "mds/managed.pyx":204
  * 
  *     property dtype:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4603,7 +4603,7 @@ static PyObject *__pyx_pf_3mds_7managed_12MDSArrayBase_5dtype___get__(CYTHON_UNU
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":192
+/* "mds/managed.pyx":210
  * cdef class MDSIntArrayBase(MDSArrayBase):
  * 
  *     def _numeric_bounds_check(self, value):             # <<<<<<<<<<<<<<
@@ -4631,20 +4631,20 @@ static PyObject *__pyx_pf_3mds_7managed_15MDSIntArrayBase__numeric_bounds_check(
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_numeric_bounds_check", 0);
 
-  /* "mds/managed.pyx":196
+  /* "mds/managed.pyx":214
  *         TODO: This needs to check the bounds of the different int sizes in MDS.
  *         """
  *         raise NotImplementedError('Requires a type-specific instantiation')             # <<<<<<<<<<<<<<
  * 
  *     def __setitem__(self, index, value):
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__12, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__12, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 196, __pyx_L1_error)
+  __PYX_ERR(0, 214, __pyx_L1_error)
 
-  /* "mds/managed.pyx":192
+  /* "mds/managed.pyx":210
  * cdef class MDSIntArrayBase(MDSArrayBase):
  * 
  *     def _numeric_bounds_check(self, value):             # <<<<<<<<<<<<<<
@@ -4662,7 +4662,7 @@ static PyObject *__pyx_pf_3mds_7managed_15MDSIntArrayBase__numeric_bounds_check(
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":198
+/* "mds/managed.pyx":216
  *         raise NotImplementedError('Requires a type-specific instantiation')
  * 
  *     def __setitem__(self, index, value):             # <<<<<<<<<<<<<<
@@ -4695,14 +4695,14 @@ static int __pyx_pf_3mds_7managed_15MDSIntArrayBase_2__setitem__(struct __pyx_ob
   __Pyx_INCREF(__pyx_v_index);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "mds/managed.pyx":199
+  /* "mds/managed.pyx":217
  * 
  *     def __setitem__(self, index, value):
  *         index = self._index_bounds_check(index)             # <<<<<<<<<<<<<<
  *         value = self._numeric_bounds_check(value)
  *         self._to_mds(index, value)
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_index_bounds_check); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_index_bounds_check); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 217, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -4715,13 +4715,13 @@ static int __pyx_pf_3mds_7managed_15MDSIntArrayBase_2__setitem__(struct __pyx_ob
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 217, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_index};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 217, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -4729,19 +4729,19 @@ static int __pyx_pf_3mds_7managed_15MDSIntArrayBase_2__setitem__(struct __pyx_ob
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_index};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 217, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 199, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 217, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_index);
       __Pyx_GIVEREF(__pyx_v_index);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_index);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 217, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -4750,14 +4750,14 @@ static int __pyx_pf_3mds_7managed_15MDSIntArrayBase_2__setitem__(struct __pyx_ob
   __Pyx_DECREF_SET(__pyx_v_index, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":200
+  /* "mds/managed.pyx":218
  *     def __setitem__(self, index, value):
  *         index = self._index_bounds_check(index)
  *         value = self._numeric_bounds_check(value)             # <<<<<<<<<<<<<<
  *         self._to_mds(index, value)
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_numeric_bounds_check); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_numeric_bounds_check); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 218, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -4770,13 +4770,13 @@ static int __pyx_pf_3mds_7managed_15MDSIntArrayBase_2__setitem__(struct __pyx_ob
     }
   }
   if (!__pyx_t_4) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 200, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 218, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 200, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 218, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -4784,19 +4784,19 @@ static int __pyx_pf_3mds_7managed_15MDSIntArrayBase_2__setitem__(struct __pyx_ob
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 200, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 218, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 200, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 218, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_4); __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_3, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 200, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 218, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
@@ -4805,14 +4805,14 @@ static int __pyx_pf_3mds_7managed_15MDSIntArrayBase_2__setitem__(struct __pyx_ob
   __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":201
+  /* "mds/managed.pyx":219
  *         index = self._index_bounds_check(index)
  *         value = self._numeric_bounds_check(value)
  *         self._to_mds(index, value)             # <<<<<<<<<<<<<<
  * 
  *     property dtype:
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_to_mds); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 201, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_to_mds); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 219, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_5 = 0;
@@ -4829,7 +4829,7 @@ static int __pyx_pf_3mds_7managed_15MDSIntArrayBase_2__setitem__(struct __pyx_ob
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_index, __pyx_v_value};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -4837,13 +4837,13 @@ static int __pyx_pf_3mds_7managed_15MDSIntArrayBase_2__setitem__(struct __pyx_ob
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_index, __pyx_v_value};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_4 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 219, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -4854,14 +4854,14 @@ static int __pyx_pf_3mds_7managed_15MDSIntArrayBase_2__setitem__(struct __pyx_ob
     __Pyx_INCREF(__pyx_v_value);
     __Pyx_GIVEREF(__pyx_v_value);
     PyTuple_SET_ITEM(__pyx_t_4, 1+__pyx_t_5, __pyx_v_value);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 219, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":198
+  /* "mds/managed.pyx":216
  *         raise NotImplementedError('Requires a type-specific instantiation')
  * 
  *     def __setitem__(self, index, value):             # <<<<<<<<<<<<<<
@@ -4886,7 +4886,7 @@ static int __pyx_pf_3mds_7managed_15MDSIntArrayBase_2__setitem__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":204
+/* "mds/managed.pyx":222
  * 
  *     property dtype:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4912,7 +4912,7 @@ static PyObject *__pyx_pf_3mds_7managed_15MDSIntArrayBase_5dtype___get__(CYTHON_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":205
+  /* "mds/managed.pyx":223
  *     property dtype:
  *         def __get__(self):
  *             return type(1)             # <<<<<<<<<<<<<<
@@ -4924,7 +4924,7 @@ static PyObject *__pyx_pf_3mds_7managed_15MDSIntArrayBase_5dtype___get__(CYTHON_
   __pyx_r = ((PyObject *)Py_TYPE(__pyx_int_1));
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":204
+  /* "mds/managed.pyx":222
  * 
  *     property dtype:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4939,7 +4939,7 @@ static PyObject *__pyx_pf_3mds_7managed_15MDSIntArrayBase_5dtype___get__(CYTHON_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":211
+/* "mds/managed.pyx":229
  * 
  *     property dtype:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4965,7 +4965,7 @@ static PyObject *__pyx_pf_3mds_7managed_17MDSFloatArrayBase_5dtype___get__(CYTHO
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":212
+  /* "mds/managed.pyx":230
  *     property dtype:
  *         def __get__(self):
  *             return type(1.0)             # <<<<<<<<<<<<<<
@@ -4977,7 +4977,7 @@ static PyObject *__pyx_pf_3mds_7managed_17MDSFloatArrayBase_5dtype___get__(CYTHO
   __pyx_r = ((PyObject *)Py_TYPE(__pyx_float_1_0));
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":211
+  /* "mds/managed.pyx":229
  * 
  *     property dtype:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4992,7 +4992,7 @@ static PyObject *__pyx_pf_3mds_7managed_17MDSFloatArrayBase_5dtype___get__(CYTHO
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":223
+/* "mds/managed.pyx":241
  *     # TODO: Use the API's math operation to ensure atomicity
  * 
  *     def __int__(self):             # <<<<<<<<<<<<<<
@@ -5025,7 +5025,7 @@ static PyObject *__pyx_pf_3mds_7managed_16MDSPrimitiveBase___int__(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":226
+/* "mds/managed.pyx":244
  *         pass
  * 
  *     def __long__(self):             # <<<<<<<<<<<<<<
@@ -5062,7 +5062,7 @@ static PyObject *__pyx_pf_3mds_7managed_16MDSPrimitiveBase_2__long__(CYTHON_UNUS
 }
 #endif /*!(#if PY_MAJOR_VERSION < 3)*/
 
-/* "mds/managed.pyx":229
+/* "mds/managed.pyx":247
  *         pass
  * 
  *     def __float__(self):             # <<<<<<<<<<<<<<
@@ -5095,7 +5095,7 @@ static PyObject *__pyx_pf_3mds_7managed_16MDSPrimitiveBase_4__float__(CYTHON_UNU
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":232
+/* "mds/managed.pyx":250
  *         pass
  * 
  *     def _sanitize(self, value):             # <<<<<<<<<<<<<<
@@ -5121,7 +5121,7 @@ static PyObject *__pyx_pf_3mds_7managed_16MDSPrimitiveBase_6_sanitize(CYTHON_UNU
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_sanitize", 0);
 
-  /* "mds/managed.pyx":233
+  /* "mds/managed.pyx":251
  * 
  *     def _sanitize(self, value):
  *         return value             # <<<<<<<<<<<<<<
@@ -5133,7 +5133,7 @@ static PyObject *__pyx_pf_3mds_7managed_16MDSPrimitiveBase_6_sanitize(CYTHON_UNU
   __pyx_r = __pyx_v_value;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":232
+  /* "mds/managed.pyx":250
  *         pass
  * 
  *     def _sanitize(self, value):             # <<<<<<<<<<<<<<
@@ -5148,7 +5148,7 @@ static PyObject *__pyx_pf_3mds_7managed_16MDSPrimitiveBase_6_sanitize(CYTHON_UNU
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":235
+/* "mds/managed.pyx":253
  *         return value
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -5175,20 +5175,20 @@ static PyObject *__pyx_pf_3mds_7managed_16MDSPrimitiveBase_8_to_python(CYTHON_UN
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":236
+  /* "mds/managed.pyx":254
  * 
  *     def _to_python(self):
  *         raise NotImplementedError("Specialization required.")             # <<<<<<<<<<<<<<
  * 
  *     def _to_mds(self):
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__13, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__13, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 236, __pyx_L1_error)
+  __PYX_ERR(0, 254, __pyx_L1_error)
 
-  /* "mds/managed.pyx":235
+  /* "mds/managed.pyx":253
  *         return value
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -5206,7 +5206,7 @@ static PyObject *__pyx_pf_3mds_7managed_16MDSPrimitiveBase_8_to_python(CYTHON_UN
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":238
+/* "mds/managed.pyx":256
  *         raise NotImplementedError("Specialization required.")
  * 
  *     def _to_mds(self):             # <<<<<<<<<<<<<<
@@ -5233,20 +5233,20 @@ static PyObject *__pyx_pf_3mds_7managed_16MDSPrimitiveBase_10_to_mds(CYTHON_UNUS
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_mds", 0);
 
-  /* "mds/managed.pyx":239
+  /* "mds/managed.pyx":257
  * 
  *     def _to_mds(self):
  *         raise NotImplementedError("Specialization required.")             # <<<<<<<<<<<<<<
  * 
  *     property python_copy:
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 257, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 239, __pyx_L1_error)
+  __PYX_ERR(0, 257, __pyx_L1_error)
 
-  /* "mds/managed.pyx":238
+  /* "mds/managed.pyx":256
  *         raise NotImplementedError("Specialization required.")
  * 
  *     def _to_mds(self):             # <<<<<<<<<<<<<<
@@ -5264,7 +5264,7 @@ static PyObject *__pyx_pf_3mds_7managed_16MDSPrimitiveBase_10_to_mds(CYTHON_UNUS
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":242
+/* "mds/managed.pyx":260
  * 
  *     property python_copy:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -5291,20 +5291,20 @@ static PyObject *__pyx_pf_3mds_7managed_16MDSPrimitiveBase_11python_copy___get__
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":243
+  /* "mds/managed.pyx":261
  *     property python_copy:
  *         def __get__(self):
  *             raise NotImplementedError("Specialization required.")             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 243, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 261, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 243, __pyx_L1_error)
+  __PYX_ERR(0, 261, __pyx_L1_error)
 
-  /* "mds/managed.pyx":242
+  /* "mds/managed.pyx":260
  * 
  *     property python_copy:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -5322,7 +5322,7 @@ static PyObject *__pyx_pf_3mds_7managed_16MDSPrimitiveBase_11python_copy___get__
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":253
+/* "mds/managed.pyx":271
  * cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
  * 
  *     def _sanitize(self, value):             # <<<<<<<<<<<<<<
@@ -5357,7 +5357,7 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
   __Pyx_RefNannySetupContext("_sanitize", 0);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "mds/managed.pyx":254
+  /* "mds/managed.pyx":272
  * 
  *     def _sanitize(self, value):
  *         if isinstance(value, float):             # <<<<<<<<<<<<<<
@@ -5368,19 +5368,19 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":255
+    /* "mds/managed.pyx":273
  *     def _sanitize(self, value):
  *         if isinstance(value, float):
  *             value = int(value)             # <<<<<<<<<<<<<<
  *         elif not isinstance(value, int):
  *             t = type(value)
  */
-    __pyx_t_3 = __Pyx_PyNumber_Int(__pyx_v_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 255, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyNumber_Int(__pyx_v_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 273, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "mds/managed.pyx":254
+    /* "mds/managed.pyx":272
  * 
  *     def _sanitize(self, value):
  *         if isinstance(value, float):             # <<<<<<<<<<<<<<
@@ -5390,7 +5390,7 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
     goto __pyx_L3;
   }
 
-  /* "mds/managed.pyx":256
+  /* "mds/managed.pyx":274
  *         if isinstance(value, float):
  *             value = int(value)
  *         elif not isinstance(value, int):             # <<<<<<<<<<<<<<
@@ -5401,7 +5401,7 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
   __pyx_t_1 = ((!(__pyx_t_2 != 0)) != 0);
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":257
+    /* "mds/managed.pyx":275
  *             value = int(value)
  *         elif not isinstance(value, int):
  *             t = type(value)             # <<<<<<<<<<<<<<
@@ -5411,20 +5411,20 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
     __Pyx_INCREF(((PyObject *)Py_TYPE(__pyx_v_value)));
     __pyx_v_t = ((PyTypeObject*)((PyObject *)Py_TYPE(__pyx_v_value)));
 
-    /* "mds/managed.pyx":258
+    /* "mds/managed.pyx":276
  *         elif not isinstance(value, int):
  *             t = type(value)
  *             raise TypeError('Unable to parse value of type `{t}`')             # <<<<<<<<<<<<<<
  * 
  *         if value < self.MIN:
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 258, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 258, __pyx_L1_error)
+    __PYX_ERR(0, 276, __pyx_L1_error)
 
-    /* "mds/managed.pyx":256
+    /* "mds/managed.pyx":274
  *         if isinstance(value, float):
  *             value = int(value)
  *         elif not isinstance(value, int):             # <<<<<<<<<<<<<<
@@ -5434,29 +5434,29 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
   }
   __pyx_L3:;
 
-  /* "mds/managed.pyx":260
+  /* "mds/managed.pyx":278
  *             raise TypeError('Unable to parse value of type `{t}`')
  * 
  *         if value < self.MIN:             # <<<<<<<<<<<<<<
  *             raise UnderflowError(f"Can't fit {value} in container {self.dtype}")
  *         elif value > self.MAX:
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_MIN); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_MIN); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyObject_RichCompare(__pyx_v_value, __pyx_t_3, Py_LT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __pyx_t_4 = PyObject_RichCompare(__pyx_v_value, __pyx_t_3, Py_LT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 260, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":261
+    /* "mds/managed.pyx":279
  * 
  *         if value < self.MIN:
  *             raise UnderflowError(f"Can't fit {value} in container {self.dtype}")             # <<<<<<<<<<<<<<
  *         elif value > self.MAX:
  *             raise OverflowError(f"Can't fit {value} in container {self.dtype}")
  */
-    __pyx_t_4 = PyTuple_New(4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 261, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 279, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = 0;
     __pyx_t_6 = 127;
@@ -5464,7 +5464,7 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
     __pyx_t_5 += 10;
     __Pyx_GIVEREF(__pyx_kp_u_Can_t_fit);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_kp_u_Can_t_fit);
-    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_value, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 261, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_v_value, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 279, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_6 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_6) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_6;
     __pyx_t_5 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_3);
@@ -5475,9 +5475,9 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
     __pyx_t_5 += 14;
     __Pyx_GIVEREF(__pyx_kp_u_in_container);
     PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_kp_u_in_container);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_dtype); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 261, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_dtype); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 279, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_t_3, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 261, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_t_3, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 279, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_6 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) > __pyx_t_6) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) : __pyx_t_6;
@@ -5485,22 +5485,22 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
     __Pyx_GIVEREF(__pyx_t_7);
     PyTuple_SET_ITEM(__pyx_t_4, 3, __pyx_t_7);
     __pyx_t_7 = 0;
-    __pyx_t_7 = __Pyx_PyUnicode_Join(__pyx_t_4, 4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 261, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyUnicode_Join(__pyx_t_4, 4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 279, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 261, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 279, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_7);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_7);
     __pyx_t_7 = 0;
-    __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_UnderflowError), __pyx_t_4, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 261, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_UnderflowError), __pyx_t_4, NULL); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 279, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_7, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-    __PYX_ERR(0, 261, __pyx_L1_error)
+    __PYX_ERR(0, 279, __pyx_L1_error)
 
-    /* "mds/managed.pyx":260
+    /* "mds/managed.pyx":278
  *             raise TypeError('Unable to parse value of type `{t}`')
  * 
  *         if value < self.MIN:             # <<<<<<<<<<<<<<
@@ -5509,29 +5509,29 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
  */
   }
 
-  /* "mds/managed.pyx":262
+  /* "mds/managed.pyx":280
  *         if value < self.MIN:
  *             raise UnderflowError(f"Can't fit {value} in container {self.dtype}")
  *         elif value > self.MAX:             # <<<<<<<<<<<<<<
  *             raise OverflowError(f"Can't fit {value} in container {self.dtype}")
  * 
  */
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_MAX); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 262, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_MAX); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 280, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_4 = PyObject_RichCompare(__pyx_v_value, __pyx_t_7, Py_GT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 262, __pyx_L1_error)
+  __pyx_t_4 = PyObject_RichCompare(__pyx_v_value, __pyx_t_7, Py_GT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 280, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 262, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 280, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":263
+    /* "mds/managed.pyx":281
  *             raise UnderflowError(f"Can't fit {value} in container {self.dtype}")
  *         elif value > self.MAX:
  *             raise OverflowError(f"Can't fit {value} in container {self.dtype}")             # <<<<<<<<<<<<<<
  * 
  *         return value
  */
-    __pyx_t_4 = PyTuple_New(4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 263, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_5 = 0;
     __pyx_t_6 = 127;
@@ -5539,7 +5539,7 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
     __pyx_t_5 += 10;
     __Pyx_GIVEREF(__pyx_kp_u_Can_t_fit);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_kp_u_Can_t_fit);
-    __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_v_value, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 263, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_FormatSimple(__pyx_v_value, __pyx_empty_unicode); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 281, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
     __pyx_t_6 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) > __pyx_t_6) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_7) : __pyx_t_6;
     __pyx_t_5 += __Pyx_PyUnicode_GET_LENGTH(__pyx_t_7);
@@ -5550,9 +5550,9 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
     __pyx_t_5 += 14;
     __Pyx_GIVEREF(__pyx_kp_u_in_container);
     PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_kp_u_in_container);
-    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_dtype); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 263, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_dtype); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 281, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_t_7, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_t_7, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 281, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __pyx_t_6 = (__Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) > __pyx_t_6) ? __Pyx_PyUnicode_MAX_CHAR_VALUE(__pyx_t_3) : __pyx_t_6;
@@ -5560,22 +5560,22 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_4, 3, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_4, 4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Join(__pyx_t_4, 4, __pyx_t_5, __pyx_t_6); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 281, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 263, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 281, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_3);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3);
     __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_OverflowError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 263, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_OverflowError, __pyx_t_4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 281, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 263, __pyx_L1_error)
+    __PYX_ERR(0, 281, __pyx_L1_error)
 
-    /* "mds/managed.pyx":262
+    /* "mds/managed.pyx":280
  *         if value < self.MIN:
  *             raise UnderflowError(f"Can't fit {value} in container {self.dtype}")
  *         elif value > self.MAX:             # <<<<<<<<<<<<<<
@@ -5584,7 +5584,7 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
  */
   }
 
-  /* "mds/managed.pyx":265
+  /* "mds/managed.pyx":283
  *             raise OverflowError(f"Can't fit {value} in container {self.dtype}")
  * 
  *         return value             # <<<<<<<<<<<<<<
@@ -5596,7 +5596,7 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
   __pyx_r = __pyx_v_value;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":253
+  /* "mds/managed.pyx":271
  * cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
  * 
  *     def _sanitize(self, value):             # <<<<<<<<<<<<<<
@@ -5619,7 +5619,7 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase__sanitize(struct _
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":268
+/* "mds/managed.pyx":286
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -5646,20 +5646,20 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase_3MIN___get__(CYTHO
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":269
+  /* "mds/managed.pyx":287
  *     property MIN:
  *         def __get__(self):
  *             raise NotImplementedError("Integer specialization required.")             # <<<<<<<<<<<<<<
  * 
  *     property MAX:
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 269, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 269, __pyx_L1_error)
+  __PYX_ERR(0, 287, __pyx_L1_error)
 
-  /* "mds/managed.pyx":268
+  /* "mds/managed.pyx":286
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -5677,7 +5677,7 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase_3MIN___get__(CYTHO
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":272
+/* "mds/managed.pyx":290
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -5704,20 +5704,20 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase_3MAX___get__(CYTHO
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":273
+  /* "mds/managed.pyx":291
  *     property MAX:
  *         def __get__(self):
  *             raise NotImplementedError("Integer specialization required.")             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_NotImplementedError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __PYX_ERR(0, 273, __pyx_L1_error)
+  __PYX_ERR(0, 291, __pyx_L1_error)
 
-  /* "mds/managed.pyx":272
+  /* "mds/managed.pyx":290
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -5735,7 +5735,7 @@ static PyObject *__pyx_pf_3mds_7managed_19MDSIntPrimitiveBase_3MAX___get__(CYTHO
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":287
+/* "mds/managed.pyx":305
  *     cdef mv_bool _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -5768,7 +5768,7 @@ static int __pyx_pw_3mds_7managed_4Bool_1__cinit__(PyObject *__pyx_v_self, PyObj
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 287, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 305, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -5779,7 +5779,7 @@ static int __pyx_pw_3mds_7managed_4Bool_1__cinit__(PyObject *__pyx_v_self, PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 287, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 305, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.Bool.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -5802,14 +5802,14 @@ static int __pyx_pf_3mds_7managed_4Bool___cinit__(struct __pyx_obj_3mds_7managed
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "mds/managed.pyx":288
+  /* "mds/managed.pyx":306
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value
  *         value = self._sanitize(value)             # <<<<<<<<<<<<<<
  * 
  *     def _to_python(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 288, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 306, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -5822,13 +5822,13 @@ static int __pyx_pf_3mds_7managed_4Bool___cinit__(struct __pyx_obj_3mds_7managed
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 288, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 306, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 288, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 306, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -5836,19 +5836,19 @@ static int __pyx_pf_3mds_7managed_4Bool___cinit__(struct __pyx_obj_3mds_7managed
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 288, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 306, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 288, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 306, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 288, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 306, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -5857,7 +5857,7 @@ static int __pyx_pf_3mds_7managed_4Bool___cinit__(struct __pyx_obj_3mds_7managed
   __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":287
+  /* "mds/managed.pyx":305
  *     cdef mv_bool _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -5881,7 +5881,7 @@ static int __pyx_pf_3mds_7managed_4Bool___cinit__(struct __pyx_obj_3mds_7managed
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":290
+/* "mds/managed.pyx":308
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -5908,7 +5908,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Bool_2_to_python(struct __pyx_obj_3mds_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":291
+  /* "mds/managed.pyx":309
  * 
  *     def _to_python(self):
  *         return to_core_val(self._value)             # <<<<<<<<<<<<<<
@@ -5916,13 +5916,13 @@ static PyObject *__pyx_pf_3mds_7managed_4Bool_2_to_python(struct __pyx_obj_3mds_
  *     def _to_mds(self):  # TODO: This needs to update _value
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(mds::api::to_core_val<mds::api::kind::BOOL>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 291, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(mds::api::to_core_val<mds::api::kind::BOOL>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 309, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":290
+  /* "mds/managed.pyx":308
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -5941,7 +5941,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Bool_2_to_python(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":293
+/* "mds/managed.pyx":311
  *         return to_core_val(self._value)
  * 
  *     def _to_mds(self):  # TODO: This needs to update _value             # <<<<<<<<<<<<<<
@@ -5974,7 +5974,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Bool_4_to_mds(CYTHON_UNUSED struct __py
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":302
+/* "mds/managed.pyx":320
  *     _primitive = Bool
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -6010,7 +6010,7 @@ static int __pyx_pw_3mds_7managed_9BoolArray_1__cinit__(PyObject *__pyx_v_self, 
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 302, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 320, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -6023,7 +6023,7 @@ static int __pyx_pw_3mds_7managed_9BoolArray_1__cinit__(PyObject *__pyx_v_self, 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 302, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 320, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.BoolArray.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6044,7 +6044,7 @@ static int __pyx_pf_3mds_7managed_9BoolArray___cinit__(struct __pyx_obj_3mds_7ma
   size_t __pyx_t_3;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/managed.pyx":303
+  /* "mds/managed.pyx":321
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -6055,17 +6055,17 @@ static int __pyx_pf_3mds_7managed_9BoolArray___cinit__(struct __pyx_obj_3mds_7ma
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":304
+    /* "mds/managed.pyx":322
  *     def __cinit__(self, length=None):
  *         if length is not None:
  *             self._handle = create_bool_marray(length)             # <<<<<<<<<<<<<<
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_bool_marray(0)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 304, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 322, __pyx_L1_error)
     __pyx_v_self->_handle = mds::python::types::create_bool_marray(__pyx_t_3);
 
-    /* "mds/managed.pyx":303
+    /* "mds/managed.pyx":321
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -6075,7 +6075,7 @@ static int __pyx_pf_3mds_7managed_9BoolArray___cinit__(struct __pyx_obj_3mds_7ma
     goto __pyx_L3;
   }
 
-  /* "mds/managed.pyx":306
+  /* "mds/managed.pyx":324
  *             self._handle = create_bool_marray(length)
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_bool_marray(0)             # <<<<<<<<<<<<<<
@@ -6087,7 +6087,7 @@ static int __pyx_pf_3mds_7managed_9BoolArray___cinit__(struct __pyx_obj_3mds_7ma
   }
   __pyx_L3:;
 
-  /* "mds/managed.pyx":302
+  /* "mds/managed.pyx":320
  *     _primitive = Bool
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -6106,7 +6106,7 @@ static int __pyx_pf_3mds_7managed_9BoolArray___cinit__(struct __pyx_obj_3mds_7ma
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":308
+/* "mds/managed.pyx":326
  *             self._handle = create_bool_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -6132,7 +6132,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_9BoolArray_2__len__(struct __pyx_obj_3m
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "mds/managed.pyx":309
+  /* "mds/managed.pyx":327
  * 
  *     def __len__(self):
  *         return self._handle.size()             # <<<<<<<<<<<<<<
@@ -6142,7 +6142,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_9BoolArray_2__len__(struct __pyx_obj_3m
   __pyx_r = __pyx_v_self->_handle.size();
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":308
+  /* "mds/managed.pyx":326
  *             self._handle = create_bool_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -6156,7 +6156,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_9BoolArray_2__len__(struct __pyx_obj_3m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":311
+/* "mds/managed.pyx":329
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -6184,7 +6184,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_4_to_python(struct __pyx_obj_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":312
+  /* "mds/managed.pyx":330
  * 
  *     def _to_python(self, index):
  *         return to_core_val(self._handle.frozen_read(index))             # <<<<<<<<<<<<<<
@@ -6192,14 +6192,14 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_4_to_python(struct __pyx_obj_
  *     def _to_mds(self, index, value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 312, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyBool_FromLong(mds::api::to_core_val<mds::api::kind::BOOL>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 312, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 330, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBool_FromLong(mds::api::to_core_val<mds::api::kind::BOOL>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 330, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":311
+  /* "mds/managed.pyx":329
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -6218,7 +6218,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_4_to_python(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":314
+/* "mds/managed.pyx":332
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -6254,11 +6254,11 @@ static PyObject *__pyx_pw_3mds_7managed_9BoolArray_7_to_mds(PyObject *__pyx_v_se
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 314, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 332, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 314, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 332, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -6271,7 +6271,7 @@ static PyObject *__pyx_pw_3mds_7managed_9BoolArray_7_to_mds(PyObject *__pyx_v_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 314, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 332, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.BoolArray._to_mds", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6296,14 +6296,14 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_6_to_mds(struct __pyx_obj_3md
   bool __pyx_t_6;
   __Pyx_RefNannySetupContext("_to_mds", 0);
 
-  /* "mds/managed.pyx":316
+  /* "mds/managed.pyx":334
  *     def _to_mds(self, index, value):
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)             # <<<<<<<<<<<<<<
  *         self._handle.write(index, mv_bool(value))
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 316, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 334, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -6316,13 +6316,13 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_6_to_mds(struct __pyx_obj_3md
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 316, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 334, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 316, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 334, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -6330,19 +6330,19 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_6_to_mds(struct __pyx_obj_3md
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 316, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 334, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 316, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 334, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 316, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 334, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -6351,18 +6351,18 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_6_to_mds(struct __pyx_obj_3md
   __pyx_v_wrapped = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":317
+  /* "mds/managed.pyx":335
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)
  *         self._handle.write(index, mv_bool(value))             # <<<<<<<<<<<<<<
  * 
  *     def copy(self):
  */
-  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 317, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_value); if (unlikely((__pyx_t_6 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 317, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 335, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_value); if (unlikely((__pyx_t_6 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 335, __pyx_L1_error)
   __pyx_v_self->_handle.write(__pyx_t_5, mds::api::api_type<mds::api::kind::BOOL>(__pyx_t_6));
 
-  /* "mds/managed.pyx":314
+  /* "mds/managed.pyx":332
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -6387,7 +6387,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_6_to_mds(struct __pyx_obj_3md
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":319
+/* "mds/managed.pyx":337
  *         self._handle.write(index, mv_bool(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -6421,7 +6421,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_8copy(struct __pyx_obj_3mds_7
   bool __pyx_t_5;
   __Pyx_RefNannySetupContext("copy", 0);
 
-  /* "mds/managed.pyx":321
+  /* "mds/managed.pyx":339
  *     def copy(self):
  *         cdef:
  *             size_t i = 0             # <<<<<<<<<<<<<<
@@ -6430,17 +6430,17 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_8copy(struct __pyx_obj_3mds_7
  */
   __pyx_v_i = 0;
 
-  /* "mds/managed.pyx":322
+  /* "mds/managed.pyx":340
  *         cdef:
  *             size_t i = 0
  *             size_t l = len(self)             # <<<<<<<<<<<<<<
  *             h_marray_bool_t h = create_bool_marray(l)
  * 
  */
-  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 322, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 340, __pyx_L1_error)
   __pyx_v_l = __pyx_t_1;
 
-  /* "mds/managed.pyx":323
+  /* "mds/managed.pyx":341
  *             size_t i = 0
  *             size_t l = len(self)
  *             h_marray_bool_t h = create_bool_marray(l)             # <<<<<<<<<<<<<<
@@ -6449,7 +6449,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_8copy(struct __pyx_obj_3mds_7
  */
   __pyx_v_h = mds::python::types::create_bool_marray(__pyx_v_l);
 
-  /* "mds/managed.pyx":325
+  /* "mds/managed.pyx":343
  *             h_marray_bool_t h = create_bool_marray(l)
  * 
  *         for i in range(l):             # <<<<<<<<<<<<<<
@@ -6460,21 +6460,21 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_8copy(struct __pyx_obj_3mds_7
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "mds/managed.pyx":326
+    /* "mds/managed.pyx":344
  * 
  *         for i in range(l):
  *             h.write(i, mv_bool(<bool> self[i]))             # <<<<<<<<<<<<<<
  * 
  *         return BoolArray_Init(h)
  */
-    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 326, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 344, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely((__pyx_t_5 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 326, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely((__pyx_t_5 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 344, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_h.write(__pyx_v_i, mds::api::api_type<mds::api::kind::BOOL>(((bool)__pyx_t_5)));
   }
 
-  /* "mds/managed.pyx":328
+  /* "mds/managed.pyx":346
  *             h.write(i, mv_bool(<bool> self[i]))
  * 
  *         return BoolArray_Init(h)             # <<<<<<<<<<<<<<
@@ -6482,13 +6482,13 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_8copy(struct __pyx_obj_3mds_7
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3mds_7managed_BoolArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 328, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3mds_7managed_BoolArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 346, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":319
+  /* "mds/managed.pyx":337
  *         self._handle.write(index, mv_bool(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -6507,7 +6507,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_8copy(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":331
+/* "mds/managed.pyx":349
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -6541,7 +6541,7 @@ static PyObject *__pyx_pw_3mds_7managed_9BoolArray_11create(CYTHON_UNUSED PyObje
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 331, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 349, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -6552,7 +6552,7 @@ static PyObject *__pyx_pw_3mds_7managed_9BoolArray_11create(CYTHON_UNUSED PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 331, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 349, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.BoolArray.create", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6575,7 +6575,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_10create(PyObject *__pyx_v_le
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
 
-  /* "mds/managed.pyx":332
+  /* "mds/managed.pyx":350
  *     @staticmethod
  *     def create(length):
  *         return MDSArrayBase.create("bool", length)             # <<<<<<<<<<<<<<
@@ -6583,7 +6583,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_10create(PyObject *__pyx_v_le
  *     property dtype:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 332, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 350, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -6600,7 +6600,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_10create(PyObject *__pyx_v_le
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_bool, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -6608,13 +6608,13 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_10create(PyObject *__pyx_v_le
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_bool, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 332, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 350, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -6625,7 +6625,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_10create(PyObject *__pyx_v_le
     __Pyx_INCREF(__pyx_v_length);
     __Pyx_GIVEREF(__pyx_v_length);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_length);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 332, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -6634,7 +6634,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_10create(PyObject *__pyx_v_le
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":331
+  /* "mds/managed.pyx":349
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -6656,7 +6656,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_10create(PyObject *__pyx_v_le
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":335
+/* "mds/managed.pyx":353
  * 
  *     property dtype:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -6682,7 +6682,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_5dtype___get__(CYTHON_UNUSED 
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":336
+  /* "mds/managed.pyx":354
  *     property dtype:
  *         def __get__(self):
  *             return type(True)             # <<<<<<<<<<<<<<
@@ -6694,7 +6694,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_5dtype___get__(CYTHON_UNUSED 
   __pyx_r = ((PyObject *)Py_TYPE(Py_True));
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":335
+  /* "mds/managed.pyx":353
  * 
  *     property dtype:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -6709,7 +6709,7 @@ static PyObject *__pyx_pf_3mds_7managed_9BoolArray_5dtype___get__(CYTHON_UNUSED 
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":339
+/* "mds/managed.pyx":357
  * 
  * 
  * cdef BoolArray_Init(h_marray_bool_t handle):             # <<<<<<<<<<<<<<
@@ -6724,19 +6724,19 @@ static PyObject *__pyx_f_3mds_7managed_BoolArray_Init(mds::python::types::h_marr
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("BoolArray_Init", 0);
 
-  /* "mds/managed.pyx":340
+  /* "mds/managed.pyx":358
  * 
  * cdef BoolArray_Init(h_marray_bool_t handle):
  *     result = BoolArray()             # <<<<<<<<<<<<<<
  *     result._handle = handle
  *     return result
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_BoolArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 340, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_BoolArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 358, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((struct __pyx_obj_3mds_7managed_BoolArray *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":341
+  /* "mds/managed.pyx":359
  * cdef BoolArray_Init(h_marray_bool_t handle):
  *     result = BoolArray()
  *     result._handle = handle             # <<<<<<<<<<<<<<
@@ -6745,7 +6745,7 @@ static PyObject *__pyx_f_3mds_7managed_BoolArray_Init(mds::python::types::h_marr
  */
   __pyx_v_result->_handle = __pyx_v_handle;
 
-  /* "mds/managed.pyx":342
+  /* "mds/managed.pyx":360
  *     result = BoolArray()
  *     result._handle = handle
  *     return result             # <<<<<<<<<<<<<<
@@ -6757,7 +6757,7 @@ static PyObject *__pyx_f_3mds_7managed_BoolArray_Init(mds::python::types::h_marr
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":339
+  /* "mds/managed.pyx":357
  * 
  * 
  * cdef BoolArray_Init(h_marray_bool_t handle):             # <<<<<<<<<<<<<<
@@ -6777,7 +6777,7 @@ static PyObject *__pyx_f_3mds_7managed_BoolArray_Init(mds::python::types::h_marr
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":349
+/* "mds/managed.pyx":367
  *     cdef mv_byte _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -6810,7 +6810,7 @@ static int __pyx_pw_3mds_7managed_4Byte_1__cinit__(PyObject *__pyx_v_self, PyObj
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 349, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 367, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -6821,7 +6821,7 @@ static int __pyx_pw_3mds_7managed_4Byte_1__cinit__(PyObject *__pyx_v_self, PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 349, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 367, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.Byte.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6844,14 +6844,14 @@ static int __pyx_pf_3mds_7managed_4Byte___cinit__(struct __pyx_obj_3mds_7managed
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "mds/managed.pyx":350
+  /* "mds/managed.pyx":368
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value
  *         value = self._sanitize(value)             # <<<<<<<<<<<<<<
  * 
  *     def _to_python(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 350, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 368, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -6864,13 +6864,13 @@ static int __pyx_pf_3mds_7managed_4Byte___cinit__(struct __pyx_obj_3mds_7managed
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 368, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 368, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -6878,19 +6878,19 @@ static int __pyx_pf_3mds_7managed_4Byte___cinit__(struct __pyx_obj_3mds_7managed
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 368, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 350, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 368, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 350, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 368, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -6899,7 +6899,7 @@ static int __pyx_pf_3mds_7managed_4Byte___cinit__(struct __pyx_obj_3mds_7managed
   __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":349
+  /* "mds/managed.pyx":367
  *     cdef mv_byte _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -6923,7 +6923,7 @@ static int __pyx_pf_3mds_7managed_4Byte___cinit__(struct __pyx_obj_3mds_7managed
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":352
+/* "mds/managed.pyx":370
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -6950,7 +6950,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Byte_2_to_python(struct __pyx_obj_3mds_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":353
+  /* "mds/managed.pyx":371
  * 
  *     def _to_python(self):
  *         return to_core_val(self._value)             # <<<<<<<<<<<<<<
@@ -6958,13 +6958,13 @@ static PyObject *__pyx_pf_3mds_7managed_4Byte_2_to_python(struct __pyx_obj_3mds_
  *     def _to_mds(self):  # TODO: This needs to update _value
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int8_t(mds::api::to_core_val<mds::api::kind::BYTE>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 353, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int8_t(mds::api::to_core_val<mds::api::kind::BYTE>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 371, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":352
+  /* "mds/managed.pyx":370
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -6983,7 +6983,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Byte_2_to_python(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":355
+/* "mds/managed.pyx":373
  *         return to_core_val(self._value)
  * 
  *     def _to_mds(self):  # TODO: This needs to update _value             # <<<<<<<<<<<<<<
@@ -7016,7 +7016,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Byte_4_to_mds(CYTHON_UNUSED struct __py
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":359
+/* "mds/managed.pyx":377
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7042,7 +7042,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Byte_3MIN___get__(CYTHON_UNUSED struct 
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":360
+  /* "mds/managed.pyx":378
  *     property MIN:
  *         def __get__(self):
  *             return -128             # <<<<<<<<<<<<<<
@@ -7054,7 +7054,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Byte_3MIN___get__(CYTHON_UNUSED struct 
   __pyx_r = __pyx_int_neg_128;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":359
+  /* "mds/managed.pyx":377
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7069,7 +7069,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Byte_3MIN___get__(CYTHON_UNUSED struct 
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":363
+/* "mds/managed.pyx":381
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7095,7 +7095,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Byte_3MAX___get__(CYTHON_UNUSED struct 
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":364
+  /* "mds/managed.pyx":382
  *     property MAX:
  *         def __get__(self):
  *             return 127             # <<<<<<<<<<<<<<
@@ -7107,7 +7107,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Byte_3MAX___get__(CYTHON_UNUSED struct 
   __pyx_r = __pyx_int_127;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":363
+  /* "mds/managed.pyx":381
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7122,7 +7122,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Byte_3MAX___get__(CYTHON_UNUSED struct 
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":372
+/* "mds/managed.pyx":390
  *     _primitive = Byte
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -7158,7 +7158,7 @@ static int __pyx_pw_3mds_7managed_9ByteArray_1__cinit__(PyObject *__pyx_v_self, 
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 372, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 390, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -7171,7 +7171,7 @@ static int __pyx_pw_3mds_7managed_9ByteArray_1__cinit__(PyObject *__pyx_v_self, 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 372, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 390, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.ByteArray.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -7192,7 +7192,7 @@ static int __pyx_pf_3mds_7managed_9ByteArray___cinit__(struct __pyx_obj_3mds_7ma
   size_t __pyx_t_3;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/managed.pyx":373
+  /* "mds/managed.pyx":391
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -7203,17 +7203,17 @@ static int __pyx_pf_3mds_7managed_9ByteArray___cinit__(struct __pyx_obj_3mds_7ma
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":374
+    /* "mds/managed.pyx":392
  *     def __cinit__(self, length=None):
  *         if length is not None:
  *             self._handle = create_byte_marray(length)             # <<<<<<<<<<<<<<
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_byte_marray(0)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 374, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 392, __pyx_L1_error)
     __pyx_v_self->_handle = mds::python::types::create_byte_marray(__pyx_t_3);
 
-    /* "mds/managed.pyx":373
+    /* "mds/managed.pyx":391
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -7223,7 +7223,7 @@ static int __pyx_pf_3mds_7managed_9ByteArray___cinit__(struct __pyx_obj_3mds_7ma
     goto __pyx_L3;
   }
 
-  /* "mds/managed.pyx":376
+  /* "mds/managed.pyx":394
  *             self._handle = create_byte_marray(length)
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_byte_marray(0)             # <<<<<<<<<<<<<<
@@ -7235,7 +7235,7 @@ static int __pyx_pf_3mds_7managed_9ByteArray___cinit__(struct __pyx_obj_3mds_7ma
   }
   __pyx_L3:;
 
-  /* "mds/managed.pyx":372
+  /* "mds/managed.pyx":390
  *     _primitive = Byte
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -7254,7 +7254,7 @@ static int __pyx_pf_3mds_7managed_9ByteArray___cinit__(struct __pyx_obj_3mds_7ma
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":378
+/* "mds/managed.pyx":396
  *             self._handle = create_byte_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -7280,7 +7280,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_9ByteArray_2__len__(struct __pyx_obj_3m
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "mds/managed.pyx":379
+  /* "mds/managed.pyx":397
  * 
  *     def __len__(self):
  *         return self._handle.size()             # <<<<<<<<<<<<<<
@@ -7290,7 +7290,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_9ByteArray_2__len__(struct __pyx_obj_3m
   __pyx_r = __pyx_v_self->_handle.size();
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":378
+  /* "mds/managed.pyx":396
  *             self._handle = create_byte_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -7304,7 +7304,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_9ByteArray_2__len__(struct __pyx_obj_3m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":381
+/* "mds/managed.pyx":399
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -7332,7 +7332,7 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_4_to_python(struct __pyx_obj_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":382
+  /* "mds/managed.pyx":400
  * 
  *     def _to_python(self, index):
  *         return to_core_val(self._handle.frozen_read(index))             # <<<<<<<<<<<<<<
@@ -7340,14 +7340,14 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_4_to_python(struct __pyx_obj_
  *     def _to_mds(self, index, value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 382, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int8_t(mds::api::to_core_val<mds::api::kind::BYTE>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 382, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 400, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int8_t(mds::api::to_core_val<mds::api::kind::BYTE>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 400, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":381
+  /* "mds/managed.pyx":399
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -7366,7 +7366,7 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_4_to_python(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":384
+/* "mds/managed.pyx":402
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -7402,11 +7402,11 @@ static PyObject *__pyx_pw_3mds_7managed_9ByteArray_7_to_mds(PyObject *__pyx_v_se
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 384, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 402, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 384, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 402, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -7419,7 +7419,7 @@ static PyObject *__pyx_pw_3mds_7managed_9ByteArray_7_to_mds(PyObject *__pyx_v_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 384, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 402, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.ByteArray._to_mds", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -7444,14 +7444,14 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_6_to_mds(struct __pyx_obj_3md
   int8_t __pyx_t_6;
   __Pyx_RefNannySetupContext("_to_mds", 0);
 
-  /* "mds/managed.pyx":386
+  /* "mds/managed.pyx":404
  *     def _to_mds(self, index, value):
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)             # <<<<<<<<<<<<<<
  *         self._handle.write(index, mv_byte(value))
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 386, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 404, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -7464,13 +7464,13 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_6_to_mds(struct __pyx_obj_3md
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 386, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 404, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 386, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 404, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -7478,19 +7478,19 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_6_to_mds(struct __pyx_obj_3md
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 386, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 404, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 386, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 404, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 386, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 404, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -7499,18 +7499,18 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_6_to_mds(struct __pyx_obj_3md
   __pyx_v_wrapped = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":387
+  /* "mds/managed.pyx":405
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)
  *         self._handle.write(index, mv_byte(value))             # <<<<<<<<<<<<<<
  * 
  *     def copy(self):
  */
-  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 387, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyInt_As_int8_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((int8_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 387, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 405, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_int8_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((int8_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 405, __pyx_L1_error)
   __pyx_v_self->_handle.write(__pyx_t_5, mds::api::api_type<mds::api::kind::BYTE>(__pyx_t_6));
 
-  /* "mds/managed.pyx":384
+  /* "mds/managed.pyx":402
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -7535,7 +7535,7 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_6_to_mds(struct __pyx_obj_3md
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":389
+/* "mds/managed.pyx":407
  *         self._handle.write(index, mv_byte(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -7569,7 +7569,7 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_8copy(struct __pyx_obj_3mds_7
   int8_t __pyx_t_5;
   __Pyx_RefNannySetupContext("copy", 0);
 
-  /* "mds/managed.pyx":391
+  /* "mds/managed.pyx":409
  *     def copy(self):
  *         cdef:
  *             size_t i = 0             # <<<<<<<<<<<<<<
@@ -7578,17 +7578,17 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_8copy(struct __pyx_obj_3mds_7
  */
   __pyx_v_i = 0;
 
-  /* "mds/managed.pyx":392
+  /* "mds/managed.pyx":410
  *         cdef:
  *             size_t i = 0
  *             size_t l = len(self)             # <<<<<<<<<<<<<<
  *             h_marray_byte_t h = create_byte_marray(l)
  * 
  */
-  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 392, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 410, __pyx_L1_error)
   __pyx_v_l = __pyx_t_1;
 
-  /* "mds/managed.pyx":393
+  /* "mds/managed.pyx":411
  *             size_t i = 0
  *             size_t l = len(self)
  *             h_marray_byte_t h = create_byte_marray(l)             # <<<<<<<<<<<<<<
@@ -7597,7 +7597,7 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_8copy(struct __pyx_obj_3mds_7
  */
   __pyx_v_h = mds::python::types::create_byte_marray(__pyx_v_l);
 
-  /* "mds/managed.pyx":395
+  /* "mds/managed.pyx":413
  *             h_marray_byte_t h = create_byte_marray(l)
  * 
  *         for i in range(l):             # <<<<<<<<<<<<<<
@@ -7608,21 +7608,21 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_8copy(struct __pyx_obj_3mds_7
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "mds/managed.pyx":396
+    /* "mds/managed.pyx":414
  * 
  *         for i in range(l):
  *             h.write(i, mv_byte(<int8_t> self[i]))             # <<<<<<<<<<<<<<
  * 
  *         return ByteArray_Init(h)
  */
-    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 396, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyInt_As_int8_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((int8_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 396, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_int8_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((int8_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 414, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_h.write(__pyx_v_i, mds::api::api_type<mds::api::kind::BYTE>(((int8_t)__pyx_t_5)));
   }
 
-  /* "mds/managed.pyx":398
+  /* "mds/managed.pyx":416
  *             h.write(i, mv_byte(<int8_t> self[i]))
  * 
  *         return ByteArray_Init(h)             # <<<<<<<<<<<<<<
@@ -7630,13 +7630,13 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_8copy(struct __pyx_obj_3mds_7
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3mds_7managed_ByteArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 398, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3mds_7managed_ByteArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 416, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":389
+  /* "mds/managed.pyx":407
  *         self._handle.write(index, mv_byte(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -7655,7 +7655,7 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_8copy(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":401
+/* "mds/managed.pyx":419
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -7689,7 +7689,7 @@ static PyObject *__pyx_pw_3mds_7managed_9ByteArray_11create(CYTHON_UNUSED PyObje
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 401, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 419, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -7700,7 +7700,7 @@ static PyObject *__pyx_pw_3mds_7managed_9ByteArray_11create(CYTHON_UNUSED PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 401, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 419, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.ByteArray.create", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -7723,7 +7723,7 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_10create(PyObject *__pyx_v_le
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
 
-  /* "mds/managed.pyx":402
+  /* "mds/managed.pyx":420
  *     @staticmethod
  *     def create(length):
  *         return MDSArrayBase.create("byte", length)             # <<<<<<<<<<<<<<
@@ -7731,7 +7731,7 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_10create(PyObject *__pyx_v_le
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 402, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 420, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -7748,7 +7748,7 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_10create(PyObject *__pyx_v_le
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_byte, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 402, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -7756,13 +7756,13 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_10create(PyObject *__pyx_v_le
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_byte, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 402, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 402, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -7773,7 +7773,7 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_10create(PyObject *__pyx_v_le
     __Pyx_INCREF(__pyx_v_length);
     __Pyx_GIVEREF(__pyx_v_length);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_length);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 402, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 420, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -7782,7 +7782,7 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_10create(PyObject *__pyx_v_le
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":401
+  /* "mds/managed.pyx":419
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -7804,7 +7804,7 @@ static PyObject *__pyx_pf_3mds_7managed_9ByteArray_10create(PyObject *__pyx_v_le
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":405
+/* "mds/managed.pyx":423
  * 
  * 
  * cdef ByteArray_Init(h_marray_byte_t handle):             # <<<<<<<<<<<<<<
@@ -7819,19 +7819,19 @@ static PyObject *__pyx_f_3mds_7managed_ByteArray_Init(mds::python::types::h_marr
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("ByteArray_Init", 0);
 
-  /* "mds/managed.pyx":406
+  /* "mds/managed.pyx":424
  * 
  * cdef ByteArray_Init(h_marray_byte_t handle):
  *     result = ByteArray()             # <<<<<<<<<<<<<<
  *     result._handle = handle
  *     return result
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_ByteArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 406, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_ByteArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 424, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((struct __pyx_obj_3mds_7managed_ByteArray *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":407
+  /* "mds/managed.pyx":425
  * cdef ByteArray_Init(h_marray_byte_t handle):
  *     result = ByteArray()
  *     result._handle = handle             # <<<<<<<<<<<<<<
@@ -7840,7 +7840,7 @@ static PyObject *__pyx_f_3mds_7managed_ByteArray_Init(mds::python::types::h_marr
  */
   __pyx_v_result->_handle = __pyx_v_handle;
 
-  /* "mds/managed.pyx":408
+  /* "mds/managed.pyx":426
  *     result = ByteArray()
  *     result._handle = handle
  *     return result             # <<<<<<<<<<<<<<
@@ -7852,7 +7852,7 @@ static PyObject *__pyx_f_3mds_7managed_ByteArray_Init(mds::python::types::h_marr
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":405
+  /* "mds/managed.pyx":423
  * 
  * 
  * cdef ByteArray_Init(h_marray_byte_t handle):             # <<<<<<<<<<<<<<
@@ -7872,7 +7872,7 @@ static PyObject *__pyx_f_3mds_7managed_ByteArray_Init(mds::python::types::h_marr
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":415
+/* "mds/managed.pyx":433
  *     cdef mv_ubyte _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -7905,7 +7905,7 @@ static int __pyx_pw_3mds_7managed_5UByte_1__cinit__(PyObject *__pyx_v_self, PyOb
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 415, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 433, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -7916,7 +7916,7 @@ static int __pyx_pw_3mds_7managed_5UByte_1__cinit__(PyObject *__pyx_v_self, PyOb
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 415, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 433, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.UByte.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -7939,14 +7939,14 @@ static int __pyx_pf_3mds_7managed_5UByte___cinit__(struct __pyx_obj_3mds_7manage
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "mds/managed.pyx":416
+  /* "mds/managed.pyx":434
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value
  *         value = self._sanitize(value)             # <<<<<<<<<<<<<<
  * 
  *     def _to_python(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 416, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 434, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -7959,13 +7959,13 @@ static int __pyx_pf_3mds_7managed_5UByte___cinit__(struct __pyx_obj_3mds_7manage
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 416, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 434, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 416, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 434, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -7973,19 +7973,19 @@ static int __pyx_pf_3mds_7managed_5UByte___cinit__(struct __pyx_obj_3mds_7manage
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 416, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 434, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 416, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 434, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 416, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 434, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -7994,7 +7994,7 @@ static int __pyx_pf_3mds_7managed_5UByte___cinit__(struct __pyx_obj_3mds_7manage
   __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":415
+  /* "mds/managed.pyx":433
  *     cdef mv_ubyte _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -8018,7 +8018,7 @@ static int __pyx_pf_3mds_7managed_5UByte___cinit__(struct __pyx_obj_3mds_7manage
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":418
+/* "mds/managed.pyx":436
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -8045,7 +8045,7 @@ static PyObject *__pyx_pf_3mds_7managed_5UByte_2_to_python(struct __pyx_obj_3mds
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":419
+  /* "mds/managed.pyx":437
  * 
  *     def _to_python(self):
  *         return to_core_val(self._value)             # <<<<<<<<<<<<<<
@@ -8053,13 +8053,13 @@ static PyObject *__pyx_pf_3mds_7managed_5UByte_2_to_python(struct __pyx_obj_3mds
  *     def _to_mds(self):  # TODO: This needs to update _value
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_uint8_t(mds::api::to_core_val<mds::api::kind::UBYTE>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 419, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_uint8_t(mds::api::to_core_val<mds::api::kind::UBYTE>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 437, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":418
+  /* "mds/managed.pyx":436
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -8078,7 +8078,7 @@ static PyObject *__pyx_pf_3mds_7managed_5UByte_2_to_python(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":421
+/* "mds/managed.pyx":439
  *         return to_core_val(self._value)
  * 
  *     def _to_mds(self):  # TODO: This needs to update _value             # <<<<<<<<<<<<<<
@@ -8111,7 +8111,7 @@ static PyObject *__pyx_pf_3mds_7managed_5UByte_4_to_mds(CYTHON_UNUSED struct __p
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":425
+/* "mds/managed.pyx":443
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -8137,7 +8137,7 @@ static PyObject *__pyx_pf_3mds_7managed_5UByte_3MIN___get__(CYTHON_UNUSED struct
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":426
+  /* "mds/managed.pyx":444
  *     property MIN:
  *         def __get__(self):
  *             return 0             # <<<<<<<<<<<<<<
@@ -8149,7 +8149,7 @@ static PyObject *__pyx_pf_3mds_7managed_5UByte_3MIN___get__(CYTHON_UNUSED struct
   __pyx_r = __pyx_int_0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":425
+  /* "mds/managed.pyx":443
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -8164,7 +8164,7 @@ static PyObject *__pyx_pf_3mds_7managed_5UByte_3MIN___get__(CYTHON_UNUSED struct
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":429
+/* "mds/managed.pyx":447
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -8190,7 +8190,7 @@ static PyObject *__pyx_pf_3mds_7managed_5UByte_3MAX___get__(CYTHON_UNUSED struct
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":430
+  /* "mds/managed.pyx":448
  *     property MAX:
  *         def __get__(self):
  *             return 255             # <<<<<<<<<<<<<<
@@ -8202,7 +8202,7 @@ static PyObject *__pyx_pf_3mds_7managed_5UByte_3MAX___get__(CYTHON_UNUSED struct
   __pyx_r = __pyx_int_255;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":429
+  /* "mds/managed.pyx":447
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -8217,7 +8217,7 @@ static PyObject *__pyx_pf_3mds_7managed_5UByte_3MAX___get__(CYTHON_UNUSED struct
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":438
+/* "mds/managed.pyx":456
  *     _primitive = UByte
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -8253,7 +8253,7 @@ static int __pyx_pw_3mds_7managed_10UByteArray_1__cinit__(PyObject *__pyx_v_self
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 438, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 456, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -8266,7 +8266,7 @@ static int __pyx_pw_3mds_7managed_10UByteArray_1__cinit__(PyObject *__pyx_v_self
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 438, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 456, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.UByteArray.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -8287,7 +8287,7 @@ static int __pyx_pf_3mds_7managed_10UByteArray___cinit__(struct __pyx_obj_3mds_7
   size_t __pyx_t_3;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/managed.pyx":439
+  /* "mds/managed.pyx":457
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -8298,17 +8298,17 @@ static int __pyx_pf_3mds_7managed_10UByteArray___cinit__(struct __pyx_obj_3mds_7
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":440
+    /* "mds/managed.pyx":458
  *     def __cinit__(self, length=None):
  *         if length is not None:
  *             self._handle = create_ubyte_marray(length)             # <<<<<<<<<<<<<<
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_ubyte_marray(0)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 440, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 458, __pyx_L1_error)
     __pyx_v_self->_handle = mds::python::types::create_ubyte_marray(__pyx_t_3);
 
-    /* "mds/managed.pyx":439
+    /* "mds/managed.pyx":457
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -8318,7 +8318,7 @@ static int __pyx_pf_3mds_7managed_10UByteArray___cinit__(struct __pyx_obj_3mds_7
     goto __pyx_L3;
   }
 
-  /* "mds/managed.pyx":442
+  /* "mds/managed.pyx":460
  *             self._handle = create_ubyte_marray(length)
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_ubyte_marray(0)             # <<<<<<<<<<<<<<
@@ -8330,7 +8330,7 @@ static int __pyx_pf_3mds_7managed_10UByteArray___cinit__(struct __pyx_obj_3mds_7
   }
   __pyx_L3:;
 
-  /* "mds/managed.pyx":438
+  /* "mds/managed.pyx":456
  *     _primitive = UByte
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -8349,7 +8349,7 @@ static int __pyx_pf_3mds_7managed_10UByteArray___cinit__(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":444
+/* "mds/managed.pyx":462
  *             self._handle = create_ubyte_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -8375,7 +8375,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_10UByteArray_2__len__(struct __pyx_obj_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "mds/managed.pyx":445
+  /* "mds/managed.pyx":463
  * 
  *     def __len__(self):
  *         return self._handle.size()             # <<<<<<<<<<<<<<
@@ -8385,7 +8385,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_10UByteArray_2__len__(struct __pyx_obj_
   __pyx_r = __pyx_v_self->_handle.size();
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":444
+  /* "mds/managed.pyx":462
  *             self._handle = create_ubyte_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -8399,7 +8399,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_10UByteArray_2__len__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":447
+/* "mds/managed.pyx":465
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -8427,7 +8427,7 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_4_to_python(struct __pyx_ob
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":448
+  /* "mds/managed.pyx":466
  * 
  *     def _to_python(self, index):
  *         return to_core_val(self._handle.frozen_read(index))             # <<<<<<<<<<<<<<
@@ -8435,14 +8435,14 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_4_to_python(struct __pyx_ob
  *     def _to_mds(self, index, value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 448, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_uint8_t(mds::api::to_core_val<mds::api::kind::UBYTE>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 448, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 466, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_uint8_t(mds::api::to_core_val<mds::api::kind::UBYTE>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 466, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":447
+  /* "mds/managed.pyx":465
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -8461,7 +8461,7 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_4_to_python(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":450
+/* "mds/managed.pyx":468
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -8497,11 +8497,11 @@ static PyObject *__pyx_pw_3mds_7managed_10UByteArray_7_to_mds(PyObject *__pyx_v_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 450, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 468, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 450, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 468, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -8514,7 +8514,7 @@ static PyObject *__pyx_pw_3mds_7managed_10UByteArray_7_to_mds(PyObject *__pyx_v_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 450, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 468, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.UByteArray._to_mds", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -8539,14 +8539,14 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_6_to_mds(struct __pyx_obj_3
   uint8_t __pyx_t_6;
   __Pyx_RefNannySetupContext("_to_mds", 0);
 
-  /* "mds/managed.pyx":452
+  /* "mds/managed.pyx":470
  *     def _to_mds(self, index, value):
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)             # <<<<<<<<<<<<<<
  *         self._handle.write(index, mv_ubyte(value))
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 452, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 470, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -8559,13 +8559,13 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_6_to_mds(struct __pyx_obj_3
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 452, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 470, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 452, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 470, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -8573,19 +8573,19 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_6_to_mds(struct __pyx_obj_3
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 452, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 470, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 452, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 470, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 452, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 470, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -8594,18 +8594,18 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_6_to_mds(struct __pyx_obj_3
   __pyx_v_wrapped = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":453
+  /* "mds/managed.pyx":471
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)
  *         self._handle.write(index, mv_ubyte(value))             # <<<<<<<<<<<<<<
  * 
  *     def copy(self):
  */
-  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 453, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyInt_As_uint8_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((uint8_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 453, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 471, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_uint8_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((uint8_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 471, __pyx_L1_error)
   __pyx_v_self->_handle.write(__pyx_t_5, mds::api::api_type<mds::api::kind::UBYTE>(__pyx_t_6));
 
-  /* "mds/managed.pyx":450
+  /* "mds/managed.pyx":468
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -8630,7 +8630,7 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_6_to_mds(struct __pyx_obj_3
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":455
+/* "mds/managed.pyx":473
  *         self._handle.write(index, mv_ubyte(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -8664,7 +8664,7 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_8copy(struct __pyx_obj_3mds
   uint8_t __pyx_t_5;
   __Pyx_RefNannySetupContext("copy", 0);
 
-  /* "mds/managed.pyx":457
+  /* "mds/managed.pyx":475
  *     def copy(self):
  *         cdef:
  *             size_t i = 0             # <<<<<<<<<<<<<<
@@ -8673,17 +8673,17 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_8copy(struct __pyx_obj_3mds
  */
   __pyx_v_i = 0;
 
-  /* "mds/managed.pyx":458
+  /* "mds/managed.pyx":476
  *         cdef:
  *             size_t i = 0
  *             size_t l = len(self)             # <<<<<<<<<<<<<<
  *             h_marray_ubyte_t h = create_ubyte_marray(l)
  * 
  */
-  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 458, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 476, __pyx_L1_error)
   __pyx_v_l = __pyx_t_1;
 
-  /* "mds/managed.pyx":459
+  /* "mds/managed.pyx":477
  *             size_t i = 0
  *             size_t l = len(self)
  *             h_marray_ubyte_t h = create_ubyte_marray(l)             # <<<<<<<<<<<<<<
@@ -8692,7 +8692,7 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_8copy(struct __pyx_obj_3mds
  */
   __pyx_v_h = mds::python::types::create_ubyte_marray(__pyx_v_l);
 
-  /* "mds/managed.pyx":461
+  /* "mds/managed.pyx":479
  *             h_marray_ubyte_t h = create_ubyte_marray(l)
  * 
  *         for i in range(l):             # <<<<<<<<<<<<<<
@@ -8703,21 +8703,21 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_8copy(struct __pyx_obj_3mds
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "mds/managed.pyx":462
+    /* "mds/managed.pyx":480
  * 
  *         for i in range(l):
  *             h.write(i, mv_ubyte(<uint8_t> self[i]))             # <<<<<<<<<<<<<<
  * 
  *         return UByteArray_Init(h)
  */
-    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 462, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 480, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyInt_As_uint8_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((uint8_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 462, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_uint8_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((uint8_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 480, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_h.write(__pyx_v_i, mds::api::api_type<mds::api::kind::UBYTE>(((uint8_t)__pyx_t_5)));
   }
 
-  /* "mds/managed.pyx":464
+  /* "mds/managed.pyx":482
  *             h.write(i, mv_ubyte(<uint8_t> self[i]))
  * 
  *         return UByteArray_Init(h)             # <<<<<<<<<<<<<<
@@ -8725,13 +8725,13 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_8copy(struct __pyx_obj_3mds
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3mds_7managed_UByteArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 464, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3mds_7managed_UByteArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 482, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":455
+  /* "mds/managed.pyx":473
  *         self._handle.write(index, mv_ubyte(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -8750,7 +8750,7 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_8copy(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":467
+/* "mds/managed.pyx":485
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -8784,7 +8784,7 @@ static PyObject *__pyx_pw_3mds_7managed_10UByteArray_11create(CYTHON_UNUSED PyOb
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 467, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 485, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -8795,7 +8795,7 @@ static PyObject *__pyx_pw_3mds_7managed_10UByteArray_11create(CYTHON_UNUSED PyOb
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 467, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 485, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.UByteArray.create", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -8818,7 +8818,7 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_10create(PyObject *__pyx_v_
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
 
-  /* "mds/managed.pyx":468
+  /* "mds/managed.pyx":486
  *     @staticmethod
  *     def create(length):
  *         return MDSArrayBase.create("ubyte", length)             # <<<<<<<<<<<<<<
@@ -8826,7 +8826,7 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_10create(PyObject *__pyx_v_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 468, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 486, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -8843,7 +8843,7 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_10create(PyObject *__pyx_v_
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_ubyte, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 468, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 486, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -8851,13 +8851,13 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_10create(PyObject *__pyx_v_
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_ubyte, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 468, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 486, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 468, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 486, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -8868,7 +8868,7 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_10create(PyObject *__pyx_v_
     __Pyx_INCREF(__pyx_v_length);
     __Pyx_GIVEREF(__pyx_v_length);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_length);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 468, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 486, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -8877,7 +8877,7 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_10create(PyObject *__pyx_v_
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":467
+  /* "mds/managed.pyx":485
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -8899,7 +8899,7 @@ static PyObject *__pyx_pf_3mds_7managed_10UByteArray_10create(PyObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":471
+/* "mds/managed.pyx":489
  * 
  * 
  * cdef UByteArray_Init(h_marray_ubyte_t handle):             # <<<<<<<<<<<<<<
@@ -8914,19 +8914,19 @@ static PyObject *__pyx_f_3mds_7managed_UByteArray_Init(mds::python::types::h_mar
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("UByteArray_Init", 0);
 
-  /* "mds/managed.pyx":472
+  /* "mds/managed.pyx":490
  * 
  * cdef UByteArray_Init(h_marray_ubyte_t handle):
  *     result = UByteArray()             # <<<<<<<<<<<<<<
  *     result._handle = handle
  *     return result
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_UByteArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 472, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_UByteArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 490, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((struct __pyx_obj_3mds_7managed_UByteArray *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":473
+  /* "mds/managed.pyx":491
  * cdef UByteArray_Init(h_marray_ubyte_t handle):
  *     result = UByteArray()
  *     result._handle = handle             # <<<<<<<<<<<<<<
@@ -8935,7 +8935,7 @@ static PyObject *__pyx_f_3mds_7managed_UByteArray_Init(mds::python::types::h_mar
  */
   __pyx_v_result->_handle = __pyx_v_handle;
 
-  /* "mds/managed.pyx":474
+  /* "mds/managed.pyx":492
  *     result = UByteArray()
  *     result._handle = handle
  *     return result             # <<<<<<<<<<<<<<
@@ -8947,7 +8947,7 @@ static PyObject *__pyx_f_3mds_7managed_UByteArray_Init(mds::python::types::h_mar
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":471
+  /* "mds/managed.pyx":489
  * 
  * 
  * cdef UByteArray_Init(h_marray_ubyte_t handle):             # <<<<<<<<<<<<<<
@@ -8967,7 +8967,7 @@ static PyObject *__pyx_f_3mds_7managed_UByteArray_Init(mds::python::types::h_mar
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":481
+/* "mds/managed.pyx":499
  *     cdef mv_short _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -9000,7 +9000,7 @@ static int __pyx_pw_3mds_7managed_5Short_1__cinit__(PyObject *__pyx_v_self, PyOb
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 481, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 499, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -9011,7 +9011,7 @@ static int __pyx_pw_3mds_7managed_5Short_1__cinit__(PyObject *__pyx_v_self, PyOb
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 481, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 499, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.Short.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -9034,14 +9034,14 @@ static int __pyx_pf_3mds_7managed_5Short___cinit__(struct __pyx_obj_3mds_7manage
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "mds/managed.pyx":482
+  /* "mds/managed.pyx":500
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value
  *         value = self._sanitize(value)             # <<<<<<<<<<<<<<
  * 
  *     def _to_python(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 482, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 500, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -9054,13 +9054,13 @@ static int __pyx_pf_3mds_7managed_5Short___cinit__(struct __pyx_obj_3mds_7manage
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 482, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 500, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 482, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 500, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -9068,19 +9068,19 @@ static int __pyx_pf_3mds_7managed_5Short___cinit__(struct __pyx_obj_3mds_7manage
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 482, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 500, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 482, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 500, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 482, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 500, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -9089,7 +9089,7 @@ static int __pyx_pf_3mds_7managed_5Short___cinit__(struct __pyx_obj_3mds_7manage
   __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":481
+  /* "mds/managed.pyx":499
  *     cdef mv_short _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -9113,7 +9113,7 @@ static int __pyx_pf_3mds_7managed_5Short___cinit__(struct __pyx_obj_3mds_7manage
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":484
+/* "mds/managed.pyx":502
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -9140,7 +9140,7 @@ static PyObject *__pyx_pf_3mds_7managed_5Short_2_to_python(struct __pyx_obj_3mds
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":485
+  /* "mds/managed.pyx":503
  * 
  *     def _to_python(self):
  *         return to_core_val(self._value)             # <<<<<<<<<<<<<<
@@ -9148,13 +9148,13 @@ static PyObject *__pyx_pf_3mds_7managed_5Short_2_to_python(struct __pyx_obj_3mds
  *     def _to_mds(self):  # TODO: This needs to update _value
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int16_t(mds::api::to_core_val<mds::api::kind::SHORT>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 485, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int16_t(mds::api::to_core_val<mds::api::kind::SHORT>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 503, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":484
+  /* "mds/managed.pyx":502
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -9173,7 +9173,7 @@ static PyObject *__pyx_pf_3mds_7managed_5Short_2_to_python(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":487
+/* "mds/managed.pyx":505
  *         return to_core_val(self._value)
  * 
  *     def _to_mds(self):  # TODO: This needs to update _value             # <<<<<<<<<<<<<<
@@ -9206,7 +9206,7 @@ static PyObject *__pyx_pf_3mds_7managed_5Short_4_to_mds(CYTHON_UNUSED struct __p
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":491
+/* "mds/managed.pyx":509
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -9232,7 +9232,7 @@ static PyObject *__pyx_pf_3mds_7managed_5Short_3MIN___get__(CYTHON_UNUSED struct
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":492
+  /* "mds/managed.pyx":510
  *     property MIN:
  *         def __get__(self):
  *             return -32768             # <<<<<<<<<<<<<<
@@ -9244,7 +9244,7 @@ static PyObject *__pyx_pf_3mds_7managed_5Short_3MIN___get__(CYTHON_UNUSED struct
   __pyx_r = __pyx_int_neg_32768;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":491
+  /* "mds/managed.pyx":509
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -9259,7 +9259,7 @@ static PyObject *__pyx_pf_3mds_7managed_5Short_3MIN___get__(CYTHON_UNUSED struct
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":495
+/* "mds/managed.pyx":513
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -9285,7 +9285,7 @@ static PyObject *__pyx_pf_3mds_7managed_5Short_3MAX___get__(CYTHON_UNUSED struct
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":496
+  /* "mds/managed.pyx":514
  *     property MAX:
  *         def __get__(self):
  *             return 32767             # <<<<<<<<<<<<<<
@@ -9297,7 +9297,7 @@ static PyObject *__pyx_pf_3mds_7managed_5Short_3MAX___get__(CYTHON_UNUSED struct
   __pyx_r = __pyx_int_32767;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":495
+  /* "mds/managed.pyx":513
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -9312,7 +9312,7 @@ static PyObject *__pyx_pf_3mds_7managed_5Short_3MAX___get__(CYTHON_UNUSED struct
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":504
+/* "mds/managed.pyx":522
  *     _primitive = Short
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -9348,7 +9348,7 @@ static int __pyx_pw_3mds_7managed_10ShortArray_1__cinit__(PyObject *__pyx_v_self
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 504, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 522, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -9361,7 +9361,7 @@ static int __pyx_pw_3mds_7managed_10ShortArray_1__cinit__(PyObject *__pyx_v_self
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 504, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 522, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.ShortArray.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -9382,7 +9382,7 @@ static int __pyx_pf_3mds_7managed_10ShortArray___cinit__(struct __pyx_obj_3mds_7
   size_t __pyx_t_3;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/managed.pyx":505
+  /* "mds/managed.pyx":523
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -9393,17 +9393,17 @@ static int __pyx_pf_3mds_7managed_10ShortArray___cinit__(struct __pyx_obj_3mds_7
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":506
+    /* "mds/managed.pyx":524
  *     def __cinit__(self, length=None):
  *         if length is not None:
  *             self._handle = create_short_marray(length)             # <<<<<<<<<<<<<<
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_short_marray(0)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 506, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 524, __pyx_L1_error)
     __pyx_v_self->_handle = mds::python::types::create_short_marray(__pyx_t_3);
 
-    /* "mds/managed.pyx":505
+    /* "mds/managed.pyx":523
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -9413,7 +9413,7 @@ static int __pyx_pf_3mds_7managed_10ShortArray___cinit__(struct __pyx_obj_3mds_7
     goto __pyx_L3;
   }
 
-  /* "mds/managed.pyx":508
+  /* "mds/managed.pyx":526
  *             self._handle = create_short_marray(length)
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_short_marray(0)             # <<<<<<<<<<<<<<
@@ -9425,7 +9425,7 @@ static int __pyx_pf_3mds_7managed_10ShortArray___cinit__(struct __pyx_obj_3mds_7
   }
   __pyx_L3:;
 
-  /* "mds/managed.pyx":504
+  /* "mds/managed.pyx":522
  *     _primitive = Short
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -9444,7 +9444,7 @@ static int __pyx_pf_3mds_7managed_10ShortArray___cinit__(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":510
+/* "mds/managed.pyx":528
  *             self._handle = create_short_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -9470,7 +9470,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_10ShortArray_2__len__(struct __pyx_obj_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "mds/managed.pyx":511
+  /* "mds/managed.pyx":529
  * 
  *     def __len__(self):
  *         return self._handle.size()             # <<<<<<<<<<<<<<
@@ -9480,7 +9480,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_10ShortArray_2__len__(struct __pyx_obj_
   __pyx_r = __pyx_v_self->_handle.size();
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":510
+  /* "mds/managed.pyx":528
  *             self._handle = create_short_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -9494,7 +9494,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_10ShortArray_2__len__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":513
+/* "mds/managed.pyx":531
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -9522,7 +9522,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_4_to_python(struct __pyx_ob
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":514
+  /* "mds/managed.pyx":532
  * 
  *     def _to_python(self, index):
  *         return to_core_val(self._handle.frozen_read(index))             # <<<<<<<<<<<<<<
@@ -9530,14 +9530,14 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_4_to_python(struct __pyx_ob
  *     def _to_mds(self, index, value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 514, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int16_t(mds::api::to_core_val<mds::api::kind::SHORT>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 514, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int16_t(mds::api::to_core_val<mds::api::kind::SHORT>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 532, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":513
+  /* "mds/managed.pyx":531
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -9556,7 +9556,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_4_to_python(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":516
+/* "mds/managed.pyx":534
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -9592,11 +9592,11 @@ static PyObject *__pyx_pw_3mds_7managed_10ShortArray_7_to_mds(PyObject *__pyx_v_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 516, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 534, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 516, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 534, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -9609,7 +9609,7 @@ static PyObject *__pyx_pw_3mds_7managed_10ShortArray_7_to_mds(PyObject *__pyx_v_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 516, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 534, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.ShortArray._to_mds", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -9634,14 +9634,14 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_6_to_mds(struct __pyx_obj_3
   int16_t __pyx_t_6;
   __Pyx_RefNannySetupContext("_to_mds", 0);
 
-  /* "mds/managed.pyx":518
+  /* "mds/managed.pyx":536
  *     def _to_mds(self, index, value):
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)             # <<<<<<<<<<<<<<
  *         self._handle.write(index, mv_short(value))
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 518, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 536, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -9654,13 +9654,13 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_6_to_mds(struct __pyx_obj_3
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 518, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 536, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 518, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 536, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -9668,19 +9668,19 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_6_to_mds(struct __pyx_obj_3
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 518, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 536, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 518, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 536, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 518, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 536, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -9689,18 +9689,18 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_6_to_mds(struct __pyx_obj_3
   __pyx_v_wrapped = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":519
+  /* "mds/managed.pyx":537
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)
  *         self._handle.write(index, mv_short(value))             # <<<<<<<<<<<<<<
  * 
  *     def copy(self):
  */
-  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 519, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyInt_As_int16_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((int16_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 519, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 537, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_int16_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((int16_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 537, __pyx_L1_error)
   __pyx_v_self->_handle.write(__pyx_t_5, mds::api::api_type<mds::api::kind::SHORT>(__pyx_t_6));
 
-  /* "mds/managed.pyx":516
+  /* "mds/managed.pyx":534
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -9725,7 +9725,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_6_to_mds(struct __pyx_obj_3
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":521
+/* "mds/managed.pyx":539
  *         self._handle.write(index, mv_short(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -9759,7 +9759,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_8copy(struct __pyx_obj_3mds
   int16_t __pyx_t_5;
   __Pyx_RefNannySetupContext("copy", 0);
 
-  /* "mds/managed.pyx":523
+  /* "mds/managed.pyx":541
  *     def copy(self):
  *         cdef:
  *             size_t i = 0             # <<<<<<<<<<<<<<
@@ -9768,17 +9768,17 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_8copy(struct __pyx_obj_3mds
  */
   __pyx_v_i = 0;
 
-  /* "mds/managed.pyx":524
+  /* "mds/managed.pyx":542
  *         cdef:
  *             size_t i = 0
  *             size_t l = len(self)             # <<<<<<<<<<<<<<
  *             h_marray_short_t h = create_short_marray(l)
  * 
  */
-  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 524, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 542, __pyx_L1_error)
   __pyx_v_l = __pyx_t_1;
 
-  /* "mds/managed.pyx":525
+  /* "mds/managed.pyx":543
  *             size_t i = 0
  *             size_t l = len(self)
  *             h_marray_short_t h = create_short_marray(l)             # <<<<<<<<<<<<<<
@@ -9787,7 +9787,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_8copy(struct __pyx_obj_3mds
  */
   __pyx_v_h = mds::python::types::create_short_marray(__pyx_v_l);
 
-  /* "mds/managed.pyx":527
+  /* "mds/managed.pyx":545
  *             h_marray_short_t h = create_short_marray(l)
  * 
  *         for i in range(l):             # <<<<<<<<<<<<<<
@@ -9798,21 +9798,21 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_8copy(struct __pyx_obj_3mds
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "mds/managed.pyx":528
+    /* "mds/managed.pyx":546
  * 
  *         for i in range(l):
  *             h.write(i, mv_short(<int16_t> self[i]))             # <<<<<<<<<<<<<<
  * 
  *         return ShortArray_Init(h)
  */
-    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 528, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 546, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyInt_As_int16_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((int16_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 528, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_int16_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((int16_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 546, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_h.write(__pyx_v_i, mds::api::api_type<mds::api::kind::SHORT>(((int16_t)__pyx_t_5)));
   }
 
-  /* "mds/managed.pyx":530
+  /* "mds/managed.pyx":548
  *             h.write(i, mv_short(<int16_t> self[i]))
  * 
  *         return ShortArray_Init(h)             # <<<<<<<<<<<<<<
@@ -9820,13 +9820,13 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_8copy(struct __pyx_obj_3mds
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3mds_7managed_ShortArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 530, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3mds_7managed_ShortArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 548, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":521
+  /* "mds/managed.pyx":539
  *         self._handle.write(index, mv_short(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -9845,7 +9845,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_8copy(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":533
+/* "mds/managed.pyx":551
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -9879,7 +9879,7 @@ static PyObject *__pyx_pw_3mds_7managed_10ShortArray_11create(CYTHON_UNUSED PyOb
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 533, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 551, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -9890,7 +9890,7 @@ static PyObject *__pyx_pw_3mds_7managed_10ShortArray_11create(CYTHON_UNUSED PyOb
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 533, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 551, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.ShortArray.create", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -9913,7 +9913,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_10create(PyObject *__pyx_v_
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
 
-  /* "mds/managed.pyx":534
+  /* "mds/managed.pyx":552
  *     @staticmethod
  *     def create(length):
  *         return MDSArrayBase.create("short", length)             # <<<<<<<<<<<<<<
@@ -9921,7 +9921,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_10create(PyObject *__pyx_v_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 534, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 552, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -9938,7 +9938,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_10create(PyObject *__pyx_v_
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_short, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 534, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 552, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -9946,13 +9946,13 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_10create(PyObject *__pyx_v_
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_short, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 534, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 552, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 534, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 552, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -9963,7 +9963,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_10create(PyObject *__pyx_v_
     __Pyx_INCREF(__pyx_v_length);
     __Pyx_GIVEREF(__pyx_v_length);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_length);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 534, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 552, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -9972,7 +9972,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_10create(PyObject *__pyx_v_
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":533
+  /* "mds/managed.pyx":551
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -9994,7 +9994,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ShortArray_10create(PyObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":537
+/* "mds/managed.pyx":555
  * 
  * 
  * cdef ShortArray_Init(h_marray_short_t handle):             # <<<<<<<<<<<<<<
@@ -10009,19 +10009,19 @@ static PyObject *__pyx_f_3mds_7managed_ShortArray_Init(mds::python::types::h_mar
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("ShortArray_Init", 0);
 
-  /* "mds/managed.pyx":538
+  /* "mds/managed.pyx":556
  * 
  * cdef ShortArray_Init(h_marray_short_t handle):
  *     result = ShortArray()             # <<<<<<<<<<<<<<
  *     result._handle = handle
  *     return result
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_ShortArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 538, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_ShortArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 556, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((struct __pyx_obj_3mds_7managed_ShortArray *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":539
+  /* "mds/managed.pyx":557
  * cdef ShortArray_Init(h_marray_short_t handle):
  *     result = ShortArray()
  *     result._handle = handle             # <<<<<<<<<<<<<<
@@ -10030,7 +10030,7 @@ static PyObject *__pyx_f_3mds_7managed_ShortArray_Init(mds::python::types::h_mar
  */
   __pyx_v_result->_handle = __pyx_v_handle;
 
-  /* "mds/managed.pyx":540
+  /* "mds/managed.pyx":558
  *     result = ShortArray()
  *     result._handle = handle
  *     return result             # <<<<<<<<<<<<<<
@@ -10042,7 +10042,7 @@ static PyObject *__pyx_f_3mds_7managed_ShortArray_Init(mds::python::types::h_mar
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":537
+  /* "mds/managed.pyx":555
  * 
  * 
  * cdef ShortArray_Init(h_marray_short_t handle):             # <<<<<<<<<<<<<<
@@ -10062,7 +10062,7 @@ static PyObject *__pyx_f_3mds_7managed_ShortArray_Init(mds::python::types::h_mar
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":547
+/* "mds/managed.pyx":565
  *     cdef mv_ushort _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -10095,7 +10095,7 @@ static int __pyx_pw_3mds_7managed_6UShort_1__cinit__(PyObject *__pyx_v_self, PyO
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 547, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 565, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -10106,7 +10106,7 @@ static int __pyx_pw_3mds_7managed_6UShort_1__cinit__(PyObject *__pyx_v_self, PyO
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 547, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 565, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.UShort.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -10129,14 +10129,14 @@ static int __pyx_pf_3mds_7managed_6UShort___cinit__(struct __pyx_obj_3mds_7manag
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "mds/managed.pyx":548
+  /* "mds/managed.pyx":566
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value
  *         value = self._sanitize(value)             # <<<<<<<<<<<<<<
  * 
  *     def _to_python(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 548, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 566, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -10149,13 +10149,13 @@ static int __pyx_pf_3mds_7managed_6UShort___cinit__(struct __pyx_obj_3mds_7manag
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 548, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 566, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 548, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 566, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -10163,19 +10163,19 @@ static int __pyx_pf_3mds_7managed_6UShort___cinit__(struct __pyx_obj_3mds_7manag
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 548, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 566, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 548, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 566, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 548, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 566, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -10184,7 +10184,7 @@ static int __pyx_pf_3mds_7managed_6UShort___cinit__(struct __pyx_obj_3mds_7manag
   __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":547
+  /* "mds/managed.pyx":565
  *     cdef mv_ushort _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -10208,7 +10208,7 @@ static int __pyx_pf_3mds_7managed_6UShort___cinit__(struct __pyx_obj_3mds_7manag
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":550
+/* "mds/managed.pyx":568
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -10235,7 +10235,7 @@ static PyObject *__pyx_pf_3mds_7managed_6UShort_2_to_python(struct __pyx_obj_3md
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":551
+  /* "mds/managed.pyx":569
  * 
  *     def _to_python(self):
  *         return to_core_val(self._value)             # <<<<<<<<<<<<<<
@@ -10243,13 +10243,13 @@ static PyObject *__pyx_pf_3mds_7managed_6UShort_2_to_python(struct __pyx_obj_3md
  *     def _to_mds(self):  # TODO: This needs to update _value
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_uint16_t(mds::api::to_core_val<mds::api::kind::USHORT>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 551, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_uint16_t(mds::api::to_core_val<mds::api::kind::USHORT>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 569, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":550
+  /* "mds/managed.pyx":568
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -10268,7 +10268,7 @@ static PyObject *__pyx_pf_3mds_7managed_6UShort_2_to_python(struct __pyx_obj_3md
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":553
+/* "mds/managed.pyx":571
  *         return to_core_val(self._value)
  * 
  *     def _to_mds(self):  # TODO: This needs to update _value             # <<<<<<<<<<<<<<
@@ -10301,7 +10301,7 @@ static PyObject *__pyx_pf_3mds_7managed_6UShort_4_to_mds(CYTHON_UNUSED struct __
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":557
+/* "mds/managed.pyx":575
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -10327,7 +10327,7 @@ static PyObject *__pyx_pf_3mds_7managed_6UShort_3MIN___get__(CYTHON_UNUSED struc
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":558
+  /* "mds/managed.pyx":576
  *     property MIN:
  *         def __get__(self):
  *             return 0             # <<<<<<<<<<<<<<
@@ -10339,7 +10339,7 @@ static PyObject *__pyx_pf_3mds_7managed_6UShort_3MIN___get__(CYTHON_UNUSED struc
   __pyx_r = __pyx_int_0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":557
+  /* "mds/managed.pyx":575
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -10354,7 +10354,7 @@ static PyObject *__pyx_pf_3mds_7managed_6UShort_3MIN___get__(CYTHON_UNUSED struc
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":561
+/* "mds/managed.pyx":579
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -10380,7 +10380,7 @@ static PyObject *__pyx_pf_3mds_7managed_6UShort_3MAX___get__(CYTHON_UNUSED struc
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":562
+  /* "mds/managed.pyx":580
  *     property MAX:
  *         def __get__(self):
  *             return 65535             # <<<<<<<<<<<<<<
@@ -10392,7 +10392,7 @@ static PyObject *__pyx_pf_3mds_7managed_6UShort_3MAX___get__(CYTHON_UNUSED struc
   __pyx_r = __pyx_int_65535;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":561
+  /* "mds/managed.pyx":579
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -10407,7 +10407,7 @@ static PyObject *__pyx_pf_3mds_7managed_6UShort_3MAX___get__(CYTHON_UNUSED struc
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":570
+/* "mds/managed.pyx":588
  *     _primitive = UShort
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -10443,7 +10443,7 @@ static int __pyx_pw_3mds_7managed_11UShortArray_1__cinit__(PyObject *__pyx_v_sel
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 570, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 588, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -10456,7 +10456,7 @@ static int __pyx_pw_3mds_7managed_11UShortArray_1__cinit__(PyObject *__pyx_v_sel
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 570, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 588, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.UShortArray.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -10477,7 +10477,7 @@ static int __pyx_pf_3mds_7managed_11UShortArray___cinit__(struct __pyx_obj_3mds_
   size_t __pyx_t_3;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/managed.pyx":571
+  /* "mds/managed.pyx":589
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -10488,17 +10488,17 @@ static int __pyx_pf_3mds_7managed_11UShortArray___cinit__(struct __pyx_obj_3mds_
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":572
+    /* "mds/managed.pyx":590
  *     def __cinit__(self, length=None):
  *         if length is not None:
  *             self._handle = create_ushort_marray(length)             # <<<<<<<<<<<<<<
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_ushort_marray(0)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 572, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 590, __pyx_L1_error)
     __pyx_v_self->_handle = mds::python::types::create_ushort_marray(__pyx_t_3);
 
-    /* "mds/managed.pyx":571
+    /* "mds/managed.pyx":589
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -10508,7 +10508,7 @@ static int __pyx_pf_3mds_7managed_11UShortArray___cinit__(struct __pyx_obj_3mds_
     goto __pyx_L3;
   }
 
-  /* "mds/managed.pyx":574
+  /* "mds/managed.pyx":592
  *             self._handle = create_ushort_marray(length)
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_ushort_marray(0)             # <<<<<<<<<<<<<<
@@ -10520,7 +10520,7 @@ static int __pyx_pf_3mds_7managed_11UShortArray___cinit__(struct __pyx_obj_3mds_
   }
   __pyx_L3:;
 
-  /* "mds/managed.pyx":570
+  /* "mds/managed.pyx":588
  *     _primitive = UShort
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -10539,7 +10539,7 @@ static int __pyx_pf_3mds_7managed_11UShortArray___cinit__(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":576
+/* "mds/managed.pyx":594
  *             self._handle = create_ushort_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -10565,7 +10565,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_11UShortArray_2__len__(struct __pyx_obj
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "mds/managed.pyx":577
+  /* "mds/managed.pyx":595
  * 
  *     def __len__(self):
  *         return self._handle.size()             # <<<<<<<<<<<<<<
@@ -10575,7 +10575,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_11UShortArray_2__len__(struct __pyx_obj
   __pyx_r = __pyx_v_self->_handle.size();
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":576
+  /* "mds/managed.pyx":594
  *             self._handle = create_ushort_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -10589,7 +10589,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_11UShortArray_2__len__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":579
+/* "mds/managed.pyx":597
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -10617,7 +10617,7 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_4_to_python(struct __pyx_o
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":580
+  /* "mds/managed.pyx":598
  * 
  *     def _to_python(self, index):
  *         return to_core_val(self._handle.frozen_read(index))             # <<<<<<<<<<<<<<
@@ -10625,14 +10625,14 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_4_to_python(struct __pyx_o
  *     def _to_mds(self, index, value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 580, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_uint16_t(mds::api::to_core_val<mds::api::kind::USHORT>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 580, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 598, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_uint16_t(mds::api::to_core_val<mds::api::kind::USHORT>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 598, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":579
+  /* "mds/managed.pyx":597
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -10651,7 +10651,7 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_4_to_python(struct __pyx_o
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":582
+/* "mds/managed.pyx":600
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -10687,11 +10687,11 @@ static PyObject *__pyx_pw_3mds_7managed_11UShortArray_7_to_mds(PyObject *__pyx_v
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 582, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 600, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 582, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 600, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -10704,7 +10704,7 @@ static PyObject *__pyx_pw_3mds_7managed_11UShortArray_7_to_mds(PyObject *__pyx_v
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 582, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 600, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.UShortArray._to_mds", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -10729,14 +10729,14 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_6_to_mds(struct __pyx_obj_
   uint16_t __pyx_t_6;
   __Pyx_RefNannySetupContext("_to_mds", 0);
 
-  /* "mds/managed.pyx":584
+  /* "mds/managed.pyx":602
  *     def _to_mds(self, index, value):
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)             # <<<<<<<<<<<<<<
  *         self._handle.write(index, mv_ushort(value))
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 584, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 602, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -10749,13 +10749,13 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_6_to_mds(struct __pyx_obj_
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 584, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 602, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 584, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 602, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -10763,19 +10763,19 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_6_to_mds(struct __pyx_obj_
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 584, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 602, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 584, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 602, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 584, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 602, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -10784,18 +10784,18 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_6_to_mds(struct __pyx_obj_
   __pyx_v_wrapped = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":585
+  /* "mds/managed.pyx":603
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)
  *         self._handle.write(index, mv_ushort(value))             # <<<<<<<<<<<<<<
  * 
  *     def copy(self):
  */
-  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 585, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyInt_As_uint16_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((uint16_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 585, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 603, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_uint16_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((uint16_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 603, __pyx_L1_error)
   __pyx_v_self->_handle.write(__pyx_t_5, mds::api::api_type<mds::api::kind::USHORT>(__pyx_t_6));
 
-  /* "mds/managed.pyx":582
+  /* "mds/managed.pyx":600
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -10820,7 +10820,7 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_6_to_mds(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":587
+/* "mds/managed.pyx":605
  *         self._handle.write(index, mv_ushort(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -10854,7 +10854,7 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_8copy(struct __pyx_obj_3md
   uint16_t __pyx_t_5;
   __Pyx_RefNannySetupContext("copy", 0);
 
-  /* "mds/managed.pyx":589
+  /* "mds/managed.pyx":607
  *     def copy(self):
  *         cdef:
  *             size_t i = 0             # <<<<<<<<<<<<<<
@@ -10863,17 +10863,17 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_8copy(struct __pyx_obj_3md
  */
   __pyx_v_i = 0;
 
-  /* "mds/managed.pyx":590
+  /* "mds/managed.pyx":608
  *         cdef:
  *             size_t i = 0
  *             size_t l = len(self)             # <<<<<<<<<<<<<<
  *             h_marray_ushort_t h = create_ushort_marray(l)
  * 
  */
-  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 590, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 608, __pyx_L1_error)
   __pyx_v_l = __pyx_t_1;
 
-  /* "mds/managed.pyx":591
+  /* "mds/managed.pyx":609
  *             size_t i = 0
  *             size_t l = len(self)
  *             h_marray_ushort_t h = create_ushort_marray(l)             # <<<<<<<<<<<<<<
@@ -10882,7 +10882,7 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_8copy(struct __pyx_obj_3md
  */
   __pyx_v_h = mds::python::types::create_ushort_marray(__pyx_v_l);
 
-  /* "mds/managed.pyx":593
+  /* "mds/managed.pyx":611
  *             h_marray_ushort_t h = create_ushort_marray(l)
  * 
  *         for i in range(l):             # <<<<<<<<<<<<<<
@@ -10893,21 +10893,21 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_8copy(struct __pyx_obj_3md
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "mds/managed.pyx":594
+    /* "mds/managed.pyx":612
  * 
  *         for i in range(l):
  *             h.write(i, mv_ushort(<uint16_t> self[i]))             # <<<<<<<<<<<<<<
  * 
  *         return UShortArray_Init(h)
  */
-    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 594, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 612, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyInt_As_uint16_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((uint16_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 594, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_uint16_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((uint16_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 612, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_h.write(__pyx_v_i, mds::api::api_type<mds::api::kind::USHORT>(((uint16_t)__pyx_t_5)));
   }
 
-  /* "mds/managed.pyx":596
+  /* "mds/managed.pyx":614
  *             h.write(i, mv_ushort(<uint16_t> self[i]))
  * 
  *         return UShortArray_Init(h)             # <<<<<<<<<<<<<<
@@ -10915,13 +10915,13 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_8copy(struct __pyx_obj_3md
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3mds_7managed_UShortArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 596, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3mds_7managed_UShortArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 614, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":587
+  /* "mds/managed.pyx":605
  *         self._handle.write(index, mv_ushort(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -10940,7 +10940,7 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_8copy(struct __pyx_obj_3md
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":599
+/* "mds/managed.pyx":617
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -10974,7 +10974,7 @@ static PyObject *__pyx_pw_3mds_7managed_11UShortArray_11create(CYTHON_UNUSED PyO
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 599, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 617, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -10985,7 +10985,7 @@ static PyObject *__pyx_pw_3mds_7managed_11UShortArray_11create(CYTHON_UNUSED PyO
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 599, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 617, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.UShortArray.create", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -11008,7 +11008,7 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_10create(PyObject *__pyx_v
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
 
-  /* "mds/managed.pyx":600
+  /* "mds/managed.pyx":618
  *     @staticmethod
  *     def create(length):
  *         return MDSArrayBase.create("ushort", length)             # <<<<<<<<<<<<<<
@@ -11016,7 +11016,7 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_10create(PyObject *__pyx_v
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 600, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 618, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -11033,7 +11033,7 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_10create(PyObject *__pyx_v
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_ushort, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 600, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 618, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -11041,13 +11041,13 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_10create(PyObject *__pyx_v
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_ushort, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 600, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 618, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 600, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 618, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -11058,7 +11058,7 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_10create(PyObject *__pyx_v
     __Pyx_INCREF(__pyx_v_length);
     __Pyx_GIVEREF(__pyx_v_length);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_length);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 600, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 618, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -11067,7 +11067,7 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_10create(PyObject *__pyx_v
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":599
+  /* "mds/managed.pyx":617
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -11089,7 +11089,7 @@ static PyObject *__pyx_pf_3mds_7managed_11UShortArray_10create(PyObject *__pyx_v
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":603
+/* "mds/managed.pyx":621
  * 
  * 
  * cdef UShortArray_Init(h_marray_ushort_t handle):             # <<<<<<<<<<<<<<
@@ -11104,19 +11104,19 @@ static PyObject *__pyx_f_3mds_7managed_UShortArray_Init(mds::python::types::h_ma
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("UShortArray_Init", 0);
 
-  /* "mds/managed.pyx":604
+  /* "mds/managed.pyx":622
  * 
  * cdef UShortArray_Init(h_marray_ushort_t handle):
  *     result = UShortArray()             # <<<<<<<<<<<<<<
  *     result._handle = handle
  *     return result
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_UShortArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 604, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_UShortArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 622, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((struct __pyx_obj_3mds_7managed_UShortArray *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":605
+  /* "mds/managed.pyx":623
  * cdef UShortArray_Init(h_marray_ushort_t handle):
  *     result = UShortArray()
  *     result._handle = handle             # <<<<<<<<<<<<<<
@@ -11125,7 +11125,7 @@ static PyObject *__pyx_f_3mds_7managed_UShortArray_Init(mds::python::types::h_ma
  */
   __pyx_v_result->_handle = __pyx_v_handle;
 
-  /* "mds/managed.pyx":606
+  /* "mds/managed.pyx":624
  *     result = UShortArray()
  *     result._handle = handle
  *     return result             # <<<<<<<<<<<<<<
@@ -11137,7 +11137,7 @@ static PyObject *__pyx_f_3mds_7managed_UShortArray_Init(mds::python::types::h_ma
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":603
+  /* "mds/managed.pyx":621
  * 
  * 
  * cdef UShortArray_Init(h_marray_ushort_t handle):             # <<<<<<<<<<<<<<
@@ -11157,7 +11157,7 @@ static PyObject *__pyx_f_3mds_7managed_UShortArray_Init(mds::python::types::h_ma
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":613
+/* "mds/managed.pyx":631
  *     cdef mv_int _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -11190,7 +11190,7 @@ static int __pyx_pw_3mds_7managed_3Int_1__cinit__(PyObject *__pyx_v_self, PyObje
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 613, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 631, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -11201,7 +11201,7 @@ static int __pyx_pw_3mds_7managed_3Int_1__cinit__(PyObject *__pyx_v_self, PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 613, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 631, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.Int.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -11224,14 +11224,14 @@ static int __pyx_pf_3mds_7managed_3Int___cinit__(struct __pyx_obj_3mds_7managed_
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "mds/managed.pyx":614
+  /* "mds/managed.pyx":632
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value
  *         value = self._sanitize(value)             # <<<<<<<<<<<<<<
  * 
  *     def _to_python(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 614, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 632, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -11244,13 +11244,13 @@ static int __pyx_pf_3mds_7managed_3Int___cinit__(struct __pyx_obj_3mds_7managed_
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 614, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 632, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 614, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 632, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -11258,19 +11258,19 @@ static int __pyx_pf_3mds_7managed_3Int___cinit__(struct __pyx_obj_3mds_7managed_
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 614, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 632, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 614, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 632, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 614, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 632, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -11279,7 +11279,7 @@ static int __pyx_pf_3mds_7managed_3Int___cinit__(struct __pyx_obj_3mds_7managed_
   __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":613
+  /* "mds/managed.pyx":631
  *     cdef mv_int _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -11303,7 +11303,7 @@ static int __pyx_pf_3mds_7managed_3Int___cinit__(struct __pyx_obj_3mds_7managed_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":616
+/* "mds/managed.pyx":634
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -11330,7 +11330,7 @@ static PyObject *__pyx_pf_3mds_7managed_3Int_2_to_python(struct __pyx_obj_3mds_7
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":617
+  /* "mds/managed.pyx":635
  * 
  *     def _to_python(self):
  *         return to_core_val(self._value)             # <<<<<<<<<<<<<<
@@ -11338,13 +11338,13 @@ static PyObject *__pyx_pf_3mds_7managed_3Int_2_to_python(struct __pyx_obj_3mds_7
  *     def _to_mds(self):  # TODO: This needs to update _value
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int32_t(mds::api::to_core_val<mds::api::kind::INT>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 617, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int32_t(mds::api::to_core_val<mds::api::kind::INT>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 635, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":616
+  /* "mds/managed.pyx":634
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -11363,7 +11363,7 @@ static PyObject *__pyx_pf_3mds_7managed_3Int_2_to_python(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":619
+/* "mds/managed.pyx":637
  *         return to_core_val(self._value)
  * 
  *     def _to_mds(self):  # TODO: This needs to update _value             # <<<<<<<<<<<<<<
@@ -11396,7 +11396,7 @@ static PyObject *__pyx_pf_3mds_7managed_3Int_4_to_mds(CYTHON_UNUSED struct __pyx
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":623
+/* "mds/managed.pyx":641
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -11422,7 +11422,7 @@ static PyObject *__pyx_pf_3mds_7managed_3Int_3MIN___get__(CYTHON_UNUSED struct _
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":624
+  /* "mds/managed.pyx":642
  *     property MIN:
  *         def __get__(self):
  *             return -2147483648             # <<<<<<<<<<<<<<
@@ -11434,7 +11434,7 @@ static PyObject *__pyx_pf_3mds_7managed_3Int_3MIN___get__(CYTHON_UNUSED struct _
   __pyx_r = __pyx_int_neg_2147483648;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":623
+  /* "mds/managed.pyx":641
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -11449,7 +11449,7 @@ static PyObject *__pyx_pf_3mds_7managed_3Int_3MIN___get__(CYTHON_UNUSED struct _
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":627
+/* "mds/managed.pyx":645
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -11475,7 +11475,7 @@ static PyObject *__pyx_pf_3mds_7managed_3Int_3MAX___get__(CYTHON_UNUSED struct _
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":628
+  /* "mds/managed.pyx":646
  *     property MAX:
  *         def __get__(self):
  *             return 2147483647             # <<<<<<<<<<<<<<
@@ -11487,7 +11487,7 @@ static PyObject *__pyx_pf_3mds_7managed_3Int_3MAX___get__(CYTHON_UNUSED struct _
   __pyx_r = __pyx_int_2147483647;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":627
+  /* "mds/managed.pyx":645
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -11502,7 +11502,7 @@ static PyObject *__pyx_pf_3mds_7managed_3Int_3MAX___get__(CYTHON_UNUSED struct _
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":636
+/* "mds/managed.pyx":654
  *     _primitive = Int
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -11538,7 +11538,7 @@ static int __pyx_pw_3mds_7managed_8IntArray_1__cinit__(PyObject *__pyx_v_self, P
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 636, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 654, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -11551,7 +11551,7 @@ static int __pyx_pw_3mds_7managed_8IntArray_1__cinit__(PyObject *__pyx_v_self, P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 636, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 654, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.IntArray.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -11572,7 +11572,7 @@ static int __pyx_pf_3mds_7managed_8IntArray___cinit__(struct __pyx_obj_3mds_7man
   size_t __pyx_t_3;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/managed.pyx":637
+  /* "mds/managed.pyx":655
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -11583,17 +11583,17 @@ static int __pyx_pf_3mds_7managed_8IntArray___cinit__(struct __pyx_obj_3mds_7man
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":638
+    /* "mds/managed.pyx":656
  *     def __cinit__(self, length=None):
  *         if length is not None:
  *             self._handle = create_int_marray(length)             # <<<<<<<<<<<<<<
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_int_marray(0)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 638, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 656, __pyx_L1_error)
     __pyx_v_self->_handle = mds::python::types::create_int_marray(__pyx_t_3);
 
-    /* "mds/managed.pyx":637
+    /* "mds/managed.pyx":655
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -11603,7 +11603,7 @@ static int __pyx_pf_3mds_7managed_8IntArray___cinit__(struct __pyx_obj_3mds_7man
     goto __pyx_L3;
   }
 
-  /* "mds/managed.pyx":640
+  /* "mds/managed.pyx":658
  *             self._handle = create_int_marray(length)
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_int_marray(0)             # <<<<<<<<<<<<<<
@@ -11615,7 +11615,7 @@ static int __pyx_pf_3mds_7managed_8IntArray___cinit__(struct __pyx_obj_3mds_7man
   }
   __pyx_L3:;
 
-  /* "mds/managed.pyx":636
+  /* "mds/managed.pyx":654
  *     _primitive = Int
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -11634,7 +11634,7 @@ static int __pyx_pf_3mds_7managed_8IntArray___cinit__(struct __pyx_obj_3mds_7man
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":642
+/* "mds/managed.pyx":660
  *             self._handle = create_int_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -11660,7 +11660,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_8IntArray_2__len__(struct __pyx_obj_3md
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "mds/managed.pyx":643
+  /* "mds/managed.pyx":661
  * 
  *     def __len__(self):
  *         return self._handle.size()             # <<<<<<<<<<<<<<
@@ -11670,7 +11670,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_8IntArray_2__len__(struct __pyx_obj_3md
   __pyx_r = __pyx_v_self->_handle.size();
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":642
+  /* "mds/managed.pyx":660
  *             self._handle = create_int_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -11684,7 +11684,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_8IntArray_2__len__(struct __pyx_obj_3md
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":645
+/* "mds/managed.pyx":663
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -11712,7 +11712,7 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_4_to_python(struct __pyx_obj_3
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":646
+  /* "mds/managed.pyx":664
  * 
  *     def _to_python(self, index):
  *         return to_core_val(self._handle.frozen_read(index))             # <<<<<<<<<<<<<<
@@ -11720,14 +11720,14 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_4_to_python(struct __pyx_obj_3
  *     def _to_mds(self, index, value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 646, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int32_t(mds::api::to_core_val<mds::api::kind::INT>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 646, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 664, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int32_t(mds::api::to_core_val<mds::api::kind::INT>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 664, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":645
+  /* "mds/managed.pyx":663
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -11746,7 +11746,7 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_4_to_python(struct __pyx_obj_3
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":648
+/* "mds/managed.pyx":666
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -11782,11 +11782,11 @@ static PyObject *__pyx_pw_3mds_7managed_8IntArray_7_to_mds(PyObject *__pyx_v_sel
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 648, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 666, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 648, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 666, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -11799,7 +11799,7 @@ static PyObject *__pyx_pw_3mds_7managed_8IntArray_7_to_mds(PyObject *__pyx_v_sel
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 648, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 666, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.IntArray._to_mds", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -11824,14 +11824,14 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_6_to_mds(struct __pyx_obj_3mds
   int32_t __pyx_t_6;
   __Pyx_RefNannySetupContext("_to_mds", 0);
 
-  /* "mds/managed.pyx":650
+  /* "mds/managed.pyx":668
  *     def _to_mds(self, index, value):
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)             # <<<<<<<<<<<<<<
  *         self._handle.write(index, mv_int(value))
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 650, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 668, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -11844,13 +11844,13 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_6_to_mds(struct __pyx_obj_3mds
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 650, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 668, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 650, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 668, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -11858,19 +11858,19 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_6_to_mds(struct __pyx_obj_3mds
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 650, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 668, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 650, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 668, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 650, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 668, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -11879,18 +11879,18 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_6_to_mds(struct __pyx_obj_3mds
   __pyx_v_wrapped = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":651
+  /* "mds/managed.pyx":669
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)
  *         self._handle.write(index, mv_int(value))             # <<<<<<<<<<<<<<
  * 
  *     def copy(self):
  */
-  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 651, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyInt_As_int32_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((int32_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 651, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 669, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_int32_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((int32_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 669, __pyx_L1_error)
   __pyx_v_self->_handle.write(__pyx_t_5, mds::api::api_type<mds::api::kind::INT>(__pyx_t_6));
 
-  /* "mds/managed.pyx":648
+  /* "mds/managed.pyx":666
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -11915,7 +11915,7 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_6_to_mds(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":653
+/* "mds/managed.pyx":671
  *         self._handle.write(index, mv_int(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -11949,7 +11949,7 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_8copy(struct __pyx_obj_3mds_7m
   int32_t __pyx_t_5;
   __Pyx_RefNannySetupContext("copy", 0);
 
-  /* "mds/managed.pyx":655
+  /* "mds/managed.pyx":673
  *     def copy(self):
  *         cdef:
  *             size_t i = 0             # <<<<<<<<<<<<<<
@@ -11958,17 +11958,17 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_8copy(struct __pyx_obj_3mds_7m
  */
   __pyx_v_i = 0;
 
-  /* "mds/managed.pyx":656
+  /* "mds/managed.pyx":674
  *         cdef:
  *             size_t i = 0
  *             size_t l = len(self)             # <<<<<<<<<<<<<<
  *             h_marray_int_t h = create_int_marray(l)
  * 
  */
-  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 656, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 674, __pyx_L1_error)
   __pyx_v_l = __pyx_t_1;
 
-  /* "mds/managed.pyx":657
+  /* "mds/managed.pyx":675
  *             size_t i = 0
  *             size_t l = len(self)
  *             h_marray_int_t h = create_int_marray(l)             # <<<<<<<<<<<<<<
@@ -11977,7 +11977,7 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_8copy(struct __pyx_obj_3mds_7m
  */
   __pyx_v_h = mds::python::types::create_int_marray(__pyx_v_l);
 
-  /* "mds/managed.pyx":659
+  /* "mds/managed.pyx":677
  *             h_marray_int_t h = create_int_marray(l)
  * 
  *         for i in range(l):             # <<<<<<<<<<<<<<
@@ -11988,21 +11988,21 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_8copy(struct __pyx_obj_3mds_7m
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "mds/managed.pyx":660
+    /* "mds/managed.pyx":678
  * 
  *         for i in range(l):
  *             h.write(i, mv_int(<int32_t> self[i]))             # <<<<<<<<<<<<<<
  * 
  *         return IntArray_Init(h)
  */
-    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 660, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 678, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyInt_As_int32_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((int32_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 660, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_int32_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((int32_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 678, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_h.write(__pyx_v_i, mds::api::api_type<mds::api::kind::INT>(((int32_t)__pyx_t_5)));
   }
 
-  /* "mds/managed.pyx":662
+  /* "mds/managed.pyx":680
  *             h.write(i, mv_int(<int32_t> self[i]))
  * 
  *         return IntArray_Init(h)             # <<<<<<<<<<<<<<
@@ -12010,13 +12010,13 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_8copy(struct __pyx_obj_3mds_7m
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3mds_7managed_IntArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 662, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3mds_7managed_IntArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 680, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":653
+  /* "mds/managed.pyx":671
  *         self._handle.write(index, mv_int(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -12035,7 +12035,7 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_8copy(struct __pyx_obj_3mds_7m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":665
+/* "mds/managed.pyx":683
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -12069,7 +12069,7 @@ static PyObject *__pyx_pw_3mds_7managed_8IntArray_11create(CYTHON_UNUSED PyObjec
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 665, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 683, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -12080,7 +12080,7 @@ static PyObject *__pyx_pw_3mds_7managed_8IntArray_11create(CYTHON_UNUSED PyObjec
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 665, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 683, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.IntArray.create", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -12103,7 +12103,7 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_10create(PyObject *__pyx_v_len
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
 
-  /* "mds/managed.pyx":666
+  /* "mds/managed.pyx":684
  *     @staticmethod
  *     def create(length):
  *         return MDSArrayBase.create("int", length)             # <<<<<<<<<<<<<<
@@ -12111,7 +12111,7 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_10create(PyObject *__pyx_v_len
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 666, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 684, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -12128,7 +12128,7 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_10create(PyObject *__pyx_v_len
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_int, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 666, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 684, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -12136,13 +12136,13 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_10create(PyObject *__pyx_v_len
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_int, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 666, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 684, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 666, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 684, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -12153,7 +12153,7 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_10create(PyObject *__pyx_v_len
     __Pyx_INCREF(__pyx_v_length);
     __Pyx_GIVEREF(__pyx_v_length);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_length);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 666, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 684, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -12162,7 +12162,7 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_10create(PyObject *__pyx_v_len
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":665
+  /* "mds/managed.pyx":683
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -12184,7 +12184,7 @@ static PyObject *__pyx_pf_3mds_7managed_8IntArray_10create(PyObject *__pyx_v_len
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":669
+/* "mds/managed.pyx":687
  * 
  * 
  * cdef IntArray_Init(h_marray_int_t handle):             # <<<<<<<<<<<<<<
@@ -12199,19 +12199,19 @@ static PyObject *__pyx_f_3mds_7managed_IntArray_Init(mds::python::types::h_marra
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("IntArray_Init", 0);
 
-  /* "mds/managed.pyx":670
+  /* "mds/managed.pyx":688
  * 
  * cdef IntArray_Init(h_marray_int_t handle):
  *     result = IntArray()             # <<<<<<<<<<<<<<
  *     result._handle = handle
  *     return result
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_IntArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 670, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_IntArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 688, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((struct __pyx_obj_3mds_7managed_IntArray *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":671
+  /* "mds/managed.pyx":689
  * cdef IntArray_Init(h_marray_int_t handle):
  *     result = IntArray()
  *     result._handle = handle             # <<<<<<<<<<<<<<
@@ -12220,7 +12220,7 @@ static PyObject *__pyx_f_3mds_7managed_IntArray_Init(mds::python::types::h_marra
  */
   __pyx_v_result->_handle = __pyx_v_handle;
 
-  /* "mds/managed.pyx":672
+  /* "mds/managed.pyx":690
  *     result = IntArray()
  *     result._handle = handle
  *     return result             # <<<<<<<<<<<<<<
@@ -12232,7 +12232,7 @@ static PyObject *__pyx_f_3mds_7managed_IntArray_Init(mds::python::types::h_marra
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":669
+  /* "mds/managed.pyx":687
  * 
  * 
  * cdef IntArray_Init(h_marray_int_t handle):             # <<<<<<<<<<<<<<
@@ -12252,7 +12252,7 @@ static PyObject *__pyx_f_3mds_7managed_IntArray_Init(mds::python::types::h_marra
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":679
+/* "mds/managed.pyx":697
  *     cdef mv_uint _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -12285,7 +12285,7 @@ static int __pyx_pw_3mds_7managed_4UInt_1__cinit__(PyObject *__pyx_v_self, PyObj
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 679, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 697, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -12296,7 +12296,7 @@ static int __pyx_pw_3mds_7managed_4UInt_1__cinit__(PyObject *__pyx_v_self, PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 679, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 697, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.UInt.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -12319,14 +12319,14 @@ static int __pyx_pf_3mds_7managed_4UInt___cinit__(struct __pyx_obj_3mds_7managed
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "mds/managed.pyx":680
+  /* "mds/managed.pyx":698
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value
  *         value = self._sanitize(value)             # <<<<<<<<<<<<<<
  * 
  *     def _to_python(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 680, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 698, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -12339,13 +12339,13 @@ static int __pyx_pf_3mds_7managed_4UInt___cinit__(struct __pyx_obj_3mds_7managed
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 680, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 698, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 680, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 698, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -12353,19 +12353,19 @@ static int __pyx_pf_3mds_7managed_4UInt___cinit__(struct __pyx_obj_3mds_7managed
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 680, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 698, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 680, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 698, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 680, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 698, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -12374,7 +12374,7 @@ static int __pyx_pf_3mds_7managed_4UInt___cinit__(struct __pyx_obj_3mds_7managed
   __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":679
+  /* "mds/managed.pyx":697
  *     cdef mv_uint _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -12398,7 +12398,7 @@ static int __pyx_pf_3mds_7managed_4UInt___cinit__(struct __pyx_obj_3mds_7managed
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":682
+/* "mds/managed.pyx":700
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -12425,7 +12425,7 @@ static PyObject *__pyx_pf_3mds_7managed_4UInt_2_to_python(struct __pyx_obj_3mds_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":683
+  /* "mds/managed.pyx":701
  * 
  *     def _to_python(self):
  *         return to_core_val(self._value)             # <<<<<<<<<<<<<<
@@ -12433,13 +12433,13 @@ static PyObject *__pyx_pf_3mds_7managed_4UInt_2_to_python(struct __pyx_obj_3mds_
  *     def _to_mds(self):  # TODO: This needs to update _value
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_uint32_t(mds::api::to_core_val<mds::api::kind::UINT>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 683, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_uint32_t(mds::api::to_core_val<mds::api::kind::UINT>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 701, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":682
+  /* "mds/managed.pyx":700
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -12458,7 +12458,7 @@ static PyObject *__pyx_pf_3mds_7managed_4UInt_2_to_python(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":685
+/* "mds/managed.pyx":703
  *         return to_core_val(self._value)
  * 
  *     def _to_mds(self):  # TODO: This needs to update _value             # <<<<<<<<<<<<<<
@@ -12491,7 +12491,7 @@ static PyObject *__pyx_pf_3mds_7managed_4UInt_4_to_mds(CYTHON_UNUSED struct __py
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":689
+/* "mds/managed.pyx":707
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -12517,7 +12517,7 @@ static PyObject *__pyx_pf_3mds_7managed_4UInt_3MIN___get__(CYTHON_UNUSED struct 
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":690
+  /* "mds/managed.pyx":708
  *     property MIN:
  *         def __get__(self):
  *             return 0             # <<<<<<<<<<<<<<
@@ -12529,7 +12529,7 @@ static PyObject *__pyx_pf_3mds_7managed_4UInt_3MIN___get__(CYTHON_UNUSED struct 
   __pyx_r = __pyx_int_0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":689
+  /* "mds/managed.pyx":707
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -12544,7 +12544,7 @@ static PyObject *__pyx_pf_3mds_7managed_4UInt_3MIN___get__(CYTHON_UNUSED struct 
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":693
+/* "mds/managed.pyx":711
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -12570,7 +12570,7 @@ static PyObject *__pyx_pf_3mds_7managed_4UInt_3MAX___get__(CYTHON_UNUSED struct 
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":694
+  /* "mds/managed.pyx":712
  *     property MAX:
  *         def __get__(self):
  *             return 4294967295             # <<<<<<<<<<<<<<
@@ -12582,7 +12582,7 @@ static PyObject *__pyx_pf_3mds_7managed_4UInt_3MAX___get__(CYTHON_UNUSED struct 
   __pyx_r = __pyx_int_4294967295;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":693
+  /* "mds/managed.pyx":711
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -12597,7 +12597,7 @@ static PyObject *__pyx_pf_3mds_7managed_4UInt_3MAX___get__(CYTHON_UNUSED struct 
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":702
+/* "mds/managed.pyx":720
  *     _primitive = UInt
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -12633,7 +12633,7 @@ static int __pyx_pw_3mds_7managed_9UIntArray_1__cinit__(PyObject *__pyx_v_self, 
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 702, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 720, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -12646,7 +12646,7 @@ static int __pyx_pw_3mds_7managed_9UIntArray_1__cinit__(PyObject *__pyx_v_self, 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 702, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 720, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.UIntArray.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -12667,7 +12667,7 @@ static int __pyx_pf_3mds_7managed_9UIntArray___cinit__(struct __pyx_obj_3mds_7ma
   size_t __pyx_t_3;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/managed.pyx":703
+  /* "mds/managed.pyx":721
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -12678,17 +12678,17 @@ static int __pyx_pf_3mds_7managed_9UIntArray___cinit__(struct __pyx_obj_3mds_7ma
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":704
+    /* "mds/managed.pyx":722
  *     def __cinit__(self, length=None):
  *         if length is not None:
  *             self._handle = create_uint_marray(length)             # <<<<<<<<<<<<<<
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_uint_marray(0)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 704, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 722, __pyx_L1_error)
     __pyx_v_self->_handle = mds::python::types::create_uint_marray(__pyx_t_3);
 
-    /* "mds/managed.pyx":703
+    /* "mds/managed.pyx":721
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -12698,7 +12698,7 @@ static int __pyx_pf_3mds_7managed_9UIntArray___cinit__(struct __pyx_obj_3mds_7ma
     goto __pyx_L3;
   }
 
-  /* "mds/managed.pyx":706
+  /* "mds/managed.pyx":724
  *             self._handle = create_uint_marray(length)
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_uint_marray(0)             # <<<<<<<<<<<<<<
@@ -12710,7 +12710,7 @@ static int __pyx_pf_3mds_7managed_9UIntArray___cinit__(struct __pyx_obj_3mds_7ma
   }
   __pyx_L3:;
 
-  /* "mds/managed.pyx":702
+  /* "mds/managed.pyx":720
  *     _primitive = UInt
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -12729,7 +12729,7 @@ static int __pyx_pf_3mds_7managed_9UIntArray___cinit__(struct __pyx_obj_3mds_7ma
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":708
+/* "mds/managed.pyx":726
  *             self._handle = create_uint_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -12755,7 +12755,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_9UIntArray_2__len__(struct __pyx_obj_3m
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "mds/managed.pyx":709
+  /* "mds/managed.pyx":727
  * 
  *     def __len__(self):
  *         return self._handle.size()             # <<<<<<<<<<<<<<
@@ -12765,7 +12765,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_9UIntArray_2__len__(struct __pyx_obj_3m
   __pyx_r = __pyx_v_self->_handle.size();
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":708
+  /* "mds/managed.pyx":726
  *             self._handle = create_uint_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -12779,7 +12779,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_9UIntArray_2__len__(struct __pyx_obj_3m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":711
+/* "mds/managed.pyx":729
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -12807,7 +12807,7 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_4_to_python(struct __pyx_obj_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":712
+  /* "mds/managed.pyx":730
  * 
  *     def _to_python(self, index):
  *         return to_core_val(self._handle.frozen_read(index))             # <<<<<<<<<<<<<<
@@ -12815,14 +12815,14 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_4_to_python(struct __pyx_obj_
  *     def _to_mds(self, index, value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 712, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_uint32_t(mds::api::to_core_val<mds::api::kind::UINT>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 712, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 730, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_uint32_t(mds::api::to_core_val<mds::api::kind::UINT>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 730, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":711
+  /* "mds/managed.pyx":729
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -12841,7 +12841,7 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_4_to_python(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":714
+/* "mds/managed.pyx":732
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -12877,11 +12877,11 @@ static PyObject *__pyx_pw_3mds_7managed_9UIntArray_7_to_mds(PyObject *__pyx_v_se
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 714, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 732, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 714, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 732, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -12894,7 +12894,7 @@ static PyObject *__pyx_pw_3mds_7managed_9UIntArray_7_to_mds(PyObject *__pyx_v_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 714, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 732, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.UIntArray._to_mds", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -12919,14 +12919,14 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_6_to_mds(struct __pyx_obj_3md
   uint32_t __pyx_t_6;
   __Pyx_RefNannySetupContext("_to_mds", 0);
 
-  /* "mds/managed.pyx":716
+  /* "mds/managed.pyx":734
  *     def _to_mds(self, index, value):
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)             # <<<<<<<<<<<<<<
  *         self._handle.write(index, mv_uint(value))
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 716, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 734, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -12939,13 +12939,13 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_6_to_mds(struct __pyx_obj_3md
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 716, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 734, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 716, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 734, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -12953,19 +12953,19 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_6_to_mds(struct __pyx_obj_3md
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 716, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 734, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 716, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 734, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 716, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 734, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -12974,18 +12974,18 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_6_to_mds(struct __pyx_obj_3md
   __pyx_v_wrapped = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":717
+  /* "mds/managed.pyx":735
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)
  *         self._handle.write(index, mv_uint(value))             # <<<<<<<<<<<<<<
  * 
  *     def copy(self):
  */
-  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 717, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyInt_As_uint32_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((uint32_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 717, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 735, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_uint32_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((uint32_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 735, __pyx_L1_error)
   __pyx_v_self->_handle.write(__pyx_t_5, mds::api::api_type<mds::api::kind::UINT>(__pyx_t_6));
 
-  /* "mds/managed.pyx":714
+  /* "mds/managed.pyx":732
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -13010,7 +13010,7 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_6_to_mds(struct __pyx_obj_3md
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":719
+/* "mds/managed.pyx":737
  *         self._handle.write(index, mv_uint(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -13044,7 +13044,7 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_8copy(struct __pyx_obj_3mds_7
   uint32_t __pyx_t_5;
   __Pyx_RefNannySetupContext("copy", 0);
 
-  /* "mds/managed.pyx":721
+  /* "mds/managed.pyx":739
  *     def copy(self):
  *         cdef:
  *             size_t i = 0             # <<<<<<<<<<<<<<
@@ -13053,17 +13053,17 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_8copy(struct __pyx_obj_3mds_7
  */
   __pyx_v_i = 0;
 
-  /* "mds/managed.pyx":722
+  /* "mds/managed.pyx":740
  *         cdef:
  *             size_t i = 0
  *             size_t l = len(self)             # <<<<<<<<<<<<<<
  *             h_marray_uint_t h = create_uint_marray(l)
  * 
  */
-  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 722, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 740, __pyx_L1_error)
   __pyx_v_l = __pyx_t_1;
 
-  /* "mds/managed.pyx":723
+  /* "mds/managed.pyx":741
  *             size_t i = 0
  *             size_t l = len(self)
  *             h_marray_uint_t h = create_uint_marray(l)             # <<<<<<<<<<<<<<
@@ -13072,7 +13072,7 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_8copy(struct __pyx_obj_3mds_7
  */
   __pyx_v_h = mds::python::types::create_uint_marray(__pyx_v_l);
 
-  /* "mds/managed.pyx":725
+  /* "mds/managed.pyx":743
  *             h_marray_uint_t h = create_uint_marray(l)
  * 
  *         for i in range(l):             # <<<<<<<<<<<<<<
@@ -13083,21 +13083,21 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_8copy(struct __pyx_obj_3mds_7
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "mds/managed.pyx":726
+    /* "mds/managed.pyx":744
  * 
  *         for i in range(l):
  *             h.write(i, mv_uint(<uint32_t> self[i]))             # <<<<<<<<<<<<<<
  * 
  *         return UIntArray_Init(h)
  */
-    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 726, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 744, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyInt_As_uint32_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((uint32_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 726, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_uint32_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((uint32_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 744, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_h.write(__pyx_v_i, mds::api::api_type<mds::api::kind::UINT>(((uint32_t)__pyx_t_5)));
   }
 
-  /* "mds/managed.pyx":728
+  /* "mds/managed.pyx":746
  *             h.write(i, mv_uint(<uint32_t> self[i]))
  * 
  *         return UIntArray_Init(h)             # <<<<<<<<<<<<<<
@@ -13105,13 +13105,13 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_8copy(struct __pyx_obj_3mds_7
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3mds_7managed_UIntArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 728, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3mds_7managed_UIntArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 746, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":719
+  /* "mds/managed.pyx":737
  *         self._handle.write(index, mv_uint(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -13130,7 +13130,7 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_8copy(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":731
+/* "mds/managed.pyx":749
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -13164,7 +13164,7 @@ static PyObject *__pyx_pw_3mds_7managed_9UIntArray_11create(CYTHON_UNUSED PyObje
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 731, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 749, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -13175,7 +13175,7 @@ static PyObject *__pyx_pw_3mds_7managed_9UIntArray_11create(CYTHON_UNUSED PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 731, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 749, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.UIntArray.create", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -13198,7 +13198,7 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_10create(PyObject *__pyx_v_le
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
 
-  /* "mds/managed.pyx":732
+  /* "mds/managed.pyx":750
  *     @staticmethod
  *     def create(length):
  *         return MDSArrayBase.create("uint", length)             # <<<<<<<<<<<<<<
@@ -13206,7 +13206,7 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_10create(PyObject *__pyx_v_le
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 732, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 750, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -13223,7 +13223,7 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_10create(PyObject *__pyx_v_le
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_uint, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 732, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 750, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -13231,13 +13231,13 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_10create(PyObject *__pyx_v_le
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_uint, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 732, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 750, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 732, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 750, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -13248,7 +13248,7 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_10create(PyObject *__pyx_v_le
     __Pyx_INCREF(__pyx_v_length);
     __Pyx_GIVEREF(__pyx_v_length);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_length);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 732, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 750, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -13257,7 +13257,7 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_10create(PyObject *__pyx_v_le
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":731
+  /* "mds/managed.pyx":749
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -13279,7 +13279,7 @@ static PyObject *__pyx_pf_3mds_7managed_9UIntArray_10create(PyObject *__pyx_v_le
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":735
+/* "mds/managed.pyx":753
  * 
  * 
  * cdef UIntArray_Init(h_marray_uint_t handle):             # <<<<<<<<<<<<<<
@@ -13294,19 +13294,19 @@ static PyObject *__pyx_f_3mds_7managed_UIntArray_Init(mds::python::types::h_marr
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("UIntArray_Init", 0);
 
-  /* "mds/managed.pyx":736
+  /* "mds/managed.pyx":754
  * 
  * cdef UIntArray_Init(h_marray_uint_t handle):
  *     result = UIntArray()             # <<<<<<<<<<<<<<
  *     result._handle = handle
  *     return result
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_UIntArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 736, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_UIntArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 754, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((struct __pyx_obj_3mds_7managed_UIntArray *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":737
+  /* "mds/managed.pyx":755
  * cdef UIntArray_Init(h_marray_uint_t handle):
  *     result = UIntArray()
  *     result._handle = handle             # <<<<<<<<<<<<<<
@@ -13315,7 +13315,7 @@ static PyObject *__pyx_f_3mds_7managed_UIntArray_Init(mds::python::types::h_marr
  */
   __pyx_v_result->_handle = __pyx_v_handle;
 
-  /* "mds/managed.pyx":738
+  /* "mds/managed.pyx":756
  *     result = UIntArray()
  *     result._handle = handle
  *     return result             # <<<<<<<<<<<<<<
@@ -13327,7 +13327,7 @@ static PyObject *__pyx_f_3mds_7managed_UIntArray_Init(mds::python::types::h_marr
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":735
+  /* "mds/managed.pyx":753
  * 
  * 
  * cdef UIntArray_Init(h_marray_uint_t handle):             # <<<<<<<<<<<<<<
@@ -13347,7 +13347,7 @@ static PyObject *__pyx_f_3mds_7managed_UIntArray_Init(mds::python::types::h_marr
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":745
+/* "mds/managed.pyx":763
  *     cdef mv_long _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -13380,7 +13380,7 @@ static int __pyx_pw_3mds_7managed_4Long_1__cinit__(PyObject *__pyx_v_self, PyObj
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 745, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 763, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -13391,7 +13391,7 @@ static int __pyx_pw_3mds_7managed_4Long_1__cinit__(PyObject *__pyx_v_self, PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 745, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 763, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.Long.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -13414,14 +13414,14 @@ static int __pyx_pf_3mds_7managed_4Long___cinit__(struct __pyx_obj_3mds_7managed
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "mds/managed.pyx":746
+  /* "mds/managed.pyx":764
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value
  *         value = self._sanitize(value)             # <<<<<<<<<<<<<<
  * 
  *     def _to_python(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 746, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 764, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -13434,13 +13434,13 @@ static int __pyx_pf_3mds_7managed_4Long___cinit__(struct __pyx_obj_3mds_7managed
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 746, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 764, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 746, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 764, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -13448,19 +13448,19 @@ static int __pyx_pf_3mds_7managed_4Long___cinit__(struct __pyx_obj_3mds_7managed
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 746, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 764, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 746, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 764, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 746, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 764, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -13469,7 +13469,7 @@ static int __pyx_pf_3mds_7managed_4Long___cinit__(struct __pyx_obj_3mds_7managed
   __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":745
+  /* "mds/managed.pyx":763
  *     cdef mv_long _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -13493,7 +13493,7 @@ static int __pyx_pf_3mds_7managed_4Long___cinit__(struct __pyx_obj_3mds_7managed
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":748
+/* "mds/managed.pyx":766
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -13520,7 +13520,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Long_2_to_python(struct __pyx_obj_3mds_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":749
+  /* "mds/managed.pyx":767
  * 
  *     def _to_python(self):
  *         return to_core_val(self._value)             # <<<<<<<<<<<<<<
@@ -13528,13 +13528,13 @@ static PyObject *__pyx_pf_3mds_7managed_4Long_2_to_python(struct __pyx_obj_3mds_
  *     def _to_mds(self):  # TODO: This needs to update _value
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int64_t(mds::api::to_core_val<mds::api::kind::LONG>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 749, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int64_t(mds::api::to_core_val<mds::api::kind::LONG>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 767, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":748
+  /* "mds/managed.pyx":766
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -13553,7 +13553,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Long_2_to_python(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":751
+/* "mds/managed.pyx":769
  *         return to_core_val(self._value)
  * 
  *     def _to_mds(self):  # TODO: This needs to update _value             # <<<<<<<<<<<<<<
@@ -13586,7 +13586,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Long_4_to_mds(CYTHON_UNUSED struct __py
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":755
+/* "mds/managed.pyx":773
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -13612,7 +13612,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Long_3MIN___get__(CYTHON_UNUSED struct 
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":756
+  /* "mds/managed.pyx":774
  *     property MIN:
  *         def __get__(self):
  *             return -9223372036854775808             # <<<<<<<<<<<<<<
@@ -13624,7 +13624,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Long_3MIN___get__(CYTHON_UNUSED struct 
   __pyx_r = __pyx_int_neg_9223372036854775808;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":755
+  /* "mds/managed.pyx":773
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -13639,7 +13639,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Long_3MIN___get__(CYTHON_UNUSED struct 
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":759
+/* "mds/managed.pyx":777
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -13665,7 +13665,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Long_3MAX___get__(CYTHON_UNUSED struct 
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":760
+  /* "mds/managed.pyx":778
  *     property MAX:
  *         def __get__(self):
  *             return 9223372036854775807             # <<<<<<<<<<<<<<
@@ -13677,7 +13677,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Long_3MAX___get__(CYTHON_UNUSED struct 
   __pyx_r = __pyx_int_9223372036854775807;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":759
+  /* "mds/managed.pyx":777
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -13692,7 +13692,7 @@ static PyObject *__pyx_pf_3mds_7managed_4Long_3MAX___get__(CYTHON_UNUSED struct 
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":768
+/* "mds/managed.pyx":786
  *     _primitive = Long
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -13728,7 +13728,7 @@ static int __pyx_pw_3mds_7managed_9LongArray_1__cinit__(PyObject *__pyx_v_self, 
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 768, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 786, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -13741,7 +13741,7 @@ static int __pyx_pw_3mds_7managed_9LongArray_1__cinit__(PyObject *__pyx_v_self, 
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 768, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 786, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.LongArray.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -13762,7 +13762,7 @@ static int __pyx_pf_3mds_7managed_9LongArray___cinit__(struct __pyx_obj_3mds_7ma
   size_t __pyx_t_3;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/managed.pyx":769
+  /* "mds/managed.pyx":787
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -13773,17 +13773,17 @@ static int __pyx_pf_3mds_7managed_9LongArray___cinit__(struct __pyx_obj_3mds_7ma
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":770
+    /* "mds/managed.pyx":788
  *     def __cinit__(self, length=None):
  *         if length is not None:
  *             self._handle = create_long_marray(length)             # <<<<<<<<<<<<<<
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_long_marray(0)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 770, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 788, __pyx_L1_error)
     __pyx_v_self->_handle = mds::python::types::create_long_marray(__pyx_t_3);
 
-    /* "mds/managed.pyx":769
+    /* "mds/managed.pyx":787
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -13793,7 +13793,7 @@ static int __pyx_pf_3mds_7managed_9LongArray___cinit__(struct __pyx_obj_3mds_7ma
     goto __pyx_L3;
   }
 
-  /* "mds/managed.pyx":772
+  /* "mds/managed.pyx":790
  *             self._handle = create_long_marray(length)
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_long_marray(0)             # <<<<<<<<<<<<<<
@@ -13805,7 +13805,7 @@ static int __pyx_pf_3mds_7managed_9LongArray___cinit__(struct __pyx_obj_3mds_7ma
   }
   __pyx_L3:;
 
-  /* "mds/managed.pyx":768
+  /* "mds/managed.pyx":786
  *     _primitive = Long
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -13824,7 +13824,7 @@ static int __pyx_pf_3mds_7managed_9LongArray___cinit__(struct __pyx_obj_3mds_7ma
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":774
+/* "mds/managed.pyx":792
  *             self._handle = create_long_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -13850,7 +13850,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_9LongArray_2__len__(struct __pyx_obj_3m
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "mds/managed.pyx":775
+  /* "mds/managed.pyx":793
  * 
  *     def __len__(self):
  *         return self._handle.size()             # <<<<<<<<<<<<<<
@@ -13860,7 +13860,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_9LongArray_2__len__(struct __pyx_obj_3m
   __pyx_r = __pyx_v_self->_handle.size();
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":774
+  /* "mds/managed.pyx":792
  *             self._handle = create_long_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -13874,7 +13874,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_9LongArray_2__len__(struct __pyx_obj_3m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":777
+/* "mds/managed.pyx":795
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -13902,7 +13902,7 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_4_to_python(struct __pyx_obj_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":778
+  /* "mds/managed.pyx":796
  * 
  *     def _to_python(self, index):
  *         return to_core_val(self._handle.frozen_read(index))             # <<<<<<<<<<<<<<
@@ -13910,14 +13910,14 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_4_to_python(struct __pyx_obj_
  *     def _to_mds(self, index, value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 778, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int64_t(mds::api::to_core_val<mds::api::kind::LONG>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 778, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 796, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int64_t(mds::api::to_core_val<mds::api::kind::LONG>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 796, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":777
+  /* "mds/managed.pyx":795
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -13936,7 +13936,7 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_4_to_python(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":780
+/* "mds/managed.pyx":798
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -13972,11 +13972,11 @@ static PyObject *__pyx_pw_3mds_7managed_9LongArray_7_to_mds(PyObject *__pyx_v_se
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 780, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 798, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 780, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 798, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -13989,7 +13989,7 @@ static PyObject *__pyx_pw_3mds_7managed_9LongArray_7_to_mds(PyObject *__pyx_v_se
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 780, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 798, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.LongArray._to_mds", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -14014,14 +14014,14 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_6_to_mds(struct __pyx_obj_3md
   int64_t __pyx_t_6;
   __Pyx_RefNannySetupContext("_to_mds", 0);
 
-  /* "mds/managed.pyx":782
+  /* "mds/managed.pyx":800
  *     def _to_mds(self, index, value):
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)             # <<<<<<<<<<<<<<
  *         self._handle.write(index, mv_long(value))
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 782, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 800, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -14034,13 +14034,13 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_6_to_mds(struct __pyx_obj_3md
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 782, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 800, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 782, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 800, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -14048,19 +14048,19 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_6_to_mds(struct __pyx_obj_3md
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 782, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 800, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 782, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 800, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 782, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 800, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -14069,18 +14069,18 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_6_to_mds(struct __pyx_obj_3md
   __pyx_v_wrapped = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":783
+  /* "mds/managed.pyx":801
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)
  *         self._handle.write(index, mv_long(value))             # <<<<<<<<<<<<<<
  * 
  *     def copy(self):
  */
-  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 783, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyInt_As_int64_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((int64_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 783, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 801, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_int64_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((int64_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 801, __pyx_L1_error)
   __pyx_v_self->_handle.write(__pyx_t_5, mds::api::api_type<mds::api::kind::LONG>(__pyx_t_6));
 
-  /* "mds/managed.pyx":780
+  /* "mds/managed.pyx":798
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -14105,7 +14105,7 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_6_to_mds(struct __pyx_obj_3md
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":785
+/* "mds/managed.pyx":803
  *         self._handle.write(index, mv_long(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -14139,7 +14139,7 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_8copy(struct __pyx_obj_3mds_7
   int64_t __pyx_t_5;
   __Pyx_RefNannySetupContext("copy", 0);
 
-  /* "mds/managed.pyx":787
+  /* "mds/managed.pyx":805
  *     def copy(self):
  *         cdef:
  *             size_t i = 0             # <<<<<<<<<<<<<<
@@ -14148,17 +14148,17 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_8copy(struct __pyx_obj_3mds_7
  */
   __pyx_v_i = 0;
 
-  /* "mds/managed.pyx":788
+  /* "mds/managed.pyx":806
  *         cdef:
  *             size_t i = 0
  *             size_t l = len(self)             # <<<<<<<<<<<<<<
  *             h_marray_long_t h = create_long_marray(l)
  * 
  */
-  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 788, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 806, __pyx_L1_error)
   __pyx_v_l = __pyx_t_1;
 
-  /* "mds/managed.pyx":789
+  /* "mds/managed.pyx":807
  *             size_t i = 0
  *             size_t l = len(self)
  *             h_marray_long_t h = create_long_marray(l)             # <<<<<<<<<<<<<<
@@ -14167,7 +14167,7 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_8copy(struct __pyx_obj_3mds_7
  */
   __pyx_v_h = mds::python::types::create_long_marray(__pyx_v_l);
 
-  /* "mds/managed.pyx":791
+  /* "mds/managed.pyx":809
  *             h_marray_long_t h = create_long_marray(l)
  * 
  *         for i in range(l):             # <<<<<<<<<<<<<<
@@ -14178,21 +14178,21 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_8copy(struct __pyx_obj_3mds_7
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "mds/managed.pyx":792
+    /* "mds/managed.pyx":810
  * 
  *         for i in range(l):
  *             h.write(i, mv_long(<int64_t> self[i]))             # <<<<<<<<<<<<<<
  * 
  *         return LongArray_Init(h)
  */
-    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 792, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 810, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyInt_As_int64_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((int64_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 792, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_int64_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((int64_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 810, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_h.write(__pyx_v_i, mds::api::api_type<mds::api::kind::LONG>(((int64_t)__pyx_t_5)));
   }
 
-  /* "mds/managed.pyx":794
+  /* "mds/managed.pyx":812
  *             h.write(i, mv_long(<int64_t> self[i]))
  * 
  *         return LongArray_Init(h)             # <<<<<<<<<<<<<<
@@ -14200,13 +14200,13 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_8copy(struct __pyx_obj_3mds_7
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3mds_7managed_LongArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 794, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3mds_7managed_LongArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 812, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":785
+  /* "mds/managed.pyx":803
  *         self._handle.write(index, mv_long(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -14225,7 +14225,7 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_8copy(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":797
+/* "mds/managed.pyx":815
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -14259,7 +14259,7 @@ static PyObject *__pyx_pw_3mds_7managed_9LongArray_11create(CYTHON_UNUSED PyObje
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 797, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 815, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -14270,7 +14270,7 @@ static PyObject *__pyx_pw_3mds_7managed_9LongArray_11create(CYTHON_UNUSED PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 797, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 815, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.LongArray.create", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -14293,7 +14293,7 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_10create(PyObject *__pyx_v_le
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
 
-  /* "mds/managed.pyx":798
+  /* "mds/managed.pyx":816
  *     @staticmethod
  *     def create(length):
  *         return MDSArrayBase.create("long", length)             # <<<<<<<<<<<<<<
@@ -14301,7 +14301,7 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_10create(PyObject *__pyx_v_le
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 798, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 816, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -14318,7 +14318,7 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_10create(PyObject *__pyx_v_le
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_long, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 798, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 816, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -14326,13 +14326,13 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_10create(PyObject *__pyx_v_le
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_long, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 798, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 816, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 798, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 816, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -14343,7 +14343,7 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_10create(PyObject *__pyx_v_le
     __Pyx_INCREF(__pyx_v_length);
     __Pyx_GIVEREF(__pyx_v_length);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_length);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 798, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 816, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -14352,7 +14352,7 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_10create(PyObject *__pyx_v_le
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":797
+  /* "mds/managed.pyx":815
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -14374,7 +14374,7 @@ static PyObject *__pyx_pf_3mds_7managed_9LongArray_10create(PyObject *__pyx_v_le
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":801
+/* "mds/managed.pyx":819
  * 
  * 
  * cdef LongArray_Init(h_marray_long_t handle):             # <<<<<<<<<<<<<<
@@ -14389,19 +14389,19 @@ static PyObject *__pyx_f_3mds_7managed_LongArray_Init(mds::python::types::h_marr
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("LongArray_Init", 0);
 
-  /* "mds/managed.pyx":802
+  /* "mds/managed.pyx":820
  * 
  * cdef LongArray_Init(h_marray_long_t handle):
  *     result = LongArray()             # <<<<<<<<<<<<<<
  *     result._handle = handle
  *     return result
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_LongArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 802, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_LongArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 820, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((struct __pyx_obj_3mds_7managed_LongArray *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":803
+  /* "mds/managed.pyx":821
  * cdef LongArray_Init(h_marray_long_t handle):
  *     result = LongArray()
  *     result._handle = handle             # <<<<<<<<<<<<<<
@@ -14410,7 +14410,7 @@ static PyObject *__pyx_f_3mds_7managed_LongArray_Init(mds::python::types::h_marr
  */
   __pyx_v_result->_handle = __pyx_v_handle;
 
-  /* "mds/managed.pyx":804
+  /* "mds/managed.pyx":822
  *     result = LongArray()
  *     result._handle = handle
  *     return result             # <<<<<<<<<<<<<<
@@ -14422,7 +14422,7 @@ static PyObject *__pyx_f_3mds_7managed_LongArray_Init(mds::python::types::h_marr
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":801
+  /* "mds/managed.pyx":819
  * 
  * 
  * cdef LongArray_Init(h_marray_long_t handle):             # <<<<<<<<<<<<<<
@@ -14442,7 +14442,7 @@ static PyObject *__pyx_f_3mds_7managed_LongArray_Init(mds::python::types::h_marr
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":811
+/* "mds/managed.pyx":829
  *     cdef mv_ulong _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -14475,7 +14475,7 @@ static int __pyx_pw_3mds_7managed_5ULong_1__cinit__(PyObject *__pyx_v_self, PyOb
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 811, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 829, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -14486,7 +14486,7 @@ static int __pyx_pw_3mds_7managed_5ULong_1__cinit__(PyObject *__pyx_v_self, PyOb
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 811, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 829, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.ULong.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -14509,14 +14509,14 @@ static int __pyx_pf_3mds_7managed_5ULong___cinit__(struct __pyx_obj_3mds_7manage
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "mds/managed.pyx":812
+  /* "mds/managed.pyx":830
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value
  *         value = self._sanitize(value)             # <<<<<<<<<<<<<<
  * 
  *     def _to_python(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 812, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 830, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -14529,13 +14529,13 @@ static int __pyx_pf_3mds_7managed_5ULong___cinit__(struct __pyx_obj_3mds_7manage
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 812, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 830, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 812, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 830, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -14543,19 +14543,19 @@ static int __pyx_pf_3mds_7managed_5ULong___cinit__(struct __pyx_obj_3mds_7manage
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 812, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 830, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 812, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 830, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 812, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 830, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -14564,7 +14564,7 @@ static int __pyx_pf_3mds_7managed_5ULong___cinit__(struct __pyx_obj_3mds_7manage
   __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":811
+  /* "mds/managed.pyx":829
  *     cdef mv_ulong _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -14588,7 +14588,7 @@ static int __pyx_pf_3mds_7managed_5ULong___cinit__(struct __pyx_obj_3mds_7manage
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":814
+/* "mds/managed.pyx":832
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -14615,7 +14615,7 @@ static PyObject *__pyx_pf_3mds_7managed_5ULong_2_to_python(struct __pyx_obj_3mds
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":815
+  /* "mds/managed.pyx":833
  * 
  *     def _to_python(self):
  *         return to_core_val(self._value)             # <<<<<<<<<<<<<<
@@ -14623,13 +14623,13 @@ static PyObject *__pyx_pf_3mds_7managed_5ULong_2_to_python(struct __pyx_obj_3mds
  *     def _to_mds(self):  # TODO: This needs to update _value
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_uint64_t(mds::api::to_core_val<mds::api::kind::ULONG>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 815, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_uint64_t(mds::api::to_core_val<mds::api::kind::ULONG>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 833, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":814
+  /* "mds/managed.pyx":832
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -14648,7 +14648,7 @@ static PyObject *__pyx_pf_3mds_7managed_5ULong_2_to_python(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":817
+/* "mds/managed.pyx":835
  *         return to_core_val(self._value)
  * 
  *     def _to_mds(self):  # TODO: This needs to update _value             # <<<<<<<<<<<<<<
@@ -14681,7 +14681,7 @@ static PyObject *__pyx_pf_3mds_7managed_5ULong_4_to_mds(CYTHON_UNUSED struct __p
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":821
+/* "mds/managed.pyx":839
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -14707,7 +14707,7 @@ static PyObject *__pyx_pf_3mds_7managed_5ULong_3MIN___get__(CYTHON_UNUSED struct
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":822
+  /* "mds/managed.pyx":840
  *     property MIN:
  *         def __get__(self):
  *             return 0             # <<<<<<<<<<<<<<
@@ -14719,7 +14719,7 @@ static PyObject *__pyx_pf_3mds_7managed_5ULong_3MIN___get__(CYTHON_UNUSED struct
   __pyx_r = __pyx_int_0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":821
+  /* "mds/managed.pyx":839
  * 
  *     property MIN:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -14734,7 +14734,7 @@ static PyObject *__pyx_pf_3mds_7managed_5ULong_3MIN___get__(CYTHON_UNUSED struct
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":825
+/* "mds/managed.pyx":843
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -14760,7 +14760,7 @@ static PyObject *__pyx_pf_3mds_7managed_5ULong_3MAX___get__(CYTHON_UNUSED struct
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/managed.pyx":826
+  /* "mds/managed.pyx":844
  *     property MAX:
  *         def __get__(self):
  *             return 18446744073709551615             # <<<<<<<<<<<<<<
@@ -14772,7 +14772,7 @@ static PyObject *__pyx_pf_3mds_7managed_5ULong_3MAX___get__(CYTHON_UNUSED struct
   __pyx_r = __pyx_int_18446744073709551615;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":825
+  /* "mds/managed.pyx":843
  * 
  *     property MAX:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -14787,7 +14787,7 @@ static PyObject *__pyx_pf_3mds_7managed_5ULong_3MAX___get__(CYTHON_UNUSED struct
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":834
+/* "mds/managed.pyx":852
  *     _primitive = ULong
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -14823,7 +14823,7 @@ static int __pyx_pw_3mds_7managed_10ULongArray_1__cinit__(PyObject *__pyx_v_self
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 834, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 852, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -14836,7 +14836,7 @@ static int __pyx_pw_3mds_7managed_10ULongArray_1__cinit__(PyObject *__pyx_v_self
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 834, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 852, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.ULongArray.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -14857,7 +14857,7 @@ static int __pyx_pf_3mds_7managed_10ULongArray___cinit__(struct __pyx_obj_3mds_7
   size_t __pyx_t_3;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/managed.pyx":835
+  /* "mds/managed.pyx":853
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -14868,17 +14868,17 @@ static int __pyx_pf_3mds_7managed_10ULongArray___cinit__(struct __pyx_obj_3mds_7
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":836
+    /* "mds/managed.pyx":854
  *     def __cinit__(self, length=None):
  *         if length is not None:
  *             self._handle = create_ulong_marray(length)             # <<<<<<<<<<<<<<
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_ulong_marray(0)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 836, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 854, __pyx_L1_error)
     __pyx_v_self->_handle = mds::python::types::create_ulong_marray(__pyx_t_3);
 
-    /* "mds/managed.pyx":835
+    /* "mds/managed.pyx":853
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -14888,7 +14888,7 @@ static int __pyx_pf_3mds_7managed_10ULongArray___cinit__(struct __pyx_obj_3mds_7
     goto __pyx_L3;
   }
 
-  /* "mds/managed.pyx":838
+  /* "mds/managed.pyx":856
  *             self._handle = create_ulong_marray(length)
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_ulong_marray(0)             # <<<<<<<<<<<<<<
@@ -14900,7 +14900,7 @@ static int __pyx_pf_3mds_7managed_10ULongArray___cinit__(struct __pyx_obj_3mds_7
   }
   __pyx_L3:;
 
-  /* "mds/managed.pyx":834
+  /* "mds/managed.pyx":852
  *     _primitive = ULong
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -14919,7 +14919,7 @@ static int __pyx_pf_3mds_7managed_10ULongArray___cinit__(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":840
+/* "mds/managed.pyx":858
  *             self._handle = create_ulong_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -14945,7 +14945,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_10ULongArray_2__len__(struct __pyx_obj_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "mds/managed.pyx":841
+  /* "mds/managed.pyx":859
  * 
  *     def __len__(self):
  *         return self._handle.size()             # <<<<<<<<<<<<<<
@@ -14955,7 +14955,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_10ULongArray_2__len__(struct __pyx_obj_
   __pyx_r = __pyx_v_self->_handle.size();
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":840
+  /* "mds/managed.pyx":858
  *             self._handle = create_ulong_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -14969,7 +14969,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_10ULongArray_2__len__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":843
+/* "mds/managed.pyx":861
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -14997,7 +14997,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_4_to_python(struct __pyx_ob
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":844
+  /* "mds/managed.pyx":862
  * 
  *     def _to_python(self, index):
  *         return to_core_val(self._handle.frozen_read(index))             # <<<<<<<<<<<<<<
@@ -15005,14 +15005,14 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_4_to_python(struct __pyx_ob
  *     def _to_mds(self, index, value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 844, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_uint64_t(mds::api::to_core_val<mds::api::kind::ULONG>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 844, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 862, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_uint64_t(mds::api::to_core_val<mds::api::kind::ULONG>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 862, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":843
+  /* "mds/managed.pyx":861
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -15031,7 +15031,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_4_to_python(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":846
+/* "mds/managed.pyx":864
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -15067,11 +15067,11 @@ static PyObject *__pyx_pw_3mds_7managed_10ULongArray_7_to_mds(PyObject *__pyx_v_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 846, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 864, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 846, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 864, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -15084,7 +15084,7 @@ static PyObject *__pyx_pw_3mds_7managed_10ULongArray_7_to_mds(PyObject *__pyx_v_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 846, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 864, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.ULongArray._to_mds", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -15109,14 +15109,14 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_6_to_mds(struct __pyx_obj_3
   uint64_t __pyx_t_6;
   __Pyx_RefNannySetupContext("_to_mds", 0);
 
-  /* "mds/managed.pyx":848
+  /* "mds/managed.pyx":866
  *     def _to_mds(self, index, value):
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)             # <<<<<<<<<<<<<<
  *         self._handle.write(index, mv_ulong(value))
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 848, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 866, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -15129,13 +15129,13 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_6_to_mds(struct __pyx_obj_3
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 848, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 866, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 848, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 866, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -15143,19 +15143,19 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_6_to_mds(struct __pyx_obj_3
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 848, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 866, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 848, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 866, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 848, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 866, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -15164,18 +15164,18 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_6_to_mds(struct __pyx_obj_3
   __pyx_v_wrapped = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":849
+  /* "mds/managed.pyx":867
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)
  *         self._handle.write(index, mv_ulong(value))             # <<<<<<<<<<<<<<
  * 
  *     def copy(self):
  */
-  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 849, __pyx_L1_error)
-  __pyx_t_6 = __Pyx_PyInt_As_uint64_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((uint64_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 849, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 867, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyInt_As_uint64_t(__pyx_v_value); if (unlikely((__pyx_t_6 == ((uint64_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 867, __pyx_L1_error)
   __pyx_v_self->_handle.write(__pyx_t_5, mds::api::api_type<mds::api::kind::ULONG>(__pyx_t_6));
 
-  /* "mds/managed.pyx":846
+  /* "mds/managed.pyx":864
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -15200,7 +15200,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_6_to_mds(struct __pyx_obj_3
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":851
+/* "mds/managed.pyx":869
  *         self._handle.write(index, mv_ulong(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -15234,7 +15234,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_8copy(struct __pyx_obj_3mds
   uint64_t __pyx_t_5;
   __Pyx_RefNannySetupContext("copy", 0);
 
-  /* "mds/managed.pyx":853
+  /* "mds/managed.pyx":871
  *     def copy(self):
  *         cdef:
  *             size_t i = 0             # <<<<<<<<<<<<<<
@@ -15243,17 +15243,17 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_8copy(struct __pyx_obj_3mds
  */
   __pyx_v_i = 0;
 
-  /* "mds/managed.pyx":854
+  /* "mds/managed.pyx":872
  *         cdef:
  *             size_t i = 0
  *             size_t l = len(self)             # <<<<<<<<<<<<<<
  *             h_marray_ulong_t h = create_ulong_marray(l)
  * 
  */
-  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 854, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 872, __pyx_L1_error)
   __pyx_v_l = __pyx_t_1;
 
-  /* "mds/managed.pyx":855
+  /* "mds/managed.pyx":873
  *             size_t i = 0
  *             size_t l = len(self)
  *             h_marray_ulong_t h = create_ulong_marray(l)             # <<<<<<<<<<<<<<
@@ -15262,7 +15262,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_8copy(struct __pyx_obj_3mds
  */
   __pyx_v_h = mds::python::types::create_ulong_marray(__pyx_v_l);
 
-  /* "mds/managed.pyx":857
+  /* "mds/managed.pyx":875
  *             h_marray_ulong_t h = create_ulong_marray(l)
  * 
  *         for i in range(l):             # <<<<<<<<<<<<<<
@@ -15273,21 +15273,21 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_8copy(struct __pyx_obj_3mds
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "mds/managed.pyx":858
+    /* "mds/managed.pyx":876
  * 
  *         for i in range(l):
  *             h.write(i, mv_ulong(<uint64_t> self[i]))             # <<<<<<<<<<<<<<
  * 
  *         return ULongArray_Init(h)
  */
-    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 858, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 876, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyInt_As_uint64_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((uint64_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 858, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_As_uint64_t(__pyx_t_4); if (unlikely((__pyx_t_5 == ((uint64_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 876, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_h.write(__pyx_v_i, mds::api::api_type<mds::api::kind::ULONG>(((uint64_t)__pyx_t_5)));
   }
 
-  /* "mds/managed.pyx":860
+  /* "mds/managed.pyx":878
  *             h.write(i, mv_ulong(<uint64_t> self[i]))
  * 
  *         return ULongArray_Init(h)             # <<<<<<<<<<<<<<
@@ -15295,13 +15295,13 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_8copy(struct __pyx_obj_3mds
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3mds_7managed_ULongArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 860, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3mds_7managed_ULongArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 878, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":851
+  /* "mds/managed.pyx":869
  *         self._handle.write(index, mv_ulong(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -15320,7 +15320,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_8copy(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":863
+/* "mds/managed.pyx":881
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -15354,7 +15354,7 @@ static PyObject *__pyx_pw_3mds_7managed_10ULongArray_11create(CYTHON_UNUSED PyOb
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 863, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 881, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -15365,7 +15365,7 @@ static PyObject *__pyx_pw_3mds_7managed_10ULongArray_11create(CYTHON_UNUSED PyOb
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 863, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 881, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.ULongArray.create", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -15388,7 +15388,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_10create(PyObject *__pyx_v_
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
 
-  /* "mds/managed.pyx":864
+  /* "mds/managed.pyx":882
  *     @staticmethod
  *     def create(length):
  *         return MDSArrayBase.create("ulong", length)             # <<<<<<<<<<<<<<
@@ -15396,7 +15396,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_10create(PyObject *__pyx_v_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 864, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 882, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -15413,7 +15413,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_10create(PyObject *__pyx_v_
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_ulong, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 864, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 882, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -15421,13 +15421,13 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_10create(PyObject *__pyx_v_
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_ulong, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 864, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 882, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 864, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 882, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -15438,7 +15438,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_10create(PyObject *__pyx_v_
     __Pyx_INCREF(__pyx_v_length);
     __Pyx_GIVEREF(__pyx_v_length);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_length);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 864, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 882, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -15447,7 +15447,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_10create(PyObject *__pyx_v_
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":863
+  /* "mds/managed.pyx":881
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -15469,7 +15469,7 @@ static PyObject *__pyx_pf_3mds_7managed_10ULongArray_10create(PyObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":867
+/* "mds/managed.pyx":885
  * 
  * 
  * cdef ULongArray_Init(h_marray_ulong_t handle):             # <<<<<<<<<<<<<<
@@ -15484,19 +15484,19 @@ static PyObject *__pyx_f_3mds_7managed_ULongArray_Init(mds::python::types::h_mar
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("ULongArray_Init", 0);
 
-  /* "mds/managed.pyx":868
+  /* "mds/managed.pyx":886
  * 
  * cdef ULongArray_Init(h_marray_ulong_t handle):
  *     result = ULongArray()             # <<<<<<<<<<<<<<
  *     result._handle = handle
  *     return result
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_ULongArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 868, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_ULongArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 886, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((struct __pyx_obj_3mds_7managed_ULongArray *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":869
+  /* "mds/managed.pyx":887
  * cdef ULongArray_Init(h_marray_ulong_t handle):
  *     result = ULongArray()
  *     result._handle = handle             # <<<<<<<<<<<<<<
@@ -15505,7 +15505,7 @@ static PyObject *__pyx_f_3mds_7managed_ULongArray_Init(mds::python::types::h_mar
  */
   __pyx_v_result->_handle = __pyx_v_handle;
 
-  /* "mds/managed.pyx":870
+  /* "mds/managed.pyx":888
  *     result = ULongArray()
  *     result._handle = handle
  *     return result             # <<<<<<<<<<<<<<
@@ -15517,7 +15517,7 @@ static PyObject *__pyx_f_3mds_7managed_ULongArray_Init(mds::python::types::h_mar
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":867
+  /* "mds/managed.pyx":885
  * 
  * 
  * cdef ULongArray_Init(h_marray_ulong_t handle):             # <<<<<<<<<<<<<<
@@ -15537,7 +15537,7 @@ static PyObject *__pyx_f_3mds_7managed_ULongArray_Init(mds::python::types::h_mar
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":877
+/* "mds/managed.pyx":895
  *     cdef mv_float _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -15570,7 +15570,7 @@ static int __pyx_pw_3mds_7managed_5Float_1__cinit__(PyObject *__pyx_v_self, PyOb
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 877, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 895, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -15581,7 +15581,7 @@ static int __pyx_pw_3mds_7managed_5Float_1__cinit__(PyObject *__pyx_v_self, PyOb
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 877, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 895, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.Float.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -15604,14 +15604,14 @@ static int __pyx_pf_3mds_7managed_5Float___cinit__(struct __pyx_obj_3mds_7manage
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "mds/managed.pyx":878
+  /* "mds/managed.pyx":896
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value
  *         value = self._sanitize(value)             # <<<<<<<<<<<<<<
  * 
  *     def _to_python(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 878, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 896, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -15624,13 +15624,13 @@ static int __pyx_pf_3mds_7managed_5Float___cinit__(struct __pyx_obj_3mds_7manage
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 878, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 896, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 878, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 896, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -15638,19 +15638,19 @@ static int __pyx_pf_3mds_7managed_5Float___cinit__(struct __pyx_obj_3mds_7manage
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 878, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 896, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 878, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 896, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 878, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 896, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -15659,7 +15659,7 @@ static int __pyx_pf_3mds_7managed_5Float___cinit__(struct __pyx_obj_3mds_7manage
   __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":877
+  /* "mds/managed.pyx":895
  *     cdef mv_float _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -15683,7 +15683,7 @@ static int __pyx_pf_3mds_7managed_5Float___cinit__(struct __pyx_obj_3mds_7manage
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":880
+/* "mds/managed.pyx":898
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -15710,7 +15710,7 @@ static PyObject *__pyx_pf_3mds_7managed_5Float_2_to_python(struct __pyx_obj_3mds
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":881
+  /* "mds/managed.pyx":899
  * 
  *     def _to_python(self):
  *         return to_core_val(self._value)             # <<<<<<<<<<<<<<
@@ -15718,13 +15718,13 @@ static PyObject *__pyx_pf_3mds_7managed_5Float_2_to_python(struct __pyx_obj_3mds
  *     def _to_mds(self):  # TODO: This needs to update _value
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(mds::api::to_core_val<mds::api::kind::FLOAT>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 881, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(mds::api::to_core_val<mds::api::kind::FLOAT>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 899, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":880
+  /* "mds/managed.pyx":898
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -15743,7 +15743,7 @@ static PyObject *__pyx_pf_3mds_7managed_5Float_2_to_python(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":883
+/* "mds/managed.pyx":901
  *         return to_core_val(self._value)
  * 
  *     def _to_mds(self):  # TODO: This needs to update _value             # <<<<<<<<<<<<<<
@@ -15776,7 +15776,7 @@ static PyObject *__pyx_pf_3mds_7managed_5Float_4_to_mds(CYTHON_UNUSED struct __p
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":892
+/* "mds/managed.pyx":910
  *     _primitive = Float
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -15812,7 +15812,7 @@ static int __pyx_pw_3mds_7managed_10FloatArray_1__cinit__(PyObject *__pyx_v_self
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 892, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 910, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -15825,7 +15825,7 @@ static int __pyx_pw_3mds_7managed_10FloatArray_1__cinit__(PyObject *__pyx_v_self
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 892, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 910, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.FloatArray.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -15846,7 +15846,7 @@ static int __pyx_pf_3mds_7managed_10FloatArray___cinit__(struct __pyx_obj_3mds_7
   size_t __pyx_t_3;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/managed.pyx":893
+  /* "mds/managed.pyx":911
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -15857,17 +15857,17 @@ static int __pyx_pf_3mds_7managed_10FloatArray___cinit__(struct __pyx_obj_3mds_7
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":894
+    /* "mds/managed.pyx":912
  *     def __cinit__(self, length=None):
  *         if length is not None:
  *             self._handle = create_float_marray(length)             # <<<<<<<<<<<<<<
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_float_marray(0)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 894, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 912, __pyx_L1_error)
     __pyx_v_self->_handle = mds::python::types::create_float_marray(__pyx_t_3);
 
-    /* "mds/managed.pyx":893
+    /* "mds/managed.pyx":911
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -15877,7 +15877,7 @@ static int __pyx_pf_3mds_7managed_10FloatArray___cinit__(struct __pyx_obj_3mds_7
     goto __pyx_L3;
   }
 
-  /* "mds/managed.pyx":896
+  /* "mds/managed.pyx":914
  *             self._handle = create_float_marray(length)
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_float_marray(0)             # <<<<<<<<<<<<<<
@@ -15889,7 +15889,7 @@ static int __pyx_pf_3mds_7managed_10FloatArray___cinit__(struct __pyx_obj_3mds_7
   }
   __pyx_L3:;
 
-  /* "mds/managed.pyx":892
+  /* "mds/managed.pyx":910
  *     _primitive = Float
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -15908,7 +15908,7 @@ static int __pyx_pf_3mds_7managed_10FloatArray___cinit__(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":898
+/* "mds/managed.pyx":916
  *             self._handle = create_float_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -15934,7 +15934,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_10FloatArray_2__len__(struct __pyx_obj_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "mds/managed.pyx":899
+  /* "mds/managed.pyx":917
  * 
  *     def __len__(self):
  *         return self._handle.size()             # <<<<<<<<<<<<<<
@@ -15944,7 +15944,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_10FloatArray_2__len__(struct __pyx_obj_
   __pyx_r = __pyx_v_self->_handle.size();
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":898
+  /* "mds/managed.pyx":916
  *             self._handle = create_float_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -15958,7 +15958,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_10FloatArray_2__len__(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":901
+/* "mds/managed.pyx":919
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -15986,7 +15986,7 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_4_to_python(struct __pyx_ob
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":902
+  /* "mds/managed.pyx":920
  * 
  *     def _to_python(self, index):
  *         return to_core_val(self._handle.frozen_read(index))             # <<<<<<<<<<<<<<
@@ -15994,14 +15994,14 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_4_to_python(struct __pyx_ob
  *     def _to_mds(self, index, value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 902, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(mds::api::to_core_val<mds::api::kind::FLOAT>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 902, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 920, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(mds::api::to_core_val<mds::api::kind::FLOAT>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 920, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":901
+  /* "mds/managed.pyx":919
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -16020,7 +16020,7 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_4_to_python(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":904
+/* "mds/managed.pyx":922
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -16056,11 +16056,11 @@ static PyObject *__pyx_pw_3mds_7managed_10FloatArray_7_to_mds(PyObject *__pyx_v_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 904, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 922, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 904, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 922, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -16073,7 +16073,7 @@ static PyObject *__pyx_pw_3mds_7managed_10FloatArray_7_to_mds(PyObject *__pyx_v_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 904, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 922, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.FloatArray._to_mds", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -16098,14 +16098,14 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_6_to_mds(struct __pyx_obj_3
   float __pyx_t_6;
   __Pyx_RefNannySetupContext("_to_mds", 0);
 
-  /* "mds/managed.pyx":906
+  /* "mds/managed.pyx":924
  *     def _to_mds(self, index, value):
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)             # <<<<<<<<<<<<<<
  *         self._handle.write(index, mv_float(value))
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 906, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 924, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -16118,13 +16118,13 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_6_to_mds(struct __pyx_obj_3
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 906, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 924, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 906, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 924, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -16132,19 +16132,19 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_6_to_mds(struct __pyx_obj_3
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 906, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 924, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 906, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 924, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 906, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 924, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -16153,18 +16153,18 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_6_to_mds(struct __pyx_obj_3
   __pyx_v_wrapped = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":907
+  /* "mds/managed.pyx":925
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)
  *         self._handle.write(index, mv_float(value))             # <<<<<<<<<<<<<<
  * 
  *     def copy(self):
  */
-  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 907, __pyx_L1_error)
-  __pyx_t_6 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_6 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 907, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 925, __pyx_L1_error)
+  __pyx_t_6 = __pyx_PyFloat_AsFloat(__pyx_v_value); if (unlikely((__pyx_t_6 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 925, __pyx_L1_error)
   __pyx_v_self->_handle.write(__pyx_t_5, mds::api::api_type<mds::api::kind::FLOAT>(__pyx_t_6));
 
-  /* "mds/managed.pyx":904
+  /* "mds/managed.pyx":922
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -16189,7 +16189,7 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_6_to_mds(struct __pyx_obj_3
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":909
+/* "mds/managed.pyx":927
  *         self._handle.write(index, mv_float(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -16223,7 +16223,7 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_8copy(struct __pyx_obj_3mds
   float __pyx_t_5;
   __Pyx_RefNannySetupContext("copy", 0);
 
-  /* "mds/managed.pyx":911
+  /* "mds/managed.pyx":929
  *     def copy(self):
  *         cdef:
  *             size_t i = 0             # <<<<<<<<<<<<<<
@@ -16232,17 +16232,17 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_8copy(struct __pyx_obj_3mds
  */
   __pyx_v_i = 0;
 
-  /* "mds/managed.pyx":912
+  /* "mds/managed.pyx":930
  *         cdef:
  *             size_t i = 0
  *             size_t l = len(self)             # <<<<<<<<<<<<<<
  *             h_marray_float_t h = create_float_marray(l)
  * 
  */
-  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 912, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 930, __pyx_L1_error)
   __pyx_v_l = __pyx_t_1;
 
-  /* "mds/managed.pyx":913
+  /* "mds/managed.pyx":931
  *             size_t i = 0
  *             size_t l = len(self)
  *             h_marray_float_t h = create_float_marray(l)             # <<<<<<<<<<<<<<
@@ -16251,7 +16251,7 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_8copy(struct __pyx_obj_3mds
  */
   __pyx_v_h = mds::python::types::create_float_marray(__pyx_v_l);
 
-  /* "mds/managed.pyx":915
+  /* "mds/managed.pyx":933
  *             h_marray_float_t h = create_float_marray(l)
  * 
  *         for i in range(l):             # <<<<<<<<<<<<<<
@@ -16262,21 +16262,21 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_8copy(struct __pyx_obj_3mds
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "mds/managed.pyx":916
+    /* "mds/managed.pyx":934
  * 
  *         for i in range(l):
  *             h.write(i, mv_float(<float> self[i]))             # <<<<<<<<<<<<<<
  * 
  *         return FloatArray_Init(h)
  */
-    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 916, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 934, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __pyx_PyFloat_AsFloat(__pyx_t_4); if (unlikely((__pyx_t_5 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 916, __pyx_L1_error)
+    __pyx_t_5 = __pyx_PyFloat_AsFloat(__pyx_t_4); if (unlikely((__pyx_t_5 == (float)-1) && PyErr_Occurred())) __PYX_ERR(0, 934, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_h.write(__pyx_v_i, mds::api::api_type<mds::api::kind::FLOAT>(((float)__pyx_t_5)));
   }
 
-  /* "mds/managed.pyx":918
+  /* "mds/managed.pyx":936
  *             h.write(i, mv_float(<float> self[i]))
  * 
  *         return FloatArray_Init(h)             # <<<<<<<<<<<<<<
@@ -16284,13 +16284,13 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_8copy(struct __pyx_obj_3mds
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3mds_7managed_FloatArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 918, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3mds_7managed_FloatArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 936, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":909
+  /* "mds/managed.pyx":927
  *         self._handle.write(index, mv_float(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -16309,7 +16309,7 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_8copy(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":921
+/* "mds/managed.pyx":939
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -16343,7 +16343,7 @@ static PyObject *__pyx_pw_3mds_7managed_10FloatArray_11create(CYTHON_UNUSED PyOb
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 921, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 939, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -16354,7 +16354,7 @@ static PyObject *__pyx_pw_3mds_7managed_10FloatArray_11create(CYTHON_UNUSED PyOb
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 921, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 939, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.FloatArray.create", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -16377,7 +16377,7 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_10create(PyObject *__pyx_v_
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
 
-  /* "mds/managed.pyx":922
+  /* "mds/managed.pyx":940
  *     @staticmethod
  *     def create(length):
  *         return MDSArrayBase.create("float", length)             # <<<<<<<<<<<<<<
@@ -16385,7 +16385,7 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_10create(PyObject *__pyx_v_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 922, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 940, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -16402,7 +16402,7 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_10create(PyObject *__pyx_v_
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_float, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 922, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 940, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -16410,13 +16410,13 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_10create(PyObject *__pyx_v_
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_float, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 922, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 940, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 922, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 940, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -16427,7 +16427,7 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_10create(PyObject *__pyx_v_
     __Pyx_INCREF(__pyx_v_length);
     __Pyx_GIVEREF(__pyx_v_length);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_length);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 922, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 940, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -16436,7 +16436,7 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_10create(PyObject *__pyx_v_
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":921
+  /* "mds/managed.pyx":939
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -16458,7 +16458,7 @@ static PyObject *__pyx_pf_3mds_7managed_10FloatArray_10create(PyObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":925
+/* "mds/managed.pyx":943
  * 
  * 
  * cdef FloatArray_Init(h_marray_float_t handle):             # <<<<<<<<<<<<<<
@@ -16473,19 +16473,19 @@ static PyObject *__pyx_f_3mds_7managed_FloatArray_Init(mds::python::types::h_mar
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("FloatArray_Init", 0);
 
-  /* "mds/managed.pyx":926
+  /* "mds/managed.pyx":944
  * 
  * cdef FloatArray_Init(h_marray_float_t handle):
  *     result = FloatArray()             # <<<<<<<<<<<<<<
  *     result._handle = handle
  *     return result
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_FloatArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 926, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_FloatArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 944, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((struct __pyx_obj_3mds_7managed_FloatArray *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":927
+  /* "mds/managed.pyx":945
  * cdef FloatArray_Init(h_marray_float_t handle):
  *     result = FloatArray()
  *     result._handle = handle             # <<<<<<<<<<<<<<
@@ -16494,7 +16494,7 @@ static PyObject *__pyx_f_3mds_7managed_FloatArray_Init(mds::python::types::h_mar
  */
   __pyx_v_result->_handle = __pyx_v_handle;
 
-  /* "mds/managed.pyx":928
+  /* "mds/managed.pyx":946
  *     result = FloatArray()
  *     result._handle = handle
  *     return result             # <<<<<<<<<<<<<<
@@ -16506,7 +16506,7 @@ static PyObject *__pyx_f_3mds_7managed_FloatArray_Init(mds::python::types::h_mar
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":925
+  /* "mds/managed.pyx":943
  * 
  * 
  * cdef FloatArray_Init(h_marray_float_t handle):             # <<<<<<<<<<<<<<
@@ -16526,7 +16526,7 @@ static PyObject *__pyx_f_3mds_7managed_FloatArray_Init(mds::python::types::h_mar
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":935
+/* "mds/managed.pyx":953
  *     cdef mv_double _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -16559,7 +16559,7 @@ static int __pyx_pw_3mds_7managed_6Double_1__cinit__(PyObject *__pyx_v_self, PyO
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 935, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 953, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -16570,7 +16570,7 @@ static int __pyx_pw_3mds_7managed_6Double_1__cinit__(PyObject *__pyx_v_self, PyO
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 935, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 953, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.Double.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -16593,14 +16593,14 @@ static int __pyx_pf_3mds_7managed_6Double___cinit__(struct __pyx_obj_3mds_7manag
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_value);
 
-  /* "mds/managed.pyx":936
+  /* "mds/managed.pyx":954
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value
  *         value = self._sanitize(value)             # <<<<<<<<<<<<<<
  * 
  *     def _to_python(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 936, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_sanitize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 954, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -16613,13 +16613,13 @@ static int __pyx_pf_3mds_7managed_6Double___cinit__(struct __pyx_obj_3mds_7manag
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 936, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 954, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 936, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 954, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -16627,19 +16627,19 @@ static int __pyx_pf_3mds_7managed_6Double___cinit__(struct __pyx_obj_3mds_7manag
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 936, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 954, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 936, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 954, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 936, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 954, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -16648,7 +16648,7 @@ static int __pyx_pf_3mds_7managed_6Double___cinit__(struct __pyx_obj_3mds_7manag
   __Pyx_DECREF_SET(__pyx_v_value, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":935
+  /* "mds/managed.pyx":953
  *     cdef mv_double _value
  * 
  *     def __cinit__(self, value):  # TODO: Set the value in _value             # <<<<<<<<<<<<<<
@@ -16672,7 +16672,7 @@ static int __pyx_pf_3mds_7managed_6Double___cinit__(struct __pyx_obj_3mds_7manag
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":938
+/* "mds/managed.pyx":956
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -16699,7 +16699,7 @@ static PyObject *__pyx_pf_3mds_7managed_6Double_2_to_python(struct __pyx_obj_3md
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":939
+  /* "mds/managed.pyx":957
  * 
  *     def _to_python(self):
  *         return to_core_val(self._value)             # <<<<<<<<<<<<<<
@@ -16707,13 +16707,13 @@ static PyObject *__pyx_pf_3mds_7managed_6Double_2_to_python(struct __pyx_obj_3md
  *     def _to_mds(self):  # TODO: This needs to update _value
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyFloat_FromDouble(mds::api::to_core_val<mds::api::kind::DOUBLE>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 939, __pyx_L1_error)
+  __pyx_t_1 = PyFloat_FromDouble(mds::api::to_core_val<mds::api::kind::DOUBLE>(__pyx_v_self->_value)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 957, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":938
+  /* "mds/managed.pyx":956
  *         value = self._sanitize(value)
  * 
  *     def _to_python(self):             # <<<<<<<<<<<<<<
@@ -16732,7 +16732,7 @@ static PyObject *__pyx_pf_3mds_7managed_6Double_2_to_python(struct __pyx_obj_3md
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":941
+/* "mds/managed.pyx":959
  *         return to_core_val(self._value)
  * 
  *     def _to_mds(self):  # TODO: This needs to update _value             # <<<<<<<<<<<<<<
@@ -16765,7 +16765,7 @@ static PyObject *__pyx_pf_3mds_7managed_6Double_4_to_mds(CYTHON_UNUSED struct __
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":950
+/* "mds/managed.pyx":968
  *     _primitive = Double
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -16801,7 +16801,7 @@ static int __pyx_pw_3mds_7managed_11DoubleArray_1__cinit__(PyObject *__pyx_v_sel
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 950, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 968, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -16814,7 +16814,7 @@ static int __pyx_pw_3mds_7managed_11DoubleArray_1__cinit__(PyObject *__pyx_v_sel
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 950, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 968, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.DoubleArray.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -16835,7 +16835,7 @@ static int __pyx_pf_3mds_7managed_11DoubleArray___cinit__(struct __pyx_obj_3mds_
   size_t __pyx_t_3;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/managed.pyx":951
+  /* "mds/managed.pyx":969
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -16846,17 +16846,17 @@ static int __pyx_pf_3mds_7managed_11DoubleArray___cinit__(struct __pyx_obj_3mds_
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":952
+    /* "mds/managed.pyx":970
  *     def __cinit__(self, length=None):
  *         if length is not None:
  *             self._handle = create_double_marray(length)             # <<<<<<<<<<<<<<
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_double_marray(0)
  */
-    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 952, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_length); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 970, __pyx_L1_error)
     __pyx_v_self->_handle = mds::python::types::create_double_marray(__pyx_t_3);
 
-    /* "mds/managed.pyx":951
+    /* "mds/managed.pyx":969
  * 
  *     def __cinit__(self, length=None):
  *         if length is not None:             # <<<<<<<<<<<<<<
@@ -16866,7 +16866,7 @@ static int __pyx_pf_3mds_7managed_11DoubleArray___cinit__(struct __pyx_obj_3mds_
     goto __pyx_L3;
   }
 
-  /* "mds/managed.pyx":954
+  /* "mds/managed.pyx":972
  *             self._handle = create_double_marray(length)
  *         else:  # TODO: Not sure this is the best, but will avoid segfaults
  *             self._handle = create_double_marray(0)             # <<<<<<<<<<<<<<
@@ -16878,7 +16878,7 @@ static int __pyx_pf_3mds_7managed_11DoubleArray___cinit__(struct __pyx_obj_3mds_
   }
   __pyx_L3:;
 
-  /* "mds/managed.pyx":950
+  /* "mds/managed.pyx":968
  *     _primitive = Double
  * 
  *     def __cinit__(self, length=None):             # <<<<<<<<<<<<<<
@@ -16897,7 +16897,7 @@ static int __pyx_pf_3mds_7managed_11DoubleArray___cinit__(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":956
+/* "mds/managed.pyx":974
  *             self._handle = create_double_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -16923,7 +16923,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_11DoubleArray_2__len__(struct __pyx_obj
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "mds/managed.pyx":957
+  /* "mds/managed.pyx":975
  * 
  *     def __len__(self):
  *         return self._handle.size()             # <<<<<<<<<<<<<<
@@ -16933,7 +16933,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_11DoubleArray_2__len__(struct __pyx_obj
   __pyx_r = __pyx_v_self->_handle.size();
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":956
+  /* "mds/managed.pyx":974
  *             self._handle = create_double_marray(0)
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -16947,7 +16947,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_11DoubleArray_2__len__(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":959
+/* "mds/managed.pyx":977
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -16975,7 +16975,7 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_4_to_python(struct __pyx_o
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("_to_python", 0);
 
-  /* "mds/managed.pyx":960
+  /* "mds/managed.pyx":978
  * 
  *     def _to_python(self, index):
  *         return to_core_val(self._handle.frozen_read(index))             # <<<<<<<<<<<<<<
@@ -16983,14 +16983,14 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_4_to_python(struct __pyx_o
  *     def _to_mds(self, index, value):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 960, __pyx_L1_error)
-  __pyx_t_2 = PyFloat_FromDouble(mds::api::to_core_val<mds::api::kind::DOUBLE>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 960, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_1 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 978, __pyx_L1_error)
+  __pyx_t_2 = PyFloat_FromDouble(mds::api::to_core_val<mds::api::kind::DOUBLE>(__pyx_v_self->_handle.frozen_read(__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 978, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":959
+  /* "mds/managed.pyx":977
  *         return self._handle.size()
  * 
  *     def _to_python(self, index):             # <<<<<<<<<<<<<<
@@ -17009,7 +17009,7 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_4_to_python(struct __pyx_o
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":962
+/* "mds/managed.pyx":980
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -17045,11 +17045,11 @@ static PyObject *__pyx_pw_3mds_7managed_11DoubleArray_7_to_mds(PyObject *__pyx_v
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_value)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 962, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, 1); __PYX_ERR(0, 980, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 962, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_to_mds") < 0)) __PYX_ERR(0, 980, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -17062,7 +17062,7 @@ static PyObject *__pyx_pw_3mds_7managed_11DoubleArray_7_to_mds(PyObject *__pyx_v
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 962, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_to_mds", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 980, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.DoubleArray._to_mds", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -17087,14 +17087,14 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_6_to_mds(struct __pyx_obj_
   double __pyx_t_6;
   __Pyx_RefNannySetupContext("_to_mds", 0);
 
-  /* "mds/managed.pyx":964
+  /* "mds/managed.pyx":982
  *     def _to_mds(self, index, value):
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)             # <<<<<<<<<<<<<<
  *         self._handle.write(index, mv_double(value))
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 964, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_primitive); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 982, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -17107,13 +17107,13 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_6_to_mds(struct __pyx_obj_
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 964, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_value); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 982, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 964, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 982, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
@@ -17121,19 +17121,19 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_6_to_mds(struct __pyx_obj_
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_v_value};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 964, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 982, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 964, __pyx_L1_error)
+      __pyx_t_4 = PyTuple_New(1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 982, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(__pyx_v_value);
       __Pyx_GIVEREF(__pyx_v_value);
       PyTuple_SET_ITEM(__pyx_t_4, 0+1, __pyx_v_value);
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 964, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_4, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 982, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
@@ -17142,18 +17142,18 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_6_to_mds(struct __pyx_obj_
   __pyx_v_wrapped = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":965
+  /* "mds/managed.pyx":983
  *         # Delegate bounds checking etc. to the primitive wrapper
  *         wrapped = self._primitive(value)
  *         self._handle.write(index, mv_double(value))             # <<<<<<<<<<<<<<
  * 
  *     def copy(self):
  */
-  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 965, __pyx_L1_error)
-  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_value); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 965, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_As_size_t(__pyx_v_index); if (unlikely((__pyx_t_5 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 983, __pyx_L1_error)
+  __pyx_t_6 = __pyx_PyFloat_AsDouble(__pyx_v_value); if (unlikely((__pyx_t_6 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 983, __pyx_L1_error)
   __pyx_v_self->_handle.write(__pyx_t_5, mds::api::api_type<mds::api::kind::DOUBLE>(__pyx_t_6));
 
-  /* "mds/managed.pyx":962
+  /* "mds/managed.pyx":980
  *         return to_core_val(self._handle.frozen_read(index))
  * 
  *     def _to_mds(self, index, value):             # <<<<<<<<<<<<<<
@@ -17178,7 +17178,7 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_6_to_mds(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":967
+/* "mds/managed.pyx":985
  *         self._handle.write(index, mv_double(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -17212,7 +17212,7 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_8copy(struct __pyx_obj_3md
   double __pyx_t_5;
   __Pyx_RefNannySetupContext("copy", 0);
 
-  /* "mds/managed.pyx":969
+  /* "mds/managed.pyx":987
  *     def copy(self):
  *         cdef:
  *             size_t i = 0             # <<<<<<<<<<<<<<
@@ -17221,17 +17221,17 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_8copy(struct __pyx_obj_3md
  */
   __pyx_v_i = 0;
 
-  /* "mds/managed.pyx":970
+  /* "mds/managed.pyx":988
  *         cdef:
  *             size_t i = 0
  *             size_t l = len(self)             # <<<<<<<<<<<<<<
  *             h_marray_double_t h = create_double_marray(l)
  * 
  */
-  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 970, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 988, __pyx_L1_error)
   __pyx_v_l = __pyx_t_1;
 
-  /* "mds/managed.pyx":971
+  /* "mds/managed.pyx":989
  *             size_t i = 0
  *             size_t l = len(self)
  *             h_marray_double_t h = create_double_marray(l)             # <<<<<<<<<<<<<<
@@ -17240,7 +17240,7 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_8copy(struct __pyx_obj_3md
  */
   __pyx_v_h = mds::python::types::create_double_marray(__pyx_v_l);
 
-  /* "mds/managed.pyx":973
+  /* "mds/managed.pyx":991
  *             h_marray_double_t h = create_double_marray(l)
  * 
  *         for i in range(l):             # <<<<<<<<<<<<<<
@@ -17251,21 +17251,21 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_8copy(struct __pyx_obj_3md
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "mds/managed.pyx":974
+    /* "mds/managed.pyx":992
  * 
  *         for i in range(l):
  *             h.write(i, mv_double(<double> self[i]))             # <<<<<<<<<<<<<<
  * 
  *         return DoubleArray_Init(h)
  */
-    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 974, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_i, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 992, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_4); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 974, __pyx_L1_error)
+    __pyx_t_5 = __pyx_PyFloat_AsDouble(__pyx_t_4); if (unlikely((__pyx_t_5 == (double)-1) && PyErr_Occurred())) __PYX_ERR(0, 992, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_h.write(__pyx_v_i, mds::api::api_type<mds::api::kind::DOUBLE>(((double)__pyx_t_5)));
   }
 
-  /* "mds/managed.pyx":976
+  /* "mds/managed.pyx":994
  *             h.write(i, mv_double(<double> self[i]))
  * 
  *         return DoubleArray_Init(h)             # <<<<<<<<<<<<<<
@@ -17273,13 +17273,13 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_8copy(struct __pyx_obj_3md
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3mds_7managed_DoubleArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 976, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3mds_7managed_DoubleArray_Init(__pyx_v_h); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 994, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":967
+  /* "mds/managed.pyx":985
  *         self._handle.write(index, mv_double(value))
  * 
  *     def copy(self):             # <<<<<<<<<<<<<<
@@ -17298,7 +17298,7 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_8copy(struct __pyx_obj_3md
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":979
+/* "mds/managed.pyx":997
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -17332,7 +17332,7 @@ static PyObject *__pyx_pw_3mds_7managed_11DoubleArray_11create(CYTHON_UNUSED PyO
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 979, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create") < 0)) __PYX_ERR(0, 997, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -17343,7 +17343,7 @@ static PyObject *__pyx_pw_3mds_7managed_11DoubleArray_11create(CYTHON_UNUSED PyO
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 979, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 997, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.DoubleArray.create", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -17366,7 +17366,7 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_10create(PyObject *__pyx_v
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("create", 0);
 
-  /* "mds/managed.pyx":980
+  /* "mds/managed.pyx":998
  *     @staticmethod
  *     def create(length):
  *         return MDSArrayBase.create("double", length)             # <<<<<<<<<<<<<<
@@ -17374,7 +17374,7 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_10create(PyObject *__pyx_v
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 980, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase), __pyx_n_s_create); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 998, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -17391,7 +17391,7 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_10create(PyObject *__pyx_v
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_double, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 980, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 998, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -17399,13 +17399,13 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_10create(PyObject *__pyx_v
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_n_u_double, __pyx_v_length};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 980, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 998, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 980, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 998, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -17416,7 +17416,7 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_10create(PyObject *__pyx_v
     __Pyx_INCREF(__pyx_v_length);
     __Pyx_GIVEREF(__pyx_v_length);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_length);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 980, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 998, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
@@ -17425,7 +17425,7 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_10create(PyObject *__pyx_v
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":979
+  /* "mds/managed.pyx":997
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
@@ -17447,7 +17447,7 @@ static PyObject *__pyx_pf_3mds_7managed_11DoubleArray_10create(PyObject *__pyx_v
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":983
+/* "mds/managed.pyx":1001
  * 
  * 
  * cdef DoubleArray_Init(h_marray_double_t handle):             # <<<<<<<<<<<<<<
@@ -17462,19 +17462,19 @@ static PyObject *__pyx_f_3mds_7managed_DoubleArray_Init(mds::python::types::h_ma
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("DoubleArray_Init", 0);
 
-  /* "mds/managed.pyx":984
+  /* "mds/managed.pyx":1002
  * 
  * cdef DoubleArray_Init(h_marray_double_t handle):
  *     result = DoubleArray()             # <<<<<<<<<<<<<<
  *     result._handle = handle
  *     return result
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_DoubleArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 984, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_DoubleArray), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1002, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = ((struct __pyx_obj_3mds_7managed_DoubleArray *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":985
+  /* "mds/managed.pyx":1003
  * cdef DoubleArray_Init(h_marray_double_t handle):
  *     result = DoubleArray()
  *     result._handle = handle             # <<<<<<<<<<<<<<
@@ -17483,7 +17483,7 @@ static PyObject *__pyx_f_3mds_7managed_DoubleArray_Init(mds::python::types::h_ma
  */
   __pyx_v_result->_handle = __pyx_v_handle;
 
-  /* "mds/managed.pyx":986
+  /* "mds/managed.pyx":1004
  *     result = DoubleArray()
  *     result._handle = handle
  *     return result             # <<<<<<<<<<<<<<
@@ -17495,7 +17495,7 @@ static PyObject *__pyx_f_3mds_7managed_DoubleArray_Init(mds::python::types::h_ma
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":983
+  /* "mds/managed.pyx":1001
  * 
  * 
  * cdef DoubleArray_Init(h_marray_double_t handle):             # <<<<<<<<<<<<<<
@@ -17515,7 +17515,7 @@ static PyObject *__pyx_f_3mds_7managed_DoubleArray_Init(mds::python::types::h_ma
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1009
+/* "mds/managed.pyx":1027
  *     cdef int __iter_idx
  * 
  *     def __cinit__(self, value=None):             # <<<<<<<<<<<<<<
@@ -17551,7 +17551,7 @@ static int __pyx_pw_3mds_7managed_6String_1__cinit__(PyObject *__pyx_v_self, PyO
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 1009, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 1027, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -17564,7 +17564,7 @@ static int __pyx_pw_3mds_7managed_6String_1__cinit__(PyObject *__pyx_v_self, PyO
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1009, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1027, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.managed.String.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -17583,7 +17583,7 @@ static int __pyx_pf_3mds_7managed_6String___cinit__(struct __pyx_obj_3mds_7manag
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/managed.pyx":1010
+  /* "mds/managed.pyx":1028
  * 
  *     def __cinit__(self, value=None):
  *         cdef interned_string_handle handle = convert_py_to_ish(value)             # <<<<<<<<<<<<<<
@@ -17592,7 +17592,7 @@ static int __pyx_pf_3mds_7managed_6String___cinit__(struct __pyx_obj_3mds_7manag
  */
   __pyx_v_handle = __pyx_f_3mds_4core_11api_strings_convert_py_to_ish(__pyx_v_value);
 
-  /* "mds/managed.pyx":1011
+  /* "mds/managed.pyx":1029
  *     def __cinit__(self, value=None):
  *         cdef interned_string_handle handle = convert_py_to_ish(value)
  *         self._handle = managed_string_handle(handle)             # <<<<<<<<<<<<<<
@@ -17601,7 +17601,7 @@ static int __pyx_pf_3mds_7managed_6String___cinit__(struct __pyx_obj_3mds_7manag
  */
   __pyx_v_self->_handle = mds::api::managed_string_handle(__pyx_v_handle);
 
-  /* "mds/managed.pyx":1012
+  /* "mds/managed.pyx":1030
  *         cdef interned_string_handle handle = convert_py_to_ish(value)
  *         self._handle = managed_string_handle(handle)
  *         self.__iter_idx = 0             # <<<<<<<<<<<<<<
@@ -17610,7 +17610,7 @@ static int __pyx_pf_3mds_7managed_6String___cinit__(struct __pyx_obj_3mds_7manag
  */
   __pyx_v_self->__pyx___iter_idx = 0;
 
-  /* "mds/managed.pyx":1009
+  /* "mds/managed.pyx":1027
  *     cdef int __iter_idx
  * 
  *     def __cinit__(self, value=None):             # <<<<<<<<<<<<<<
@@ -17624,7 +17624,7 @@ static int __pyx_pf_3mds_7managed_6String___cinit__(struct __pyx_obj_3mds_7manag
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1014
+/* "mds/managed.pyx":1032
  *         self.__iter_idx = 0
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -17650,7 +17650,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_6String_2__len__(struct __pyx_obj_3mds_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
 
-  /* "mds/managed.pyx":1015
+  /* "mds/managed.pyx":1033
  * 
  *     def __len__(self):
  *         return self._handle.length()             # <<<<<<<<<<<<<<
@@ -17660,7 +17660,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_6String_2__len__(struct __pyx_obj_3mds_
   __pyx_r = __pyx_v_self->_handle.length();
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1014
+  /* "mds/managed.pyx":1032
  *         self.__iter_idx = 0
  * 
  *     def __len__(self):             # <<<<<<<<<<<<<<
@@ -17674,7 +17674,7 @@ static Py_ssize_t __pyx_pf_3mds_7managed_6String_2__len__(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1017
+/* "mds/managed.pyx":1035
  *         return self._handle.length()
  * 
  *     def __hash__(self):             # <<<<<<<<<<<<<<
@@ -17700,7 +17700,7 @@ static Py_hash_t __pyx_pf_3mds_7managed_6String_4__hash__(struct __pyx_obj_3mds_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__hash__", 0);
 
-  /* "mds/managed.pyx":1018
+  /* "mds/managed.pyx":1036
  * 
  *     def __hash__(self):
  *         return self._handle.hash1()             # <<<<<<<<<<<<<<
@@ -17710,7 +17710,7 @@ static Py_hash_t __pyx_pf_3mds_7managed_6String_4__hash__(struct __pyx_obj_3mds_
   __pyx_r = __pyx_v_self->_handle.hash1();
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1017
+  /* "mds/managed.pyx":1035
  *         return self._handle.length()
  * 
  *     def __hash__(self):             # <<<<<<<<<<<<<<
@@ -17725,7 +17725,7 @@ static Py_hash_t __pyx_pf_3mds_7managed_6String_4__hash__(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1020
+/* "mds/managed.pyx":1038
  *         return self._handle.hash1()
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -17751,7 +17751,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_6__iter__(struct __pyx_obj_3mds_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__iter__", 0);
 
-  /* "mds/managed.pyx":1021
+  /* "mds/managed.pyx":1039
  * 
  *     def __iter__(self):
  *         self.__iter_idx = 0             # <<<<<<<<<<<<<<
@@ -17760,7 +17760,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_6__iter__(struct __pyx_obj_3mds_
  */
   __pyx_v_self->__pyx___iter_idx = 0;
 
-  /* "mds/managed.pyx":1022
+  /* "mds/managed.pyx":1040
  *     def __iter__(self):
  *         self.__iter_idx = 0
  *         return self             # <<<<<<<<<<<<<<
@@ -17772,7 +17772,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_6__iter__(struct __pyx_obj_3mds_
   __pyx_r = ((PyObject *)__pyx_v_self);
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1020
+  /* "mds/managed.pyx":1038
  *         return self._handle.hash1()
  * 
  *     def __iter__(self):             # <<<<<<<<<<<<<<
@@ -17787,7 +17787,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_6__iter__(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1024
+/* "mds/managed.pyx":1042
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
@@ -17817,30 +17817,30 @@ static PyObject *__pyx_pf_3mds_7managed_6String_8__next__(struct __pyx_obj_3mds_
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__next__", 0);
 
-  /* "mds/managed.pyx":1025
+  /* "mds/managed.pyx":1043
  * 
  *     def __next__(self):
  *         if self.__iter_idx < len(self):             # <<<<<<<<<<<<<<
  *             retval = self[self.__iter_idx]
  *             self.__iter_idx += 1
  */
-  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 1025, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 1043, __pyx_L1_error)
   __pyx_t_2 = ((__pyx_v_self->__pyx___iter_idx < __pyx_t_1) != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":1026
+    /* "mds/managed.pyx":1044
  *     def __next__(self):
  *         if self.__iter_idx < len(self):
  *             retval = self[self.__iter_idx]             # <<<<<<<<<<<<<<
  *             self.__iter_idx += 1
  *             return retval
  */
-    __pyx_t_3 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_self->__pyx___iter_idx, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1026, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetItemInt(((PyObject *)__pyx_v_self), __pyx_v_self->__pyx___iter_idx, int, 1, __Pyx_PyInt_From_int, 0, 1, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1044, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_v_retval = __pyx_t_3;
     __pyx_t_3 = 0;
 
-    /* "mds/managed.pyx":1027
+    /* "mds/managed.pyx":1045
  *         if self.__iter_idx < len(self):
  *             retval = self[self.__iter_idx]
  *             self.__iter_idx += 1             # <<<<<<<<<<<<<<
@@ -17849,7 +17849,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_8__next__(struct __pyx_obj_3mds_
  */
     __pyx_v_self->__pyx___iter_idx = (__pyx_v_self->__pyx___iter_idx + 1);
 
-    /* "mds/managed.pyx":1028
+    /* "mds/managed.pyx":1046
  *             retval = self[self.__iter_idx]
  *             self.__iter_idx += 1
  *             return retval             # <<<<<<<<<<<<<<
@@ -17861,7 +17861,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_8__next__(struct __pyx_obj_3mds_
     __pyx_r = __pyx_v_retval;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":1025
+    /* "mds/managed.pyx":1043
  * 
  *     def __next__(self):
  *         if self.__iter_idx < len(self):             # <<<<<<<<<<<<<<
@@ -17870,7 +17870,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_8__next__(struct __pyx_obj_3mds_
  */
   }
 
-  /* "mds/managed.pyx":1030
+  /* "mds/managed.pyx":1048
  *             return retval
  *         else:
  *             raise StopIteration             # <<<<<<<<<<<<<<
@@ -17879,10 +17879,10 @@ static PyObject *__pyx_pf_3mds_7managed_6String_8__next__(struct __pyx_obj_3mds_
  */
   /*else*/ {
     __Pyx_Raise(__pyx_builtin_StopIteration, 0, 0, 0);
-    __PYX_ERR(0, 1030, __pyx_L1_error)
+    __PYX_ERR(0, 1048, __pyx_L1_error)
   }
 
-  /* "mds/managed.pyx":1024
+  /* "mds/managed.pyx":1042
  *         return self
  * 
  *     def __next__(self):             # <<<<<<<<<<<<<<
@@ -17902,7 +17902,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_8__next__(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1032
+/* "mds/managed.pyx":1050
  *             raise StopIteration
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
@@ -17929,7 +17929,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_10__str__(struct __pyx_obj_3mds_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__str__", 0);
 
-  /* "mds/managed.pyx":1033
+  /* "mds/managed.pyx":1051
  * 
  *     def __str__(self):
  *         return <str> self._handle.utf8().decode("utf-8")             # <<<<<<<<<<<<<<
@@ -17937,14 +17937,14 @@ static PyObject *__pyx_pf_3mds_7managed_6String_10__str__(struct __pyx_obj_3mds_
  *     def __repr__(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_decode_cpp_string(__pyx_v_self->_handle.utf8(), 0, PY_SSIZE_T_MAX, NULL, NULL, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1033, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_decode_cpp_string(__pyx_v_self->_handle.utf8(), 0, PY_SSIZE_T_MAX, NULL, NULL, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1051, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject*)__pyx_t_1));
   __pyx_r = __pyx_t_1;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1032
+  /* "mds/managed.pyx":1050
  *             raise StopIteration
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
@@ -17963,7 +17963,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_10__str__(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1035
+/* "mds/managed.pyx":1053
  *         return <str> self._handle.utf8().decode("utf-8")
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -17994,7 +17994,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_12__repr__(struct __pyx_obj_3mds
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "mds/managed.pyx":1036
+  /* "mds/managed.pyx":1054
  * 
  *     def __repr__(self):
  *         return "'{}'".format(str(self))             # <<<<<<<<<<<<<<
@@ -18002,14 +18002,14 @@ static PyObject *__pyx_pf_3mds_7managed_6String_12__repr__(struct __pyx_obj_3mds
  *     def __getitem__(self, item):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u__19, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1036, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u__19, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1054, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1036, __pyx_L1_error)
+  __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1054, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_3, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1036, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_3, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1054, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = NULL;
@@ -18023,14 +18023,14 @@ static PyObject *__pyx_pf_3mds_7managed_6String_12__repr__(struct __pyx_obj_3mds
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1036, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1054, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_t_4};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1036, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1054, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -18039,20 +18039,20 @@ static PyObject *__pyx_pf_3mds_7managed_6String_12__repr__(struct __pyx_obj_3mds
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, __pyx_t_4};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1036, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1054, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1036, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1054, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_GIVEREF(__pyx_t_4);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_4);
       __pyx_t_4 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1036, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1054, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
@@ -18062,7 +18062,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_12__repr__(struct __pyx_obj_3mds
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1035
+  /* "mds/managed.pyx":1053
  *         return <str> self._handle.utf8().decode("utf-8")
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
@@ -18085,7 +18085,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_12__repr__(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1038
+/* "mds/managed.pyx":1056
  *         return "'{}'".format(str(self))
  * 
  *     def __getitem__(self, item):             # <<<<<<<<<<<<<<
@@ -18125,7 +18125,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
   PyObject *__pyx_t_10 = NULL;
   __Pyx_RefNannySetupContext("__getitem__", 0);
 
-  /* "mds/managed.pyx":1044
+  /* "mds/managed.pyx":1062
  *             char_type c
  * 
  *         if isinstance(item, int):             # <<<<<<<<<<<<<<
@@ -18136,37 +18136,37 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":1045
+    /* "mds/managed.pyx":1063
  * 
  *         if isinstance(item, int):
  *             c = self._handle.at(item)             # <<<<<<<<<<<<<<
  *             u = chr(c)
  *             return u
  */
-    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_item); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 1045, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_v_item); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 1063, __pyx_L1_error)
     __pyx_v_c = __pyx_v_self->_handle.at(__pyx_t_3);
 
-    /* "mds/managed.pyx":1046
+    /* "mds/managed.pyx":1064
  *         if isinstance(item, int):
  *             c = self._handle.at(item)
  *             u = chr(c)             # <<<<<<<<<<<<<<
  *             return u
  *         elif isinstance(item, slice):
  */
-    __pyx_t_4 = __Pyx_PyInt_From_uint_least16_t(__pyx_v_c); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1046, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_From_uint_least16_t(__pyx_v_c); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1064, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1046, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1064, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_4);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
     __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_chr, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1046, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_chr, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1064, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_v_u = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "mds/managed.pyx":1047
+    /* "mds/managed.pyx":1065
  *             c = self._handle.at(item)
  *             u = chr(c)
  *             return u             # <<<<<<<<<<<<<<
@@ -18178,7 +18178,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
     __pyx_r = __pyx_v_u;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":1044
+    /* "mds/managed.pyx":1062
  *             char_type c
  * 
  *         if isinstance(item, int):             # <<<<<<<<<<<<<<
@@ -18187,7 +18187,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
  */
   }
 
-  /* "mds/managed.pyx":1048
+  /* "mds/managed.pyx":1066
  *             u = chr(c)
  *             return u
  *         elif isinstance(item, slice):             # <<<<<<<<<<<<<<
@@ -18198,62 +18198,62 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
   __pyx_t_1 = (__pyx_t_2 != 0);
   if (__pyx_t_1) {
 
-    /* "mds/managed.pyx":1050
+    /* "mds/managed.pyx":1068
  *         elif isinstance(item, slice):
  *             # TODO: Check this
  *             s.reserve((item.stop - item.start) // item.step)             # <<<<<<<<<<<<<<
  * 
  *             for i in range(start=item.start, stop=item.stop, step=item.step):
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_stop); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1050, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_stop); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1068, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_start); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1050, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_start); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1068, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = PyNumber_Subtract(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1050, __pyx_L1_error)
+    __pyx_t_6 = PyNumber_Subtract(__pyx_t_4, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1068, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_step); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1050, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_step); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1068, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_4 = PyNumber_FloorDivide(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1050, __pyx_L1_error)
+    __pyx_t_4 = PyNumber_FloorDivide(__pyx_t_6, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1068, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_t_4); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 1050, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyInt_As_size_t(__pyx_t_4); if (unlikely((__pyx_t_3 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 1068, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_s.reserve(__pyx_t_3);
 
-    /* "mds/managed.pyx":1052
+    /* "mds/managed.pyx":1070
  *             s.reserve((item.stop - item.start) // item.step)
  * 
  *             for i in range(start=item.start, stop=item.stop, step=item.step):             # <<<<<<<<<<<<<<
  *                 s.push_back(self._handle.at(i))
  * 
  */
-    __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1052, __pyx_L1_error)
+    __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1070, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_start); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1052, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_start); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1070, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_start, __pyx_t_5) < 0) __PYX_ERR(0, 1052, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_start, __pyx_t_5) < 0) __PYX_ERR(0, 1070, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_stop); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1052, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_stop); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1070, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_stop, __pyx_t_5) < 0) __PYX_ERR(0, 1052, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_stop, __pyx_t_5) < 0) __PYX_ERR(0, 1070, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_step); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1052, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_item, __pyx_n_s_step); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1070, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_step, __pyx_t_5) < 0) __PYX_ERR(0, 1052, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_4, __pyx_n_s_step, __pyx_t_5) < 0) __PYX_ERR(0, 1070, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1052, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_range, __pyx_empty_tuple, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1070, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (likely(PyList_CheckExact(__pyx_t_5)) || PyTuple_CheckExact(__pyx_t_5)) {
       __pyx_t_4 = __pyx_t_5; __Pyx_INCREF(__pyx_t_4); __pyx_t_7 = 0;
       __pyx_t_8 = NULL;
     } else {
-      __pyx_t_7 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1052, __pyx_L1_error)
+      __pyx_t_7 = -1; __pyx_t_4 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1070, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
-      __pyx_t_8 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1052, __pyx_L1_error)
+      __pyx_t_8 = Py_TYPE(__pyx_t_4)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1070, __pyx_L1_error)
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     for (;;) {
@@ -18261,17 +18261,17 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
         if (likely(PyList_CheckExact(__pyx_t_4))) {
           if (__pyx_t_7 >= PyList_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 1052, __pyx_L1_error)
+          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 1070, __pyx_L1_error)
           #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1052, __pyx_L1_error)
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1070, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
           #endif
         } else {
           if (__pyx_t_7 >= PyTuple_GET_SIZE(__pyx_t_4)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 1052, __pyx_L1_error)
+          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_4, __pyx_t_7); __Pyx_INCREF(__pyx_t_5); __pyx_t_7++; if (unlikely(0 < 0)) __PYX_ERR(0, 1070, __pyx_L1_error)
           #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1052, __pyx_L1_error)
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_4, __pyx_t_7); __pyx_t_7++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1070, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
           #endif
         }
@@ -18281,17 +18281,17 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 1052, __pyx_L1_error)
+            else __PYX_ERR(0, 1070, __pyx_L1_error)
           }
           break;
         }
         __Pyx_GOTREF(__pyx_t_5);
       }
-      __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_t_5); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1052, __pyx_L1_error)
+      __pyx_t_9 = __Pyx_PyInt_As_int(__pyx_t_5); if (unlikely((__pyx_t_9 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 1070, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_v_i = __pyx_t_9;
 
-      /* "mds/managed.pyx":1053
+      /* "mds/managed.pyx":1071
  * 
  *             for i in range(start=item.start, stop=item.stop, step=item.step):
  *                 s.push_back(self._handle.at(i))             # <<<<<<<<<<<<<<
@@ -18300,7 +18300,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
  */
       __pyx_v_s.push_back(__pyx_v_self->_handle.at(__pyx_v_i));
 
-      /* "mds/managed.pyx":1052
+      /* "mds/managed.pyx":1070
  *             s.reserve((item.stop - item.start) // item.step)
  * 
  *             for i in range(start=item.start, stop=item.stop, step=item.step):             # <<<<<<<<<<<<<<
@@ -18310,7 +18310,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
     }
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "mds/managed.pyx":1055
+    /* "mds/managed.pyx":1073
  *                 s.push_back(self._handle.at(i))
  * 
  *             return String(s)             # <<<<<<<<<<<<<<
@@ -18318,21 +18318,21 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
  *         raise TypeError(
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_s); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1055, __pyx_L1_error)
+    __pyx_t_4 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_s); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1073, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1055, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1073, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_4);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
     __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1055, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1073, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":1048
+    /* "mds/managed.pyx":1066
  *             u = chr(c)
  *             return u
  *         elif isinstance(item, slice):             # <<<<<<<<<<<<<<
@@ -18341,17 +18341,17 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
  */
   }
 
-  /* "mds/managed.pyx":1058
+  /* "mds/managed.pyx":1076
  * 
  *         raise TypeError(
  *             "list indices must be integers or slices, not {}".format(             # <<<<<<<<<<<<<<
  *                 type(item)
  *             )
  */
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_list_indices_must_be_integers_or, __pyx_n_s_format); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1058, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_list_indices_must_be_integers_or, __pyx_n_s_format); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1076, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "mds/managed.pyx":1059
+  /* "mds/managed.pyx":1077
  *         raise TypeError(
  *             "list indices must be integers or slices, not {}".format(
  *                 type(item)             # <<<<<<<<<<<<<<
@@ -18369,13 +18369,13 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
     }
   }
   if (!__pyx_t_6) {
-    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_5, ((PyObject *)Py_TYPE(__pyx_v_item))); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1058, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_5, ((PyObject *)Py_TYPE(__pyx_v_item))); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1076, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_5)) {
       PyObject *__pyx_temp[2] = {__pyx_t_6, ((PyObject *)Py_TYPE(__pyx_v_item))};
-      __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1058, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1076, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_4);
     } else
@@ -18383,45 +18383,45 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
       PyObject *__pyx_temp[2] = {__pyx_t_6, ((PyObject *)Py_TYPE(__pyx_v_item))};
-      __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1058, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1076, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_4);
     } else
     #endif
     {
-      __pyx_t_10 = PyTuple_New(1+1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 1058, __pyx_L1_error)
+      __pyx_t_10 = PyTuple_New(1+1); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 1076, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_10, 0, __pyx_t_6); __pyx_t_6 = NULL;
       __Pyx_INCREF(((PyObject *)Py_TYPE(__pyx_v_item)));
       __Pyx_GIVEREF(((PyObject *)Py_TYPE(__pyx_v_item)));
       PyTuple_SET_ITEM(__pyx_t_10, 0+1, ((PyObject *)Py_TYPE(__pyx_v_item)));
-      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_10, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1058, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_10, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1076, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     }
   }
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "mds/managed.pyx":1057
+  /* "mds/managed.pyx":1075
  *             return String(s)
  * 
  *         raise TypeError(             # <<<<<<<<<<<<<<
  *             "list indices must be integers or slices, not {}".format(
  *                 type(item)
  */
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1057, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1075, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1057, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1075, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_Raise(__pyx_t_4, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __PYX_ERR(0, 1057, __pyx_L1_error)
+  __PYX_ERR(0, 1075, __pyx_L1_error)
 
-  /* "mds/managed.pyx":1038
+  /* "mds/managed.pyx":1056
  *         return "'{}'".format(str(self))
  * 
  *     def __getitem__(self, item):             # <<<<<<<<<<<<<<
@@ -18444,7 +18444,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_14__getitem__(struct __pyx_obj_3
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1063
+/* "mds/managed.pyx":1081
  *         )
  * 
  *     def __add__(self, other):             # <<<<<<<<<<<<<<
@@ -18489,7 +18489,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_16__add__(PyObject *__pyx_v_self
   long __pyx_t_13;
   __Pyx_RefNannySetupContext("__add__", 0);
 
-  /* "mds/managed.pyx":1072
+  /* "mds/managed.pyx":1090
  *             str c
  * 
  *         if isinstance(other, String):             # <<<<<<<<<<<<<<
@@ -18500,29 +18500,29 @@ static PyObject *__pyx_pf_3mds_7managed_6String_16__add__(PyObject *__pyx_v_self
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":1073
+    /* "mds/managed.pyx":1091
  * 
  *         if isinstance(other, String):
  *             s.reserve(<size_t> (len(self) + len(other)))             # <<<<<<<<<<<<<<
  * 
  *             # Chain the iterators to avoid any string copying
  */
-    __pyx_t_3 = PyObject_Length(__pyx_v_self); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 1073, __pyx_L1_error)
-    __pyx_t_4 = PyObject_Length(__pyx_v_other); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(0, 1073, __pyx_L1_error)
+    __pyx_t_3 = PyObject_Length(__pyx_v_self); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 1091, __pyx_L1_error)
+    __pyx_t_4 = PyObject_Length(__pyx_v_other); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(0, 1091, __pyx_L1_error)
     __pyx_v_s.reserve(((size_t)(__pyx_t_3 + __pyx_t_4)));
 
-    /* "mds/managed.pyx":1076
+    /* "mds/managed.pyx":1094
  * 
  *             # Chain the iterators to avoid any string copying
  *             for c in chain(iter(self), iter(other)):             # <<<<<<<<<<<<<<
  *                 s.push_back(ord(c))  # Need as an int for char
  * 
  */
-    __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_chain); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1076, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_GetModuleGlobalName(__pyx_n_s_chain); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1094, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_7 = PyObject_GetIter(__pyx_v_self); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1076, __pyx_L1_error)
+    __pyx_t_7 = PyObject_GetIter(__pyx_v_self); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1094, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_7);
-    __pyx_t_8 = PyObject_GetIter(__pyx_v_other); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1076, __pyx_L1_error)
+    __pyx_t_8 = PyObject_GetIter(__pyx_v_other); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1094, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __pyx_t_9 = NULL;
     __pyx_t_10 = 0;
@@ -18539,7 +18539,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_16__add__(PyObject *__pyx_v_self
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_6)) {
       PyObject *__pyx_temp[3] = {__pyx_t_9, __pyx_t_7, __pyx_t_8};
-      __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_10, 2+__pyx_t_10); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1076, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_10, 2+__pyx_t_10); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1094, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -18549,7 +18549,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_16__add__(PyObject *__pyx_v_self
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_6)) {
       PyObject *__pyx_temp[3] = {__pyx_t_9, __pyx_t_7, __pyx_t_8};
-      __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_10, 2+__pyx_t_10); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1076, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_6, __pyx_temp+1-__pyx_t_10, 2+__pyx_t_10); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1094, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
@@ -18557,7 +18557,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_16__add__(PyObject *__pyx_v_self
     } else
     #endif
     {
-      __pyx_t_11 = PyTuple_New(2+__pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 1076, __pyx_L1_error)
+      __pyx_t_11 = PyTuple_New(2+__pyx_t_10); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 1094, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_11);
       if (__pyx_t_9) {
         __Pyx_GIVEREF(__pyx_t_9); PyTuple_SET_ITEM(__pyx_t_11, 0, __pyx_t_9); __pyx_t_9 = NULL;
@@ -18568,7 +18568,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_16__add__(PyObject *__pyx_v_self
       PyTuple_SET_ITEM(__pyx_t_11, 1+__pyx_t_10, __pyx_t_8);
       __pyx_t_7 = 0;
       __pyx_t_8 = 0;
-      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_11, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1076, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_11, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1094, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     }
@@ -18577,9 +18577,9 @@ static PyObject *__pyx_pf_3mds_7managed_6String_16__add__(PyObject *__pyx_v_self
       __pyx_t_6 = __pyx_t_5; __Pyx_INCREF(__pyx_t_6); __pyx_t_4 = 0;
       __pyx_t_12 = NULL;
     } else {
-      __pyx_t_4 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1076, __pyx_L1_error)
+      __pyx_t_4 = -1; __pyx_t_6 = PyObject_GetIter(__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1094, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_12 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 1076, __pyx_L1_error)
+      __pyx_t_12 = Py_TYPE(__pyx_t_6)->tp_iternext; if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 1094, __pyx_L1_error)
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     for (;;) {
@@ -18587,17 +18587,17 @@ static PyObject *__pyx_pf_3mds_7managed_6String_16__add__(PyObject *__pyx_v_self
         if (likely(PyList_CheckExact(__pyx_t_6))) {
           if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_4); __Pyx_INCREF(__pyx_t_5); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1076, __pyx_L1_error)
+          __pyx_t_5 = PyList_GET_ITEM(__pyx_t_6, __pyx_t_4); __Pyx_INCREF(__pyx_t_5); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1094, __pyx_L1_error)
           #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1076, __pyx_L1_error)
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1094, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
           #endif
         } else {
           if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_6)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_4); __Pyx_INCREF(__pyx_t_5); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1076, __pyx_L1_error)
+          __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_6, __pyx_t_4); __Pyx_INCREF(__pyx_t_5); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1094, __pyx_L1_error)
           #else
-          __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1076, __pyx_L1_error)
+          __pyx_t_5 = PySequence_ITEM(__pyx_t_6, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1094, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_5);
           #endif
         }
@@ -18607,27 +18607,27 @@ static PyObject *__pyx_pf_3mds_7managed_6String_16__add__(PyObject *__pyx_v_self
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 1076, __pyx_L1_error)
+            else __PYX_ERR(0, 1094, __pyx_L1_error)
           }
           break;
         }
         __Pyx_GOTREF(__pyx_t_5);
       }
-      if (!(likely(PyUnicode_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_5)->tp_name), 0))) __PYX_ERR(0, 1076, __pyx_L1_error)
+      if (!(likely(PyUnicode_CheckExact(__pyx_t_5))||((__pyx_t_5) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_5)->tp_name), 0))) __PYX_ERR(0, 1094, __pyx_L1_error)
       __Pyx_XDECREF_SET(__pyx_v_c, ((PyObject*)__pyx_t_5));
       __pyx_t_5 = 0;
 
-      /* "mds/managed.pyx":1077
+      /* "mds/managed.pyx":1095
  *             # Chain the iterators to avoid any string copying
  *             for c in chain(iter(self), iter(other)):
  *                 s.push_back(ord(c))  # Need as an int for char             # <<<<<<<<<<<<<<
  * 
  *             return String(s)
  */
-      __pyx_t_13 = __Pyx_PyObject_Ord(__pyx_v_c); if (unlikely(__pyx_t_13 == (long)(Py_UCS4)-1)) __PYX_ERR(0, 1077, __pyx_L1_error)
+      __pyx_t_13 = __Pyx_PyObject_Ord(__pyx_v_c); if (unlikely(__pyx_t_13 == (long)(Py_UCS4)-1)) __PYX_ERR(0, 1095, __pyx_L1_error)
       __pyx_v_s.push_back(__pyx_t_13);
 
-      /* "mds/managed.pyx":1076
+      /* "mds/managed.pyx":1094
  * 
  *             # Chain the iterators to avoid any string copying
  *             for c in chain(iter(self), iter(other)):             # <<<<<<<<<<<<<<
@@ -18637,7 +18637,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_16__add__(PyObject *__pyx_v_self
     }
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "mds/managed.pyx":1079
+    /* "mds/managed.pyx":1097
  *                 s.push_back(ord(c))  # Need as an int for char
  * 
  *             return String(s)             # <<<<<<<<<<<<<<
@@ -18645,21 +18645,21 @@ static PyObject *__pyx_pf_3mds_7managed_6String_16__add__(PyObject *__pyx_v_self
  *         raise TypeError("must be String")
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_6 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_s); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1079, __pyx_L1_error)
+    __pyx_t_6 = __pyx_convert_PyBytes_string_to_py_std__in_string(__pyx_v_s); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1097, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1079, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1097, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_6);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
     __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1079, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1097, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_r = __pyx_t_6;
     __pyx_t_6 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":1072
+    /* "mds/managed.pyx":1090
  *             str c
  * 
  *         if isinstance(other, String):             # <<<<<<<<<<<<<<
@@ -18668,20 +18668,20 @@ static PyObject *__pyx_pf_3mds_7managed_6String_16__add__(PyObject *__pyx_v_self
  */
   }
 
-  /* "mds/managed.pyx":1081
+  /* "mds/managed.pyx":1099
  *             return String(s)
  * 
  *         raise TypeError("must be String")             # <<<<<<<<<<<<<<
  * 
  *     def __mul__(self, other):
  */
-  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1081, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1099, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_Raise(__pyx_t_6, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-  __PYX_ERR(0, 1081, __pyx_L1_error)
+  __PYX_ERR(0, 1099, __pyx_L1_error)
 
-  /* "mds/managed.pyx":1063
+  /* "mds/managed.pyx":1081
  *         )
  * 
  *     def __add__(self, other):             # <<<<<<<<<<<<<<
@@ -18706,7 +18706,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_16__add__(PyObject *__pyx_v_self
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1083
+/* "mds/managed.pyx":1101
  *         raise TypeError("must be String")
  * 
  *     def __mul__(self, other):             # <<<<<<<<<<<<<<
@@ -18750,17 +18750,17 @@ static PyObject *__pyx_pf_3mds_7managed_6String_18__mul__(PyObject *__pyx_v_self
   long __pyx_t_10;
   __Pyx_RefNannySetupContext("__mul__", 0);
 
-  /* "mds/managed.pyx":1090
+  /* "mds/managed.pyx":1108
  *             string s
  *             str c
  *             int it, l = len(self)             # <<<<<<<<<<<<<<
  * 
  *         if isinstance(other, int):
  */
-  __pyx_t_1 = PyObject_Length(__pyx_v_self); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 1090, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Length(__pyx_v_self); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 1108, __pyx_L1_error)
   __pyx_v_l = __pyx_t_1;
 
-  /* "mds/managed.pyx":1092
+  /* "mds/managed.pyx":1110
  *             int it, l = len(self)
  * 
  *         if isinstance(other, int):             # <<<<<<<<<<<<<<
@@ -18771,34 +18771,34 @@ static PyObject *__pyx_pf_3mds_7managed_6String_18__mul__(PyObject *__pyx_v_self
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
 
-    /* "mds/managed.pyx":1093
+    /* "mds/managed.pyx":1111
  * 
  *         if isinstance(other, int):
  *             s.reserve(l * other)             # <<<<<<<<<<<<<<
  * 
  *             for it in range(other):
  */
-    __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_l); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1093, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_l); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1111, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = PyNumber_Multiply(__pyx_t_4, __pyx_v_other); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1093, __pyx_L1_error)
+    __pyx_t_5 = PyNumber_Multiply(__pyx_t_4, __pyx_v_other); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1111, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_6 = __Pyx_PyInt_As_size_t(__pyx_t_5); if (unlikely((__pyx_t_6 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 1093, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyInt_As_size_t(__pyx_t_5); if (unlikely((__pyx_t_6 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 1111, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_v_s.reserve(__pyx_t_6);
 
-    /* "mds/managed.pyx":1095
+    /* "mds/managed.pyx":1113
  *             s.reserve(l * other)
  * 
  *             for it in range(other):             # <<<<<<<<<<<<<<
  *                 for c in self:
  *                     s.push_back(ord(c))
  */
-    __pyx_t_7 = __Pyx_PyInt_As_long(__pyx_v_other); if (unlikely((__pyx_t_7 == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 1095, __pyx_L1_error)
+    __pyx_t_7 = __Pyx_PyInt_As_long(__pyx_v_other); if (unlikely((__pyx_t_7 == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 1113, __pyx_L1_error)
     for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_it = __pyx_t_8;
 
-      /* "mds/managed.pyx":1096
+      /* "mds/managed.pyx":1114
  * 
  *             for it in range(other):
  *                 for c in self:             # <<<<<<<<<<<<<<
@@ -18809,26 +18809,26 @@ static PyObject *__pyx_pf_3mds_7managed_6String_18__mul__(PyObject *__pyx_v_self
         __pyx_t_5 = __pyx_v_self; __Pyx_INCREF(__pyx_t_5); __pyx_t_1 = 0;
         __pyx_t_9 = NULL;
       } else {
-        __pyx_t_1 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_self); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1096, __pyx_L1_error)
+        __pyx_t_1 = -1; __pyx_t_5 = PyObject_GetIter(__pyx_v_self); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1114, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
-        __pyx_t_9 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 1096, __pyx_L1_error)
+        __pyx_t_9 = Py_TYPE(__pyx_t_5)->tp_iternext; if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 1114, __pyx_L1_error)
       }
       for (;;) {
         if (likely(!__pyx_t_9)) {
           if (likely(PyList_CheckExact(__pyx_t_5))) {
             if (__pyx_t_1 >= PyList_GET_SIZE(__pyx_t_5)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_4 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_1); __Pyx_INCREF(__pyx_t_4); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 1096, __pyx_L1_error)
+            __pyx_t_4 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_1); __Pyx_INCREF(__pyx_t_4); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 1114, __pyx_L1_error)
             #else
-            __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1096, __pyx_L1_error)
+            __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1114, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_4);
             #endif
           } else {
             if (__pyx_t_1 >= PyTuple_GET_SIZE(__pyx_t_5)) break;
             #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-            __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_1); __Pyx_INCREF(__pyx_t_4); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 1096, __pyx_L1_error)
+            __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_5, __pyx_t_1); __Pyx_INCREF(__pyx_t_4); __pyx_t_1++; if (unlikely(0 < 0)) __PYX_ERR(0, 1114, __pyx_L1_error)
             #else
-            __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1096, __pyx_L1_error)
+            __pyx_t_4 = PySequence_ITEM(__pyx_t_5, __pyx_t_1); __pyx_t_1++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1114, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_4);
             #endif
           }
@@ -18838,27 +18838,27 @@ static PyObject *__pyx_pf_3mds_7managed_6String_18__mul__(PyObject *__pyx_v_self
             PyObject* exc_type = PyErr_Occurred();
             if (exc_type) {
               if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-              else __PYX_ERR(0, 1096, __pyx_L1_error)
+              else __PYX_ERR(0, 1114, __pyx_L1_error)
             }
             break;
           }
           __Pyx_GOTREF(__pyx_t_4);
         }
-        if (!(likely(PyUnicode_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 1096, __pyx_L1_error)
+        if (!(likely(PyUnicode_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(0, 1114, __pyx_L1_error)
         __Pyx_XDECREF_SET(__pyx_v_c, ((PyObject*)__pyx_t_4));
         __pyx_t_4 = 0;
 
-        /* "mds/managed.pyx":1097
+        /* "mds/managed.pyx":1115
  *             for it in range(other):
  *                 for c in self:
  *                     s.push_back(ord(c))             # <<<<<<<<<<<<<<
  * 
  *             return String(<unicode> s.decode("utf-8"))
  */
-        __pyx_t_10 = __Pyx_PyObject_Ord(__pyx_v_c); if (unlikely(__pyx_t_10 == (long)(Py_UCS4)-1)) __PYX_ERR(0, 1097, __pyx_L1_error)
+        __pyx_t_10 = __Pyx_PyObject_Ord(__pyx_v_c); if (unlikely(__pyx_t_10 == (long)(Py_UCS4)-1)) __PYX_ERR(0, 1115, __pyx_L1_error)
         __pyx_v_s.push_back(__pyx_t_10);
 
-        /* "mds/managed.pyx":1096
+        /* "mds/managed.pyx":1114
  * 
  *             for it in range(other):
  *                 for c in self:             # <<<<<<<<<<<<<<
@@ -18869,7 +18869,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_18__mul__(PyObject *__pyx_v_self
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
 
-    /* "mds/managed.pyx":1099
+    /* "mds/managed.pyx":1117
  *                     s.push_back(ord(c))
  * 
  *             return String(<unicode> s.decode("utf-8"))             # <<<<<<<<<<<<<<
@@ -18877,22 +18877,22 @@ static PyObject *__pyx_pf_3mds_7managed_6String_18__mul__(PyObject *__pyx_v_self
  *         raise TypeError(
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_5 = __Pyx_decode_cpp_string(__pyx_v_s, 0, PY_SSIZE_T_MAX, NULL, NULL, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1099, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_decode_cpp_string(__pyx_v_s, 0, PY_SSIZE_T_MAX, NULL, NULL, PyUnicode_DecodeUTF8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1117, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1099, __pyx_L1_error)
+    __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1117, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_INCREF(((PyObject*)__pyx_t_5));
     __Pyx_GIVEREF(__pyx_t_5);
     PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_5);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1099, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1117, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":1092
+    /* "mds/managed.pyx":1110
  *             int it, l = len(self)
  * 
  *         if isinstance(other, int):             # <<<<<<<<<<<<<<
@@ -18901,20 +18901,20 @@ static PyObject *__pyx_pf_3mds_7managed_6String_18__mul__(PyObject *__pyx_v_self
  */
   }
 
-  /* "mds/managed.pyx":1101
+  /* "mds/managed.pyx":1119
  *             return String(<unicode> s.decode("utf-8"))
  * 
  *         raise TypeError(             # <<<<<<<<<<<<<<
  *             "can't multiply sequence by non-int of type 'String'"
  *         )
  */
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1101, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_Raise(__pyx_t_5, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  __PYX_ERR(0, 1101, __pyx_L1_error)
+  __PYX_ERR(0, 1119, __pyx_L1_error)
 
-  /* "mds/managed.pyx":1083
+  /* "mds/managed.pyx":1101
  *         raise TypeError("must be String")
  * 
  *     def __mul__(self, other):             # <<<<<<<<<<<<<<
@@ -18935,7 +18935,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_18__mul__(PyObject *__pyx_v_self
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1105
+/* "mds/managed.pyx":1123
  *         )
  * 
  *     def __rmul__(self, other):             # <<<<<<<<<<<<<<
@@ -18968,7 +18968,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_20__rmul__(CYTHON_UNUSED struct 
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1108
+/* "mds/managed.pyx":1126
  *         pass
  * 
  *     def __mod__(self, other):             # <<<<<<<<<<<<<<
@@ -19001,7 +19001,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_22__mod__(CYTHON_UNUSED PyObject
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1111
+/* "mds/managed.pyx":1129
  *         pass
  * 
  *     def __rmod__(self, other):             # <<<<<<<<<<<<<<
@@ -19034,7 +19034,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_24__rmod__(CYTHON_UNUSED struct 
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1114
+/* "mds/managed.pyx":1132
  *         pass
  * 
  *     def __richcmp__(a, b, op):             # <<<<<<<<<<<<<<
@@ -19049,7 +19049,7 @@ static PyObject *__pyx_pw_3mds_7managed_6String_27__richcmp__(PyObject *__pyx_v_
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__richcmp__ (wrapper)", 0);
-  __pyx_v_op = __Pyx_PyInt_From_int(__pyx_arg_op); if (unlikely(!__pyx_v_op)) __PYX_ERR(0, 1114, __pyx_L3_error)
+  __pyx_v_op = __Pyx_PyInt_From_int(__pyx_arg_op); if (unlikely(!__pyx_v_op)) __PYX_ERR(0, 1132, __pyx_L3_error)
   __Pyx_GOTREF(__pyx_v_op);
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -19074,20 +19074,20 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__richcmp__", 0);
 
-  /* "mds/managed.pyx":1115
+  /* "mds/managed.pyx":1133
  * 
  *     def __richcmp__(a, b, op):
  *         if op == 0:    # <             # <<<<<<<<<<<<<<
  *             return a._handle < b._handle
  *         elif op == 1:  # <=
  */
-  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_op, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1115, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_op, __pyx_int_0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 1115, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 1133, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":1116
+    /* "mds/managed.pyx":1134
  *     def __richcmp__(a, b, op):
  *         if op == 0:    # <
  *             return a._handle < b._handle             # <<<<<<<<<<<<<<
@@ -19095,18 +19095,18 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
  *             return a._handle <= b._handle
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_a, __pyx_n_s_handle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1116, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_a, __pyx_n_s_handle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1134, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_b, __pyx_n_s_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1116, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_b, __pyx_n_s_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1134, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_LT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1116, __pyx_L1_error)
+    __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_LT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1134, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":1115
+    /* "mds/managed.pyx":1133
  * 
  *     def __richcmp__(a, b, op):
  *         if op == 0:    # <             # <<<<<<<<<<<<<<
@@ -19115,20 +19115,20 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
  */
   }
 
-  /* "mds/managed.pyx":1117
+  /* "mds/managed.pyx":1135
  *         if op == 0:    # <
  *             return a._handle < b._handle
  *         elif op == 1:  # <=             # <<<<<<<<<<<<<<
  *             return a._handle <= b._handle
  *         elif op == 2:  # ==
  */
-  __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_v_op, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1117, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_v_op, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 1117, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 1135, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":1118
+    /* "mds/managed.pyx":1136
  *             return a._handle < b._handle
  *         elif op == 1:  # <=
  *             return a._handle <= b._handle             # <<<<<<<<<<<<<<
@@ -19136,18 +19136,18 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
  *             return a._handle == b._handle
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_a, __pyx_n_s_handle); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1118, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_a, __pyx_n_s_handle); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_b, __pyx_n_s_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1118, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_b, __pyx_n_s_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_LE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1118, __pyx_L1_error)
+    __pyx_t_1 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_LE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1136, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":1117
+    /* "mds/managed.pyx":1135
  *         if op == 0:    # <
  *             return a._handle < b._handle
  *         elif op == 1:  # <=             # <<<<<<<<<<<<<<
@@ -19156,20 +19156,20 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
  */
   }
 
-  /* "mds/managed.pyx":1119
+  /* "mds/managed.pyx":1137
  *         elif op == 1:  # <=
  *             return a._handle <= b._handle
  *         elif op == 2:  # ==             # <<<<<<<<<<<<<<
  *             return a._handle == b._handle
  *         elif op == 3:  # !=
  */
-  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_op, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1119, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_op, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1137, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 1119, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 1137, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":1120
+    /* "mds/managed.pyx":1138
  *             return a._handle <= b._handle
  *         elif op == 2:  # ==
  *             return a._handle == b._handle             # <<<<<<<<<<<<<<
@@ -19177,18 +19177,18 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
  *             return a._handle != b._handle
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_a, __pyx_n_s_handle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1120, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_a, __pyx_n_s_handle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1138, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_b, __pyx_n_s_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1120, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_b, __pyx_n_s_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1138, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1120, __pyx_L1_error)
+    __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1138, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":1119
+    /* "mds/managed.pyx":1137
  *         elif op == 1:  # <=
  *             return a._handle <= b._handle
  *         elif op == 2:  # ==             # <<<<<<<<<<<<<<
@@ -19197,20 +19197,20 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
  */
   }
 
-  /* "mds/managed.pyx":1121
+  /* "mds/managed.pyx":1139
  *         elif op == 2:  # ==
  *             return a._handle == b._handle
  *         elif op == 3:  # !=             # <<<<<<<<<<<<<<
  *             return a._handle != b._handle
  *         elif op == 4:  # >
  */
-  __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_v_op, __pyx_int_3, 3, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1121, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_v_op, __pyx_int_3, 3, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 1121, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 1139, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":1122
+    /* "mds/managed.pyx":1140
  *             return a._handle == b._handle
  *         elif op == 3:  # !=
  *             return a._handle != b._handle             # <<<<<<<<<<<<<<
@@ -19218,18 +19218,18 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
  *             return a._handle > b._handle
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_a, __pyx_n_s_handle); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1122, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_a, __pyx_n_s_handle); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1140, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_b, __pyx_n_s_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1122, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_b, __pyx_n_s_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1140, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_NE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1122, __pyx_L1_error)
+    __pyx_t_1 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_NE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1140, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":1121
+    /* "mds/managed.pyx":1139
  *         elif op == 2:  # ==
  *             return a._handle == b._handle
  *         elif op == 3:  # !=             # <<<<<<<<<<<<<<
@@ -19238,20 +19238,20 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
  */
   }
 
-  /* "mds/managed.pyx":1123
+  /* "mds/managed.pyx":1141
  *         elif op == 3:  # !=
  *             return a._handle != b._handle
  *         elif op == 4:  # >             # <<<<<<<<<<<<<<
  *             return a._handle > b._handle
  *         elif op == 5:  # >=
  */
-  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_op, __pyx_int_4, 4, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1123, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_EqObjC(__pyx_v_op, __pyx_int_4, 4, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 1123, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 1141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":1124
+    /* "mds/managed.pyx":1142
  *             return a._handle != b._handle
  *         elif op == 4:  # >
  *             return a._handle > b._handle             # <<<<<<<<<<<<<<
@@ -19259,18 +19259,18 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
  *             return a._handle >= b._handle
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_a, __pyx_n_s_handle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1124, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_a, __pyx_n_s_handle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1142, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_b, __pyx_n_s_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1124, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_b, __pyx_n_s_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1142, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_GT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1124, __pyx_L1_error)
+    __pyx_t_4 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_GT); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1142, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_r = __pyx_t_4;
     __pyx_t_4 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":1123
+    /* "mds/managed.pyx":1141
  *         elif op == 3:  # !=
  *             return a._handle != b._handle
  *         elif op == 4:  # >             # <<<<<<<<<<<<<<
@@ -19279,20 +19279,20 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
  */
   }
 
-  /* "mds/managed.pyx":1125
+  /* "mds/managed.pyx":1143
  *         elif op == 4:  # >
  *             return a._handle > b._handle
  *         elif op == 5:  # >=             # <<<<<<<<<<<<<<
  *             return a._handle >= b._handle
  * 
  */
-  __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_v_op, __pyx_int_5, 5, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1125, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_EqObjC(__pyx_v_op, __pyx_int_5, 5, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1143, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 1125, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 1143, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_2) {
 
-    /* "mds/managed.pyx":1126
+    /* "mds/managed.pyx":1144
  *             return a._handle > b._handle
  *         elif op == 5:  # >=
  *             return a._handle >= b._handle             # <<<<<<<<<<<<<<
@@ -19300,18 +19300,18 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
  *     def __sizeof__(self):
  */
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_a, __pyx_n_s_handle); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1126, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_a, __pyx_n_s_handle); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 1144, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_b, __pyx_n_s_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1126, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_b, __pyx_n_s_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1144, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_1 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_GE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1126, __pyx_L1_error)
+    __pyx_t_1 = PyObject_RichCompare(__pyx_t_4, __pyx_t_3, Py_GE); __Pyx_XGOTREF(__pyx_t_1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1144, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
 
-    /* "mds/managed.pyx":1125
+    /* "mds/managed.pyx":1143
  *         elif op == 4:  # >
  *             return a._handle > b._handle
  *         elif op == 5:  # >=             # <<<<<<<<<<<<<<
@@ -19320,7 +19320,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
  */
   }
 
-  /* "mds/managed.pyx":1114
+  /* "mds/managed.pyx":1132
  *         pass
  * 
  *     def __richcmp__(a, b, op):             # <<<<<<<<<<<<<<
@@ -19343,7 +19343,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_26__richcmp__(PyObject *__pyx_v_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1128
+/* "mds/managed.pyx":1146
  *             return a._handle >= b._handle
  * 
  *     def __sizeof__(self):             # <<<<<<<<<<<<<<
@@ -19370,7 +19370,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_28__sizeof__(struct __pyx_obj_3m
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__sizeof__", 0);
 
-  /* "mds/managed.pyx":1129
+  /* "mds/managed.pyx":1147
  * 
  *     def __sizeof__(self):
  *         return self._handle.size()             # <<<<<<<<<<<<<<
@@ -19378,13 +19378,13 @@ static PyObject *__pyx_pf_3mds_7managed_6String_28__sizeof__(struct __pyx_obj_3m
  *     # TODO: Write equivalents that use the MDS-stored data
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_self->_handle.size()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1129, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_FromSize_t(__pyx_v_self->_handle.size()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1147, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1128
+  /* "mds/managed.pyx":1146
  *             return a._handle >= b._handle
  * 
  *     def __sizeof__(self):             # <<<<<<<<<<<<<<
@@ -19403,7 +19403,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_28__sizeof__(struct __pyx_obj_3m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1133
+/* "mds/managed.pyx":1151
  *     # TODO: Write equivalents that use the MDS-stored data
  * 
  *     def capitalize(self):             # <<<<<<<<<<<<<<
@@ -19432,7 +19432,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_30capitalize(struct __pyx_obj_3m
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("capitalize", 0);
 
-  /* "mds/managed.pyx":1134
+  /* "mds/managed.pyx":1152
  * 
  *     def capitalize(self):
  *         return String(str(self).capitalize())             # <<<<<<<<<<<<<<
@@ -19440,15 +19440,15 @@ static PyObject *__pyx_pf_3mds_7managed_6String_30capitalize(struct __pyx_obj_3m
  *     def casefold(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1134, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1134, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_capitalize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1134, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_capitalize); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = NULL;
@@ -19462,26 +19462,26 @@ static PyObject *__pyx_pf_3mds_7managed_6String_30capitalize(struct __pyx_obj_3m
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1134, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1152, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1134, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1152, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1134, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1134, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1133
+  /* "mds/managed.pyx":1151
  *     # TODO: Write equivalents that use the MDS-stored data
  * 
  *     def capitalize(self):             # <<<<<<<<<<<<<<
@@ -19502,7 +19502,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_30capitalize(struct __pyx_obj_3m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1136
+/* "mds/managed.pyx":1154
  *         return String(str(self).capitalize())
  * 
  *     def casefold(self):             # <<<<<<<<<<<<<<
@@ -19531,7 +19531,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_32casefold(struct __pyx_obj_3mds
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("casefold", 0);
 
-  /* "mds/managed.pyx":1137
+  /* "mds/managed.pyx":1155
  * 
  *     def casefold(self):
  *         return String(str(self).casefold())             # <<<<<<<<<<<<<<
@@ -19539,15 +19539,15 @@ static PyObject *__pyx_pf_3mds_7managed_6String_32casefold(struct __pyx_obj_3mds
  *     def center(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1137, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1137, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_casefold); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1137, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_casefold); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = NULL;
@@ -19561,26 +19561,26 @@ static PyObject *__pyx_pf_3mds_7managed_6String_32casefold(struct __pyx_obj_3mds
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1137, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1155, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1137, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1155, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1137, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1137, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1136
+  /* "mds/managed.pyx":1154
  *         return String(str(self).capitalize())
  * 
  *     def casefold(self):             # <<<<<<<<<<<<<<
@@ -19601,7 +19601,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_32casefold(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1139
+/* "mds/managed.pyx":1157
  *         return String(str(self).casefold())
  * 
  *     def center(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -19642,7 +19642,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_34center(struct __pyx_obj_3mds_7
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("center", 0);
 
-  /* "mds/managed.pyx":1140
+  /* "mds/managed.pyx":1158
  * 
  *     def center(self, *args, **kwargs):
  *         return String(str(self).center(*args, **kwargs))             # <<<<<<<<<<<<<<
@@ -19650,33 +19650,33 @@ static PyObject *__pyx_pf_3mds_7managed_6String_34center(struct __pyx_obj_3mds_7
  *     # TODO: encode(encoding="utf-8", errors="strict")
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1140, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1158, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1140, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1158, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_center); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1140, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_center); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1158, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1140, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1158, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1140, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1158, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1140, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1158, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1139
+  /* "mds/managed.pyx":1157
  *         return String(str(self).casefold())
  * 
  *     def center(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -19696,7 +19696,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_34center(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1144
+/* "mds/managed.pyx":1162
  *     # TODO: encode(encoding="utf-8", errors="strict")
  * 
  *     def endswith(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -19737,7 +19737,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_36endswith(struct __pyx_obj_3mds
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("endswith", 0);
 
-  /* "mds/managed.pyx":1145
+  /* "mds/managed.pyx":1163
  * 
  *     def endswith(self, *args, **kwargs):
  *         return str(self).endswith(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -19745,25 +19745,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_36endswith(struct __pyx_obj_3mds
  *     def expandtabs(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1145, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1145, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_endswith); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1145, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_endswith); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1145, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1163, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1144
+  /* "mds/managed.pyx":1162
  *     # TODO: encode(encoding="utf-8", errors="strict")
  * 
  *     def endswith(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -19783,7 +19783,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_36endswith(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1147
+/* "mds/managed.pyx":1165
  *         return str(self).endswith(*args, **kwargs)
  * 
  *     def expandtabs(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -19824,7 +19824,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_38expandtabs(struct __pyx_obj_3m
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("expandtabs", 0);
 
-  /* "mds/managed.pyx":1148
+  /* "mds/managed.pyx":1166
  * 
  *     def expandtabs(self, *args, **kwargs):
  *         return String(str(self).expandtabs(*args, **kwargs))             # <<<<<<<<<<<<<<
@@ -19832,33 +19832,33 @@ static PyObject *__pyx_pf_3mds_7managed_6String_38expandtabs(struct __pyx_obj_3m
  *     def find(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1148, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1148, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_expandtabs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1148, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_expandtabs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1148, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1148, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1148, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1147
+  /* "mds/managed.pyx":1165
  *         return str(self).endswith(*args, **kwargs)
  * 
  *     def expandtabs(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -19878,7 +19878,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_38expandtabs(struct __pyx_obj_3m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1150
+/* "mds/managed.pyx":1168
  *         return String(str(self).expandtabs(*args, **kwargs))
  * 
  *     def find(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -19919,7 +19919,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_40find(struct __pyx_obj_3mds_7ma
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("find", 0);
 
-  /* "mds/managed.pyx":1151
+  /* "mds/managed.pyx":1169
  * 
  *     def find(self, *args, **kwargs):
  *         return str(self).find(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -19927,25 +19927,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_40find(struct __pyx_obj_3mds_7ma
  *     def format(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1151, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1169, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1151, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1169, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_find); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1151, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_find); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1169, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1151, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1169, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1150
+  /* "mds/managed.pyx":1168
  *         return String(str(self).expandtabs(*args, **kwargs))
  * 
  *     def find(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -19965,7 +19965,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_40find(struct __pyx_obj_3mds_7ma
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1153
+/* "mds/managed.pyx":1171
  *         return str(self).find(*args, **kwargs)
  * 
  *     def format(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20006,7 +20006,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_42format(struct __pyx_obj_3mds_7
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("format", 0);
 
-  /* "mds/managed.pyx":1154
+  /* "mds/managed.pyx":1172
  * 
  *     def format(self, *args, **kwargs):
  *         return String(str(self).format(*args, **kwargs))             # <<<<<<<<<<<<<<
@@ -20014,33 +20014,33 @@ static PyObject *__pyx_pf_3mds_7managed_6String_42format(struct __pyx_obj_3mds_7
  *     def format_map(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1154, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1172, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1154, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1172, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_format); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1154, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_format); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1172, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1154, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1172, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1154, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1172, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1154, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1172, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1153
+  /* "mds/managed.pyx":1171
  *         return str(self).find(*args, **kwargs)
  * 
  *     def format(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20060,7 +20060,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_42format(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1156
+/* "mds/managed.pyx":1174
  *         return String(str(self).format(*args, **kwargs))
  * 
  *     def format_map(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20101,7 +20101,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_44format_map(struct __pyx_obj_3m
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("format_map", 0);
 
-  /* "mds/managed.pyx":1157
+  /* "mds/managed.pyx":1175
  * 
  *     def format_map(self, *args, **kwargs):
  *         return String(str(self).format_map(*args, **kwargs))             # <<<<<<<<<<<<<<
@@ -20109,33 +20109,33 @@ static PyObject *__pyx_pf_3mds_7managed_6String_44format_map(struct __pyx_obj_3m
  *     def index(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1157, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1175, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1157, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1175, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_format_map); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1157, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_format_map); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1175, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1157, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1175, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1157, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1175, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1157, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1175, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1156
+  /* "mds/managed.pyx":1174
  *         return String(str(self).format(*args, **kwargs))
  * 
  *     def format_map(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20155,7 +20155,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_44format_map(struct __pyx_obj_3m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1159
+/* "mds/managed.pyx":1177
  *         return String(str(self).format_map(*args, **kwargs))
  * 
  *     def index(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20196,7 +20196,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_46index(struct __pyx_obj_3mds_7m
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("index", 0);
 
-  /* "mds/managed.pyx":1160
+  /* "mds/managed.pyx":1178
  * 
  *     def index(self, *args, **kwargs):
  *         return str(self).index(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -20204,25 +20204,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_46index(struct __pyx_obj_3mds_7m
  *     def isalnum(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1160, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1160, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1160, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_index); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1160, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1178, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1159
+  /* "mds/managed.pyx":1177
  *         return String(str(self).format_map(*args, **kwargs))
  * 
  *     def index(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20242,7 +20242,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_46index(struct __pyx_obj_3mds_7m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1162
+/* "mds/managed.pyx":1180
  *         return str(self).index(*args, **kwargs)
  * 
  *     def isalnum(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20283,7 +20283,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_48isalnum(struct __pyx_obj_3mds_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("isalnum", 0);
 
-  /* "mds/managed.pyx":1163
+  /* "mds/managed.pyx":1181
  * 
  *     def isalnum(self, *args, **kwargs):
  *         return str(self).isalnum(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -20291,25 +20291,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_48isalnum(struct __pyx_obj_3mds_
  *     def isalpha(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1163, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1181, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1163, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1181, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isalnum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1163, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isalnum); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1181, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1163, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1181, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1162
+  /* "mds/managed.pyx":1180
  *         return str(self).index(*args, **kwargs)
  * 
  *     def isalnum(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20329,7 +20329,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_48isalnum(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1165
+/* "mds/managed.pyx":1183
  *         return str(self).isalnum(*args, **kwargs)
  * 
  *     def isalpha(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20370,7 +20370,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_50isalpha(struct __pyx_obj_3mds_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("isalpha", 0);
 
-  /* "mds/managed.pyx":1166
+  /* "mds/managed.pyx":1184
  * 
  *     def isalpha(self, *args, **kwargs):
  *         return str(self).isalpha(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -20378,25 +20378,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_50isalpha(struct __pyx_obj_3mds_
  *     def isdecimal(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1166, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1184, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1166, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1184, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isalpha); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1166, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isalpha); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1184, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1166, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1184, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1165
+  /* "mds/managed.pyx":1183
  *         return str(self).isalnum(*args, **kwargs)
  * 
  *     def isalpha(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20416,7 +20416,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_50isalpha(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1168
+/* "mds/managed.pyx":1186
  *         return str(self).isalpha(*args, **kwargs)
  * 
  *     def isdecimal(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20457,7 +20457,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_52isdecimal(struct __pyx_obj_3md
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("isdecimal", 0);
 
-  /* "mds/managed.pyx":1169
+  /* "mds/managed.pyx":1187
  * 
  *     def isdecimal(self, *args, **kwargs):
  *         return str(self).isdecimal(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -20465,25 +20465,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_52isdecimal(struct __pyx_obj_3md
  *     def isdigit(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1169, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1187, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1169, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1187, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isdecimal); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1169, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isdecimal); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1187, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1169, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1187, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1168
+  /* "mds/managed.pyx":1186
  *         return str(self).isalpha(*args, **kwargs)
  * 
  *     def isdecimal(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20503,7 +20503,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_52isdecimal(struct __pyx_obj_3md
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1171
+/* "mds/managed.pyx":1189
  *         return str(self).isdecimal(*args, **kwargs)
  * 
  *     def isdigit(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20544,7 +20544,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_54isdigit(struct __pyx_obj_3mds_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("isdigit", 0);
 
-  /* "mds/managed.pyx":1172
+  /* "mds/managed.pyx":1190
  * 
  *     def isdigit(self, *args, **kwargs):
  *         return str(self).isdigit(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -20552,25 +20552,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_54isdigit(struct __pyx_obj_3mds_
  *     def isidentifier(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1172, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1190, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1172, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1190, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isdigit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1172, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isdigit); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1190, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1172, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1190, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1171
+  /* "mds/managed.pyx":1189
  *         return str(self).isdecimal(*args, **kwargs)
  * 
  *     def isdigit(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20590,7 +20590,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_54isdigit(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1174
+/* "mds/managed.pyx":1192
  *         return str(self).isdigit(*args, **kwargs)
  * 
  *     def isidentifier(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20631,7 +20631,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_56isidentifier(struct __pyx_obj_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("isidentifier", 0);
 
-  /* "mds/managed.pyx":1175
+  /* "mds/managed.pyx":1193
  * 
  *     def isidentifier(self, *args, **kwargs):
  *         return str(self).isidentifier(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -20639,25 +20639,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_56isidentifier(struct __pyx_obj_
  *     def islower(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1175, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1193, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1175, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1193, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isidentifier); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1175, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isidentifier); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1193, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1175, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1193, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1174
+  /* "mds/managed.pyx":1192
  *         return str(self).isdigit(*args, **kwargs)
  * 
  *     def isidentifier(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20677,7 +20677,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_56isidentifier(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1177
+/* "mds/managed.pyx":1195
  *         return str(self).isidentifier(*args, **kwargs)
  * 
  *     def islower(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20718,7 +20718,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_58islower(struct __pyx_obj_3mds_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("islower", 0);
 
-  /* "mds/managed.pyx":1178
+  /* "mds/managed.pyx":1196
  * 
  *     def islower(self, *args, **kwargs):
  *         return str(self).islower(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -20726,25 +20726,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_58islower(struct __pyx_obj_3mds_
  *     def isnumeric(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1178, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1178, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_islower); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1178, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_islower); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1178, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1196, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1177
+  /* "mds/managed.pyx":1195
  *         return str(self).isidentifier(*args, **kwargs)
  * 
  *     def islower(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20764,7 +20764,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_58islower(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1180
+/* "mds/managed.pyx":1198
  *         return str(self).islower(*args, **kwargs)
  * 
  *     def isnumeric(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20805,7 +20805,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_60isnumeric(struct __pyx_obj_3md
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("isnumeric", 0);
 
-  /* "mds/managed.pyx":1181
+  /* "mds/managed.pyx":1199
  * 
  *     def isnumeric(self, *args, **kwargs):
  *         return str(self).isnumeric(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -20813,25 +20813,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_60isnumeric(struct __pyx_obj_3md
  *     def isprintable(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1181, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1199, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1181, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1199, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isnumeric); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1181, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isnumeric); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1199, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1181, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1199, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1180
+  /* "mds/managed.pyx":1198
  *         return str(self).islower(*args, **kwargs)
  * 
  *     def isnumeric(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20851,7 +20851,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_60isnumeric(struct __pyx_obj_3md
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1183
+/* "mds/managed.pyx":1201
  *         return str(self).isnumeric(*args, **kwargs)
  * 
  *     def isprintable(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20892,7 +20892,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_62isprintable(struct __pyx_obj_3
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("isprintable", 0);
 
-  /* "mds/managed.pyx":1184
+  /* "mds/managed.pyx":1202
  * 
  *     def isprintable(self, *args, **kwargs):
  *         return str(self).isprintable(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -20900,25 +20900,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_62isprintable(struct __pyx_obj_3
  *     def isspace(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1184, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1184, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isprintable); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1184, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isprintable); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1184, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1202, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1183
+  /* "mds/managed.pyx":1201
  *         return str(self).isnumeric(*args, **kwargs)
  * 
  *     def isprintable(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20938,7 +20938,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_62isprintable(struct __pyx_obj_3
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1186
+/* "mds/managed.pyx":1204
  *         return str(self).isprintable(*args, **kwargs)
  * 
  *     def isspace(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -20979,7 +20979,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_64isspace(struct __pyx_obj_3mds_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("isspace", 0);
 
-  /* "mds/managed.pyx":1187
+  /* "mds/managed.pyx":1205
  * 
  *     def isspace(self, *args, **kwargs):
  *         return str(self).isspace(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -20987,25 +20987,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_64isspace(struct __pyx_obj_3mds_
  *     def istitle(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1187, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1187, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isspace); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1187, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isspace); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1187, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1186
+  /* "mds/managed.pyx":1204
  *         return str(self).isprintable(*args, **kwargs)
  * 
  *     def isspace(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21025,7 +21025,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_64isspace(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1189
+/* "mds/managed.pyx":1207
  *         return str(self).isspace(*args, **kwargs)
  * 
  *     def istitle(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21066,7 +21066,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_66istitle(struct __pyx_obj_3mds_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("istitle", 0);
 
-  /* "mds/managed.pyx":1190
+  /* "mds/managed.pyx":1208
  * 
  *     def istitle(self, *args, **kwargs):
  *         return str(self).istitle(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -21074,25 +21074,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_66istitle(struct __pyx_obj_3mds_
  *     def isupper(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1190, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1190, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_istitle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1190, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_istitle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1190, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1189
+  /* "mds/managed.pyx":1207
  *         return str(self).isspace(*args, **kwargs)
  * 
  *     def istitle(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21112,7 +21112,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_66istitle(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1192
+/* "mds/managed.pyx":1210
  *         return str(self).istitle(*args, **kwargs)
  * 
  *     def isupper(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21153,7 +21153,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_68isupper(struct __pyx_obj_3mds_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("isupper", 0);
 
-  /* "mds/managed.pyx":1193
+  /* "mds/managed.pyx":1211
  * 
  *     def isupper(self, *args, **kwargs):
  *         return str(self).isupper(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -21161,25 +21161,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_68isupper(struct __pyx_obj_3mds_
  *     def join(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1193, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1193, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isupper); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1193, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_isupper); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1193, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1192
+  /* "mds/managed.pyx":1210
  *         return str(self).istitle(*args, **kwargs)
  * 
  *     def isupper(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21199,7 +21199,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_68isupper(struct __pyx_obj_3mds_
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1195
+/* "mds/managed.pyx":1213
  *         return str(self).isupper(*args, **kwargs)
  * 
  *     def join(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21240,7 +21240,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_70join(struct __pyx_obj_3mds_7ma
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("join", 0);
 
-  /* "mds/managed.pyx":1196
+  /* "mds/managed.pyx":1214
  * 
  *     def join(self, *args, **kwargs):
  *         return String(str(self).join(*args, **kwargs))             # <<<<<<<<<<<<<<
@@ -21248,33 +21248,33 @@ static PyObject *__pyx_pf_3mds_7managed_6String_70join(struct __pyx_obj_3mds_7ma
  *     def ljust(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1196, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1196, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_join); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1196, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_join); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1196, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1196, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1196, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1195
+  /* "mds/managed.pyx":1213
  *         return str(self).isupper(*args, **kwargs)
  * 
  *     def join(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21294,7 +21294,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_70join(struct __pyx_obj_3mds_7ma
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1198
+/* "mds/managed.pyx":1216
  *         return String(str(self).join(*args, **kwargs))
  * 
  *     def ljust(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21335,7 +21335,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_72ljust(struct __pyx_obj_3mds_7m
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("ljust", 0);
 
-  /* "mds/managed.pyx":1199
+  /* "mds/managed.pyx":1217
  * 
  *     def ljust(self, *args, **kwargs):
  *         return String(str(self).ljust(*args, **kwargs))             # <<<<<<<<<<<<<<
@@ -21343,33 +21343,33 @@ static PyObject *__pyx_pf_3mds_7managed_6String_72ljust(struct __pyx_obj_3mds_7m
  *     def lower(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1199, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1217, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1199, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1217, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_ljust); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1199, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_ljust); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1217, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1199, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1217, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1199, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1217, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1199, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1217, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1198
+  /* "mds/managed.pyx":1216
  *         return String(str(self).join(*args, **kwargs))
  * 
  *     def ljust(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21389,7 +21389,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_72ljust(struct __pyx_obj_3mds_7m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1201
+/* "mds/managed.pyx":1219
  *         return String(str(self).ljust(*args, **kwargs))
  * 
  *     def lower(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21430,7 +21430,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_74lower(struct __pyx_obj_3mds_7m
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("lower", 0);
 
-  /* "mds/managed.pyx":1202
+  /* "mds/managed.pyx":1220
  * 
  *     def lower(self, *args, **kwargs):
  *         return String(str(self).lower(*args, **kwargs))             # <<<<<<<<<<<<<<
@@ -21438,33 +21438,33 @@ static PyObject *__pyx_pf_3mds_7managed_6String_74lower(struct __pyx_obj_3mds_7m
  *     def lstrip(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1202, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1202, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_lower); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1202, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_lower); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1202, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1202, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1202, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1201
+  /* "mds/managed.pyx":1219
  *         return String(str(self).ljust(*args, **kwargs))
  * 
  *     def lower(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21484,7 +21484,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_74lower(struct __pyx_obj_3mds_7m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1204
+/* "mds/managed.pyx":1222
  *         return String(str(self).lower(*args, **kwargs))
  * 
  *     def lstrip(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21525,7 +21525,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_76lstrip(struct __pyx_obj_3mds_7
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("lstrip", 0);
 
-  /* "mds/managed.pyx":1205
+  /* "mds/managed.pyx":1223
  * 
  *     def lstrip(self, *args, **kwargs):
  *         return String(str(self).lstrip(*args, **kwargs))             # <<<<<<<<<<<<<<
@@ -21533,33 +21533,33 @@ static PyObject *__pyx_pf_3mds_7managed_6String_76lstrip(struct __pyx_obj_3mds_7
  *     def partition(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1205, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1205, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_lstrip); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1205, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_lstrip); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1205, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1205, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1205, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1204
+  /* "mds/managed.pyx":1222
  *         return String(str(self).lower(*args, **kwargs))
  * 
  *     def lstrip(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21579,7 +21579,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_76lstrip(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1207
+/* "mds/managed.pyx":1225
  *         return String(str(self).lstrip(*args, **kwargs))
  * 
  *     def partition(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -21624,7 +21624,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_78partition(struct __pyx_obj_3md
   PyObject *__pyx_t_6 = NULL;
   __Pyx_RefNannySetupContext("partition", 0);
 
-  /* "mds/managed.pyx":1208
+  /* "mds/managed.pyx":1226
  * 
  *     def partition(self, *args, **kwargs):
  *         return tuple([String(x) for x in str(self).partition(*args, **kwargs)])             # <<<<<<<<<<<<<<
@@ -21634,692 +21634,6 @@ static PyObject *__pyx_pf_3mds_7managed_6String_78partition(struct __pyx_obj_3md
   __Pyx_XDECREF(__pyx_r);
   { /* enter inner scope */
     PyObject *__pyx_7genexpr__pyx_v_x = NULL;
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1208, __pyx_L5_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1208, __pyx_L5_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_INCREF(((PyObject *)__pyx_v_self));
-    __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
-    PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)__pyx_v_self));
-    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1208, __pyx_L5_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_partition); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1208, __pyx_L5_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1208, __pyx_L5_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
-      __pyx_t_2 = __pyx_t_3; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
-      __pyx_t_5 = NULL;
-    } else {
-      __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1208, __pyx_L5_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1208, __pyx_L5_error)
-    }
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    for (;;) {
-      if (likely(!__pyx_t_5)) {
-        if (likely(PyList_CheckExact(__pyx_t_2))) {
-          if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1208, __pyx_L5_error)
-          #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1208, __pyx_L5_error)
-          __Pyx_GOTREF(__pyx_t_3);
-          #endif
-        } else {
-          if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1208, __pyx_L5_error)
-          #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1208, __pyx_L5_error)
-          __Pyx_GOTREF(__pyx_t_3);
-          #endif
-        }
-      } else {
-        __pyx_t_3 = __pyx_t_5(__pyx_t_2);
-        if (unlikely(!__pyx_t_3)) {
-          PyObject* exc_type = PyErr_Occurred();
-          if (exc_type) {
-            if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 1208, __pyx_L5_error)
-          }
-          break;
-        }
-        __Pyx_GOTREF(__pyx_t_3);
-      }
-      __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v_x, __pyx_t_3);
-      __pyx_t_3 = 0;
-      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1208, __pyx_L5_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_INCREF(__pyx_7genexpr__pyx_v_x);
-      __Pyx_GIVEREF(__pyx_7genexpr__pyx_v_x);
-      PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_7genexpr__pyx_v_x);
-      __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1208, __pyx_L5_error)
-      __Pyx_GOTREF(__pyx_t_6);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 1208, __pyx_L5_error)
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    }
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_XDECREF(__pyx_7genexpr__pyx_v_x);
-    goto __pyx_L8_exit_scope;
-    __pyx_L5_error:;
-    __Pyx_XDECREF(__pyx_7genexpr__pyx_v_x);
-    goto __pyx_L1_error;
-    __pyx_L8_exit_scope:;
-  } /* exit inner scope */
-  __pyx_t_2 = PyList_AsTuple(((PyObject*)__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1208, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_r = __pyx_t_2;
-  __pyx_t_2 = 0;
-  goto __pyx_L0;
-
-  /* "mds/managed.pyx":1207
- *         return String(str(self).lstrip(*args, **kwargs))
- * 
- *     def partition(self, *args, **kwargs):             # <<<<<<<<<<<<<<
- *         return tuple([String(x) for x in str(self).partition(*args, **kwargs)])
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("mds.managed.String.partition", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "mds/managed.pyx":1210
- *         return tuple([String(x) for x in str(self).partition(*args, **kwargs)])
- * 
- *     def replace(self, *args, **kwargs):             # <<<<<<<<<<<<<<
- *         return String(str(self).replace(*args, **kwargs))
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_3mds_7managed_6String_81replace(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_3mds_7managed_6String_81replace(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_args = 0;
-  PyObject *__pyx_v_kwargs = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("replace (wrapper)", 0);
-  if (unlikely(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "replace", 1))) return NULL;
-  if (unlikely(__pyx_kwds)) {
-    __pyx_v_kwargs = PyDict_Copy(__pyx_kwds); if (unlikely(!__pyx_v_kwargs)) return NULL;
-    __Pyx_GOTREF(__pyx_v_kwargs);
-  } else {
-    __pyx_v_kwargs = NULL;
-  }
-  __Pyx_INCREF(__pyx_args);
-  __pyx_v_args = __pyx_args;
-  __pyx_r = __pyx_pf_3mds_7managed_6String_80replace(((struct __pyx_obj_3mds_7managed_String *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
-
-  /* function exit code */
-  __Pyx_XDECREF(__pyx_v_args);
-  __Pyx_XDECREF(__pyx_v_kwargs);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_3mds_7managed_6String_80replace(struct __pyx_obj_3mds_7managed_String *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  __Pyx_RefNannySetupContext("replace", 0);
-
-  /* "mds/managed.pyx":1211
- * 
- *     def replace(self, *args, **kwargs):
- *         return String(str(self).replace(*args, **kwargs))             # <<<<<<<<<<<<<<
- * 
- *     def rfind(self, *args, **kwargs):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1211, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(((PyObject *)__pyx_v_self));
-  __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
-  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1211, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_replace); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1211, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1211, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1211, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1211, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_r = __pyx_t_2;
-  __pyx_t_2 = 0;
-  goto __pyx_L0;
-
-  /* "mds/managed.pyx":1210
- *         return tuple([String(x) for x in str(self).partition(*args, **kwargs)])
- * 
- *     def replace(self, *args, **kwargs):             # <<<<<<<<<<<<<<
- *         return String(str(self).replace(*args, **kwargs))
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("mds.managed.String.replace", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "mds/managed.pyx":1213
- *         return String(str(self).replace(*args, **kwargs))
- * 
- *     def rfind(self, *args, **kwargs):             # <<<<<<<<<<<<<<
- *         return str(self).rfind(*args, **kwargs)
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_3mds_7managed_6String_83rfind(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_3mds_7managed_6String_83rfind(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_args = 0;
-  PyObject *__pyx_v_kwargs = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("rfind (wrapper)", 0);
-  if (unlikely(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "rfind", 1))) return NULL;
-  if (unlikely(__pyx_kwds)) {
-    __pyx_v_kwargs = PyDict_Copy(__pyx_kwds); if (unlikely(!__pyx_v_kwargs)) return NULL;
-    __Pyx_GOTREF(__pyx_v_kwargs);
-  } else {
-    __pyx_v_kwargs = NULL;
-  }
-  __Pyx_INCREF(__pyx_args);
-  __pyx_v_args = __pyx_args;
-  __pyx_r = __pyx_pf_3mds_7managed_6String_82rfind(((struct __pyx_obj_3mds_7managed_String *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
-
-  /* function exit code */
-  __Pyx_XDECREF(__pyx_v_args);
-  __Pyx_XDECREF(__pyx_v_kwargs);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_3mds_7managed_6String_82rfind(struct __pyx_obj_3mds_7managed_String *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  __Pyx_RefNannySetupContext("rfind", 0);
-
-  /* "mds/managed.pyx":1214
- * 
- *     def rfind(self, *args, **kwargs):
- *         return str(self).rfind(*args, **kwargs)             # <<<<<<<<<<<<<<
- * 
- *     def rindex(self, *args, **kwargs):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1214, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(((PyObject *)__pyx_v_self));
-  __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
-  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1214, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_rfind); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1214, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1214, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_r = __pyx_t_2;
-  __pyx_t_2 = 0;
-  goto __pyx_L0;
-
-  /* "mds/managed.pyx":1213
- *         return String(str(self).replace(*args, **kwargs))
- * 
- *     def rfind(self, *args, **kwargs):             # <<<<<<<<<<<<<<
- *         return str(self).rfind(*args, **kwargs)
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("mds.managed.String.rfind", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "mds/managed.pyx":1216
- *         return str(self).rfind(*args, **kwargs)
- * 
- *     def rindex(self, *args, **kwargs):             # <<<<<<<<<<<<<<
- *         return str(self).rindex(*args, **kwargs)
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_3mds_7managed_6String_85rindex(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_3mds_7managed_6String_85rindex(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_args = 0;
-  PyObject *__pyx_v_kwargs = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("rindex (wrapper)", 0);
-  if (unlikely(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "rindex", 1))) return NULL;
-  if (unlikely(__pyx_kwds)) {
-    __pyx_v_kwargs = PyDict_Copy(__pyx_kwds); if (unlikely(!__pyx_v_kwargs)) return NULL;
-    __Pyx_GOTREF(__pyx_v_kwargs);
-  } else {
-    __pyx_v_kwargs = NULL;
-  }
-  __Pyx_INCREF(__pyx_args);
-  __pyx_v_args = __pyx_args;
-  __pyx_r = __pyx_pf_3mds_7managed_6String_84rindex(((struct __pyx_obj_3mds_7managed_String *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
-
-  /* function exit code */
-  __Pyx_XDECREF(__pyx_v_args);
-  __Pyx_XDECREF(__pyx_v_kwargs);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_3mds_7managed_6String_84rindex(struct __pyx_obj_3mds_7managed_String *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  __Pyx_RefNannySetupContext("rindex", 0);
-
-  /* "mds/managed.pyx":1217
- * 
- *     def rindex(self, *args, **kwargs):
- *         return str(self).rindex(*args, **kwargs)             # <<<<<<<<<<<<<<
- * 
- *     def rjust(self, *args, **kwargs):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1217, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(((PyObject *)__pyx_v_self));
-  __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
-  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1217, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_rindex); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1217, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1217, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_r = __pyx_t_2;
-  __pyx_t_2 = 0;
-  goto __pyx_L0;
-
-  /* "mds/managed.pyx":1216
- *         return str(self).rfind(*args, **kwargs)
- * 
- *     def rindex(self, *args, **kwargs):             # <<<<<<<<<<<<<<
- *         return str(self).rindex(*args, **kwargs)
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("mds.managed.String.rindex", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "mds/managed.pyx":1219
- *         return str(self).rindex(*args, **kwargs)
- * 
- *     def rjust(self, *args, **kwargs):             # <<<<<<<<<<<<<<
- *         return String(str(self).rjust(*args, **kwargs))
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_3mds_7managed_6String_87rjust(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_3mds_7managed_6String_87rjust(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_args = 0;
-  PyObject *__pyx_v_kwargs = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("rjust (wrapper)", 0);
-  if (unlikely(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "rjust", 1))) return NULL;
-  if (unlikely(__pyx_kwds)) {
-    __pyx_v_kwargs = PyDict_Copy(__pyx_kwds); if (unlikely(!__pyx_v_kwargs)) return NULL;
-    __Pyx_GOTREF(__pyx_v_kwargs);
-  } else {
-    __pyx_v_kwargs = NULL;
-  }
-  __Pyx_INCREF(__pyx_args);
-  __pyx_v_args = __pyx_args;
-  __pyx_r = __pyx_pf_3mds_7managed_6String_86rjust(((struct __pyx_obj_3mds_7managed_String *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
-
-  /* function exit code */
-  __Pyx_XDECREF(__pyx_v_args);
-  __Pyx_XDECREF(__pyx_v_kwargs);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_3mds_7managed_6String_86rjust(struct __pyx_obj_3mds_7managed_String *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  __Pyx_RefNannySetupContext("rjust", 0);
-
-  /* "mds/managed.pyx":1220
- * 
- *     def rjust(self, *args, **kwargs):
- *         return String(str(self).rjust(*args, **kwargs))             # <<<<<<<<<<<<<<
- * 
- *     def rpartition(self, *args, **kwargs):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1220, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(((PyObject *)__pyx_v_self));
-  __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
-  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1220, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_rjust); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1220, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1220, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1220, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1220, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_r = __pyx_t_2;
-  __pyx_t_2 = 0;
-  goto __pyx_L0;
-
-  /* "mds/managed.pyx":1219
- *         return str(self).rindex(*args, **kwargs)
- * 
- *     def rjust(self, *args, **kwargs):             # <<<<<<<<<<<<<<
- *         return String(str(self).rjust(*args, **kwargs))
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("mds.managed.String.rjust", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "mds/managed.pyx":1222
- *         return String(str(self).rjust(*args, **kwargs))
- * 
- *     def rpartition(self, *args, **kwargs):             # <<<<<<<<<<<<<<
- *         return tuple([String(x) for x in str(self).rpartition(*args, **kwargs)])
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_3mds_7managed_6String_89rpartition(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_3mds_7managed_6String_89rpartition(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_args = 0;
-  PyObject *__pyx_v_kwargs = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("rpartition (wrapper)", 0);
-  if (unlikely(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "rpartition", 1))) return NULL;
-  if (unlikely(__pyx_kwds)) {
-    __pyx_v_kwargs = PyDict_Copy(__pyx_kwds); if (unlikely(!__pyx_v_kwargs)) return NULL;
-    __Pyx_GOTREF(__pyx_v_kwargs);
-  } else {
-    __pyx_v_kwargs = NULL;
-  }
-  __Pyx_INCREF(__pyx_args);
-  __pyx_v_args = __pyx_args;
-  __pyx_r = __pyx_pf_3mds_7managed_6String_88rpartition(((struct __pyx_obj_3mds_7managed_String *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
-
-  /* function exit code */
-  __Pyx_XDECREF(__pyx_v_args);
-  __Pyx_XDECREF(__pyx_v_kwargs);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_3mds_7managed_6String_88rpartition(struct __pyx_obj_3mds_7managed_String *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  Py_ssize_t __pyx_t_4;
-  PyObject *(*__pyx_t_5)(PyObject *);
-  PyObject *__pyx_t_6 = NULL;
-  __Pyx_RefNannySetupContext("rpartition", 0);
-
-  /* "mds/managed.pyx":1223
- * 
- *     def rpartition(self, *args, **kwargs):
- *         return tuple([String(x) for x in str(self).rpartition(*args, **kwargs)])             # <<<<<<<<<<<<<<
- * 
- *     def rsplit(self, *args, **kwargs):
- */
-  __Pyx_XDECREF(__pyx_r);
-  { /* enter inner scope */
-    PyObject *__pyx_8genexpr1__pyx_v_x = NULL;
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1223, __pyx_L5_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1223, __pyx_L5_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_INCREF(((PyObject *)__pyx_v_self));
-    __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
-    PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)__pyx_v_self));
-    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1223, __pyx_L5_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_rpartition); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1223, __pyx_L5_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1223, __pyx_L5_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
-      __pyx_t_2 = __pyx_t_3; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
-      __pyx_t_5 = NULL;
-    } else {
-      __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1223, __pyx_L5_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1223, __pyx_L5_error)
-    }
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    for (;;) {
-      if (likely(!__pyx_t_5)) {
-        if (likely(PyList_CheckExact(__pyx_t_2))) {
-          if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1223, __pyx_L5_error)
-          #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1223, __pyx_L5_error)
-          __Pyx_GOTREF(__pyx_t_3);
-          #endif
-        } else {
-          if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
-          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1223, __pyx_L5_error)
-          #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1223, __pyx_L5_error)
-          __Pyx_GOTREF(__pyx_t_3);
-          #endif
-        }
-      } else {
-        __pyx_t_3 = __pyx_t_5(__pyx_t_2);
-        if (unlikely(!__pyx_t_3)) {
-          PyObject* exc_type = PyErr_Occurred();
-          if (exc_type) {
-            if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 1223, __pyx_L5_error)
-          }
-          break;
-        }
-        __Pyx_GOTREF(__pyx_t_3);
-      }
-      __Pyx_XDECREF_SET(__pyx_8genexpr1__pyx_v_x, __pyx_t_3);
-      __pyx_t_3 = 0;
-      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1223, __pyx_L5_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_INCREF(__pyx_8genexpr1__pyx_v_x);
-      __Pyx_GIVEREF(__pyx_8genexpr1__pyx_v_x);
-      PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_8genexpr1__pyx_v_x);
-      __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1223, __pyx_L5_error)
-      __Pyx_GOTREF(__pyx_t_6);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 1223, __pyx_L5_error)
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    }
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_XDECREF(__pyx_8genexpr1__pyx_v_x);
-    goto __pyx_L8_exit_scope;
-    __pyx_L5_error:;
-    __Pyx_XDECREF(__pyx_8genexpr1__pyx_v_x);
-    goto __pyx_L1_error;
-    __pyx_L8_exit_scope:;
-  } /* exit inner scope */
-  __pyx_t_2 = PyList_AsTuple(((PyObject*)__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1223, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_r = __pyx_t_2;
-  __pyx_t_2 = 0;
-  goto __pyx_L0;
-
-  /* "mds/managed.pyx":1222
- *         return String(str(self).rjust(*args, **kwargs))
- * 
- *     def rpartition(self, *args, **kwargs):             # <<<<<<<<<<<<<<
- *         return tuple([String(x) for x in str(self).rpartition(*args, **kwargs)])
- * 
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("mds.managed.String.rpartition", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "mds/managed.pyx":1225
- *         return tuple([String(x) for x in str(self).rpartition(*args, **kwargs)])
- * 
- *     def rsplit(self, *args, **kwargs):             # <<<<<<<<<<<<<<
- *         return [String(x) for x in str(self).rsplit(*args, **kwargs)]
- * 
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_3mds_7managed_6String_91rsplit(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_3mds_7managed_6String_91rsplit(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_args = 0;
-  PyObject *__pyx_v_kwargs = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("rsplit (wrapper)", 0);
-  if (unlikely(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "rsplit", 1))) return NULL;
-  if (unlikely(__pyx_kwds)) {
-    __pyx_v_kwargs = PyDict_Copy(__pyx_kwds); if (unlikely(!__pyx_v_kwargs)) return NULL;
-    __Pyx_GOTREF(__pyx_v_kwargs);
-  } else {
-    __pyx_v_kwargs = NULL;
-  }
-  __Pyx_INCREF(__pyx_args);
-  __pyx_v_args = __pyx_args;
-  __pyx_r = __pyx_pf_3mds_7managed_6String_90rsplit(((struct __pyx_obj_3mds_7managed_String *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
-
-  /* function exit code */
-  __Pyx_XDECREF(__pyx_v_args);
-  __Pyx_XDECREF(__pyx_v_kwargs);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_3mds_7managed_6String_90rsplit(struct __pyx_obj_3mds_7managed_String *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  Py_ssize_t __pyx_t_4;
-  PyObject *(*__pyx_t_5)(PyObject *);
-  PyObject *__pyx_t_6 = NULL;
-  __Pyx_RefNannySetupContext("rsplit", 0);
-
-  /* "mds/managed.pyx":1226
- * 
- *     def rsplit(self, *args, **kwargs):
- *         return [String(x) for x in str(self).rsplit(*args, **kwargs)]             # <<<<<<<<<<<<<<
- * 
- *     def rstrip(self, *args, **kwargs):
- */
-  __Pyx_XDECREF(__pyx_r);
-  { /* enter inner scope */
-    PyObject *__pyx_8genexpr2__pyx_v_x = NULL;
     __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1226, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1226, __pyx_L5_error)
@@ -22330,7 +21644,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_90rsplit(struct __pyx_obj_3mds_7
     __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1226, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_rsplit); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1226, __pyx_L5_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_partition); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1226, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1226, __pyx_L5_error)
@@ -22376,17 +21690,703 @@ static PyObject *__pyx_pf_3mds_7managed_6String_90rsplit(struct __pyx_obj_3mds_7
         }
         __Pyx_GOTREF(__pyx_t_3);
       }
-      __Pyx_XDECREF_SET(__pyx_8genexpr2__pyx_v_x, __pyx_t_3);
+      __Pyx_XDECREF_SET(__pyx_7genexpr__pyx_v_x, __pyx_t_3);
       __pyx_t_3 = 0;
       __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1226, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_INCREF(__pyx_8genexpr2__pyx_v_x);
-      __Pyx_GIVEREF(__pyx_8genexpr2__pyx_v_x);
-      PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_8genexpr2__pyx_v_x);
+      __Pyx_INCREF(__pyx_7genexpr__pyx_v_x);
+      __Pyx_GIVEREF(__pyx_7genexpr__pyx_v_x);
+      PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_7genexpr__pyx_v_x);
       __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1226, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 1226, __pyx_L5_error)
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_XDECREF(__pyx_7genexpr__pyx_v_x);
+    goto __pyx_L8_exit_scope;
+    __pyx_L5_error:;
+    __Pyx_XDECREF(__pyx_7genexpr__pyx_v_x);
+    goto __pyx_L1_error;
+    __pyx_L8_exit_scope:;
+  } /* exit inner scope */
+  __pyx_t_2 = PyList_AsTuple(((PyObject*)__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1226, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "mds/managed.pyx":1225
+ *         return String(str(self).lstrip(*args, **kwargs))
+ * 
+ *     def partition(self, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *         return tuple([String(x) for x in str(self).partition(*args, **kwargs)])
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("mds.managed.String.partition", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "mds/managed.pyx":1228
+ *         return tuple([String(x) for x in str(self).partition(*args, **kwargs)])
+ * 
+ *     def replace(self, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *         return String(str(self).replace(*args, **kwargs))
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_3mds_7managed_6String_81replace(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_3mds_7managed_6String_81replace(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_args = 0;
+  PyObject *__pyx_v_kwargs = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("replace (wrapper)", 0);
+  if (unlikely(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "replace", 1))) return NULL;
+  if (unlikely(__pyx_kwds)) {
+    __pyx_v_kwargs = PyDict_Copy(__pyx_kwds); if (unlikely(!__pyx_v_kwargs)) return NULL;
+    __Pyx_GOTREF(__pyx_v_kwargs);
+  } else {
+    __pyx_v_kwargs = NULL;
+  }
+  __Pyx_INCREF(__pyx_args);
+  __pyx_v_args = __pyx_args;
+  __pyx_r = __pyx_pf_3mds_7managed_6String_80replace(((struct __pyx_obj_3mds_7managed_String *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
+
+  /* function exit code */
+  __Pyx_XDECREF(__pyx_v_args);
+  __Pyx_XDECREF(__pyx_v_kwargs);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_3mds_7managed_6String_80replace(struct __pyx_obj_3mds_7managed_String *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  __Pyx_RefNannySetupContext("replace", 0);
+
+  /* "mds/managed.pyx":1229
+ * 
+ *     def replace(self, *args, **kwargs):
+ *         return String(str(self).replace(*args, **kwargs))             # <<<<<<<<<<<<<<
+ * 
+ *     def rfind(self, *args, **kwargs):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1229, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_INCREF(((PyObject *)__pyx_v_self));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
+  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1229, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_replace); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1229, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1229, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1229, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1229, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "mds/managed.pyx":1228
+ *         return tuple([String(x) for x in str(self).partition(*args, **kwargs)])
+ * 
+ *     def replace(self, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *         return String(str(self).replace(*args, **kwargs))
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("mds.managed.String.replace", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "mds/managed.pyx":1231
+ *         return String(str(self).replace(*args, **kwargs))
+ * 
+ *     def rfind(self, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *         return str(self).rfind(*args, **kwargs)
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_3mds_7managed_6String_83rfind(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_3mds_7managed_6String_83rfind(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_args = 0;
+  PyObject *__pyx_v_kwargs = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("rfind (wrapper)", 0);
+  if (unlikely(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "rfind", 1))) return NULL;
+  if (unlikely(__pyx_kwds)) {
+    __pyx_v_kwargs = PyDict_Copy(__pyx_kwds); if (unlikely(!__pyx_v_kwargs)) return NULL;
+    __Pyx_GOTREF(__pyx_v_kwargs);
+  } else {
+    __pyx_v_kwargs = NULL;
+  }
+  __Pyx_INCREF(__pyx_args);
+  __pyx_v_args = __pyx_args;
+  __pyx_r = __pyx_pf_3mds_7managed_6String_82rfind(((struct __pyx_obj_3mds_7managed_String *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
+
+  /* function exit code */
+  __Pyx_XDECREF(__pyx_v_args);
+  __Pyx_XDECREF(__pyx_v_kwargs);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_3mds_7managed_6String_82rfind(struct __pyx_obj_3mds_7managed_String *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  __Pyx_RefNannySetupContext("rfind", 0);
+
+  /* "mds/managed.pyx":1232
+ * 
+ *     def rfind(self, *args, **kwargs):
+ *         return str(self).rfind(*args, **kwargs)             # <<<<<<<<<<<<<<
+ * 
+ *     def rindex(self, *args, **kwargs):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1232, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_INCREF(((PyObject *)__pyx_v_self));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
+  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1232, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_rfind); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1232, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1232, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "mds/managed.pyx":1231
+ *         return String(str(self).replace(*args, **kwargs))
+ * 
+ *     def rfind(self, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *         return str(self).rfind(*args, **kwargs)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("mds.managed.String.rfind", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "mds/managed.pyx":1234
+ *         return str(self).rfind(*args, **kwargs)
+ * 
+ *     def rindex(self, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *         return str(self).rindex(*args, **kwargs)
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_3mds_7managed_6String_85rindex(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_3mds_7managed_6String_85rindex(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_args = 0;
+  PyObject *__pyx_v_kwargs = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("rindex (wrapper)", 0);
+  if (unlikely(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "rindex", 1))) return NULL;
+  if (unlikely(__pyx_kwds)) {
+    __pyx_v_kwargs = PyDict_Copy(__pyx_kwds); if (unlikely(!__pyx_v_kwargs)) return NULL;
+    __Pyx_GOTREF(__pyx_v_kwargs);
+  } else {
+    __pyx_v_kwargs = NULL;
+  }
+  __Pyx_INCREF(__pyx_args);
+  __pyx_v_args = __pyx_args;
+  __pyx_r = __pyx_pf_3mds_7managed_6String_84rindex(((struct __pyx_obj_3mds_7managed_String *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
+
+  /* function exit code */
+  __Pyx_XDECREF(__pyx_v_args);
+  __Pyx_XDECREF(__pyx_v_kwargs);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_3mds_7managed_6String_84rindex(struct __pyx_obj_3mds_7managed_String *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  __Pyx_RefNannySetupContext("rindex", 0);
+
+  /* "mds/managed.pyx":1235
+ * 
+ *     def rindex(self, *args, **kwargs):
+ *         return str(self).rindex(*args, **kwargs)             # <<<<<<<<<<<<<<
+ * 
+ *     def rjust(self, *args, **kwargs):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1235, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_INCREF(((PyObject *)__pyx_v_self));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
+  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1235, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_rindex); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1235, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1235, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "mds/managed.pyx":1234
+ *         return str(self).rfind(*args, **kwargs)
+ * 
+ *     def rindex(self, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *         return str(self).rindex(*args, **kwargs)
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("mds.managed.String.rindex", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "mds/managed.pyx":1237
+ *         return str(self).rindex(*args, **kwargs)
+ * 
+ *     def rjust(self, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *         return String(str(self).rjust(*args, **kwargs))
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_3mds_7managed_6String_87rjust(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_3mds_7managed_6String_87rjust(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_args = 0;
+  PyObject *__pyx_v_kwargs = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("rjust (wrapper)", 0);
+  if (unlikely(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "rjust", 1))) return NULL;
+  if (unlikely(__pyx_kwds)) {
+    __pyx_v_kwargs = PyDict_Copy(__pyx_kwds); if (unlikely(!__pyx_v_kwargs)) return NULL;
+    __Pyx_GOTREF(__pyx_v_kwargs);
+  } else {
+    __pyx_v_kwargs = NULL;
+  }
+  __Pyx_INCREF(__pyx_args);
+  __pyx_v_args = __pyx_args;
+  __pyx_r = __pyx_pf_3mds_7managed_6String_86rjust(((struct __pyx_obj_3mds_7managed_String *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
+
+  /* function exit code */
+  __Pyx_XDECREF(__pyx_v_args);
+  __Pyx_XDECREF(__pyx_v_kwargs);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_3mds_7managed_6String_86rjust(struct __pyx_obj_3mds_7managed_String *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  __Pyx_RefNannySetupContext("rjust", 0);
+
+  /* "mds/managed.pyx":1238
+ * 
+ *     def rjust(self, *args, **kwargs):
+ *         return String(str(self).rjust(*args, **kwargs))             # <<<<<<<<<<<<<<
+ * 
+ *     def rpartition(self, *args, **kwargs):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1238, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_INCREF(((PyObject *)__pyx_v_self));
+  __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
+  PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1238, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_rjust); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1238, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1238, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1238, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1238, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "mds/managed.pyx":1237
+ *         return str(self).rindex(*args, **kwargs)
+ * 
+ *     def rjust(self, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *         return String(str(self).rjust(*args, **kwargs))
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_AddTraceback("mds.managed.String.rjust", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "mds/managed.pyx":1240
+ *         return String(str(self).rjust(*args, **kwargs))
+ * 
+ *     def rpartition(self, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *         return tuple([String(x) for x in str(self).rpartition(*args, **kwargs)])
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_3mds_7managed_6String_89rpartition(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_3mds_7managed_6String_89rpartition(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_args = 0;
+  PyObject *__pyx_v_kwargs = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("rpartition (wrapper)", 0);
+  if (unlikely(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "rpartition", 1))) return NULL;
+  if (unlikely(__pyx_kwds)) {
+    __pyx_v_kwargs = PyDict_Copy(__pyx_kwds); if (unlikely(!__pyx_v_kwargs)) return NULL;
+    __Pyx_GOTREF(__pyx_v_kwargs);
+  } else {
+    __pyx_v_kwargs = NULL;
+  }
+  __Pyx_INCREF(__pyx_args);
+  __pyx_v_args = __pyx_args;
+  __pyx_r = __pyx_pf_3mds_7managed_6String_88rpartition(((struct __pyx_obj_3mds_7managed_String *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
+
+  /* function exit code */
+  __Pyx_XDECREF(__pyx_v_args);
+  __Pyx_XDECREF(__pyx_v_kwargs);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_3mds_7managed_6String_88rpartition(struct __pyx_obj_3mds_7managed_String *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  Py_ssize_t __pyx_t_4;
+  PyObject *(*__pyx_t_5)(PyObject *);
+  PyObject *__pyx_t_6 = NULL;
+  __Pyx_RefNannySetupContext("rpartition", 0);
+
+  /* "mds/managed.pyx":1241
+ * 
+ *     def rpartition(self, *args, **kwargs):
+ *         return tuple([String(x) for x in str(self).rpartition(*args, **kwargs)])             # <<<<<<<<<<<<<<
+ * 
+ *     def rsplit(self, *args, **kwargs):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  { /* enter inner scope */
+    PyObject *__pyx_8genexpr1__pyx_v_x = NULL;
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1241, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1241, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_INCREF(((PyObject *)__pyx_v_self));
+    __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
+    PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)__pyx_v_self));
+    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1241, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_rpartition); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1241, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1241, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
+      __pyx_t_2 = __pyx_t_3; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
+      __pyx_t_5 = NULL;
+    } else {
+      __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1241, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1241, __pyx_L5_error)
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    for (;;) {
+      if (likely(!__pyx_t_5)) {
+        if (likely(PyList_CheckExact(__pyx_t_2))) {
+          if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1241, __pyx_L5_error)
+          #else
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1241, __pyx_L5_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          #endif
+        } else {
+          if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1241, __pyx_L5_error)
+          #else
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1241, __pyx_L5_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          #endif
+        }
+      } else {
+        __pyx_t_3 = __pyx_t_5(__pyx_t_2);
+        if (unlikely(!__pyx_t_3)) {
+          PyObject* exc_type = PyErr_Occurred();
+          if (exc_type) {
+            if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+            else __PYX_ERR(0, 1241, __pyx_L5_error)
+          }
+          break;
+        }
+        __Pyx_GOTREF(__pyx_t_3);
+      }
+      __Pyx_XDECREF_SET(__pyx_8genexpr1__pyx_v_x, __pyx_t_3);
+      __pyx_t_3 = 0;
+      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1241, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_INCREF(__pyx_8genexpr1__pyx_v_x);
+      __Pyx_GIVEREF(__pyx_8genexpr1__pyx_v_x);
+      PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_8genexpr1__pyx_v_x);
+      __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1241, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 1241, __pyx_L5_error)
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    }
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __Pyx_XDECREF(__pyx_8genexpr1__pyx_v_x);
+    goto __pyx_L8_exit_scope;
+    __pyx_L5_error:;
+    __Pyx_XDECREF(__pyx_8genexpr1__pyx_v_x);
+    goto __pyx_L1_error;
+    __pyx_L8_exit_scope:;
+  } /* exit inner scope */
+  __pyx_t_2 = PyList_AsTuple(((PyObject*)__pyx_t_1)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1241, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
+  goto __pyx_L0;
+
+  /* "mds/managed.pyx":1240
+ *         return String(str(self).rjust(*args, **kwargs))
+ * 
+ *     def rpartition(self, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *         return tuple([String(x) for x in str(self).rpartition(*args, **kwargs)])
+ * 
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_6);
+  __Pyx_AddTraceback("mds.managed.String.rpartition", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "mds/managed.pyx":1243
+ *         return tuple([String(x) for x in str(self).rpartition(*args, **kwargs)])
+ * 
+ *     def rsplit(self, *args, **kwargs):             # <<<<<<<<<<<<<<
+ *         return [String(x) for x in str(self).rsplit(*args, **kwargs)]
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_3mds_7managed_6String_91rsplit(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_3mds_7managed_6String_91rsplit(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_v_args = 0;
+  PyObject *__pyx_v_kwargs = 0;
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("rsplit (wrapper)", 0);
+  if (unlikely(__pyx_kwds) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "rsplit", 1))) return NULL;
+  if (unlikely(__pyx_kwds)) {
+    __pyx_v_kwargs = PyDict_Copy(__pyx_kwds); if (unlikely(!__pyx_v_kwargs)) return NULL;
+    __Pyx_GOTREF(__pyx_v_kwargs);
+  } else {
+    __pyx_v_kwargs = NULL;
+  }
+  __Pyx_INCREF(__pyx_args);
+  __pyx_v_args = __pyx_args;
+  __pyx_r = __pyx_pf_3mds_7managed_6String_90rsplit(((struct __pyx_obj_3mds_7managed_String *)__pyx_v_self), __pyx_v_args, __pyx_v_kwargs);
+
+  /* function exit code */
+  __Pyx_XDECREF(__pyx_v_args);
+  __Pyx_XDECREF(__pyx_v_kwargs);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_3mds_7managed_6String_90rsplit(struct __pyx_obj_3mds_7managed_String *__pyx_v_self, PyObject *__pyx_v_args, PyObject *__pyx_v_kwargs) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  Py_ssize_t __pyx_t_4;
+  PyObject *(*__pyx_t_5)(PyObject *);
+  PyObject *__pyx_t_6 = NULL;
+  __Pyx_RefNannySetupContext("rsplit", 0);
+
+  /* "mds/managed.pyx":1244
+ * 
+ *     def rsplit(self, *args, **kwargs):
+ *         return [String(x) for x in str(self).rsplit(*args, **kwargs)]             # <<<<<<<<<<<<<<
+ * 
+ *     def rstrip(self, *args, **kwargs):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  { /* enter inner scope */
+    PyObject *__pyx_8genexpr2__pyx_v_x = NULL;
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1244, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1244, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_INCREF(((PyObject *)__pyx_v_self));
+    __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
+    PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)__pyx_v_self));
+    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1244, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_rsplit); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1244, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1244, __pyx_L5_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
+      __pyx_t_2 = __pyx_t_3; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
+      __pyx_t_5 = NULL;
+    } else {
+      __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1244, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1244, __pyx_L5_error)
+    }
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    for (;;) {
+      if (likely(!__pyx_t_5)) {
+        if (likely(PyList_CheckExact(__pyx_t_2))) {
+          if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1244, __pyx_L5_error)
+          #else
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1244, __pyx_L5_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          #endif
+        } else {
+          if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+          #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1244, __pyx_L5_error)
+          #else
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1244, __pyx_L5_error)
+          __Pyx_GOTREF(__pyx_t_3);
+          #endif
+        }
+      } else {
+        __pyx_t_3 = __pyx_t_5(__pyx_t_2);
+        if (unlikely(!__pyx_t_3)) {
+          PyObject* exc_type = PyErr_Occurred();
+          if (exc_type) {
+            if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
+            else __PYX_ERR(0, 1244, __pyx_L5_error)
+          }
+          break;
+        }
+        __Pyx_GOTREF(__pyx_t_3);
+      }
+      __Pyx_XDECREF_SET(__pyx_8genexpr2__pyx_v_x, __pyx_t_3);
+      __pyx_t_3 = 0;
+      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1244, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_INCREF(__pyx_8genexpr2__pyx_v_x);
+      __Pyx_GIVEREF(__pyx_8genexpr2__pyx_v_x);
+      PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_8genexpr2__pyx_v_x);
+      __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1244, __pyx_L5_error)
+      __Pyx_GOTREF(__pyx_t_6);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 1244, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -22401,7 +22401,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_90rsplit(struct __pyx_obj_3mds_7
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1225
+  /* "mds/managed.pyx":1243
  *         return tuple([String(x) for x in str(self).rpartition(*args, **kwargs)])
  * 
  *     def rsplit(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -22423,7 +22423,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_90rsplit(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1228
+/* "mds/managed.pyx":1246
  *         return [String(x) for x in str(self).rsplit(*args, **kwargs)]
  * 
  *     def rstrip(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -22464,7 +22464,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_92rstrip(struct __pyx_obj_3mds_7
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("rstrip", 0);
 
-  /* "mds/managed.pyx":1229
+  /* "mds/managed.pyx":1247
  * 
  *     def rstrip(self, *args, **kwargs):
  *         return String(str(self).rstrip(*args, **kwargs))             # <<<<<<<<<<<<<<
@@ -22472,33 +22472,33 @@ static PyObject *__pyx_pf_3mds_7managed_6String_92rstrip(struct __pyx_obj_3mds_7
  *     def split(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1229, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1229, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_rstrip); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1229, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_rstrip); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1229, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1229, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1229, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1247, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1228
+  /* "mds/managed.pyx":1246
  *         return [String(x) for x in str(self).rsplit(*args, **kwargs)]
  * 
  *     def rstrip(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -22518,7 +22518,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_92rstrip(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1231
+/* "mds/managed.pyx":1249
  *         return String(str(self).rstrip(*args, **kwargs))
  * 
  *     def split(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -22563,7 +22563,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_94split(struct __pyx_obj_3mds_7m
   PyObject *__pyx_t_6 = NULL;
   __Pyx_RefNannySetupContext("split", 0);
 
-  /* "mds/managed.pyx":1232
+  /* "mds/managed.pyx":1250
  * 
  *     def split(self, *args, **kwargs):
  *         return [String(x) for x in str(self).split(*args, **kwargs)]             # <<<<<<<<<<<<<<
@@ -22573,29 +22573,29 @@ static PyObject *__pyx_pf_3mds_7managed_6String_94split(struct __pyx_obj_3mds_7m
   __Pyx_XDECREF(__pyx_r);
   { /* enter inner scope */
     PyObject *__pyx_8genexpr3__pyx_v_x = NULL;
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1232, __pyx_L5_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1250, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1232, __pyx_L5_error)
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1250, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(((PyObject *)__pyx_v_self));
     __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
     PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)__pyx_v_self));
-    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1232, __pyx_L5_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1250, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_split); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1232, __pyx_L5_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_split); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1250, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1232, __pyx_L5_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1250, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
       __pyx_t_2 = __pyx_t_3; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
       __pyx_t_5 = NULL;
     } else {
-      __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1232, __pyx_L5_error)
+      __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1250, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1232, __pyx_L5_error)
+      __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1250, __pyx_L5_error)
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     for (;;) {
@@ -22603,17 +22603,17 @@ static PyObject *__pyx_pf_3mds_7managed_6String_94split(struct __pyx_obj_3mds_7m
         if (likely(PyList_CheckExact(__pyx_t_2))) {
           if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1232, __pyx_L5_error)
+          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1250, __pyx_L5_error)
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1232, __pyx_L5_error)
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1250, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_3);
           #endif
         } else {
           if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1232, __pyx_L5_error)
+          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1250, __pyx_L5_error)
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1232, __pyx_L5_error)
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1250, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_3);
           #endif
         }
@@ -22623,7 +22623,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_94split(struct __pyx_obj_3mds_7m
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 1232, __pyx_L5_error)
+            else __PYX_ERR(0, 1250, __pyx_L5_error)
           }
           break;
         }
@@ -22631,15 +22631,15 @@ static PyObject *__pyx_pf_3mds_7managed_6String_94split(struct __pyx_obj_3mds_7m
       }
       __Pyx_XDECREF_SET(__pyx_8genexpr3__pyx_v_x, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1232, __pyx_L5_error)
+      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1250, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_INCREF(__pyx_8genexpr3__pyx_v_x);
       __Pyx_GIVEREF(__pyx_8genexpr3__pyx_v_x);
       PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_8genexpr3__pyx_v_x);
-      __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1232, __pyx_L5_error)
+      __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1250, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 1232, __pyx_L5_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 1250, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -22654,7 +22654,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_94split(struct __pyx_obj_3mds_7m
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1231
+  /* "mds/managed.pyx":1249
  *         return String(str(self).rstrip(*args, **kwargs))
  * 
  *     def split(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -22676,7 +22676,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_94split(struct __pyx_obj_3mds_7m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1234
+/* "mds/managed.pyx":1252
  *         return [String(x) for x in str(self).split(*args, **kwargs)]
  * 
  *     def splitlines(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -22721,7 +22721,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_96splitlines(struct __pyx_obj_3m
   PyObject *__pyx_t_6 = NULL;
   __Pyx_RefNannySetupContext("splitlines", 0);
 
-  /* "mds/managed.pyx":1235
+  /* "mds/managed.pyx":1253
  * 
  *     def splitlines(self, *args, **kwargs):
  *         return [String(x) for x in str(self).split(*args, **kwargs)]             # <<<<<<<<<<<<<<
@@ -22731,29 +22731,29 @@ static PyObject *__pyx_pf_3mds_7managed_6String_96splitlines(struct __pyx_obj_3m
   __Pyx_XDECREF(__pyx_r);
   { /* enter inner scope */
     PyObject *__pyx_8genexpr4__pyx_v_x = NULL;
-    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1235, __pyx_L5_error)
+    __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1253, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1235, __pyx_L5_error)
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1253, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(((PyObject *)__pyx_v_self));
     __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
     PyTuple_SET_ITEM(__pyx_t_2, 0, ((PyObject *)__pyx_v_self));
-    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1235, __pyx_L5_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1253, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_split); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1235, __pyx_L5_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_split); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1253, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1235, __pyx_L5_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1253, __pyx_L5_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (likely(PyList_CheckExact(__pyx_t_3)) || PyTuple_CheckExact(__pyx_t_3)) {
       __pyx_t_2 = __pyx_t_3; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
       __pyx_t_5 = NULL;
     } else {
-      __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1235, __pyx_L5_error)
+      __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1253, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1235, __pyx_L5_error)
+      __pyx_t_5 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 1253, __pyx_L5_error)
     }
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     for (;;) {
@@ -22761,17 +22761,17 @@ static PyObject *__pyx_pf_3mds_7managed_6String_96splitlines(struct __pyx_obj_3m
         if (likely(PyList_CheckExact(__pyx_t_2))) {
           if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1235, __pyx_L5_error)
+          __pyx_t_3 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1253, __pyx_L5_error)
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1235, __pyx_L5_error)
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1253, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_3);
           #endif
         } else {
           if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
           #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1235, __pyx_L5_error)
+          __pyx_t_3 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_3); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 1253, __pyx_L5_error)
           #else
-          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1235, __pyx_L5_error)
+          __pyx_t_3 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1253, __pyx_L5_error)
           __Pyx_GOTREF(__pyx_t_3);
           #endif
         }
@@ -22781,7 +22781,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_96splitlines(struct __pyx_obj_3m
           PyObject* exc_type = PyErr_Occurred();
           if (exc_type) {
             if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-            else __PYX_ERR(0, 1235, __pyx_L5_error)
+            else __PYX_ERR(0, 1253, __pyx_L5_error)
           }
           break;
         }
@@ -22789,15 +22789,15 @@ static PyObject *__pyx_pf_3mds_7managed_6String_96splitlines(struct __pyx_obj_3m
       }
       __Pyx_XDECREF_SET(__pyx_8genexpr4__pyx_v_x, __pyx_t_3);
       __pyx_t_3 = 0;
-      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1235, __pyx_L5_error)
+      __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 1253, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_INCREF(__pyx_8genexpr4__pyx_v_x);
       __Pyx_GIVEREF(__pyx_8genexpr4__pyx_v_x);
       PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_8genexpr4__pyx_v_x);
-      __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1235, __pyx_L5_error)
+      __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_3, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 1253, __pyx_L5_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 1235, __pyx_L5_error)
+      if (unlikely(__Pyx_ListComp_Append(__pyx_t_1, (PyObject*)__pyx_t_6))) __PYX_ERR(0, 1253, __pyx_L5_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -22812,7 +22812,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_96splitlines(struct __pyx_obj_3m
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1234
+  /* "mds/managed.pyx":1252
  *         return [String(x) for x in str(self).split(*args, **kwargs)]
  * 
  *     def splitlines(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -22834,7 +22834,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_96splitlines(struct __pyx_obj_3m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1237
+/* "mds/managed.pyx":1255
  *         return [String(x) for x in str(self).split(*args, **kwargs)]
  * 
  *     def startswith(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -22875,7 +22875,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_98startswith(struct __pyx_obj_3m
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("startswith", 0);
 
-  /* "mds/managed.pyx":1238
+  /* "mds/managed.pyx":1256
  * 
  *     def startswith(self, *args, **kwargs):
  *         return str(self).startswith(*args, **kwargs)             # <<<<<<<<<<<<<<
@@ -22883,25 +22883,25 @@ static PyObject *__pyx_pf_3mds_7managed_6String_98startswith(struct __pyx_obj_3m
  *     def strip(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1238, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1238, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_startswith); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1238, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_startswith); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1238, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1237
+  /* "mds/managed.pyx":1255
  *         return [String(x) for x in str(self).split(*args, **kwargs)]
  * 
  *     def startswith(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -22921,7 +22921,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_98startswith(struct __pyx_obj_3m
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1240
+/* "mds/managed.pyx":1258
  *         return str(self).startswith(*args, **kwargs)
  * 
  *     def strip(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -22962,7 +22962,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_100strip(struct __pyx_obj_3mds_7
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("strip", 0);
 
-  /* "mds/managed.pyx":1241
+  /* "mds/managed.pyx":1259
  * 
  *     def strip(self, *args, **kwargs):
  *         return String(str(self).strip(*args, **kwargs))             # <<<<<<<<<<<<<<
@@ -22970,33 +22970,33 @@ static PyObject *__pyx_pf_3mds_7managed_6String_100strip(struct __pyx_obj_3mds_7
  *     def swapcase(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1241, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1259, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1241, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1259, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_strip); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1241, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_strip); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1259, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1241, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1259, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1241, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1259, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1241, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1259, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1240
+  /* "mds/managed.pyx":1258
  *         return str(self).startswith(*args, **kwargs)
  * 
  *     def strip(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -23016,7 +23016,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_100strip(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1243
+/* "mds/managed.pyx":1261
  *         return String(str(self).strip(*args, **kwargs))
  * 
  *     def swapcase(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -23057,7 +23057,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_102swapcase(struct __pyx_obj_3md
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("swapcase", 0);
 
-  /* "mds/managed.pyx":1244
+  /* "mds/managed.pyx":1262
  * 
  *     def swapcase(self, *args, **kwargs):
  *         return String(str(self).swapcase(*args, **kwargs))             # <<<<<<<<<<<<<<
@@ -23065,33 +23065,33 @@ static PyObject *__pyx_pf_3mds_7managed_6String_102swapcase(struct __pyx_obj_3md
  *     def title(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1244, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1244, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_swapcase); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1244, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_swapcase); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1244, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1244, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1244, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1243
+  /* "mds/managed.pyx":1261
  *         return String(str(self).strip(*args, **kwargs))
  * 
  *     def swapcase(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -23111,7 +23111,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_102swapcase(struct __pyx_obj_3md
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1246
+/* "mds/managed.pyx":1264
  *         return String(str(self).swapcase(*args, **kwargs))
  * 
  *     def title(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -23152,7 +23152,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_104title(struct __pyx_obj_3mds_7
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("title", 0);
 
-  /* "mds/managed.pyx":1247
+  /* "mds/managed.pyx":1265
  * 
  *     def title(self, *args, **kwargs):
  *         return String(str(self).title(*args, **kwargs))             # <<<<<<<<<<<<<<
@@ -23160,33 +23160,33 @@ static PyObject *__pyx_pf_3mds_7managed_6String_104title(struct __pyx_obj_3mds_7
  *     # TODO: translate
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1247, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1247, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_title); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1247, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_title); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1247, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1247, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1247, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1246
+  /* "mds/managed.pyx":1264
  *         return String(str(self).swapcase(*args, **kwargs))
  * 
  *     def title(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -23206,7 +23206,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_104title(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1251
+/* "mds/managed.pyx":1269
  *     # TODO: translate
  * 
  *     def upper(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -23247,7 +23247,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_106upper(struct __pyx_obj_3mds_7
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("upper", 0);
 
-  /* "mds/managed.pyx":1252
+  /* "mds/managed.pyx":1270
  * 
  *     def upper(self, *args, **kwargs):
  *         return String(str(self).upper(*args, **kwargs))             # <<<<<<<<<<<<<<
@@ -23255,33 +23255,33 @@ static PyObject *__pyx_pf_3mds_7managed_6String_106upper(struct __pyx_obj_3mds_7
  *     def zfill(self, *args, **kwargs):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1252, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1270, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1252, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1270, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_upper); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1252, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_upper); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1270, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1252, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1270, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1252, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1270, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1252, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1270, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1251
+  /* "mds/managed.pyx":1269
  *     # TODO: translate
  * 
  *     def upper(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -23301,7 +23301,7 @@ static PyObject *__pyx_pf_3mds_7managed_6String_106upper(struct __pyx_obj_3mds_7
   return __pyx_r;
 }
 
-/* "mds/managed.pyx":1254
+/* "mds/managed.pyx":1272
  *         return String(str(self).upper(*args, **kwargs))
  * 
  *     def zfill(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -23342,40 +23342,40 @@ static PyObject *__pyx_pf_3mds_7managed_6String_108zfill(struct __pyx_obj_3mds_7
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("zfill", 0);
 
-  /* "mds/managed.pyx":1255
+  /* "mds/managed.pyx":1273
  * 
  *     def zfill(self, *args, **kwargs):
  *         return String(str(self).zfill(*args, **kwargs))             # <<<<<<<<<<<<<<
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1255, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1273, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1255, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyUnicode_Type)), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1273, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zfill); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1255, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zfill); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1273, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1255, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_v_args, __pyx_v_kwargs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1273, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1255, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1273, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1255, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_7managed_String), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1273, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/managed.pyx":1254
+  /* "mds/managed.pyx":1272
  *         return String(str(self).upper(*args, **kwargs))
  * 
  *     def zfill(self, *args, **kwargs):             # <<<<<<<<<<<<<<
@@ -23909,7 +23909,7 @@ static PyObject *__pyx_tp_new_3mds_7managed_Record(PyTypeObject *t, PyObject *a,
   if (unlikely(!o)) return 0;
   p = ((struct __pyx_obj_3mds_7managed_Record *)o);
   new((void*)&(p->_handle)) mds::api::managed_record_handle();
-  new((void*)&(p->_type)) mds::api::record_type_handle();
+  new((void*)&(p->_declared_type)) mds::api::record_type_handle();
   if (unlikely(__pyx_pw_3mds_7managed_6Record_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
   bad:
@@ -23925,7 +23925,7 @@ static void __pyx_tp_dealloc_3mds_7managed_Record(PyObject *o) {
   }
   #endif
   __Pyx_call_destructor(p->_handle);
-  __Pyx_call_destructor(p->_type);
+  __Pyx_call_destructor(p->_declared_type);
   __pyx_tp_dealloc_3mds_7managed_MDSObject(o);
 }
 
@@ -27455,7 +27455,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
   {&__pyx_n_s_endswith, __pyx_k_endswith, sizeof(__pyx_k_endswith), 0, 0, 1, 1},
   {&__pyx_n_s_expandtabs, __pyx_k_expandtabs, sizeof(__pyx_k_expandtabs), 0, 0, 1, 1},
-  {&__pyx_n_s_fields, __pyx_k_fields, sizeof(__pyx_k_fields), 0, 0, 1, 1},
+  {&__pyx_n_s_field_decls, __pyx_k_field_decls, sizeof(__pyx_k_field_decls), 0, 0, 1, 1},
   {&__pyx_n_s_find, __pyx_k_find, sizeof(__pyx_k_find), 0, 0, 1, 1},
   {&__pyx_n_u_float, __pyx_k_float, sizeof(__pyx_k_float), 0, 1, 0, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
@@ -27533,14 +27533,14 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_staticmethod = __Pyx_GetBuiltinName(__pyx_n_s_staticmethod); if (!__pyx_builtin_staticmethod) __PYX_ERR(0, 158, __pyx_L1_error)
-  __pyx_builtin_IndexError = __Pyx_GetBuiltinName(__pyx_n_s_IndexError); if (!__pyx_builtin_IndexError) __PYX_ERR(0, 85, __pyx_L1_error)
-  __pyx_builtin_NotImplementedError = __Pyx_GetBuiltinName(__pyx_n_s_NotImplementedError); if (!__pyx_builtin_NotImplementedError) __PYX_ERR(0, 93, __pyx_L1_error)
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 138, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 143, __pyx_L1_error)
-  __pyx_builtin_OverflowError = __Pyx_GetBuiltinName(__pyx_n_s_OverflowError); if (!__pyx_builtin_OverflowError) __PYX_ERR(0, 263, __pyx_L1_error)
-  __pyx_builtin_StopIteration = __Pyx_GetBuiltinName(__pyx_n_s_StopIteration); if (!__pyx_builtin_StopIteration) __PYX_ERR(0, 1030, __pyx_L1_error)
-  __pyx_builtin_chr = __Pyx_GetBuiltinName(__pyx_n_s_chr); if (!__pyx_builtin_chr) __PYX_ERR(0, 1046, __pyx_L1_error)
+  __pyx_builtin_staticmethod = __Pyx_GetBuiltinName(__pyx_n_s_staticmethod); if (!__pyx_builtin_staticmethod) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_builtin_IndexError = __Pyx_GetBuiltinName(__pyx_n_s_IndexError); if (!__pyx_builtin_IndexError) __PYX_ERR(0, 103, __pyx_L1_error)
+  __pyx_builtin_NotImplementedError = __Pyx_GetBuiltinName(__pyx_n_s_NotImplementedError); if (!__pyx_builtin_NotImplementedError) __PYX_ERR(0, 111, __pyx_L1_error)
+  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_builtin_OverflowError = __Pyx_GetBuiltinName(__pyx_n_s_OverflowError); if (!__pyx_builtin_OverflowError) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_builtin_StopIteration = __Pyx_GetBuiltinName(__pyx_n_s_StopIteration); if (!__pyx_builtin_StopIteration) __PYX_ERR(0, 1048, __pyx_L1_error)
+  __pyx_builtin_chr = __Pyx_GetBuiltinName(__pyx_n_s_chr); if (!__pyx_builtin_chr) __PYX_ERR(0, 1064, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -27550,212 +27550,212 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "mds/managed.pyx":85
+  /* "mds/managed.pyx":103
  * 
  *         if index >= l or index < -l:
  *             raise IndexError('list index out of range')             # <<<<<<<<<<<<<<
  * 
  *         if index < 0:
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_list_index_out_of_range); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_list_index_out_of_range); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 103, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "mds/managed.pyx":93
+  /* "mds/managed.pyx":111
  * 
  *     def _to_python(self, index):
  *         raise NotImplementedError('Specialization of MDSList required')             # <<<<<<<<<<<<<<
  * 
  *     def _to_mds(self, index, value):
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_u_Specialization_of_MDSList_requir); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 93, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_u_Specialization_of_MDSList_requir); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 111, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "mds/managed.pyx":96
+  /* "mds/managed.pyx":114
  * 
  *     def _to_mds(self, index, value):
  *         raise NotImplementedError('Specialization of MDSList required')             # <<<<<<<<<<<<<<
  * 
  *     def __getitem__(self, index):
  */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_u_Specialization_of_MDSList_requir); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_u_Specialization_of_MDSList_requir); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "mds/managed.pyx":117
+  /* "mds/managed.pyx":135
  * 
  *     def __len__(self):
  *         raise NotImplementedError('Specialization of MDSArrayBase required')             # <<<<<<<<<<<<<<
  * 
  *     def insert(self, index, value):
  */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_u_Specialization_of_MDSArrayBase_r); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_u_Specialization_of_MDSArrayBase_r); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 135, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "mds/managed.pyx":120
+  /* "mds/managed.pyx":138
  * 
  *     def insert(self, index, value):
  *         raise NotImplementedError('Unable to grow fixed-size array')             # <<<<<<<<<<<<<<
  * 
  *     def remove(self, value):
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_u_Unable_to_grow_fixed_size_array); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 120, __pyx_L1_error)
+  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_u_Unable_to_grow_fixed_size_array); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
-  /* "mds/managed.pyx":123
+  /* "mds/managed.pyx":141
  * 
  *     def remove(self, value):
  *         raise NotImplementedError('Unable to shrink fixed-size array')             # <<<<<<<<<<<<<<
  * 
  *     def pop(self, index=-1):
  */
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_u_Unable_to_shrink_fixed_size_arra); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 123, __pyx_L1_error)
+  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_u_Unable_to_shrink_fixed_size_arra); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
-  /* "mds/managed.pyx":126
+  /* "mds/managed.pyx":144
  * 
  *     def pop(self, index=-1):
  *         raise NotImplementedError('Unable to shrink fixed-size array')             # <<<<<<<<<<<<<<
  * 
  *     def clear(self):
  */
-  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_u_Unable_to_shrink_fixed_size_arra); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 126, __pyx_L1_error)
+  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_u_Unable_to_shrink_fixed_size_arra); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 144, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
 
-  /* "mds/managed.pyx":138
+  /* "mds/managed.pyx":156
  *         # TODO: Bool still a str-literal here
  *         if not isinstance(value, type(self[0])):
  *             raise TypeError("value to be searched for must match list-type `bool`")             # <<<<<<<<<<<<<<
  * 
  *         cdef:
  */
-  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_u_value_to_be_searched_for_must_ma); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 138, __pyx_L1_error)
+  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_u_value_to_be_searched_for_must_ma); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 156, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
 
-  /* "mds/managed.pyx":156
+  /* "mds/managed.pyx":174
  * 
  *     def copy(self):
  *         raise NotImplementedError('Specialization of MDSArrayBase required')             # <<<<<<<<<<<<<<
  * 
  *     @staticmethod
  */
-  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_u_Specialization_of_MDSArrayBase_r); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_u_Specialization_of_MDSArrayBase_r); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 174, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
 
-  /* "mds/managed.pyx":187
+  /* "mds/managed.pyx":205
  *     property dtype:
  *         def __get__(self):
  *             raise NotImplementedError('Specialization of MDSArrayBase required')             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_u_Specialization_of_MDSArrayBase_r); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_u_Specialization_of_MDSArrayBase_r); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
 
-  /* "mds/managed.pyx":196
+  /* "mds/managed.pyx":214
  *         TODO: This needs to check the bounds of the different int sizes in MDS.
  *         """
  *         raise NotImplementedError('Requires a type-specific instantiation')             # <<<<<<<<<<<<<<
  * 
  *     def __setitem__(self, index, value):
  */
-  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_kp_u_Requires_a_type_specific_instant); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_kp_u_Requires_a_type_specific_instant); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 214, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
 
-  /* "mds/managed.pyx":236
+  /* "mds/managed.pyx":254
  * 
  *     def _to_python(self):
  *         raise NotImplementedError("Specialization required.")             # <<<<<<<<<<<<<<
  * 
  *     def _to_mds(self):
  */
-  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_kp_u_Specialization_required); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_kp_u_Specialization_required); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
 
-  /* "mds/managed.pyx":239
+  /* "mds/managed.pyx":257
  * 
  *     def _to_mds(self):
  *         raise NotImplementedError("Specialization required.")             # <<<<<<<<<<<<<<
  * 
  *     property python_copy:
  */
-  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_kp_u_Specialization_required); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_kp_u_Specialization_required); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 257, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
 
-  /* "mds/managed.pyx":243
+  /* "mds/managed.pyx":261
  *     property python_copy:
  *         def __get__(self):
  *             raise NotImplementedError("Specialization required.")             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_u_Specialization_required); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 243, __pyx_L1_error)
+  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_u_Specialization_required); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 261, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
 
-  /* "mds/managed.pyx":258
+  /* "mds/managed.pyx":276
  *         elif not isinstance(value, int):
  *             t = type(value)
  *             raise TypeError('Unable to parse value of type `{t}`')             # <<<<<<<<<<<<<<
  * 
  *         if value < self.MIN:
  */
-  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_u_Unable_to_parse_value_of_type_t); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 258, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_u_Unable_to_parse_value_of_type_t); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 276, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
 
-  /* "mds/managed.pyx":269
+  /* "mds/managed.pyx":287
  *     property MIN:
  *         def __get__(self):
  *             raise NotImplementedError("Integer specialization required.")             # <<<<<<<<<<<<<<
  * 
  *     property MAX:
  */
-  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_kp_u_Integer_specialization_required); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 269, __pyx_L1_error)
+  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_kp_u_Integer_specialization_required); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__17);
   __Pyx_GIVEREF(__pyx_tuple__17);
 
-  /* "mds/managed.pyx":273
+  /* "mds/managed.pyx":291
  *     property MAX:
  *         def __get__(self):
  *             raise NotImplementedError("Integer specialization required.")             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_kp_u_Integer_specialization_required); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_kp_u_Integer_specialization_required); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__18);
   __Pyx_GIVEREF(__pyx_tuple__18);
 
-  /* "mds/managed.pyx":1081
+  /* "mds/managed.pyx":1099
  *             return String(s)
  * 
  *         raise TypeError("must be String")             # <<<<<<<<<<<<<<
  * 
  *     def __mul__(self, other):
  */
-  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_u_must_be_String); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 1081, __pyx_L1_error)
+  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_u_must_be_String); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(0, 1099, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__20);
   __Pyx_GIVEREF(__pyx_tuple__20);
 
-  /* "mds/managed.pyx":1101
+  /* "mds/managed.pyx":1119
  *             return String(<unicode> s.decode("utf-8"))
  * 
  *         raise TypeError(             # <<<<<<<<<<<<<<
  *             "can't multiply sequence by non-int of type 'String'"
  *         )
  */
-  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_u_can_t_multiply_sequence_by_non_i); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 1101, __pyx_L1_error)
+  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_u_can_t_multiply_sequence_by_non_i); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 1119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__21);
   __Pyx_GIVEREF(__pyx_tuple__21);
 
@@ -27781,149 +27781,149 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__23);
   __Pyx_GIVEREF(__pyx_tuple__23);
 
-  /* "mds/managed.pyx":159
+  /* "mds/managed.pyx":177
  * 
  *     @staticmethod
  *     def create(dtype, length):             # <<<<<<<<<<<<<<
  *         if dtype == "bool":
  *             return BoolArray_Init(create_bool_marray(length))
  */
-  __pyx_tuple__24 = PyTuple_Pack(2, __pyx_n_s_dtype, __pyx_n_s_length); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_tuple__24 = PyTuple_Pack(2, __pyx_n_s_dtype, __pyx_n_s_length); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__24);
   __Pyx_GIVEREF(__pyx_tuple__24);
-  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 159, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_codeobj__25 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__24, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 177, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__25)) __PYX_ERR(0, 177, __pyx_L1_error)
 
-  /* "mds/managed.pyx":331
+  /* "mds/managed.pyx":349
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("bool", length)
  * 
  */
-  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 331, __pyx_L1_error)
+  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__26);
   __Pyx_GIVEREF(__pyx_tuple__26);
-  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 331, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 331, __pyx_L1_error)
+  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 349, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 349, __pyx_L1_error)
 
-  /* "mds/managed.pyx":401
+  /* "mds/managed.pyx":419
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("byte", length)
  * 
  */
-  __pyx_tuple__28 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 401, __pyx_L1_error)
+  __pyx_tuple__28 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 419, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__28);
   __Pyx_GIVEREF(__pyx_tuple__28);
-  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 401, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 401, __pyx_L1_error)
+  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 419, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 419, __pyx_L1_error)
 
-  /* "mds/managed.pyx":467
+  /* "mds/managed.pyx":485
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("ubyte", length)
  * 
  */
-  __pyx_tuple__30 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 467, __pyx_L1_error)
+  __pyx_tuple__30 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 485, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__30);
   __Pyx_GIVEREF(__pyx_tuple__30);
-  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 467, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 467, __pyx_L1_error)
+  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 485, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 485, __pyx_L1_error)
 
-  /* "mds/managed.pyx":533
+  /* "mds/managed.pyx":551
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("short", length)
  * 
  */
-  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 533, __pyx_L1_error)
+  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 551, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__32);
   __Pyx_GIVEREF(__pyx_tuple__32);
-  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 533, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 533, __pyx_L1_error)
+  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 551, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 551, __pyx_L1_error)
 
-  /* "mds/managed.pyx":599
+  /* "mds/managed.pyx":617
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("ushort", length)
  * 
  */
-  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 599, __pyx_L1_error)
+  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 617, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__34);
   __Pyx_GIVEREF(__pyx_tuple__34);
-  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 599, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 599, __pyx_L1_error)
+  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 617, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 617, __pyx_L1_error)
 
-  /* "mds/managed.pyx":665
+  /* "mds/managed.pyx":683
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("int", length)
  * 
  */
-  __pyx_tuple__36 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 665, __pyx_L1_error)
+  __pyx_tuple__36 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 683, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__36);
   __Pyx_GIVEREF(__pyx_tuple__36);
-  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 665, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 665, __pyx_L1_error)
+  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 683, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 683, __pyx_L1_error)
 
-  /* "mds/managed.pyx":731
+  /* "mds/managed.pyx":749
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("uint", length)
  * 
  */
-  __pyx_tuple__38 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(0, 731, __pyx_L1_error)
+  __pyx_tuple__38 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(0, 749, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__38);
   __Pyx_GIVEREF(__pyx_tuple__38);
-  __pyx_codeobj__39 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__38, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 731, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__39)) __PYX_ERR(0, 731, __pyx_L1_error)
+  __pyx_codeobj__39 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__38, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 749, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__39)) __PYX_ERR(0, 749, __pyx_L1_error)
 
-  /* "mds/managed.pyx":797
+  /* "mds/managed.pyx":815
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("long", length)
  * 
  */
-  __pyx_tuple__40 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(0, 797, __pyx_L1_error)
+  __pyx_tuple__40 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(0, 815, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__40);
   __Pyx_GIVEREF(__pyx_tuple__40);
-  __pyx_codeobj__41 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__40, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 797, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__41)) __PYX_ERR(0, 797, __pyx_L1_error)
+  __pyx_codeobj__41 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__40, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 815, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__41)) __PYX_ERR(0, 815, __pyx_L1_error)
 
-  /* "mds/managed.pyx":863
+  /* "mds/managed.pyx":881
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("ulong", length)
  * 
  */
-  __pyx_tuple__42 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(0, 863, __pyx_L1_error)
+  __pyx_tuple__42 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(0, 881, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__42);
   __Pyx_GIVEREF(__pyx_tuple__42);
-  __pyx_codeobj__43 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__42, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 863, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__43)) __PYX_ERR(0, 863, __pyx_L1_error)
+  __pyx_codeobj__43 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__42, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 881, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__43)) __PYX_ERR(0, 881, __pyx_L1_error)
 
-  /* "mds/managed.pyx":921
+  /* "mds/managed.pyx":939
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("float", length)
  * 
  */
-  __pyx_tuple__44 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__44)) __PYX_ERR(0, 921, __pyx_L1_error)
+  __pyx_tuple__44 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__44)) __PYX_ERR(0, 939, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__44);
   __Pyx_GIVEREF(__pyx_tuple__44);
-  __pyx_codeobj__45 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__44, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 921, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__45)) __PYX_ERR(0, 921, __pyx_L1_error)
+  __pyx_codeobj__45 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__44, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 939, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__45)) __PYX_ERR(0, 939, __pyx_L1_error)
 
-  /* "mds/managed.pyx":979
+  /* "mds/managed.pyx":997
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("double", length)
  * 
  */
-  __pyx_tuple__46 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__46)) __PYX_ERR(0, 979, __pyx_L1_error)
+  __pyx_tuple__46 = PyTuple_Pack(1, __pyx_n_s_length); if (unlikely(!__pyx_tuple__46)) __PYX_ERR(0, 997, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__46);
   __Pyx_GIVEREF(__pyx_tuple__46);
-  __pyx_codeobj__47 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__46, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 979, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__47)) __PYX_ERR(0, 979, __pyx_L1_error)
+  __pyx_codeobj__47 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__46, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_create, 997, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__47)) __PYX_ERR(0, 997, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -28057,161 +28057,161 @@ PyMODINIT_FUNC PyInit_managed(void)
   if (PyObject_SetAttrString(__pyx_m, "Record", (PyObject *)&__pyx_type_3mds_7managed_Record) < 0) __PYX_ERR(0, 51, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_Record = &__pyx_type_3mds_7managed_Record;
   __pyx_type_3mds_7managed_MDSArrayBase.tp_base = __pyx_ptype_3mds_7managed_MDSObject;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSArrayBase) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSArrayBase) < 0) __PYX_ERR(0, 96, __pyx_L1_error)
   __pyx_type_3mds_7managed_MDSArrayBase.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "MDSArrayBase", (PyObject *)&__pyx_type_3mds_7managed_MDSArrayBase) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "MDSArrayBase", (PyObject *)&__pyx_type_3mds_7managed_MDSArrayBase) < 0) __PYX_ERR(0, 96, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_MDSArrayBase = &__pyx_type_3mds_7managed_MDSArrayBase;
   __pyx_type_3mds_7managed_MDSIntArrayBase.tp_base = __pyx_ptype_3mds_7managed_MDSArrayBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSIntArrayBase) < 0) __PYX_ERR(0, 190, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSIntArrayBase) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
   __pyx_type_3mds_7managed_MDSIntArrayBase.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "MDSIntArrayBase", (PyObject *)&__pyx_type_3mds_7managed_MDSIntArrayBase) < 0) __PYX_ERR(0, 190, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "MDSIntArrayBase", (PyObject *)&__pyx_type_3mds_7managed_MDSIntArrayBase) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_MDSIntArrayBase = &__pyx_type_3mds_7managed_MDSIntArrayBase;
   __pyx_type_3mds_7managed_MDSFloatArrayBase.tp_base = __pyx_ptype_3mds_7managed_MDSArrayBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSFloatArrayBase) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSFloatArrayBase) < 0) __PYX_ERR(0, 226, __pyx_L1_error)
   __pyx_type_3mds_7managed_MDSFloatArrayBase.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "MDSFloatArrayBase", (PyObject *)&__pyx_type_3mds_7managed_MDSFloatArrayBase) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "MDSFloatArrayBase", (PyObject *)&__pyx_type_3mds_7managed_MDSFloatArrayBase) < 0) __PYX_ERR(0, 226, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_MDSFloatArrayBase = &__pyx_type_3mds_7managed_MDSFloatArrayBase;
   __pyx_type_3mds_7managed_MDSReferenceBase.tp_base = __pyx_ptype_3mds_7managed_MDSObject;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSReferenceBase) < 0) __PYX_ERR(0, 215, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSReferenceBase) < 0) __PYX_ERR(0, 233, __pyx_L1_error)
   __pyx_type_3mds_7managed_MDSReferenceBase.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "MDSReferenceBase", (PyObject *)&__pyx_type_3mds_7managed_MDSReferenceBase) < 0) __PYX_ERR(0, 215, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "MDSReferenceBase", (PyObject *)&__pyx_type_3mds_7managed_MDSReferenceBase) < 0) __PYX_ERR(0, 233, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_MDSReferenceBase = &__pyx_type_3mds_7managed_MDSReferenceBase;
   __pyx_type_3mds_7managed_MDSPrimitiveBase.tp_base = __pyx_ptype_3mds_7managed_MDSObject;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSPrimitiveBase) < 0) __PYX_ERR(0, 220, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSPrimitiveBase) < 0) __PYX_ERR(0, 238, __pyx_L1_error)
   __pyx_type_3mds_7managed_MDSPrimitiveBase.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "MDSPrimitiveBase", (PyObject *)&__pyx_type_3mds_7managed_MDSPrimitiveBase) < 0) __PYX_ERR(0, 220, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "MDSPrimitiveBase", (PyObject *)&__pyx_type_3mds_7managed_MDSPrimitiveBase) < 0) __PYX_ERR(0, 238, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_MDSPrimitiveBase = &__pyx_type_3mds_7managed_MDSPrimitiveBase;
   __pyx_type_3mds_7managed_UnderflowError.tp_base = (&((PyTypeObject*)PyExc_Exception)[0]);
-  if (PyType_Ready(&__pyx_type_3mds_7managed_UnderflowError) < 0) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_UnderflowError) < 0) __PYX_ERR(0, 264, __pyx_L1_error)
   __pyx_type_3mds_7managed_UnderflowError.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "UnderflowError", (PyObject *)&__pyx_type_3mds_7managed_UnderflowError) < 0) __PYX_ERR(0, 246, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "UnderflowError", (PyObject *)&__pyx_type_3mds_7managed_UnderflowError) < 0) __PYX_ERR(0, 264, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_UnderflowError = &__pyx_type_3mds_7managed_UnderflowError;
   __pyx_type_3mds_7managed_MDSIntPrimitiveBase.tp_base = __pyx_ptype_3mds_7managed_MDSPrimitiveBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSIntPrimitiveBase) < 0) __PYX_ERR(0, 251, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSIntPrimitiveBase) < 0) __PYX_ERR(0, 269, __pyx_L1_error)
   __pyx_type_3mds_7managed_MDSIntPrimitiveBase.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "MDSIntPrimitiveBase", (PyObject *)&__pyx_type_3mds_7managed_MDSIntPrimitiveBase) < 0) __PYX_ERR(0, 251, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "MDSIntPrimitiveBase", (PyObject *)&__pyx_type_3mds_7managed_MDSIntPrimitiveBase) < 0) __PYX_ERR(0, 269, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_MDSIntPrimitiveBase = &__pyx_type_3mds_7managed_MDSIntPrimitiveBase;
   __pyx_type_3mds_7managed_MDSFloatPrimitiveBase.tp_base = __pyx_ptype_3mds_7managed_MDSPrimitiveBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSFloatPrimitiveBase) < 0) __PYX_ERR(0, 276, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_MDSFloatPrimitiveBase) < 0) __PYX_ERR(0, 294, __pyx_L1_error)
   __pyx_type_3mds_7managed_MDSFloatPrimitiveBase.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "MDSFloatPrimitiveBase", (PyObject *)&__pyx_type_3mds_7managed_MDSFloatPrimitiveBase) < 0) __PYX_ERR(0, 276, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "MDSFloatPrimitiveBase", (PyObject *)&__pyx_type_3mds_7managed_MDSFloatPrimitiveBase) < 0) __PYX_ERR(0, 294, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_MDSFloatPrimitiveBase = &__pyx_type_3mds_7managed_MDSFloatPrimitiveBase;
   __pyx_type_3mds_7managed_Bool.tp_base = __pyx_ptype_3mds_7managed_MDSPrimitiveBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_Bool) < 0) __PYX_ERR(0, 283, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_Bool) < 0) __PYX_ERR(0, 301, __pyx_L1_error)
   __pyx_type_3mds_7managed_Bool.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "Bool", (PyObject *)&__pyx_type_3mds_7managed_Bool) < 0) __PYX_ERR(0, 283, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "Bool", (PyObject *)&__pyx_type_3mds_7managed_Bool) < 0) __PYX_ERR(0, 301, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_Bool = &__pyx_type_3mds_7managed_Bool;
   __pyx_type_3mds_7managed_BoolArray.tp_base = __pyx_ptype_3mds_7managed_MDSArrayBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_BoolArray) < 0) __PYX_ERR(0, 297, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_BoolArray) < 0) __PYX_ERR(0, 315, __pyx_L1_error)
   __pyx_type_3mds_7managed_BoolArray.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "BoolArray", (PyObject *)&__pyx_type_3mds_7managed_BoolArray) < 0) __PYX_ERR(0, 297, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "BoolArray", (PyObject *)&__pyx_type_3mds_7managed_BoolArray) < 0) __PYX_ERR(0, 315, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_BoolArray = &__pyx_type_3mds_7managed_BoolArray;
   __pyx_type_3mds_7managed_Byte.tp_base = __pyx_ptype_3mds_7managed_MDSIntPrimitiveBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_Byte) < 0) __PYX_ERR(0, 345, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_Byte) < 0) __PYX_ERR(0, 363, __pyx_L1_error)
   __pyx_type_3mds_7managed_Byte.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "Byte", (PyObject *)&__pyx_type_3mds_7managed_Byte) < 0) __PYX_ERR(0, 345, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "Byte", (PyObject *)&__pyx_type_3mds_7managed_Byte) < 0) __PYX_ERR(0, 363, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_Byte = &__pyx_type_3mds_7managed_Byte;
   __pyx_type_3mds_7managed_ByteArray.tp_base = __pyx_ptype_3mds_7managed_MDSIntArrayBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_ByteArray) < 0) __PYX_ERR(0, 367, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_ByteArray) < 0) __PYX_ERR(0, 385, __pyx_L1_error)
   __pyx_type_3mds_7managed_ByteArray.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "ByteArray", (PyObject *)&__pyx_type_3mds_7managed_ByteArray) < 0) __PYX_ERR(0, 367, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "ByteArray", (PyObject *)&__pyx_type_3mds_7managed_ByteArray) < 0) __PYX_ERR(0, 385, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_ByteArray = &__pyx_type_3mds_7managed_ByteArray;
   __pyx_type_3mds_7managed_UByte.tp_base = __pyx_ptype_3mds_7managed_MDSIntPrimitiveBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_UByte) < 0) __PYX_ERR(0, 411, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_UByte) < 0) __PYX_ERR(0, 429, __pyx_L1_error)
   __pyx_type_3mds_7managed_UByte.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "UByte", (PyObject *)&__pyx_type_3mds_7managed_UByte) < 0) __PYX_ERR(0, 411, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "UByte", (PyObject *)&__pyx_type_3mds_7managed_UByte) < 0) __PYX_ERR(0, 429, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_UByte = &__pyx_type_3mds_7managed_UByte;
   __pyx_type_3mds_7managed_UByteArray.tp_base = __pyx_ptype_3mds_7managed_MDSIntArrayBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_UByteArray) < 0) __PYX_ERR(0, 433, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_UByteArray) < 0) __PYX_ERR(0, 451, __pyx_L1_error)
   __pyx_type_3mds_7managed_UByteArray.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "UByteArray", (PyObject *)&__pyx_type_3mds_7managed_UByteArray) < 0) __PYX_ERR(0, 433, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "UByteArray", (PyObject *)&__pyx_type_3mds_7managed_UByteArray) < 0) __PYX_ERR(0, 451, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_UByteArray = &__pyx_type_3mds_7managed_UByteArray;
   __pyx_type_3mds_7managed_Short.tp_base = __pyx_ptype_3mds_7managed_MDSIntPrimitiveBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_Short) < 0) __PYX_ERR(0, 477, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_Short) < 0) __PYX_ERR(0, 495, __pyx_L1_error)
   __pyx_type_3mds_7managed_Short.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "Short", (PyObject *)&__pyx_type_3mds_7managed_Short) < 0) __PYX_ERR(0, 477, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "Short", (PyObject *)&__pyx_type_3mds_7managed_Short) < 0) __PYX_ERR(0, 495, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_Short = &__pyx_type_3mds_7managed_Short;
   __pyx_type_3mds_7managed_ShortArray.tp_base = __pyx_ptype_3mds_7managed_MDSIntArrayBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_ShortArray) < 0) __PYX_ERR(0, 499, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_ShortArray) < 0) __PYX_ERR(0, 517, __pyx_L1_error)
   __pyx_type_3mds_7managed_ShortArray.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "ShortArray", (PyObject *)&__pyx_type_3mds_7managed_ShortArray) < 0) __PYX_ERR(0, 499, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "ShortArray", (PyObject *)&__pyx_type_3mds_7managed_ShortArray) < 0) __PYX_ERR(0, 517, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_ShortArray = &__pyx_type_3mds_7managed_ShortArray;
   __pyx_type_3mds_7managed_UShort.tp_base = __pyx_ptype_3mds_7managed_MDSIntPrimitiveBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_UShort) < 0) __PYX_ERR(0, 543, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_UShort) < 0) __PYX_ERR(0, 561, __pyx_L1_error)
   __pyx_type_3mds_7managed_UShort.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "UShort", (PyObject *)&__pyx_type_3mds_7managed_UShort) < 0) __PYX_ERR(0, 543, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "UShort", (PyObject *)&__pyx_type_3mds_7managed_UShort) < 0) __PYX_ERR(0, 561, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_UShort = &__pyx_type_3mds_7managed_UShort;
   __pyx_type_3mds_7managed_UShortArray.tp_base = __pyx_ptype_3mds_7managed_MDSIntArrayBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_UShortArray) < 0) __PYX_ERR(0, 565, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_UShortArray) < 0) __PYX_ERR(0, 583, __pyx_L1_error)
   __pyx_type_3mds_7managed_UShortArray.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "UShortArray", (PyObject *)&__pyx_type_3mds_7managed_UShortArray) < 0) __PYX_ERR(0, 565, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "UShortArray", (PyObject *)&__pyx_type_3mds_7managed_UShortArray) < 0) __PYX_ERR(0, 583, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_UShortArray = &__pyx_type_3mds_7managed_UShortArray;
   __pyx_type_3mds_7managed_Int.tp_base = __pyx_ptype_3mds_7managed_MDSIntPrimitiveBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_Int) < 0) __PYX_ERR(0, 609, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_Int) < 0) __PYX_ERR(0, 627, __pyx_L1_error)
   __pyx_type_3mds_7managed_Int.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "Int", (PyObject *)&__pyx_type_3mds_7managed_Int) < 0) __PYX_ERR(0, 609, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "Int", (PyObject *)&__pyx_type_3mds_7managed_Int) < 0) __PYX_ERR(0, 627, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_Int = &__pyx_type_3mds_7managed_Int;
   __pyx_type_3mds_7managed_IntArray.tp_base = __pyx_ptype_3mds_7managed_MDSIntArrayBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_IntArray) < 0) __PYX_ERR(0, 631, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_IntArray) < 0) __PYX_ERR(0, 649, __pyx_L1_error)
   __pyx_type_3mds_7managed_IntArray.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "IntArray", (PyObject *)&__pyx_type_3mds_7managed_IntArray) < 0) __PYX_ERR(0, 631, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "IntArray", (PyObject *)&__pyx_type_3mds_7managed_IntArray) < 0) __PYX_ERR(0, 649, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_IntArray = &__pyx_type_3mds_7managed_IntArray;
   __pyx_type_3mds_7managed_UInt.tp_base = __pyx_ptype_3mds_7managed_MDSIntPrimitiveBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_UInt) < 0) __PYX_ERR(0, 675, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_UInt) < 0) __PYX_ERR(0, 693, __pyx_L1_error)
   __pyx_type_3mds_7managed_UInt.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "UInt", (PyObject *)&__pyx_type_3mds_7managed_UInt) < 0) __PYX_ERR(0, 675, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "UInt", (PyObject *)&__pyx_type_3mds_7managed_UInt) < 0) __PYX_ERR(0, 693, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_UInt = &__pyx_type_3mds_7managed_UInt;
   __pyx_type_3mds_7managed_UIntArray.tp_base = __pyx_ptype_3mds_7managed_MDSIntArrayBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_UIntArray) < 0) __PYX_ERR(0, 697, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_UIntArray) < 0) __PYX_ERR(0, 715, __pyx_L1_error)
   __pyx_type_3mds_7managed_UIntArray.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "UIntArray", (PyObject *)&__pyx_type_3mds_7managed_UIntArray) < 0) __PYX_ERR(0, 697, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "UIntArray", (PyObject *)&__pyx_type_3mds_7managed_UIntArray) < 0) __PYX_ERR(0, 715, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_UIntArray = &__pyx_type_3mds_7managed_UIntArray;
   __pyx_type_3mds_7managed_Long.tp_base = __pyx_ptype_3mds_7managed_MDSIntPrimitiveBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_Long) < 0) __PYX_ERR(0, 741, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_Long) < 0) __PYX_ERR(0, 759, __pyx_L1_error)
   __pyx_type_3mds_7managed_Long.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "Long", (PyObject *)&__pyx_type_3mds_7managed_Long) < 0) __PYX_ERR(0, 741, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "Long", (PyObject *)&__pyx_type_3mds_7managed_Long) < 0) __PYX_ERR(0, 759, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_Long = &__pyx_type_3mds_7managed_Long;
   __pyx_type_3mds_7managed_LongArray.tp_base = __pyx_ptype_3mds_7managed_MDSIntArrayBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_LongArray) < 0) __PYX_ERR(0, 763, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_LongArray) < 0) __PYX_ERR(0, 781, __pyx_L1_error)
   __pyx_type_3mds_7managed_LongArray.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "LongArray", (PyObject *)&__pyx_type_3mds_7managed_LongArray) < 0) __PYX_ERR(0, 763, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "LongArray", (PyObject *)&__pyx_type_3mds_7managed_LongArray) < 0) __PYX_ERR(0, 781, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_LongArray = &__pyx_type_3mds_7managed_LongArray;
   __pyx_type_3mds_7managed_ULong.tp_base = __pyx_ptype_3mds_7managed_MDSIntPrimitiveBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_ULong) < 0) __PYX_ERR(0, 807, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_ULong) < 0) __PYX_ERR(0, 825, __pyx_L1_error)
   __pyx_type_3mds_7managed_ULong.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "ULong", (PyObject *)&__pyx_type_3mds_7managed_ULong) < 0) __PYX_ERR(0, 807, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "ULong", (PyObject *)&__pyx_type_3mds_7managed_ULong) < 0) __PYX_ERR(0, 825, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_ULong = &__pyx_type_3mds_7managed_ULong;
   __pyx_type_3mds_7managed_ULongArray.tp_base = __pyx_ptype_3mds_7managed_MDSIntArrayBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_ULongArray) < 0) __PYX_ERR(0, 829, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_ULongArray) < 0) __PYX_ERR(0, 847, __pyx_L1_error)
   __pyx_type_3mds_7managed_ULongArray.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "ULongArray", (PyObject *)&__pyx_type_3mds_7managed_ULongArray) < 0) __PYX_ERR(0, 829, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "ULongArray", (PyObject *)&__pyx_type_3mds_7managed_ULongArray) < 0) __PYX_ERR(0, 847, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_ULongArray = &__pyx_type_3mds_7managed_ULongArray;
   __pyx_type_3mds_7managed_Float.tp_base = __pyx_ptype_3mds_7managed_MDSFloatPrimitiveBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_Float) < 0) __PYX_ERR(0, 873, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_Float) < 0) __PYX_ERR(0, 891, __pyx_L1_error)
   __pyx_type_3mds_7managed_Float.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "Float", (PyObject *)&__pyx_type_3mds_7managed_Float) < 0) __PYX_ERR(0, 873, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "Float", (PyObject *)&__pyx_type_3mds_7managed_Float) < 0) __PYX_ERR(0, 891, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_Float = &__pyx_type_3mds_7managed_Float;
   __pyx_type_3mds_7managed_FloatArray.tp_base = __pyx_ptype_3mds_7managed_MDSFloatArrayBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_FloatArray) < 0) __PYX_ERR(0, 887, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_FloatArray) < 0) __PYX_ERR(0, 905, __pyx_L1_error)
   __pyx_type_3mds_7managed_FloatArray.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "FloatArray", (PyObject *)&__pyx_type_3mds_7managed_FloatArray) < 0) __PYX_ERR(0, 887, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "FloatArray", (PyObject *)&__pyx_type_3mds_7managed_FloatArray) < 0) __PYX_ERR(0, 905, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_FloatArray = &__pyx_type_3mds_7managed_FloatArray;
   __pyx_type_3mds_7managed_Double.tp_base = __pyx_ptype_3mds_7managed_MDSFloatPrimitiveBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_Double) < 0) __PYX_ERR(0, 931, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_Double) < 0) __PYX_ERR(0, 949, __pyx_L1_error)
   __pyx_type_3mds_7managed_Double.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "Double", (PyObject *)&__pyx_type_3mds_7managed_Double) < 0) __PYX_ERR(0, 931, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "Double", (PyObject *)&__pyx_type_3mds_7managed_Double) < 0) __PYX_ERR(0, 949, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_Double = &__pyx_type_3mds_7managed_Double;
   __pyx_type_3mds_7managed_DoubleArray.tp_base = __pyx_ptype_3mds_7managed_MDSFloatArrayBase;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_DoubleArray) < 0) __PYX_ERR(0, 945, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_DoubleArray) < 0) __PYX_ERR(0, 963, __pyx_L1_error)
   __pyx_type_3mds_7managed_DoubleArray.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "DoubleArray", (PyObject *)&__pyx_type_3mds_7managed_DoubleArray) < 0) __PYX_ERR(0, 945, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "DoubleArray", (PyObject *)&__pyx_type_3mds_7managed_DoubleArray) < 0) __PYX_ERR(0, 963, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_DoubleArray = &__pyx_type_3mds_7managed_DoubleArray;
   __pyx_type_3mds_7managed_String.tp_base = __pyx_ptype_3mds_7managed_MDSObject;
-  if (PyType_Ready(&__pyx_type_3mds_7managed_String) < 0) __PYX_ERR(0, 1000, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_7managed_String) < 0) __PYX_ERR(0, 1018, __pyx_L1_error)
   __pyx_type_3mds_7managed_String.tp_print = 0;
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_3mds_7managed_String, "__add__"); if (unlikely(!wrapper)) __PYX_ERR(0, 1000, __pyx_L1_error)
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_3mds_7managed_String, "__add__"); if (unlikely(!wrapper)) __PYX_ERR(0, 1018, __pyx_L1_error)
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
       __pyx_wrapperbase_3mds_7managed_6String_16__add__ = *((PyWrapperDescrObject *)wrapper)->d_base;
       __pyx_wrapperbase_3mds_7managed_6String_16__add__.doc = __pyx_doc_3mds_7managed_6String_16__add__;
@@ -28221,7 +28221,7 @@ PyMODINIT_FUNC PyInit_managed(void)
   #endif
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_3mds_7managed_String, "__mul__"); if (unlikely(!wrapper)) __PYX_ERR(0, 1000, __pyx_L1_error)
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_3mds_7managed_String, "__mul__"); if (unlikely(!wrapper)) __PYX_ERR(0, 1018, __pyx_L1_error)
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
       __pyx_wrapperbase_3mds_7managed_6String_18__mul__ = *((PyWrapperDescrObject *)wrapper)->d_base;
       __pyx_wrapperbase_3mds_7managed_6String_18__mul__.doc = __pyx_doc_3mds_7managed_6String_18__mul__;
@@ -28229,7 +28229,7 @@ PyMODINIT_FUNC PyInit_managed(void)
     }
   }
   #endif
-  if (PyObject_SetAttrString(__pyx_m, "String", (PyObject *)&__pyx_type_3mds_7managed_String) < 0) __PYX_ERR(0, 1000, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "String", (PyObject *)&__pyx_type_3mds_7managed_String) < 0) __PYX_ERR(0, 1018, __pyx_L1_error)
   __pyx_ptype_3mds_7managed_String = &__pyx_type_3mds_7managed_String;
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
@@ -28354,809 +28354,809 @@ PyMODINIT_FUNC PyInit_managed(void)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_LocalRecordField, __pyx_t_1) < 0) __PYX_ERR(0, 37, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mds/managed.pyx":159
+  /* "mds/managed.pyx":177
  * 
  *     @staticmethod
  *     def create(dtype, length):             # <<<<<<<<<<<<<<
  *         if dtype == "bool":
  *             return BoolArray_Init(create_bool_marray(length))
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_12MDSArrayBase_37create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_12MDSArrayBase_37create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":158
+  /* "mds/managed.pyx":176
  *         raise NotImplementedError('Specialization of MDSArrayBase required')
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(dtype, length):
  *         if dtype == "bool":
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 159, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_MDSArrayBase);
 
-  /* "mds/managed.pyx":159
+  /* "mds/managed.pyx":177
  * 
  *     @staticmethod
  *     def create(dtype, length):             # <<<<<<<<<<<<<<
  *         if dtype == "bool":
  *             return BoolArray_Init(create_bool_marray(length))
  */
-  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":158
+  /* "mds/managed.pyx":176
  *         raise NotImplementedError('Specialization of MDSArrayBase required')
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(dtype, length):
  *         if dtype == "bool":
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 159, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_MDSArrayBase->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 177, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_MDSArrayBase);
 
-  /* "mds/managed.pyx":300
+  /* "mds/managed.pyx":318
  * 
  *     cdef h_marray_bool_t _handle
  *     _primitive = Bool             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self, length=None):
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_BoolArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Bool)) < 0) __PYX_ERR(0, 300, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_BoolArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Bool)) < 0) __PYX_ERR(0, 318, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_3mds_7managed_BoolArray);
 
-  /* "mds/managed.pyx":331
+  /* "mds/managed.pyx":349
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("bool", length)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_9BoolArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 331, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_9BoolArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":330
+  /* "mds/managed.pyx":348
  *         return BoolArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("bool", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 330, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 348, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 330, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 348, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_BoolArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 331, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_BoolArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_BoolArray);
 
-  /* "mds/managed.pyx":331
+  /* "mds/managed.pyx":349
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("bool", length)
  * 
  */
-  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_BoolArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 331, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_BoolArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":330
+  /* "mds/managed.pyx":348
  *         return BoolArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("bool", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 330, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 348, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 330, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 348, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_BoolArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 331, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_BoolArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 349, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_BoolArray);
 
-  /* "mds/managed.pyx":370
+  /* "mds/managed.pyx":388
  * 
  *     cdef h_marray_byte_t _handle
  *     _primitive = Byte             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self, length=None):
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ByteArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Byte)) < 0) __PYX_ERR(0, 370, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ByteArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Byte)) < 0) __PYX_ERR(0, 388, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_3mds_7managed_ByteArray);
 
-  /* "mds/managed.pyx":401
+  /* "mds/managed.pyx":419
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("byte", length)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_9ByteArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 401, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_9ByteArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 419, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":400
+  /* "mds/managed.pyx":418
  *         return ByteArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("byte", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 400, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 400, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ByteArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 401, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ByteArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 419, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_ByteArray);
 
-  /* "mds/managed.pyx":401
+  /* "mds/managed.pyx":419
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("byte", length)
  * 
  */
-  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_ByteArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 401, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_ByteArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 419, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":400
+  /* "mds/managed.pyx":418
  *         return ByteArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("byte", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 400, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 400, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 418, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ByteArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 401, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ByteArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 419, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_ByteArray);
 
-  /* "mds/managed.pyx":436
+  /* "mds/managed.pyx":454
  * 
  *     cdef h_marray_ubyte_t _handle
  *     _primitive = UByte             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self, length=None):
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UByteArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_UByte)) < 0) __PYX_ERR(0, 436, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UByteArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_UByte)) < 0) __PYX_ERR(0, 454, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_3mds_7managed_UByteArray);
 
-  /* "mds/managed.pyx":467
+  /* "mds/managed.pyx":485
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("ubyte", length)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_10UByteArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 467, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_10UByteArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 485, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":466
+  /* "mds/managed.pyx":484
  *         return UByteArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("ubyte", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 466, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 484, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 466, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 484, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UByteArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 467, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UByteArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 485, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_UByteArray);
 
-  /* "mds/managed.pyx":467
+  /* "mds/managed.pyx":485
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("ubyte", length)
  * 
  */
-  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_UByteArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 467, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_UByteArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 485, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":466
+  /* "mds/managed.pyx":484
  *         return UByteArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("ubyte", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 466, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 484, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 466, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 484, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UByteArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 467, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UByteArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 485, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_UByteArray);
 
-  /* "mds/managed.pyx":502
+  /* "mds/managed.pyx":520
  * 
  *     cdef h_marray_short_t _handle
  *     _primitive = Short             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self, length=None):
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ShortArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Short)) < 0) __PYX_ERR(0, 502, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ShortArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Short)) < 0) __PYX_ERR(0, 520, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_3mds_7managed_ShortArray);
 
-  /* "mds/managed.pyx":533
+  /* "mds/managed.pyx":551
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("short", length)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_10ShortArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 533, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_10ShortArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 551, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":532
+  /* "mds/managed.pyx":550
  *         return ShortArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("short", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 550, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 550, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ShortArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 533, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ShortArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 551, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_ShortArray);
 
-  /* "mds/managed.pyx":533
+  /* "mds/managed.pyx":551
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("short", length)
  * 
  */
-  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_ShortArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 533, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_ShortArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 551, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":532
+  /* "mds/managed.pyx":550
  *         return ShortArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("short", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 550, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 550, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ShortArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 533, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ShortArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 551, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_ShortArray);
 
-  /* "mds/managed.pyx":568
+  /* "mds/managed.pyx":586
  * 
  *     cdef h_marray_ushort_t _handle
  *     _primitive = UShort             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self, length=None):
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UShortArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_UShort)) < 0) __PYX_ERR(0, 568, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UShortArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_UShort)) < 0) __PYX_ERR(0, 586, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_3mds_7managed_UShortArray);
 
-  /* "mds/managed.pyx":599
+  /* "mds/managed.pyx":617
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("ushort", length)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_11UShortArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 599, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_11UShortArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 617, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":598
+  /* "mds/managed.pyx":616
  *         return UShortArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("ushort", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 598, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 616, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 598, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 616, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UShortArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 599, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UShortArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 617, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_UShortArray);
 
-  /* "mds/managed.pyx":599
+  /* "mds/managed.pyx":617
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("ushort", length)
  * 
  */
-  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_UShortArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 599, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_UShortArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 617, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":598
+  /* "mds/managed.pyx":616
  *         return UShortArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("ushort", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 598, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 616, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 598, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 616, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UShortArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 599, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UShortArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 617, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_UShortArray);
 
-  /* "mds/managed.pyx":634
+  /* "mds/managed.pyx":652
  * 
  *     cdef h_marray_int_t _handle
  *     _primitive = Int             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self, length=None):
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_IntArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Int)) < 0) __PYX_ERR(0, 634, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_IntArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Int)) < 0) __PYX_ERR(0, 652, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_3mds_7managed_IntArray);
 
-  /* "mds/managed.pyx":665
+  /* "mds/managed.pyx":683
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("int", length)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_8IntArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 665, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_8IntArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 683, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":664
+  /* "mds/managed.pyx":682
  *         return IntArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("int", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 664, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 682, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 664, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 682, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_IntArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 665, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_IntArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 683, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_IntArray);
 
-  /* "mds/managed.pyx":665
+  /* "mds/managed.pyx":683
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("int", length)
  * 
  */
-  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_IntArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 665, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_IntArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 683, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":664
+  /* "mds/managed.pyx":682
  *         return IntArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("int", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 664, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 682, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 664, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 682, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_IntArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 665, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_IntArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 683, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_IntArray);
 
-  /* "mds/managed.pyx":700
+  /* "mds/managed.pyx":718
  * 
  *     cdef h_marray_uint_t _handle
  *     _primitive = UInt             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self, length=None):
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UIntArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_UInt)) < 0) __PYX_ERR(0, 700, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UIntArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_UInt)) < 0) __PYX_ERR(0, 718, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_3mds_7managed_UIntArray);
 
-  /* "mds/managed.pyx":731
+  /* "mds/managed.pyx":749
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("uint", length)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_9UIntArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 731, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_9UIntArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 749, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":730
+  /* "mds/managed.pyx":748
  *         return UIntArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("uint", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 730, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 748, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 730, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 748, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UIntArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 731, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UIntArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 749, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_UIntArray);
 
-  /* "mds/managed.pyx":731
+  /* "mds/managed.pyx":749
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("uint", length)
  * 
  */
-  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_UIntArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 731, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_UIntArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 749, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":730
+  /* "mds/managed.pyx":748
  *         return UIntArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("uint", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 730, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 748, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 730, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 748, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UIntArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 731, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_UIntArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 749, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_UIntArray);
 
-  /* "mds/managed.pyx":766
+  /* "mds/managed.pyx":784
  * 
  *     cdef h_marray_long_t _handle
  *     _primitive = Long             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self, length=None):
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_LongArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Long)) < 0) __PYX_ERR(0, 766, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_LongArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Long)) < 0) __PYX_ERR(0, 784, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_3mds_7managed_LongArray);
 
-  /* "mds/managed.pyx":797
+  /* "mds/managed.pyx":815
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("long", length)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_9LongArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 797, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_9LongArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 815, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":796
+  /* "mds/managed.pyx":814
  *         return LongArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("long", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 796, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 814, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 796, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 814, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_LongArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 797, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_LongArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 815, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_LongArray);
 
-  /* "mds/managed.pyx":797
+  /* "mds/managed.pyx":815
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("long", length)
  * 
  */
-  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_LongArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 797, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_LongArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 815, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":796
+  /* "mds/managed.pyx":814
  *         return LongArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("long", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 796, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 814, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 796, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 814, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_LongArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 797, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_LongArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 815, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_LongArray);
 
-  /* "mds/managed.pyx":832
+  /* "mds/managed.pyx":850
  * 
  *     cdef h_marray_ulong_t _handle
  *     _primitive = ULong             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self, length=None):
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ULongArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_ULong)) < 0) __PYX_ERR(0, 832, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ULongArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_ULong)) < 0) __PYX_ERR(0, 850, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_3mds_7managed_ULongArray);
 
-  /* "mds/managed.pyx":863
+  /* "mds/managed.pyx":881
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("ulong", length)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_10ULongArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 863, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_10ULongArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 881, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":862
+  /* "mds/managed.pyx":880
  *         return ULongArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("ulong", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 862, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 880, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 862, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 880, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ULongArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 863, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ULongArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 881, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_ULongArray);
 
-  /* "mds/managed.pyx":863
+  /* "mds/managed.pyx":881
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("ulong", length)
  * 
  */
-  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_ULongArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 863, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_ULongArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 881, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":862
+  /* "mds/managed.pyx":880
  *         return ULongArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("ulong", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 862, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 880, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 862, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 880, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ULongArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 863, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_ULongArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 881, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_ULongArray);
 
-  /* "mds/managed.pyx":890
+  /* "mds/managed.pyx":908
  * 
  *     cdef h_marray_float_t _handle
  *     _primitive = Float             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self, length=None):
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_FloatArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Float)) < 0) __PYX_ERR(0, 890, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_FloatArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Float)) < 0) __PYX_ERR(0, 908, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_3mds_7managed_FloatArray);
 
-  /* "mds/managed.pyx":921
+  /* "mds/managed.pyx":939
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("float", length)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_10FloatArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 921, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_10FloatArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 939, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":920
+  /* "mds/managed.pyx":938
  *         return FloatArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("float", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 920, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 938, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 920, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 938, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_FloatArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 921, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_FloatArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 939, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_FloatArray);
 
-  /* "mds/managed.pyx":921
+  /* "mds/managed.pyx":939
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("float", length)
  * 
  */
-  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_FloatArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 921, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_FloatArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 939, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":920
+  /* "mds/managed.pyx":938
  *         return FloatArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("float", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 920, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 938, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 920, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 938, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_FloatArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 921, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_FloatArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 939, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_FloatArray);
 
-  /* "mds/managed.pyx":948
+  /* "mds/managed.pyx":966
  * 
  *     cdef h_marray_double_t _handle
  *     _primitive = Double             # <<<<<<<<<<<<<<
  * 
  *     def __cinit__(self, length=None):
  */
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_DoubleArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Double)) < 0) __PYX_ERR(0, 948, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_DoubleArray->tp_dict, __pyx_n_s_primitive, ((PyObject *)__pyx_ptype_3mds_7managed_Double)) < 0) __PYX_ERR(0, 966, __pyx_L1_error)
   PyType_Modified(__pyx_ptype_3mds_7managed_DoubleArray);
 
-  /* "mds/managed.pyx":979
+  /* "mds/managed.pyx":997
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("double", length)
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_11DoubleArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 979, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_7managed_11DoubleArray_11create, NULL, __pyx_n_s_mds_managed); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 997, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":978
+  /* "mds/managed.pyx":996
  *         return DoubleArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("double", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 978, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 996, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 978, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 996, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_DoubleArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 979, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_DoubleArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 997, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_DoubleArray);
 
-  /* "mds/managed.pyx":979
+  /* "mds/managed.pyx":997
  * 
  *     @staticmethod
  *     def create(length):             # <<<<<<<<<<<<<<
  *         return MDSArrayBase.create("double", length)
  * 
  */
-  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_DoubleArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 979, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_7managed_DoubleArray, __pyx_n_s_create); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 997, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/managed.pyx":978
+  /* "mds/managed.pyx":996
  *         return DoubleArray_Init(h)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def create(length):
  *         return MDSArrayBase.create("double", length)
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 978, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 996, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 978, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 996, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_DoubleArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 979, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_7managed_DoubleArray->tp_dict, __pyx_n_s_create, __pyx_t_1) < 0) __PYX_ERR(0, 997, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_7managed_DoubleArray);
 

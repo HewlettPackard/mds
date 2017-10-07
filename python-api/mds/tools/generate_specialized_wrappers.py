@@ -51,16 +51,23 @@ MDSArrayBase*
 * Should not be instantiable, contains generic methods only.
 """
 
-def tmpl_record_field_wrapper_arithmetic(t):
+def tmpl_record_field_wrapper_math(t):
     return f"""
         {t.c_type} add(const managed_record_handle&, {t.c_type})
         {t.c_type} sub(const managed_record_handle&, {t.c_type})
         {t.c_type} mul(const managed_record_handle&, {t.c_type})
-        {t.c_type} div(const managed_record_handle&, {t.c_type}) 
+        {t.c_type} div(const managed_record_handle&, {t.c_type})
 """
 
+#TODO: Need record_fields for these:
+#      STRING,
+#      RECORD,
+#      BINDING,
+#      ARRAY,
+#      NAMESPACE,
+
 def tmpl_record_field_wrapper(t):
-    EXTRA = tmpl_record_field_wrapper_arithmetic(t) if t.is_integral else ""
+    EXTRA = tmpl_record_field_wrapper_math(t) if t.use_atomic_math else ""
 
     return f"""
     # BEGIN {t.api}
@@ -70,7 +77,8 @@ def tmpl_record_field_wrapper(t):
         {t.record_field}({t.record_field}&)
         {t.c_type} free_read(const managed_record_handle&)
         {t.c_type} frozen_read(const managed_record_handle&)
-        {t.c_type} has_value(const managed_record_handle&)
+        bool has_value(const managed_record_handle&)
+        bool write_initial(const managed_record_handle&,const {t.c_type}&)
         {t.c_type} write(const managed_record_handle&, const {t.c_type}&)
         interned_string_handle name()
         {EXTRA}
@@ -99,17 +107,36 @@ def tmpl_primitive_wrapper(t):
 
 def tmpl_namespace_wrapper(t):
     return f"""
-        {t.c_type} lookup_{t.api} "lookup<{t.kind},mds::core::kind_type<{t.kind}>,false,true>"(interned_string_handle, const {t.primitive}&)
-        bool {t.f_bind} "bind<{t.kind}>"(interned_string_handle, {t.c_type})
+        {t.c_type} lookup "lookup<{t.kind},mds::core::kind_type<{t.kind}>,false,true>"(interned_string_handle, const {t.primitive}&)
+        {t.managed_array} lookup "lookup<{t.kind},false,true>"(const interned_string_handle&, const {t.array}&)
+        bool bind "bind<{t.kind}>"(interned_string_handle, {t.c_type})
     """
 
-def tmpl_array_wrapper(t):
+def tmpl_array_wrapper_math(t):
     return f"""
+        {t.c_type} add(const size_t&, const {t.c_type}&)
+        {t.c_type} sub(const size_t&, const {t.c_type}&)
+        {t.c_type} mul(const size_t&, const {t.c_type}&)
+        {t.c_type} div(const size_t&, const {t.c_type}&)
+"""
+
+def tmpl_array_wrapper(t):
+    EXTRA = tmpl_array_wrapper_math(t) if t.use_atomic_math else ""
+
+    return f"""
+    cdef cppclass {t.array} "array_type_handle<{t.kind}>":
+        # const_managed_type_handle<K> element_type()
+        {t.managed_array} create_array(size_t)
+        bool is_same_as(const {t.array}&)
+
     cdef cppclass {t.managed_array}:
         {t.managed_value} frozen_read(size_t)
         {t.managed_value} write(size_t, {t.managed_value})
         size_t size()
-
+        # TODO uniform_key uuid()
+        bool has_value()
+        h_marray_base_t as_base()
+        {EXTRA}
     {t.managed_array} {t.f_create_array}(size_t)
     """
 
@@ -232,6 +259,7 @@ class TypeInfo():
         self.taxonomy = taxonomy
         self.python_type = python_type
         self.primitive = f"h_m{api}_t"
+        self.array = f"h_array_{api}_t"
         self.managed_value = f"mv_{api}"
         self.managed_array = f"h_marray_{api}_t"
         self.managed_type_handle = f"managed_{api}_type_handle"
@@ -254,6 +282,10 @@ class TypeInfo():
     @property
     def is_integral(self):
         return self.taxonomy == self.MDS_INTEGRAL
+
+    @property
+    def use_atomic_math(self):
+        return self.taxonomy in [self.MDS_INTEGRAL, self.MDS_FLOATING]
 
 
 # These types are the ones that this script will generate wrappers for

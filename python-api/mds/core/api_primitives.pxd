@@ -30,6 +30,17 @@ from mds.core.api_records cimport *
 
 
 cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
+    # TODO Not sure these guys are correct, or are the same as below...
+    # NOTE string at least could just go into the injection
+    cdef cppclass mv_string "mv_wrapper<mds::api::kind::STRING>":
+        pass
+
+    cdef cppclass mv_array "mv_wrapper<mds::api::kind::ARRAY>":
+        pass
+
+    cdef cppclass mv_record "mv_wrapper<mds::api::kind::RECORD>":
+        pass
+
 # START INJECTION
 
     # BEGIN bool

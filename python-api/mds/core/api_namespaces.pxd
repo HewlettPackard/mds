@@ -36,46 +36,63 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         namespace_handle(const namespace_handle&)
         namespace_handle(namespace_handle&)
 
-        bool is_bound()
-        namespace_handle child_namespace(interned_string_handle, bool)
+        bool is_bound(const interned_string_handle&)
+        namespace_handle child_namespace(const interned_string_handle&, bool)
 
         @staticmethod
         namespace_handle _global "global"()
+        managed_record_handle lookup(const interned_string_handle&, const record_type_handle&);
+
+        #@staticmethod
+        #namespace_handle from_existing_path(Iter start, Iter end)
+        #@staticmethod
+        #namespace_handle from_path(Iter start, Iter end)
     
 # START INJECTION
 
-        bool lookup_bool "lookup<mds::api::kind::BOOL,mds::core::kind_type<mds::api::kind::BOOL>,false,true>"(interned_string_handle, const h_mbool_t&)
-        bool bind_bool "bind<mds::api::kind::BOOL>"(interned_string_handle, bool)
+        bool lookup "lookup<mds::api::kind::BOOL,mds::core::kind_type<mds::api::kind::BOOL>,false,true>"(interned_string_handle, const h_mbool_t&)
+        h_marray_bool_t lookup "lookup<mds::api::kind::BOOL,false,true>"(const interned_string_handle&, const h_array_bool_t&)
+        bool bind "bind<mds::api::kind::BOOL>"(interned_string_handle, bool)
     
-        int8_t lookup_byte "lookup<mds::api::kind::BYTE,mds::core::kind_type<mds::api::kind::BYTE>,false,true>"(interned_string_handle, const h_mbyte_t&)
-        bool bind_byte "bind<mds::api::kind::BYTE>"(interned_string_handle, int8_t)
+        int8_t lookup "lookup<mds::api::kind::BYTE,mds::core::kind_type<mds::api::kind::BYTE>,false,true>"(interned_string_handle, const h_mbyte_t&)
+        h_marray_byte_t lookup "lookup<mds::api::kind::BYTE,false,true>"(const interned_string_handle&, const h_array_byte_t&)
+        bool bind "bind<mds::api::kind::BYTE>"(interned_string_handle, int8_t)
     
-        uint8_t lookup_ubyte "lookup<mds::api::kind::UBYTE,mds::core::kind_type<mds::api::kind::UBYTE>,false,true>"(interned_string_handle, const h_mubyte_t&)
-        bool bind_ubyte "bind<mds::api::kind::UBYTE>"(interned_string_handle, uint8_t)
+        uint8_t lookup "lookup<mds::api::kind::UBYTE,mds::core::kind_type<mds::api::kind::UBYTE>,false,true>"(interned_string_handle, const h_mubyte_t&)
+        h_marray_ubyte_t lookup "lookup<mds::api::kind::UBYTE,false,true>"(const interned_string_handle&, const h_array_ubyte_t&)
+        bool bind "bind<mds::api::kind::UBYTE>"(interned_string_handle, uint8_t)
     
-        int16_t lookup_short "lookup<mds::api::kind::SHORT,mds::core::kind_type<mds::api::kind::SHORT>,false,true>"(interned_string_handle, const h_mshort_t&)
-        bool bind_short "bind<mds::api::kind::SHORT>"(interned_string_handle, int16_t)
+        int16_t lookup "lookup<mds::api::kind::SHORT,mds::core::kind_type<mds::api::kind::SHORT>,false,true>"(interned_string_handle, const h_mshort_t&)
+        h_marray_short_t lookup "lookup<mds::api::kind::SHORT,false,true>"(const interned_string_handle&, const h_array_short_t&)
+        bool bind "bind<mds::api::kind::SHORT>"(interned_string_handle, int16_t)
     
-        uint16_t lookup_ushort "lookup<mds::api::kind::USHORT,mds::core::kind_type<mds::api::kind::USHORT>,false,true>"(interned_string_handle, const h_mushort_t&)
-        bool bind_ushort "bind<mds::api::kind::USHORT>"(interned_string_handle, uint16_t)
+        uint16_t lookup "lookup<mds::api::kind::USHORT,mds::core::kind_type<mds::api::kind::USHORT>,false,true>"(interned_string_handle, const h_mushort_t&)
+        h_marray_ushort_t lookup "lookup<mds::api::kind::USHORT,false,true>"(const interned_string_handle&, const h_array_ushort_t&)
+        bool bind "bind<mds::api::kind::USHORT>"(interned_string_handle, uint16_t)
     
-        int32_t lookup_int "lookup<mds::api::kind::INT,mds::core::kind_type<mds::api::kind::INT>,false,true>"(interned_string_handle, const h_mint_t&)
-        bool bind_int "bind<mds::api::kind::INT>"(interned_string_handle, int32_t)
+        int32_t lookup "lookup<mds::api::kind::INT,mds::core::kind_type<mds::api::kind::INT>,false,true>"(interned_string_handle, const h_mint_t&)
+        h_marray_int_t lookup "lookup<mds::api::kind::INT,false,true>"(const interned_string_handle&, const h_array_int_t&)
+        bool bind "bind<mds::api::kind::INT>"(interned_string_handle, int32_t)
     
-        uint32_t lookup_uint "lookup<mds::api::kind::UINT,mds::core::kind_type<mds::api::kind::UINT>,false,true>"(interned_string_handle, const h_muint_t&)
-        bool bind_uint "bind<mds::api::kind::UINT>"(interned_string_handle, uint32_t)
+        uint32_t lookup "lookup<mds::api::kind::UINT,mds::core::kind_type<mds::api::kind::UINT>,false,true>"(interned_string_handle, const h_muint_t&)
+        h_marray_uint_t lookup "lookup<mds::api::kind::UINT,false,true>"(const interned_string_handle&, const h_array_uint_t&)
+        bool bind "bind<mds::api::kind::UINT>"(interned_string_handle, uint32_t)
     
-        int64_t lookup_long "lookup<mds::api::kind::LONG,mds::core::kind_type<mds::api::kind::LONG>,false,true>"(interned_string_handle, const h_mlong_t&)
-        bool bind_long "bind<mds::api::kind::LONG>"(interned_string_handle, int64_t)
+        int64_t lookup "lookup<mds::api::kind::LONG,mds::core::kind_type<mds::api::kind::LONG>,false,true>"(interned_string_handle, const h_mlong_t&)
+        h_marray_long_t lookup "lookup<mds::api::kind::LONG,false,true>"(const interned_string_handle&, const h_array_long_t&)
+        bool bind "bind<mds::api::kind::LONG>"(interned_string_handle, int64_t)
     
-        uint64_t lookup_ulong "lookup<mds::api::kind::ULONG,mds::core::kind_type<mds::api::kind::ULONG>,false,true>"(interned_string_handle, const h_mulong_t&)
-        bool bind_ulong "bind<mds::api::kind::ULONG>"(interned_string_handle, uint64_t)
+        uint64_t lookup "lookup<mds::api::kind::ULONG,mds::core::kind_type<mds::api::kind::ULONG>,false,true>"(interned_string_handle, const h_mulong_t&)
+        h_marray_ulong_t lookup "lookup<mds::api::kind::ULONG,false,true>"(const interned_string_handle&, const h_array_ulong_t&)
+        bool bind "bind<mds::api::kind::ULONG>"(interned_string_handle, uint64_t)
     
-        float lookup_float "lookup<mds::api::kind::FLOAT,mds::core::kind_type<mds::api::kind::FLOAT>,false,true>"(interned_string_handle, const h_mfloat_t&)
-        bool bind_float "bind<mds::api::kind::FLOAT>"(interned_string_handle, float)
+        float lookup "lookup<mds::api::kind::FLOAT,mds::core::kind_type<mds::api::kind::FLOAT>,false,true>"(interned_string_handle, const h_mfloat_t&)
+        h_marray_float_t lookup "lookup<mds::api::kind::FLOAT,false,true>"(const interned_string_handle&, const h_array_float_t&)
+        bool bind "bind<mds::api::kind::FLOAT>"(interned_string_handle, float)
     
-        double lookup_double "lookup<mds::api::kind::DOUBLE,mds::core::kind_type<mds::api::kind::DOUBLE>,false,true>"(interned_string_handle, const h_mdouble_t&)
-        bool bind_double "bind<mds::api::kind::DOUBLE>"(interned_string_handle, double)
+        double lookup "lookup<mds::api::kind::DOUBLE,mds::core::kind_type<mds::api::kind::DOUBLE>,false,true>"(interned_string_handle, const h_mdouble_t&)
+        h_marray_double_t lookup "lookup<mds::api::kind::DOUBLE,false,true>"(const interned_string_handle&, const h_array_double_t&)
+        bool bind "bind<mds::api::kind::DOUBLE>"(interned_string_handle, double)
     
 # END INJECTION
 

@@ -34,10 +34,16 @@ from mds.core.api_records cimport *
 
 from collections import namedtuple
 
-LocalRecordField = namedtuple("LocalRecordField", ["klass", "label", "const", "default_val"])
+FieldDecl = namedtuple("FieldDecl", ["klass", "const", "initial_value"])
 
 
 cdef class MDSObject(object):
+
+    cdef bint _const = False
+
+    property is_const:
+        def __get__(self):
+            return self._const
 
     property is_null:
         def __get__(self):
@@ -48,31 +54,106 @@ cdef class MDSObject(object):
             pass  # TODO
 
 
+cdef class ConstError(Exception):
+    pass
+
+
+cdef class RecordMember(MDSObject):
+    
+    def __cinit__(self, FieldDesc tinfo):
+        # TODO: Factory for conimation of (klass, const)
+        self._const = tinfo.make_const
+        pass            
+
+    def read(self):
+        # TODO: Get the Python value
+
+    def write(self, value):
+        if self._const:
+            raise ConstError('Can\'t assign value to const field.')
+        else:
+            # TODO: Update the MDS value
+            pass
+
+
 cdef class Record(MDSObject):
 
     cdef managed_record_handle _handle
-    cdef record_type_handle _type
+    cdef record_type_handle _declared_type
+    # cdef const_record_type_handle _created_type
+    # cef std::once_flag _created
+
+    #truct field_decl {
+    #  mds_string name;
+    #  record_field_base__*field;
+    #  field_decl(const mds_string &n, record_field_base__*f)
+    #  : name{n}, field{f}
+    #  {}
+    #};
+    #std::vector<field_decl> _field_decls;
 
     def __cinit__(self):
-        self.__fields = []
+        self._field_decls = {}
+        self._fields = {}
 
-    def _register_field(self, klass, label, make_const=False, default_value=None):
-        self.__fields.append(LocalRecordField(klass, label, make_const, default_value))
-        # Need to store in this in some container mapping labels to field types
+    def __getattr__(self, key):
+        if key not in self._fields:
+            return super().__getattr__(key)
 
-        # TODO: What about FIELDVAR
+        return self._fields[key].read()
 
-        # This is going to be the DECLARE_FIELD
+    def __setattr__(self, key, value):
+        if key not in self._fields:
+            super().__setattr__(key, value)
+        else:
+            self._fields[key].write(value)
 
-        # TODO: what about const-ness, no nice solution -- DECLARE_CONST_FIELD
+   # template <typename ...More>
+   # void note_fields(const std::pair<record_field_base__*, const mds_string &> &fn_pair,
+   #                  More&&...more) {
+   #   _field_decls.emplace_back(fn_pair.second, fn_pair.first);
+   #   note_fields(std::forward<More>(more)...);
+   # }
 
-        # REGISTER_FIELD_AS
-        # REGISTER_FIELD
-        # NO_FIELDS
+#  static rt_decl<name, super> &type_decl() {                    \
+#    static rt_decl<name, super> td__(tname, fields);            \
+#    return td__; \
+#  } \
+
+    @classmethod
+    def lookup_in(cls, Namespace ns, *args)
+        if not len(args):
+            raise KeyError('Need at least one path for the namespace')
+    
+        root = ns
+
+        if len(args) > 1:
+            for arg in args[:-1]:
+                try:
+                    root = ns[arg]
+                except:
+                    raise KeyError(f'Couldn\'t find key {arg}')
+
+        retval = cls()
+        # Now we know that root[args[-1]] will be the record val
+        # TODO: update retval's fields accordingly
+
+        return retval
+   
+    @classmethod
+    def lookup_name(cls, *args)
+        return cls.lookup_in(Namespace.get_current(), *args)
+    
+    def _declare_field(self, klass, label, make_const=False, initial_value=None):
+        self._field_decls[label] = FieldDecl(klass, make_const, initial_value)
+
+    def __ensure_created(self):
+        # Call once stuff here
         pass
 
-    def create_record(self):
-        pass
+    def __create_record(self, type_ident):
+        for label, field_desc in self._field_decls.items():
+            self._fields[label] = RecordMember(field_desc)
 
 
 cdef class MDSArrayBase(MDSObject):
