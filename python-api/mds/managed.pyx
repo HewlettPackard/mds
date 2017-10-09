@@ -23,105 +23,66 @@ Application during this compilation process under terms of your choice,
 provided you also meet the terms and conditions of the Application license.
 """
 
-from itertools import chain
-
-from libcpp.string cimport string
-
-from mds.core.api_strings cimport *
-from mds.core.api_arrays cimport *
-from mds.core.api_records cimport *
-
-
-from collections import namedtuple
-
-FieldDecl = namedtuple("FieldDecl", ["klass", "const", "initial_value"])
-
-
-cdef class MDSObject(object):
-
-    cdef bint _const = False
-
-    property is_const:
-        def __get__(self):
-            return self._const
-
-    property is_null:
-        def __get__(self):
-            pass  # TODO
-
-    property uuid:
-        def __get__(self):
-            pass  # TODO
-
-
-cdef class ConstError(Exception):
-    pass
-
-
-cdef class RecordMember(MDSObject):
-    
-    def __cinit__(self, FieldDesc tinfo):
-        # TODO: Factory for conimation of (klass, const)
-        self._const = tinfo.make_const
-        pass            
-
-    def read(self):
-        # TODO: Get the Python value
-
-    def write(self, value):
-        if self._const:
-            raise ConstError('Can\'t assign value to const field.')
-        else:
-            # TODO: Update the MDS value
-            pass
-
-
 cdef class Record(MDSObject):
+    """
 
-    cdef managed_record_handle _handle
-    cdef record_type_handle _declared_type
-    # cdef const_record_type_handle _created_type
-    # cef std::once_flag _created
+    Development Notes:
+    * skipped force -- not sure when this would be needed
+    * not implemented token yet -- unsure why this is needed, for forward()? Check JAPI
+    """
+    def __init__(self):
+        if not hasattr(self, '_ident'):
+            raise TypeError('Record subclasses must have a static `_ident` type name')
 
-    #truct field_decl {
-    #  mds_string name;
-    #  record_field_base__*field;
-    #  field_decl(const mds_string &n, record_field_base__*f)
-    #  : name{n}, field{f}
-    #  {}
-    #};
-    #std::vector<field_decl> _field_decls;
-
-    def __cinit__(self):
-        self._field_decls = {}
-        self._fields = {}
+        # Working on the assumption this is called at the end:
+        self.__type_decl = RecordTypeDeclaration(self.ident, self, self.__field_decls)
 
     def __getattr__(self, key):
-        if key not in self._fields:
+        try:
+            return getattr(self.__type_decl, key).read()
+        except:
             return super().__getattr__(key)
 
-        return self._fields[key].read()
-
     def __setattr__(self, key, value):
-        if key not in self._fields:
+        try:
+            getattr(self.__type_decl, key).write(value)
+        except:
             super().__setattr__(key, value)
-        else:
-            self._fields[key].write(value)
 
-   # template <typename ...More>
-   # void note_fields(const std::pair<record_field_base__*, const mds_string &> &fn_pair,
-   #                  More&&...more) {
-   #   _field_decls.emplace_back(fn_pair.second, fn_pair.first);
-   #   note_fields(std::forward<More>(more)...);
-   # }
+    def _register_field(self, klass, label, make_const=False, initial_value=None):
+        self.__field_decls[label] = record_member_factory(self.ident, klass, make_const, initial_value)
 
-#  static rt_decl<name, super> &type_decl() {                    \
-#    static rt_decl<name, super> td__(tname, fields);            \
-#    return td__; \
-#  } \
+# mds_record(const rc_token &tok, handle_type &&h)
+#     : _handle { std::move(h) } {
+#   tok.cache_shared(this);
+# }
+#
+# explicit mds_record(const rc_token &tok)
+#     : _handle(tok.create()) {
+#   /*
+#    * By creating and caching a shared ptr, we make it possible
+#    * for user ctors to call this_as_mds_ptr(), which requires
+#    * shared_from_this(), which requires there to be an active
+#    * shared pointer.
+#    */
+#   tok.cache_shared(this);
+# }
+
+    # NOTE Disabled until Cython 0.27
+    # def __eq__(self, other):
+    #     return self._handle == other._handle
+
+    def bind_to_namespace(self, Namespace ns, *args):
+        #template<typename First, typename ...Cpts>
+        #void bind_in(const mds_ptr<mds_namespace> &ns, First &&first,
+        #            Cpts &&...cpts) const {
+        # ns->at(std::forward<First>(first), std::forward<Cpts>(cpts)...)
+        #     .template as<mds_record>().bind(THIS_RECORD);
+
+        pass
 
     @classmethod
-    def lookup_in(cls, Namespace ns, *args)
+    def lookup_in(cls, Namespace ns, *args):
         if not len(args):
             raise KeyError('Need at least one path for the namespace')
     
@@ -141,223 +102,16 @@ cdef class Record(MDSObject):
         return retval
    
     @classmethod
-    def lookup_name(cls, *args)
+    def lookup_name(cls, *args):
         return cls.lookup_in(Namespace.get_current(), *args)
+
+    property ident:
+        def __get__(self):
+            return self._ident
     
-    def _declare_field(self, klass, label, make_const=False, initial_value=None):
-        self._field_decls[label] = FieldDecl(klass, make_const, initial_value)
-
-    def __ensure_created(self):
-        # Call once stuff here
-        pass
-
-    def __create_record(self, type_ident):
-        for label, field_desc in self._field_decls.items():
-            self._fields[label] = RecordMember(field_desc)
-
-
-cdef class MDSArrayBase(MDSObject):
-    
-    def _index_bounds_check(self, index):
-         # TODO: Need to handle slices. Should this be a new array?
-        cdef long l = <long> len(self)
-
-        if index >= l or index < -l:
-            raise IndexError('list index out of range')
-
-        if index < 0:
-            index += l
-
-        return index
-
-    def _to_python(self, index):
-        raise NotImplementedError('Specialization of MDSList required') 
-
-    def _to_mds(self, index, value):
-        raise NotImplementedError('Specialization of MDSList required') 
-
-    def __getitem__(self, index):
-        index = self._index_bounds_check(index)
-        return self._to_python(index)
-
-    def __setitem__(self, index, value):
-        index = self._index_bounds_check(index)
-        self._to_mds(index, value)
-
-    def __delitem__(self, index):
-        # TODO: Does this make sense given MDS design?
-        pass
-
-    def __iter__(self):
-        pass
-
-    def __next__(self):
-        pass
-
-    def __len__(self):
-        raise NotImplementedError('Specialization of MDSArrayBase required') 
-
-    def insert(self, index, value):
-        raise NotImplementedError('Unable to grow fixed-size array') 
-
-    def remove(self, value):
-        raise NotImplementedError('Unable to shrink fixed-size array') 
-
-    def pop(self, index=-1):
-        raise NotImplementedError('Unable to shrink fixed-size array') 
-
-    def clear(self):
-        pass
-
-    def index(self, start=None, end=None):
-        pass
-
-    def count(self, value):
-        # TODO: Handle len 0, should this even be instantiable?
-        # TODO: Bool still a str-literal here
-        if not isinstance(value, type(self[0])):
-            raise TypeError("value to be searched for must match list-type `bool`")
-
-        cdef:
-            size_t i = 0, l = len(self), c = 0
-
-        for i in range(l):
-            if self[i] == value:
-                c += 1
-
-        return c
-
-    def sort(self):
-        pass  # TODO
-
-    def reverse(self):
-        pass  # TODO
-
-    def copy(self):
-        raise NotImplementedError('Specialization of MDSArrayBase required')
-
-    @staticmethod
-    def create(dtype, length):
-        if dtype == "bool":
-            return BoolArray_Init(create_bool_marray(length))
-        elif dtype == "byte":
-            return ByteArray_Init(create_byte_marray(length))
-        elif dtype == "ubyte":
-            return UByteArray_Init(create_ubyte_marray(length))
-        elif dtype == "short":
-            return ShortArray_Init(create_short_marray(length))
-        elif dtype == "ushort":
-            return UShortArray_Init(create_ushort_marray(length))
-        elif dtype == "int":
-            return IntArray_Init(create_int_marray(length))
-        elif dtype == "uint":
-            return UIntArray_Init(create_uint_marray(length))
-        elif dtype == "long":
-            return LongArray_Init(create_long_marray(length))
-        elif dtype == "ulong":
-            return ULongArray_Init(create_ulong_marray(length))
-        elif dtype == "float":
-            return FloatArray_Init(create_float_marray(length))
-        elif dtype == "double":
-            return DoubleArray_Init(create_double_marray(length))
-
-        raise TypeError(f'Cannot create an array of unknown type `{dtype}`')
- 
-    property dtype:
+    property type_decl:
         def __get__(self):
-            raise NotImplementedError('Specialization of MDSArrayBase required')
-
-
-cdef class MDSIntArrayBase(MDSArrayBase):
-
-    def _numeric_bounds_check(self, value):
-        """
-        TODO: This needs to check the bounds of the different int sizes in MDS.
-        """
-        raise NotImplementedError('Requires a type-specific instantiation')
-
-    def __setitem__(self, index, value):
-        index = self._index_bounds_check(index)
-        value = self._numeric_bounds_check(value)
-        self._to_mds(index, value)
-
-    property dtype:
-        def __get__(self):
-            return type(1)
-
-
-cdef class MDSFloatArrayBase(MDSArrayBase):
-
-    property dtype:
-        def __get__(self):
-            return type(1.0)
-
-
-cdef class MDSReferenceBase(MDSObject):
-    # TODO: to allow things like mds_array[n] += 3 in-place editing
-    pass
-
-
-cdef class MDSPrimitiveBase(MDSObject):
-    # TODO: Use the API's math operation to ensure atomicity
-
-    def __int__(self):
-        pass
-
-    def __long__(self):
-        pass
-
-    def __float__(self):
-        pass
-
-    def _sanitize(self, value):
-        return value
-
-    def _to_python(self):
-        raise NotImplementedError("Specialization required.")
-
-    def _to_mds(self):
-        raise NotImplementedError("Specialization required.")
-
-    property python_copy:
-        def __get__(self):
-            raise NotImplementedError("Specialization required.")
-
-
-cdef class UnderflowError(Exception):
-
-    pass
-
-
-cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
-
-    def _sanitize(self, value):
-        if isinstance(value, float):
-            value = int(value)
-        elif not isinstance(value, int):
-            t = type(value)
-            raise TypeError('Unable to parse value of type `{t}`')
-
-        if value < self.MIN:
-            raise UnderflowError(f"Can't fit {value} in container {self.dtype}")
-        elif value > self.MAX:
-            raise OverflowError(f"Can't fit {value} in container {self.dtype}")
-
-        return value
-
-    property MIN:
-        def __get__(self):
-            raise NotImplementedError("Integer specialization required.")
-
-    property MAX:
-        def __get__(self):
-            raise NotImplementedError("Integer specialization required.")
-
-
-cdef class MDSFloatPrimitiveBase(MDSPrimitiveBase):
-
-    pass
-
+            return self.__type_decl
 
 # START INJECTION
 
@@ -410,7 +164,7 @@ cdef class BoolArray(MDSArrayBase):
 
     @staticmethod
     def create(length):
-        return MDSArrayBase.create("bool", length)
+        return BoolArray_Init(create_bool_marray(length))
 
     property dtype:
         def __get__(self):
@@ -480,7 +234,7 @@ cdef class ByteArray(MDSIntArrayBase):
 
     @staticmethod
     def create(length):
-        return MDSArrayBase.create("byte", length)
+        return ByteArray_Init(create_byte_marray(length))
 
 
 cdef ByteArray_Init(h_marray_byte_t handle):
@@ -546,7 +300,7 @@ cdef class UByteArray(MDSIntArrayBase):
 
     @staticmethod
     def create(length):
-        return MDSArrayBase.create("ubyte", length)
+        return UByteArray_Init(create_ubyte_marray(length))
 
 
 cdef UByteArray_Init(h_marray_ubyte_t handle):
@@ -612,7 +366,7 @@ cdef class ShortArray(MDSIntArrayBase):
 
     @staticmethod
     def create(length):
-        return MDSArrayBase.create("short", length)
+        return ShortArray_Init(create_short_marray(length))
 
 
 cdef ShortArray_Init(h_marray_short_t handle):
@@ -678,7 +432,7 @@ cdef class UShortArray(MDSIntArrayBase):
 
     @staticmethod
     def create(length):
-        return MDSArrayBase.create("ushort", length)
+        return UShortArray_Init(create_ushort_marray(length))
 
 
 cdef UShortArray_Init(h_marray_ushort_t handle):
@@ -744,7 +498,7 @@ cdef class IntArray(MDSIntArrayBase):
 
     @staticmethod
     def create(length):
-        return MDSArrayBase.create("int", length)
+        return IntArray_Init(create_int_marray(length))
 
 
 cdef IntArray_Init(h_marray_int_t handle):
@@ -810,7 +564,7 @@ cdef class UIntArray(MDSIntArrayBase):
 
     @staticmethod
     def create(length):
-        return MDSArrayBase.create("uint", length)
+        return UIntArray_Init(create_uint_marray(length))
 
 
 cdef UIntArray_Init(h_marray_uint_t handle):
@@ -876,7 +630,7 @@ cdef class LongArray(MDSIntArrayBase):
 
     @staticmethod
     def create(length):
-        return MDSArrayBase.create("long", length)
+        return LongArray_Init(create_long_marray(length))
 
 
 cdef LongArray_Init(h_marray_long_t handle):
@@ -942,7 +696,7 @@ cdef class ULongArray(MDSIntArrayBase):
 
     @staticmethod
     def create(length):
-        return MDSArrayBase.create("ulong", length)
+        return ULongArray_Init(create_ulong_marray(length))
 
 
 cdef ULongArray_Init(h_marray_ulong_t handle):
@@ -1000,7 +754,7 @@ cdef class FloatArray(MDSFloatArrayBase):
 
     @staticmethod
     def create(length):
-        return MDSArrayBase.create("float", length)
+        return FloatArray_Init(create_float_marray(length))
 
 
 cdef FloatArray_Init(h_marray_float_t handle):
@@ -1058,7 +812,7 @@ cdef class DoubleArray(MDSFloatArrayBase):
 
     @staticmethod
     def create(length):
-        return MDSArrayBase.create("double", length)
+        return DoubleArray_Init(create_double_marray(length))
 
 
 cdef DoubleArray_Init(h_marray_double_t handle):
@@ -1068,6 +822,10 @@ cdef DoubleArray_Init(h_marray_double_t handle):
 
 
 # END INJECTION
+
+cpdef RecordMemberBase record_member_factory(ident, klass, make_const, initial_value):
+    # TODO: Wrap the specializations
+    return RecordMemberBase(ident, klass, make_const, initial_value)
 
 """
 TODO:
@@ -1083,9 +841,6 @@ cdef class String(MDSObject):
     This class provides the functionality expected from the native str type,
     but backed by MDS. As with str, Strings are immutable.
     """
-
-    cdef managed_string_handle _handle
-    cdef int __iter_idx
 
     def __cinit__(self, value=None):
         cdef interned_string_handle handle = convert_py_to_ish(value) 

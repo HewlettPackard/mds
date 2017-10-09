@@ -23,19 +23,9 @@ Application during this compilation process under terms of your choice,
 provided you also meet the terms and conditions of the Application license.
 """
 
-from libcpp cimport bool
-
-from mds.core.api_helpers cimport initialize_base_task
-from mds.core.api_namespaces cimport *
-from mds.core.api_primitives cimport *
-from mds.core.api_strings cimport convert_py_to_ish
-
 initialize_base_task()
 
-
 cdef class Namespace(object):
-
-    cdef namespace_handle _handle
 
     def __setitem__(self, str key, value):
         # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
@@ -86,9 +76,5 @@ cdef class Namespace(object):
             pass
 
 
-cdef Namespace_Init(namespace_handle handle=namespace_handle._global()):
-    initialize_base_task()
-    result = Namespace()
-    result._handle = handle
-    return result
+
 

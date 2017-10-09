@@ -685,67 +685,29 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
+  "mds/containers.pxd",
   "mds/containers.pyx",
   "type.pxd",
 };
 
 /*--- Type declarations ---*/
-struct __pyx_obj_3mds_10containers_ContextTaskMapping;
-struct __pyx_obj_3mds_10containers_PublicationResult;
-struct __pyx_obj_3mds_10containers_Use;
 struct __pyx_obj_3mds_10containers_IsolationContext;
 struct __pyx_obj_3mds_10containers_Task;
+struct __pyx_obj_3mds_10containers_PublicationResult;
+struct __pyx_obj_3mds_10containers_Use;
+struct __pyx_obj_3mds_10containers_ContextTaskMapping;
 struct __pyx_defaults;
 typedef struct __pyx_defaults __pyx_defaults;
 struct __pyx_defaults {
   PyObject *__pyx_arg_args;
 };
 
-/* "mds/containers.pyx":133
- * 
- * 
- * cdef class ContextTaskMapping(dict):             # <<<<<<<<<<<<<<
- * 
- *     def add_task_to_context(self, ctxt, task):
- */
-struct __pyx_obj_3mds_10containers_ContextTaskMapping {
-  PyDictObject __pyx_base;
-};
-
-
-/* "mds/containers.pyx":170
- * 
- * 
- * cdef class PublicationResult(object):             # <<<<<<<<<<<<<<
- * 
- *     cdef publication_attempt_handle _handle
- */
-struct __pyx_obj_3mds_10containers_PublicationResult {
-  PyObject_HEAD
-  mds::api::publication_attempt_handle _handle;
-};
-
-
-/* "mds/containers.pyx":291
- * 
- * 
- * cdef class Use(object):             # <<<<<<<<<<<<<<
- * 
- *     cdef unique_ptr[Establish] _establish
- */
-struct __pyx_obj_3mds_10containers_Use {
-  PyObject_HEAD
-  std::unique_ptr<mds::python::tasks::TaskWrapper::Establish>  _establish;
-  mds::api::task_handle _handle;
-};
-
-
-/* "mds/containers.pyx":305
- * 
+/* "mds/containers.pxd":41
+ * # =========================================================================
  * 
  * cdef class IsolationContext(object):             # <<<<<<<<<<<<<<
- * 
  *     cdef iso_context_handle _handle
+ * 
  */
 struct __pyx_obj_3mds_10containers_IsolationContext {
   PyObject_HEAD
@@ -754,12 +716,12 @@ struct __pyx_obj_3mds_10containers_IsolationContext {
 };
 
 
-/* "mds/containers.pyx":430
- * 
+/* "mds/containers.pxd":96
+ * # =========================================================================
  * 
  * cdef class Task(object):             # <<<<<<<<<<<<<<
- *     """
- *     TODO: Really need to think about what happens with this when we have
+ *     cdef:
+ *         tuple __args
  */
 struct __pyx_obj_3mds_10containers_Task {
   PyObject_HEAD
@@ -771,19 +733,59 @@ struct __pyx_obj_3mds_10containers_Task {
 };
 
 
+/* "mds/containers.pxd":145
+ * # =========================================================================
+ * 
+ * cdef class PublicationResult(object):             # <<<<<<<<<<<<<<
+ *     cdef publication_attempt_handle _handle
+ * 
+ */
+struct __pyx_obj_3mds_10containers_PublicationResult {
+  PyObject_HEAD
+  mds::api::publication_attempt_handle _handle;
+};
 
-/* "mds/containers.pyx":305
+
+/* "mds/containers.pxd":159
+ * # =========================================================================
+ * 
+ * cdef class Use(object):             # <<<<<<<<<<<<<<
+ *     cdef:
+ *         unique_ptr[Establish] _establish
+ */
+struct __pyx_obj_3mds_10containers_Use {
+  PyObject_HEAD
+  std::unique_ptr<mds::python::tasks::TaskWrapper::Establish>  _establish;
+  mds::api::task_handle _handle;
+};
+
+
+/* "mds/containers.pyx":122
+ * 
+ * 
+ * cdef class ContextTaskMapping(dict):             # <<<<<<<<<<<<<<
+ * 
+ *     def add_task_to_context(self, ctxt, task):
+ */
+struct __pyx_obj_3mds_10containers_ContextTaskMapping {
+  PyDictObject __pyx_base;
+};
+
+
+
+/* "mds/containers.pyx":282
  * 
  * 
  * cdef class IsolationContext(object):             # <<<<<<<<<<<<<<
  * 
- *     cdef iso_context_handle _handle
+ *     redoable_tasks = ContextTaskMapping()
  */
 
 struct __pyx_vtabstruct_3mds_10containers_IsolationContext {
   PyObject *(*__pyx___create_child)(struct __pyx_obj_3mds_10containers_IsolationContext *, PyObject *, bool);
 };
 static struct __pyx_vtabstruct_3mds_10containers_IsolationContext *__pyx_vtabptr_3mds_10containers_IsolationContext;
+static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_16IsolationContext___create_child(struct __pyx_obj_3mds_10containers_IsolationContext *, PyObject *, bool);
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -1172,6 +1174,12 @@ static void __Pyx_WriteUnraisable(const char *name, int clineno,
                                   int lineno, const char *filename,
                                   int full_traceback, int nogil);
 
+/* KeywordStringCheck.proto */
+static CYTHON_INLINE int __Pyx_CheckKeywordStrings(PyObject *kwdict, const char* function_name, int kw_allowed);
+
+/* ExtTypeTest.proto */
+static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
+
 /* IncludeStringH.proto */
 #include <string.h>
 
@@ -1181,20 +1189,8 @@ static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int eq
 /* UnicodeEquals.proto */
 static CYTHON_INLINE int __Pyx_PyUnicode_Equals(PyObject* s1, PyObject* s2, int equals);
 
-/* KeywordStringCheck.proto */
-static CYTHON_INLINE int __Pyx_CheckKeywordStrings(PyObject *kwdict, const char* function_name, int kw_allowed);
-
-/* ExtTypeTest.proto */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
-
 /* SetVTable.proto */
 static int __Pyx_SetVtable(PyObject *dict, void *vtable);
-
-/* Import.proto */
-static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
-
-/* ImportFrom.proto */
-static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name);
 
 /* CalculateMetaclass.proto */
 static PyObject *__Pyx_CalculateMetaclass(PyTypeObject *metaclass, PyObject *bases);
@@ -1229,9 +1225,6 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
 
 /* None.proto */
 #include <new>
-
-/* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
 /* CppExceptionConversion.proto */
 #ifndef __Pyx_CppExn2PyErr
@@ -1276,6 +1269,9 @@ static void __Pyx_CppExn2PyErr() {
 #endif
 
 /* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
+
+/* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntFromPy.proto */
@@ -1305,7 +1301,7 @@ static PyTypeObject *__Pyx_ImportType(const char *module_name, const char *class
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static PyObject *__pyx_f_3mds_10containers_16IsolationContext___create_child(struct __pyx_obj_3mds_10containers_IsolationContext *__pyx_v_self, PyObject *__pyx_v_kind, bool __pyx_v_snapshot); /* proto*/
+static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_16IsolationContext___create_child(struct __pyx_obj_3mds_10containers_IsolationContext *__pyx_v_self, PyObject *__pyx_v_kind, bool __pyx_v_snapshot); /* proto*/
 
 /* Module declarations from 'libc.string' */
 
@@ -1337,34 +1333,34 @@ static PyTypeObject *__pyx_ptype_7cpython_4type_type = 0;
 /* Module declarations from 'mds.core.api_tasks' */
 
 /* Module declarations from 'mds.containers' */
-static PyTypeObject *__pyx_ptype_3mds_10containers_ContextTaskMapping = 0;
-static PyTypeObject *__pyx_ptype_3mds_10containers_PublicationResult = 0;
-static PyTypeObject *__pyx_ptype_3mds_10containers_Use = 0;
 static PyTypeObject *__pyx_ptype_3mds_10containers_IsolationContext = 0;
 static PyTypeObject *__pyx_ptype_3mds_10containers_Task = 0;
-static PyObject *__pyx_f_3mds_10containers_PublicationResult_Init(mds::api::publication_attempt_handle); /*proto*/
-static PyObject *__pyx_f_3mds_10containers_IsolationContext_Init(mds::api::iso_context_handle); /*proto*/
-static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_add_task_handle(struct __pyx_obj_3mds_10containers_Task *, mds::api::task_handle); /*proto*/
-static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_update_context_handle_in_task(struct __pyx_obj_3mds_10containers_Task *, struct __pyx_obj_3mds_10containers_IsolationContext *); /*proto*/
-static PyObject *__pyx_f_3mds_10containers_Task_Init(mds::api::task_handle); /*proto*/
-static CYTHON_INLINE mds::python::_py_callable_wrapper __pyx_f_3mds_10containers__wrap(PyObject *, PyObject *); /*proto*/
+static PyTypeObject *__pyx_ptype_3mds_10containers_PublicationResult = 0;
+static PyTypeObject *__pyx_ptype_3mds_10containers_Use = 0;
+static PyTypeObject *__pyx_ptype_3mds_10containers_ContextTaskMapping = 0;
+static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_IsolationContext_Init(mds::api::iso_context_handle); /*proto*/
 static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers__isoctxt_execution_wrapper(mds::python::_py_callable_wrapper); /*proto*/
 static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_in_isoctxt(mds::api::iso_context_handle, PyObject *, PyObject *); /*proto*/
+static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_Task_Init(mds::api::task_handle); /*proto*/
+static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_add_task_handle(struct __pyx_obj_3mds_10containers_Task *, mds::api::task_handle); /*proto*/
+static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_update_context_handle_in_task(struct __pyx_obj_3mds_10containers_Task *, struct __pyx_obj_3mds_10containers_IsolationContext *); /*proto*/
 static CYTHON_INLINE void __pyx_f_3mds_10containers__task_execution_wrapper(mds::python::_py_callable_wrapper); /*proto*/
 static CYTHON_INLINE void __pyx_f_3mds_10containers_in_task(mds::api::task_handle, PyObject *, PyObject *); /*proto*/
 static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers__task_add_dependent(struct __pyx_obj_3mds_10containers_Task *, struct __pyx_obj_3mds_10containers_Task *); /*proto*/
+static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_PublicationResult_Init(mds::api::publication_attempt_handle); /*proto*/
+static CYTHON_INLINE mds::python::_py_callable_wrapper __pyx_f_3mds_10containers__wrap(PyObject *, PyObject *); /*proto*/
 #define __Pyx_MODULE_NAME "mds.containers"
 int __pyx_module_is_main_mds__containers = 0;
 
 /* Implementation of 'mds.containers' */
+static PyObject *__pyx_builtin_RuntimeError;
+static PyObject *__pyx_builtin_print;
 static PyObject *__pyx_builtin_object;
 static PyObject *__pyx_builtin_staticmethod;
 static PyObject *__pyx_builtin_KeyError;
 static PyObject *__pyx_builtin_NotImplemented;
-static PyObject *__pyx_builtin_RuntimeError;
 static PyObject *__pyx_builtin_TypeError;
 static PyObject *__pyx_builtin_map;
-static PyObject *__pyx_builtin_print;
 static const char __pyx_k_t[] = "t";
 static const char __pyx_k_fn[] = "fn";
 static const char __pyx_k_ts[] = "ts";
@@ -1385,10 +1381,8 @@ static const char __pyx_k_task[] = "task";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_check[] = "check";
 static const char __pyx_k_items[] = "items";
-static const char __pyx_k_local[] = "local";
 static const char __pyx_k_print[] = "print";
 static const char __pyx_k_format[] = "format";
-static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_module[] = "__module__";
 static const char __pyx_k_object[] = "object";
 static const char __pyx_k_target[] = "target";
@@ -1413,7 +1407,6 @@ static const char __pyx_k_max_tries[] = "max_tries";
 static const char __pyx_k_metaclass[] = "__metaclass__";
 static const char __pyx_k_read_only[] = "read_only";
 static const char __pyx_k_succeeded[] = "succeeded";
-static const char __pyx_k_threading[] = "threading";
 static const char __pyx_k_timedelta[] = "timedelta";
 static const char __pyx_k_try_until[] = "try_until";
 static const char __pyx_k_try_while[] = "try_while";
@@ -1537,7 +1530,6 @@ static PyObject *__pyx_n_s_get_current;
 static PyObject *__pyx_n_s_get_for_process;
 static PyObject *__pyx_n_s_get_global;
 static PyObject *__pyx_kp_s_home_pughma_repo_mds_public_pyt;
-static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_init;
 static PyObject *__pyx_n_s_initialize_base_task;
 static PyObject *__pyx_n_s_is_publishable;
@@ -1546,7 +1538,6 @@ static PyObject *__pyx_n_s_items;
 static PyObject *__pyx_n_s_kind;
 static PyObject *__pyx_kp_u_kind_must_be_a_str_value_from;
 static PyObject *__pyx_n_u_live;
-static PyObject *__pyx_n_s_local;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_map;
 static PyObject *__pyx_n_s_max_tries;
@@ -1581,7 +1572,6 @@ static PyObject *__pyx_n_s_t;
 static PyObject *__pyx_n_s_target;
 static PyObject *__pyx_n_s_task;
 static PyObject *__pyx_n_s_test;
-static PyObject *__pyx_n_s_threading;
 static PyObject *__pyx_n_s_timedelta;
 static PyObject *__pyx_n_s_top_level_task;
 static PyObject *__pyx_n_s_try_for;
@@ -1654,19 +1644,19 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_17isolation_context___get__(st
 static PyObject *__pyx_pf_3mds_10containers_4Task_6parent___get__(struct __pyx_obj_3mds_10containers_Task *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3mds_10containers_4Task_7expired___get__(struct __pyx_obj_3mds_10containers_Task *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3mds_10containers_as_task(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_fn, PyObject *__pyx_v_args); /* proto */
-static PyObject *__pyx_tp_new_3mds_10containers_ContextTaskMapping(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_3mds_10containers_PublicationResult(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_3mds_10containers_Use(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_3mds_10containers_IsolationContext(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_3mds_10containers_Task(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_3mds_10containers_PublicationResult(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_3mds_10containers_Use(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_3mds_10containers_ContextTaskMapping(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
+static PyObject *__pyx_k__5;
 static PyObject *__pyx_k__6;
-static PyObject *__pyx_k__7;
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__3;
 static PyObject *__pyx_tuple__4;
-static PyObject *__pyx_tuple__5;
+static PyObject *__pyx_tuple__7;
 static PyObject *__pyx_tuple__8;
 static PyObject *__pyx_tuple__9;
 static PyObject *__pyx_tuple__10;
@@ -1699,7 +1689,7 @@ static PyObject *__pyx_codeobj__34;
 static PyObject *__pyx_codeobj__35;
 static PyObject *__pyx_codeobj__37;
 
-/* "mds/containers.pyx":52
+/* "mds/containers.pyx":41
  *         """
  * 
  *         def __init__(self, num_attempts):             # <<<<<<<<<<<<<<
@@ -1736,11 +1726,11 @@ static PyObject *__pyx_pw_3mds_10containers_9max_tries_1__init__(PyObject *__pyx
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_num_attempts)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); __PYX_ERR(0, 52, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); __PYX_ERR(1, 41, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 52, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(1, 41, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -1753,7 +1743,7 @@ static PyObject *__pyx_pw_3mds_10containers_9max_tries_1__init__(PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 52, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 41, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.containers.max_tries.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1771,25 +1761,25 @@ static PyObject *__pyx_pf_3mds_10containers_9max_tries___init__(CYTHON_UNUSED Py
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "mds/containers.pyx":53
+  /* "mds/containers.pyx":42
  * 
  *         def __init__(self, num_attempts):
  *             self.__num_attempts = num_attempts             # <<<<<<<<<<<<<<
  *             self.__i = 0
  * 
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_max_tries__num_attempts, __pyx_v_num_attempts) < 0) __PYX_ERR(0, 53, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_max_tries__num_attempts, __pyx_v_num_attempts) < 0) __PYX_ERR(1, 42, __pyx_L1_error)
 
-  /* "mds/containers.pyx":54
+  /* "mds/containers.pyx":43
  *         def __init__(self, num_attempts):
  *             self.__num_attempts = num_attempts
  *             self.__i = 0             # <<<<<<<<<<<<<<
  * 
  *         def __call__(self):
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_max_tries__i, __pyx_int_0) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_max_tries__i, __pyx_int_0) < 0) __PYX_ERR(1, 43, __pyx_L1_error)
 
-  /* "mds/containers.pyx":52
+  /* "mds/containers.pyx":41
  *         """
  * 
  *         def __init__(self, num_attempts):             # <<<<<<<<<<<<<<
@@ -1809,7 +1799,7 @@ static PyObject *__pyx_pf_3mds_10containers_9max_tries___init__(CYTHON_UNUSED Py
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":56
+/* "mds/containers.pyx":45
  *             self.__i = 0
  * 
  *         def __call__(self):             # <<<<<<<<<<<<<<
@@ -1840,25 +1830,25 @@ static PyObject *__pyx_pf_3mds_10containers_9max_tries_2__call__(CYTHON_UNUSED P
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("__call__", 0);
 
-  /* "mds/containers.pyx":57
+  /* "mds/containers.pyx":46
  * 
  *         def __call__(self):
  *             if self.__i >= self.__num_attempts:             # <<<<<<<<<<<<<<
  *                 return True
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_max_tries__i); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_max_tries__i); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_max_tries__num_attempts); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_max_tries__num_attempts); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_2, Py_GE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_t_1, __pyx_t_2, Py_GE); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 46, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(1, 46, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_4) {
 
-    /* "mds/containers.pyx":58
+    /* "mds/containers.pyx":47
  *         def __call__(self):
  *             if self.__i >= self.__num_attempts:
  *                 return True             # <<<<<<<<<<<<<<
@@ -1870,7 +1860,7 @@ static PyObject *__pyx_pf_3mds_10containers_9max_tries_2__call__(CYTHON_UNUSED P
     __pyx_r = Py_True;
     goto __pyx_L0;
 
-    /* "mds/containers.pyx":57
+    /* "mds/containers.pyx":46
  * 
  *         def __call__(self):
  *             if self.__i >= self.__num_attempts:             # <<<<<<<<<<<<<<
@@ -1879,22 +1869,22 @@ static PyObject *__pyx_pf_3mds_10containers_9max_tries_2__call__(CYTHON_UNUSED P
  */
   }
 
-  /* "mds/containers.pyx":60
+  /* "mds/containers.pyx":49
  *                 return True
  * 
  *             self.__i += 1             # <<<<<<<<<<<<<<
  *             return False
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_max_tries__i); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_max_tries__i); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_t_3, __pyx_int_1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_AddObjC(__pyx_t_3, __pyx_int_1, 1, 1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_max_tries__i, __pyx_t_2) < 0) __PYX_ERR(0, 60, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_max_tries__i, __pyx_t_2) < 0) __PYX_ERR(1, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mds/containers.pyx":61
+  /* "mds/containers.pyx":50
  * 
  *             self.__i += 1
  *             return False             # <<<<<<<<<<<<<<
@@ -1906,7 +1896,7 @@ static PyObject *__pyx_pf_3mds_10containers_9max_tries_2__call__(CYTHON_UNUSED P
   __pyx_r = Py_False;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":56
+  /* "mds/containers.pyx":45
  *             self.__i = 0
  * 
  *         def __call__(self):             # <<<<<<<<<<<<<<
@@ -1927,7 +1917,7 @@ static PyObject *__pyx_pf_3mds_10containers_9max_tries_2__call__(CYTHON_UNUSED P
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":76
+/* "mds/containers.pyx":65
  *         """
  * 
  *         def __init__(self, condition, args=tuple()):             # <<<<<<<<<<<<<<
@@ -1942,12 +1932,12 @@ static PyObject *__pyx_pf_3mds_10containers_2__defaults__(CYTHON_UNUSED PyObject
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__defaults__", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self)->__pyx_arg_args);
   __Pyx_GIVEREF(__Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self)->__pyx_arg_args);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_self)->__pyx_arg_args);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
@@ -2004,7 +1994,7 @@ static PyObject *__pyx_pw_3mds_10containers_9try_while_1__init__(PyObject *__pyx
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_condition)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 3, 1); __PYX_ERR(0, 76, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 3, 1); __PYX_ERR(1, 65, __pyx_L3_error)
         }
         case  2:
         if (kw_args > 0) {
@@ -2013,7 +2003,7 @@ static PyObject *__pyx_pw_3mds_10containers_9try_while_1__init__(PyObject *__pyx
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 76, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(1, 65, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2030,7 +2020,7 @@ static PyObject *__pyx_pw_3mds_10containers_9try_while_1__init__(PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 76, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 0, 2, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 65, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.containers.try_while.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2049,7 +2039,7 @@ static PyObject *__pyx_pf_3mds_10containers_9try_while___init__(CYTHON_UNUSED Py
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "mds/containers.pyx":77
+  /* "mds/containers.pyx":66
  * 
  *         def __init__(self, condition, args=tuple()):
  *             assert callable(condition)             # <<<<<<<<<<<<<<
@@ -2058,33 +2048,33 @@ static PyObject *__pyx_pf_3mds_10containers_9try_while___init__(CYTHON_UNUSED Py
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_PyCallable_Check(__pyx_v_condition); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCallable_Check(__pyx_v_condition); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(1, 66, __pyx_L1_error)
     if (unlikely(!(__pyx_t_1 != 0))) {
       PyErr_SetNone(PyExc_AssertionError);
-      __PYX_ERR(0, 77, __pyx_L1_error)
+      __PYX_ERR(1, 66, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "mds/containers.pyx":78
+  /* "mds/containers.pyx":67
  *         def __init__(self, condition, args=tuple()):
  *             assert callable(condition)
  *             self.__condition = condition             # <<<<<<<<<<<<<<
  *             self.__args = args
  * 
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_try_while__condition, __pyx_v_condition) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_try_while__condition, __pyx_v_condition) < 0) __PYX_ERR(1, 67, __pyx_L1_error)
 
-  /* "mds/containers.pyx":79
+  /* "mds/containers.pyx":68
  *             assert callable(condition)
  *             self.__condition = condition
  *             self.__args = args             # <<<<<<<<<<<<<<
  * 
  *         def __call__(self):
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_try_while__args, __pyx_v_args) < 0) __PYX_ERR(0, 79, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_try_while__args, __pyx_v_args) < 0) __PYX_ERR(1, 68, __pyx_L1_error)
 
-  /* "mds/containers.pyx":76
+  /* "mds/containers.pyx":65
  *         """
  * 
  *         def __init__(self, condition, args=tuple()):             # <<<<<<<<<<<<<<
@@ -2104,7 +2094,7 @@ static PyObject *__pyx_pf_3mds_10containers_9try_while___init__(CYTHON_UNUSED Py
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":81
+/* "mds/containers.pyx":70
  *             self.__args = args
  * 
  *         def __call__(self):             # <<<<<<<<<<<<<<
@@ -2135,7 +2125,7 @@ static PyObject *__pyx_pf_3mds_10containers_9try_while_2__call__(CYTHON_UNUSED P
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("__call__", 0);
 
-  /* "mds/containers.pyx":82
+  /* "mds/containers.pyx":71
  * 
  *         def __call__(self):
  *             return not self.__condition(*self.__args)             # <<<<<<<<<<<<<<
@@ -2143,26 +2133,26 @@ static PyObject *__pyx_pf_3mds_10containers_9try_while_2__call__(CYTHON_UNUSED P
  *     class try_until(object):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_try_while__condition); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_try_while__condition); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_try_while__args); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_try_while__args); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PySequence_Tuple(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_3 = PySequence_Tuple(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(1, 71, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyBool_FromLong((!__pyx_t_4)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBool_FromLong((!__pyx_t_4)); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":81
+  /* "mds/containers.pyx":70
  *             self.__args = args
  * 
  *         def __call__(self):             # <<<<<<<<<<<<<<
@@ -2183,7 +2173,7 @@ static PyObject *__pyx_pf_3mds_10containers_9try_while_2__call__(CYTHON_UNUSED P
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":92
+/* "mds/containers.pyx":81
  *         """
  * 
  *         def __init__(self, conclusion):             # <<<<<<<<<<<<<<
@@ -2220,11 +2210,11 @@ static PyObject *__pyx_pw_3mds_10containers_9try_until_1__init__(PyObject *__pyx
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_conclusion)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); __PYX_ERR(0, 92, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); __PYX_ERR(1, 81, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 92, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(1, 81, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2237,7 +2227,7 @@ static PyObject *__pyx_pw_3mds_10containers_9try_until_1__init__(PyObject *__pyx
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 92, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 81, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.containers.try_until.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2257,7 +2247,7 @@ static PyObject *__pyx_pf_3mds_10containers_9try_until___init__(CYTHON_UNUSED Py
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "mds/containers.pyx":93
+  /* "mds/containers.pyx":82
  * 
  *         def __init__(self, conclusion):
  *             assert isinstance(conclusion, datetime)             # <<<<<<<<<<<<<<
@@ -2266,27 +2256,27 @@ static PyObject *__pyx_pf_3mds_10containers_9try_until___init__(CYTHON_UNUSED Py
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_datetime); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_datetime); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 82, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyObject_IsInstance(__pyx_v_conclusion, __pyx_t_1); if (unlikely(__pyx_t_2 == -1)) __PYX_ERR(0, 93, __pyx_L1_error)
+    __pyx_t_2 = PyObject_IsInstance(__pyx_v_conclusion, __pyx_t_1); if (unlikely(__pyx_t_2 == -1)) __PYX_ERR(1, 82, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (unlikely(!(__pyx_t_2 != 0))) {
       PyErr_SetNone(PyExc_AssertionError);
-      __PYX_ERR(0, 93, __pyx_L1_error)
+      __PYX_ERR(1, 82, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "mds/containers.pyx":94
+  /* "mds/containers.pyx":83
  *         def __init__(self, conclusion):
  *             assert isinstance(conclusion, datetime)
  *             self._conclusion = conclusion             # <<<<<<<<<<<<<<
  * 
  *         def __call__(self):
  */
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_conclusion_2, __pyx_v_conclusion) < 0) __PYX_ERR(0, 94, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_conclusion_2, __pyx_v_conclusion) < 0) __PYX_ERR(1, 83, __pyx_L1_error)
 
-  /* "mds/containers.pyx":92
+  /* "mds/containers.pyx":81
  *         """
  * 
  *         def __init__(self, conclusion):             # <<<<<<<<<<<<<<
@@ -2307,7 +2297,7 @@ static PyObject *__pyx_pf_3mds_10containers_9try_until___init__(CYTHON_UNUSED Py
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":96
+/* "mds/containers.pyx":85
  *             self._conclusion = conclusion
  * 
  *         def __call__(self):             # <<<<<<<<<<<<<<
@@ -2337,7 +2327,7 @@ static PyObject *__pyx_pf_3mds_10containers_9try_until_2__call__(CYTHON_UNUSED P
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__call__", 0);
 
-  /* "mds/containers.pyx":97
+  /* "mds/containers.pyx":86
  * 
  *         def __call__(self):
  *             return datetime.now() > self._conclusion             # <<<<<<<<<<<<<<
@@ -2345,9 +2335,9 @@ static PyObject *__pyx_pf_3mds_10containers_9try_until_2__call__(CYTHON_UNUSED P
  *     class try_for(try_until):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_datetime); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_datetime); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_now); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_now); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -2361,23 +2351,23 @@ static PyObject *__pyx_pf_3mds_10containers_9try_until_2__call__(CYTHON_UNUSED P
     }
   }
   if (__pyx_t_2) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 86, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 97, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 86, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_conclusion_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_self, __pyx_n_s_conclusion_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_GT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 97, __pyx_L1_error)
+  __pyx_t_2 = PyObject_RichCompare(__pyx_t_1, __pyx_t_3, Py_GT); __Pyx_XGOTREF(__pyx_t_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 86, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":96
+  /* "mds/containers.pyx":85
  *             self._conclusion = conclusion
  * 
  *         def __call__(self):             # <<<<<<<<<<<<<<
@@ -2398,7 +2388,7 @@ static PyObject *__pyx_pf_3mds_10containers_9try_until_2__call__(CYTHON_UNUSED P
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":109
+/* "mds/containers.pyx":98
  *         """
  * 
  *         def __init__(self, conclusion):             # <<<<<<<<<<<<<<
@@ -2435,11 +2425,11 @@ static PyObject *__pyx_pw_3mds_10containers_7try_for_1__init__(PyObject *__pyx_s
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_conclusion)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); __PYX_ERR(0, 109, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, 1); __PYX_ERR(1, 98, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(0, 109, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__init__") < 0)) __PYX_ERR(1, 98, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2452,7 +2442,7 @@ static PyObject *__pyx_pw_3mds_10containers_7try_for_1__init__(PyObject *__pyx_s
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 109, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__init__", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 98, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.containers.try_for.__init__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2474,7 +2464,7 @@ static PyObject *__pyx_pf_3mds_10containers_7try_for___init__(CYTHON_UNUSED PyOb
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__init__", 0);
 
-  /* "mds/containers.pyx":110
+  /* "mds/containers.pyx":99
  * 
  *         def __init__(self, conclusion):
  *             assert isinstance(conclusion, timedelta)             # <<<<<<<<<<<<<<
@@ -2483,27 +2473,27 @@ static PyObject *__pyx_pf_3mds_10containers_7try_for___init__(CYTHON_UNUSED PyOb
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_timedelta); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 110, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_timedelta); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 99, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyObject_IsInstance(__pyx_v_conclusion, __pyx_t_1); if (unlikely(__pyx_t_2 == -1)) __PYX_ERR(0, 110, __pyx_L1_error)
+    __pyx_t_2 = PyObject_IsInstance(__pyx_v_conclusion, __pyx_t_1); if (unlikely(__pyx_t_2 == -1)) __PYX_ERR(1, 99, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (unlikely(!(__pyx_t_2 != 0))) {
       PyErr_SetNone(PyExc_AssertionError);
-      __PYX_ERR(0, 110, __pyx_L1_error)
+      __PYX_ERR(1, 99, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "mds/containers.pyx":111
+  /* "mds/containers.pyx":100
  *         def __init__(self, conclusion):
  *             assert isinstance(conclusion, timedelta)
  *             self._conclusion = datetime.now() + conclusion             # <<<<<<<<<<<<<<
  * 
  *     def __init__(self):
  */
-  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_datetime); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 111, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_datetime); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_now); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 111, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_now); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = NULL;
@@ -2517,20 +2507,20 @@ static PyObject *__pyx_pf_3mds_10containers_7try_for___init__(CYTHON_UNUSED PyOb
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 100, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 100, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = PyNumber_Add(__pyx_t_1, __pyx_v_conclusion); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 111, __pyx_L1_error)
+  __pyx_t_4 = PyNumber_Add(__pyx_t_1, __pyx_v_conclusion); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 100, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_conclusion_2, __pyx_t_4) < 0) __PYX_ERR(0, 111, __pyx_L1_error)
+  if (__Pyx_PyObject_SetAttrStr(__pyx_v_self, __pyx_n_s_conclusion_2, __pyx_t_4) < 0) __PYX_ERR(1, 100, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mds/containers.pyx":109
+  /* "mds/containers.pyx":98
  *         """
  * 
  *         def __init__(self, conclusion):             # <<<<<<<<<<<<<<
@@ -2553,7 +2543,7 @@ static PyObject *__pyx_pf_3mds_10containers_7try_for___init__(CYTHON_UNUSED PyOb
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":113
+/* "mds/containers.pyx":102
  *             self._conclusion = datetime.now() + conclusion
  * 
  *     def __init__(self):             # <<<<<<<<<<<<<<
@@ -2587,7 +2577,7 @@ static PyObject *__pyx_pf_3mds_10containers_11OptionsBase___init__(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":117
+/* "mds/containers.pyx":106
  * 
  *     @staticmethod
  *     def check(self):             # <<<<<<<<<<<<<<
@@ -2621,7 +2611,7 @@ static PyObject *__pyx_pf_3mds_10containers_11OptionsBase_2check(CYTHON_UNUSED P
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":135
+/* "mds/containers.pyx":124
  * cdef class ContextTaskMapping(dict):
  * 
  *     def add_task_to_context(self, ctxt, task):             # <<<<<<<<<<<<<<
@@ -2657,11 +2647,11 @@ static PyObject *__pyx_pw_3mds_10containers_18ContextTaskMapping_1add_task_to_co
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_task)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("add_task_to_context", 1, 2, 2, 1); __PYX_ERR(0, 135, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("add_task_to_context", 1, 2, 2, 1); __PYX_ERR(1, 124, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "add_task_to_context") < 0)) __PYX_ERR(0, 135, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "add_task_to_context") < 0)) __PYX_ERR(1, 124, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2674,7 +2664,7 @@ static PyObject *__pyx_pw_3mds_10containers_18ContextTaskMapping_1add_task_to_co
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("add_task_to_context", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 135, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("add_task_to_context", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 124, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.containers.ContextTaskMapping.add_task_to_context", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2697,7 +2687,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_add_task_to_con
   Py_hash_t __pyx_t_5;
   __Pyx_RefNannySetupContext("add_task_to_context", 0);
 
-  /* "mds/containers.pyx":136
+  /* "mds/containers.pyx":125
  * 
  *     def add_task_to_context(self, ctxt, task):
  *         assert isinstance(ctxt, IsolationContext) and isinstance(task, Task)             # <<<<<<<<<<<<<<
@@ -2719,35 +2709,35 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_add_task_to_con
     __pyx_L3_bool_binop_done:;
     if (unlikely(!__pyx_t_1)) {
       PyErr_SetNone(PyExc_AssertionError);
-      __PYX_ERR(0, 136, __pyx_L1_error)
+      __PYX_ERR(1, 125, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "mds/containers.pyx":138
+  /* "mds/containers.pyx":127
  *         assert isinstance(ctxt, IsolationContext) and isinstance(task, Task)
  * 
  *         if ctxt not in self:             # <<<<<<<<<<<<<<
  *             self[ctxt] = dict()
  * 
  */
-  __pyx_t_1 = (__Pyx_PySequence_ContainsTF(__pyx_v_ctxt, ((PyObject *)__pyx_v_self), Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 138, __pyx_L1_error)
+  __pyx_t_1 = (__Pyx_PySequence_ContainsTF(__pyx_v_ctxt, ((PyObject *)__pyx_v_self), Py_NE)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(1, 127, __pyx_L1_error)
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "mds/containers.pyx":139
+    /* "mds/containers.pyx":128
  * 
  *         if ctxt not in self:
  *             self[ctxt] = dict()             # <<<<<<<<<<<<<<
  * 
  *         self[ctxt][hash(task)] = task
  */
-    __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 139, __pyx_L1_error)
+    __pyx_t_4 = PyDict_New(); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 128, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_self), __pyx_v_ctxt, __pyx_t_4) < 0)) __PYX_ERR(0, 139, __pyx_L1_error)
+    if (unlikely(PyObject_SetItem(((PyObject *)__pyx_v_self), __pyx_v_ctxt, __pyx_t_4) < 0)) __PYX_ERR(1, 128, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "mds/containers.pyx":138
+    /* "mds/containers.pyx":127
  *         assert isinstance(ctxt, IsolationContext) and isinstance(task, Task)
  * 
  *         if ctxt not in self:             # <<<<<<<<<<<<<<
@@ -2756,20 +2746,20 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_add_task_to_con
  */
   }
 
-  /* "mds/containers.pyx":141
+  /* "mds/containers.pyx":130
  *             self[ctxt] = dict()
  * 
  *         self[ctxt][hash(task)] = task             # <<<<<<<<<<<<<<
  * 
  *     def context_has_task(self, ctxt, task):
  */
-  __pyx_t_4 = PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_v_ctxt); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_4 = PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_v_ctxt); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 130, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = PyObject_Hash(__pyx_v_task); if (unlikely(__pyx_t_5 == -1)) __PYX_ERR(0, 141, __pyx_L1_error)
-  if (unlikely(__Pyx_SetItemInt(__pyx_t_4, __pyx_t_5, __pyx_v_task, Py_hash_t, 1, __Pyx_PyInt_FromHash_t, 0, 1, 1) < 0)) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_5 = PyObject_Hash(__pyx_v_task); if (unlikely(__pyx_t_5 == -1)) __PYX_ERR(1, 130, __pyx_L1_error)
+  if (unlikely(__Pyx_SetItemInt(__pyx_t_4, __pyx_t_5, __pyx_v_task, Py_hash_t, 1, __Pyx_PyInt_FromHash_t, 0, 1, 1) < 0)) __PYX_ERR(1, 130, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mds/containers.pyx":135
+  /* "mds/containers.pyx":124
  * cdef class ContextTaskMapping(dict):
  * 
  *     def add_task_to_context(self, ctxt, task):             # <<<<<<<<<<<<<<
@@ -2790,7 +2780,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_add_task_to_con
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":143
+/* "mds/containers.pyx":132
  *         self[ctxt][hash(task)] = task
  * 
  *     def context_has_task(self, ctxt, task):             # <<<<<<<<<<<<<<
@@ -2826,11 +2816,11 @@ static PyObject *__pyx_pw_3mds_10containers_18ContextTaskMapping_3context_has_ta
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_task)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("context_has_task", 1, 2, 2, 1); __PYX_ERR(0, 143, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("context_has_task", 1, 2, 2, 1); __PYX_ERR(1, 132, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "context_has_task") < 0)) __PYX_ERR(0, 143, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "context_has_task") < 0)) __PYX_ERR(1, 132, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -2843,7 +2833,7 @@ static PyObject *__pyx_pw_3mds_10containers_18ContextTaskMapping_3context_has_ta
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("context_has_task", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 143, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("context_has_task", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 132, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.containers.ContextTaskMapping.context_has_task", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2870,7 +2860,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_2context_has_ta
   PyObject *__pyx_t_9 = NULL;
   __Pyx_RefNannySetupContext("context_has_task", 0);
 
-  /* "mds/containers.pyx":144
+  /* "mds/containers.pyx":133
  * 
  *     def context_has_task(self, ctxt, task):
  *         try:             # <<<<<<<<<<<<<<
@@ -2886,7 +2876,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_2context_has_ta
     __Pyx_XGOTREF(__pyx_t_3);
     /*try:*/ {
 
-      /* "mds/containers.pyx":145
+      /* "mds/containers.pyx":134
  *     def context_has_task(self, ctxt, task):
  *         try:
  *             return hash(task) in self[ctxt]             # <<<<<<<<<<<<<<
@@ -2894,21 +2884,21 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_2context_has_ta
  *             return False
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_4 = PyObject_Hash(__pyx_v_task); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(0, 145, __pyx_L3_error)
-      __pyx_t_5 = __Pyx_PyInt_FromHash_t(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 145, __pyx_L3_error)
+      __pyx_t_4 = PyObject_Hash(__pyx_v_task); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(1, 134, __pyx_L3_error)
+      __pyx_t_5 = __Pyx_PyInt_FromHash_t(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 134, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_v_ctxt); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 145, __pyx_L3_error)
+      __pyx_t_6 = PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_v_ctxt); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 134, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_7 = (__Pyx_PySequence_ContainsTF(__pyx_t_5, __pyx_t_6, Py_EQ)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 145, __pyx_L3_error)
+      __pyx_t_7 = (__Pyx_PySequence_ContainsTF(__pyx_t_5, __pyx_t_6, Py_EQ)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(1, 134, __pyx_L3_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyBool_FromLong(__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 145, __pyx_L3_error)
+      __pyx_t_6 = __Pyx_PyBool_FromLong(__pyx_t_7); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 134, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_6);
       __pyx_r = __pyx_t_6;
       __pyx_t_6 = 0;
       goto __pyx_L7_try_return;
 
-      /* "mds/containers.pyx":144
+      /* "mds/containers.pyx":133
  * 
  *     def context_has_task(self, ctxt, task):
  *         try:             # <<<<<<<<<<<<<<
@@ -2921,7 +2911,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_2context_has_ta
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "mds/containers.pyx":146
+    /* "mds/containers.pyx":135
  *         try:
  *             return hash(task) in self[ctxt]
  *         except Exception:             # <<<<<<<<<<<<<<
@@ -2931,12 +2921,12 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_2context_has_ta
     __pyx_t_8 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_8) {
       __Pyx_AddTraceback("mds.containers.ContextTaskMapping.context_has_task", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_6, &__pyx_t_5, &__pyx_t_9) < 0) __PYX_ERR(0, 146, __pyx_L5_except_error)
+      if (__Pyx_GetException(&__pyx_t_6, &__pyx_t_5, &__pyx_t_9) < 0) __PYX_ERR(1, 135, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_9);
 
-      /* "mds/containers.pyx":147
+      /* "mds/containers.pyx":136
  *             return hash(task) in self[ctxt]
  *         except Exception:
  *             return False             # <<<<<<<<<<<<<<
@@ -2954,7 +2944,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_2context_has_ta
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
 
-    /* "mds/containers.pyx":144
+    /* "mds/containers.pyx":133
  * 
  *     def context_has_task(self, ctxt, task):
  *         try:             # <<<<<<<<<<<<<<
@@ -2983,7 +2973,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_2context_has_ta
     goto __pyx_L0;
   }
 
-  /* "mds/containers.pyx":143
+  /* "mds/containers.pyx":132
  *         self[ctxt][hash(task)] = task
  * 
  *     def context_has_task(self, ctxt, task):             # <<<<<<<<<<<<<<
@@ -3004,7 +2994,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_2context_has_ta
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":149
+/* "mds/containers.pyx":138
  *             return False
  * 
  *     def get_context_task_map(self, ctxt):             # <<<<<<<<<<<<<<
@@ -3038,7 +3028,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_4get_context_ta
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("get_context_task_map", 0);
 
-  /* "mds/containers.pyx":150
+  /* "mds/containers.pyx":139
  * 
  *     def get_context_task_map(self, ctxt):
  *         assert isinstance(ctxt, IsolationContext)             # <<<<<<<<<<<<<<
@@ -3050,12 +3040,12 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_4get_context_ta
     __pyx_t_1 = __Pyx_TypeCheck(__pyx_v_ctxt, __pyx_ptype_3mds_10containers_IsolationContext); 
     if (unlikely(!(__pyx_t_1 != 0))) {
       PyErr_SetNone(PyExc_AssertionError);
-      __PYX_ERR(0, 150, __pyx_L1_error)
+      __PYX_ERR(1, 139, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "mds/containers.pyx":152
+  /* "mds/containers.pyx":141
  *         assert isinstance(ctxt, IsolationContext)
  * 
  *         try:             # <<<<<<<<<<<<<<
@@ -3071,7 +3061,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_4get_context_ta
     __Pyx_XGOTREF(__pyx_t_4);
     /*try:*/ {
 
-      /* "mds/containers.pyx":153
+      /* "mds/containers.pyx":142
  * 
  *         try:
  *             return self[ctxt]             # <<<<<<<<<<<<<<
@@ -3079,13 +3069,13 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_4get_context_ta
  *             return None
  */
       __Pyx_XDECREF(__pyx_r);
-      __pyx_t_5 = PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_v_ctxt); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 153, __pyx_L3_error)
+      __pyx_t_5 = PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_v_ctxt); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 142, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_r = __pyx_t_5;
       __pyx_t_5 = 0;
       goto __pyx_L7_try_return;
 
-      /* "mds/containers.pyx":152
+      /* "mds/containers.pyx":141
  *         assert isinstance(ctxt, IsolationContext)
  * 
  *         try:             # <<<<<<<<<<<<<<
@@ -3097,7 +3087,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_4get_context_ta
     __Pyx_PyThreadState_assign
     __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "mds/containers.pyx":154
+    /* "mds/containers.pyx":143
  *         try:
  *             return self[ctxt]
  *         except Exception:             # <<<<<<<<<<<<<<
@@ -3107,12 +3097,12 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_4get_context_ta
     __pyx_t_6 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_6) {
       __Pyx_AddTraceback("mds.containers.ContextTaskMapping.get_context_task_map", __pyx_clineno, __pyx_lineno, __pyx_filename);
-      if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_7, &__pyx_t_8) < 0) __PYX_ERR(0, 154, __pyx_L5_except_error)
+      if (__Pyx_GetException(&__pyx_t_5, &__pyx_t_7, &__pyx_t_8) < 0) __PYX_ERR(1, 143, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_7);
       __Pyx_GOTREF(__pyx_t_8);
 
-      /* "mds/containers.pyx":155
+      /* "mds/containers.pyx":144
  *             return self[ctxt]
  *         except Exception:
  *             return None             # <<<<<<<<<<<<<<
@@ -3130,7 +3120,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_4get_context_ta
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
 
-    /* "mds/containers.pyx":152
+    /* "mds/containers.pyx":141
  *         assert isinstance(ctxt, IsolationContext)
  * 
  *         try:             # <<<<<<<<<<<<<<
@@ -3159,7 +3149,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_4get_context_ta
     goto __pyx_L0;
   }
 
-  /* "mds/containers.pyx":149
+  /* "mds/containers.pyx":138
  *             return False
  * 
  *     def get_context_task_map(self, ctxt):             # <<<<<<<<<<<<<<
@@ -3180,7 +3170,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_4get_context_ta
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":157
+/* "mds/containers.pyx":146
  *             return None
  * 
  *     def expunge(self, target):             # <<<<<<<<<<<<<<
@@ -3223,17 +3213,17 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_6expunge(struct
   int __pyx_t_14;
   __Pyx_RefNannySetupContext("expunge", 0);
 
-  /* "mds/containers.pyx":158
+  /* "mds/containers.pyx":147
  * 
  *     def expunge(self, target):
  *         hash_val = hash(target)             # <<<<<<<<<<<<<<
  * 
  *         for isoctxt, task_map in self.items():
  */
-  __pyx_t_1 = PyObject_Hash(__pyx_v_target); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 158, __pyx_L1_error)
+  __pyx_t_1 = PyObject_Hash(__pyx_v_target); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(1, 147, __pyx_L1_error)
   __pyx_v_hash_val = __pyx_t_1;
 
-  /* "mds/containers.pyx":160
+  /* "mds/containers.pyx":149
  *         hash_val = hash(target)
  * 
  *         for isoctxt, task_map in self.items():             # <<<<<<<<<<<<<<
@@ -3243,9 +3233,9 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_6expunge(struct
   __pyx_t_3 = 0;
   if (unlikely(((PyObject *)__pyx_v_self) == Py_None)) {
     PyErr_Format(PyExc_AttributeError, "'NoneType' object has no attribute '%s'", "items");
-    __PYX_ERR(0, 160, __pyx_L1_error)
+    __PYX_ERR(1, 149, __pyx_L1_error)
   }
-  __pyx_t_6 = __Pyx_dict_iterator(((PyObject *)__pyx_v_self), 0, __pyx_n_s_items, (&__pyx_t_4), (&__pyx_t_5)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 160, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_dict_iterator(((PyObject *)__pyx_v_self), 0, __pyx_n_s_items, (&__pyx_t_4), (&__pyx_t_5)); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 149, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_2);
   __pyx_t_2 = __pyx_t_6;
@@ -3253,7 +3243,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_6expunge(struct
   while (1) {
     __pyx_t_8 = __Pyx_dict_iter_next(__pyx_t_2, __pyx_t_4, &__pyx_t_3, &__pyx_t_6, &__pyx_t_7, NULL, __pyx_t_5);
     if (unlikely(__pyx_t_8 == 0)) break;
-    if (unlikely(__pyx_t_8 == -1)) __PYX_ERR(0, 160, __pyx_L1_error)
+    if (unlikely(__pyx_t_8 == -1)) __PYX_ERR(1, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_GOTREF(__pyx_t_7);
     __Pyx_XDECREF_SET(__pyx_v_isoctxt, __pyx_t_6);
@@ -3261,7 +3251,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_6expunge(struct
     __Pyx_XDECREF_SET(__pyx_v_task_map, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "mds/containers.pyx":161
+    /* "mds/containers.pyx":150
  * 
  *         for isoctxt, task_map in self.items():
  *             try:             # <<<<<<<<<<<<<<
@@ -3277,16 +3267,16 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_6expunge(struct
       __Pyx_XGOTREF(__pyx_t_11);
       /*try:*/ {
 
-        /* "mds/containers.pyx":162
+        /* "mds/containers.pyx":151
  *         for isoctxt, task_map in self.items():
  *             try:
  *                 del task_map[hash_val]             # <<<<<<<<<<<<<<
  *             except KeyError:
  *                 continue
  */
-        if (unlikely(__Pyx_DelItemInt(__pyx_v_task_map, __pyx_v_hash_val, Py_hash_t, 1, __Pyx_PyInt_FromHash_t, 0, 1, 1) < 0)) __PYX_ERR(0, 162, __pyx_L5_error)
+        if (unlikely(__Pyx_DelItemInt(__pyx_v_task_map, __pyx_v_hash_val, Py_hash_t, 1, __Pyx_PyInt_FromHash_t, 0, 1, 1) < 0)) __PYX_ERR(1, 151, __pyx_L5_error)
 
-        /* "mds/containers.pyx":161
+        /* "mds/containers.pyx":150
  * 
  *         for isoctxt, task_map in self.items():
  *             try:             # <<<<<<<<<<<<<<
@@ -3303,7 +3293,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_6expunge(struct
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "mds/containers.pyx":163
+      /* "mds/containers.pyx":152
  *             try:
  *                 del task_map[hash_val]
  *             except KeyError:             # <<<<<<<<<<<<<<
@@ -3313,12 +3303,12 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_6expunge(struct
       __pyx_t_8 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_KeyError);
       if (__pyx_t_8) {
         __Pyx_AddTraceback("mds.containers.ContextTaskMapping.expunge", __pyx_clineno, __pyx_lineno, __pyx_filename);
-        if (__Pyx_GetException(&__pyx_t_7, &__pyx_t_6, &__pyx_t_12) < 0) __PYX_ERR(0, 163, __pyx_L7_except_error)
+        if (__Pyx_GetException(&__pyx_t_7, &__pyx_t_6, &__pyx_t_12) < 0) __PYX_ERR(1, 152, __pyx_L7_except_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_GOTREF(__pyx_t_6);
         __Pyx_GOTREF(__pyx_t_12);
 
-        /* "mds/containers.pyx":164
+        /* "mds/containers.pyx":153
  *                 del task_map[hash_val]
  *             except KeyError:
  *                 continue             # <<<<<<<<<<<<<<
@@ -3335,7 +3325,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_6expunge(struct
       goto __pyx_L7_except_error;
       __pyx_L7_except_error:;
 
-      /* "mds/containers.pyx":161
+      /* "mds/containers.pyx":150
  * 
  *         for isoctxt, task_map in self.items():
  *             try:             # <<<<<<<<<<<<<<
@@ -3358,27 +3348,27 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_6expunge(struct
       __pyx_L12_try_end:;
     }
 
-    /* "mds/containers.pyx":166
+    /* "mds/containers.pyx":155
  *                 continue
  * 
  *             if not task_map:  # If it's now empty, dump it             # <<<<<<<<<<<<<<
  *                 del self[isoctxt]
  * 
  */
-    __pyx_t_13 = __Pyx_PyObject_IsTrue(__pyx_v_task_map); if (unlikely(__pyx_t_13 < 0)) __PYX_ERR(0, 166, __pyx_L1_error)
+    __pyx_t_13 = __Pyx_PyObject_IsTrue(__pyx_v_task_map); if (unlikely(__pyx_t_13 < 0)) __PYX_ERR(1, 155, __pyx_L1_error)
     __pyx_t_14 = ((!__pyx_t_13) != 0);
     if (__pyx_t_14) {
 
-      /* "mds/containers.pyx":167
+      /* "mds/containers.pyx":156
  * 
  *             if not task_map:  # If it's now empty, dump it
  *                 del self[isoctxt]             # <<<<<<<<<<<<<<
  * 
  * 
  */
-      if (unlikely(PyObject_DelItem(((PyObject *)__pyx_v_self), __pyx_v_isoctxt) < 0)) __PYX_ERR(0, 167, __pyx_L1_error)
+      if (unlikely(PyObject_DelItem(((PyObject *)__pyx_v_self), __pyx_v_isoctxt) < 0)) __PYX_ERR(1, 156, __pyx_L1_error)
 
-      /* "mds/containers.pyx":166
+      /* "mds/containers.pyx":155
  *                 continue
  * 
  *             if not task_map:  # If it's now empty, dump it             # <<<<<<<<<<<<<<
@@ -3390,7 +3380,7 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_6expunge(struct
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mds/containers.pyx":157
+  /* "mds/containers.pyx":146
  *             return None
  * 
  *     def expunge(self, target):             # <<<<<<<<<<<<<<
@@ -3416,8 +3406,8 @@ static PyObject *__pyx_pf_3mds_10containers_18ContextTaskMapping_6expunge(struct
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":174
- *     cdef publication_attempt_handle _handle
+/* "mds/containers.pyx":161
+ * cdef class PublicationResult(object):
  * 
  *     def prepare_for_redo(self):             # <<<<<<<<<<<<<<
  *         self._handle.prepare_for_redo()
@@ -3442,7 +3432,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_prepare_for_redo
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("prepare_for_redo", 0);
 
-  /* "mds/containers.pyx":175
+  /* "mds/containers.pyx":162
  * 
  *     def prepare_for_redo(self):
  *         self._handle.prepare_for_redo()             # <<<<<<<<<<<<<<
@@ -3451,8 +3441,8 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_prepare_for_redo
  */
   __pyx_v_self->_handle.prepare_for_redo();
 
-  /* "mds/containers.pyx":174
- *     cdef publication_attempt_handle _handle
+  /* "mds/containers.pyx":161
+ * cdef class PublicationResult(object):
  * 
  *     def prepare_for_redo(self):             # <<<<<<<<<<<<<<
  *         self._handle.prepare_for_redo()
@@ -3466,7 +3456,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_prepare_for_redo
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":177
+/* "mds/containers.pyx":164
  *         self._handle.prepare_for_redo()
  * 
  *     def redo(self, Task task):             # <<<<<<<<<<<<<<
@@ -3480,7 +3470,7 @@ static PyObject *__pyx_pw_3mds_10containers_17PublicationResult_3redo(PyObject *
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("redo (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task), __pyx_ptype_3mds_10containers_Task, 1, "task", 0))) __PYX_ERR(0, 177, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_task), __pyx_ptype_3mds_10containers_Task, 1, "task", 0))) __PYX_ERR(1, 164, __pyx_L1_error)
   __pyx_r = __pyx_pf_3mds_10containers_17PublicationResult_2redo(((struct __pyx_obj_3mds_10containers_PublicationResult *)__pyx_v_self), ((struct __pyx_obj_3mds_10containers_Task *)__pyx_v_task));
 
   /* function exit code */
@@ -3507,38 +3497,38 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_2redo(CYTHON_UNU
   int __pyx_t_7;
   __Pyx_RefNannySetupContext("redo", 0);
 
-  /* "mds/containers.pyx":178
+  /* "mds/containers.pyx":165
  * 
  *     def redo(self, Task task):
  *         isoctxt = task.isolation_context             # <<<<<<<<<<<<<<
  *         redoable = IsolationContext.redoable_tasks
  *         tasks = redoable.get_context_task_map(isoctxt).values()
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_task), __pyx_n_s_isolation_context); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_task), __pyx_n_s_isolation_context); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_isoctxt = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":179
+  /* "mds/containers.pyx":166
  *     def redo(self, Task task):
  *         isoctxt = task.isolation_context
  *         redoable = IsolationContext.redoable_tasks             # <<<<<<<<<<<<<<
  *         tasks = redoable.get_context_task_map(isoctxt).values()
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext), __pyx_n_s_redoable_tasks); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext), __pyx_n_s_redoable_tasks); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 166, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_redoable = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":180
+  /* "mds/containers.pyx":167
  *         isoctxt = task.isolation_context
  *         redoable = IsolationContext.redoable_tasks
  *         tasks = redoable.get_context_task_map(isoctxt).values()             # <<<<<<<<<<<<<<
  * 
  *         # TODO CLARIFY Is checking this map purely to make sure there's something there?
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_redoable, __pyx_n_s_get_context_task_map); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 180, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_redoable, __pyx_n_s_get_context_task_map); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 167, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -3551,13 +3541,13 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_2redo(CYTHON_UNU
     }
   }
   if (!__pyx_t_4) {
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_isoctxt); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 180, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_isoctxt); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 167, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_v_isoctxt};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 180, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 167, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
@@ -3565,25 +3555,25 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_2redo(CYTHON_UNU
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_v_isoctxt};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 180, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 167, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 180, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 167, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
       __Pyx_INCREF(__pyx_v_isoctxt);
       __Pyx_GIVEREF(__pyx_v_isoctxt);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_v_isoctxt);
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 180, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 167, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_values); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 180, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_values); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 167, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = NULL;
@@ -3597,28 +3587,28 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_2redo(CYTHON_UNU
     }
   }
   if (__pyx_t_2) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 180, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 167, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 180, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 167, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_tasks = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":183
+  /* "mds/containers.pyx":170
  * 
  *         # TODO CLARIFY Is checking this map purely to make sure there's something there?
  *         if not tasks:             # <<<<<<<<<<<<<<
  *             return False
  *         # TODO elif task in tasks?
  */
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_tasks); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 183, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_tasks); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(1, 170, __pyx_L1_error)
   __pyx_t_7 = ((!__pyx_t_6) != 0);
   if (__pyx_t_7) {
 
-    /* "mds/containers.pyx":184
+    /* "mds/containers.pyx":171
  *         # TODO CLARIFY Is checking this map purely to make sure there's something there?
  *         if not tasks:
  *             return False             # <<<<<<<<<<<<<<
@@ -3630,7 +3620,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_2redo(CYTHON_UNU
     __pyx_r = Py_False;
     goto __pyx_L0;
 
-    /* "mds/containers.pyx":183
+    /* "mds/containers.pyx":170
  * 
  *         # TODO CLARIFY Is checking this map purely to make sure there's something there?
  *         if not tasks:             # <<<<<<<<<<<<<<
@@ -3639,14 +3629,14 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_2redo(CYTHON_UNU
  */
   }
 
-  /* "mds/containers.pyx":187
+  /* "mds/containers.pyx":174
  *         # TODO elif task in tasks?
  *         # NOTE Don't see why this was rerun before, and not just straight run..
  *         task.run()             # <<<<<<<<<<<<<<
  *         return True
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_task), __pyx_n_s_run); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_task), __pyx_n_s_run); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 174, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_2 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -3659,16 +3649,16 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_2redo(CYTHON_UNU
     }
   }
   if (__pyx_t_2) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 187, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 174, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 187, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 174, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":188
+  /* "mds/containers.pyx":175
  *         # NOTE Don't see why this was rerun before, and not just straight run..
  *         task.run()
  *         return True             # <<<<<<<<<<<<<<
@@ -3680,7 +3670,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_2redo(CYTHON_UNU
   __pyx_r = Py_True;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":177
+  /* "mds/containers.pyx":164
  *         self._handle.prepare_for_redo()
  * 
  *     def redo(self, Task task):             # <<<<<<<<<<<<<<
@@ -3706,7 +3696,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_2redo(CYTHON_UNU
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":190
+/* "mds/containers.pyx":177
  *         return True
  * 
  *     def before_resolve(self, tasks):  # before_resolve(const pub_result &pr)             # <<<<<<<<<<<<<<
@@ -3732,7 +3722,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_4before_resolve(
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("before_resolve", 0);
 
-  /* "mds/containers.pyx":191
+  /* "mds/containers.pyx":178
  * 
  *     def before_resolve(self, tasks):  # before_resolve(const pub_result &pr)
  *         return NotImplemented             # <<<<<<<<<<<<<<
@@ -3744,7 +3734,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_4before_resolve(
   __pyx_r = __pyx_builtin_NotImplemented;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":190
+  /* "mds/containers.pyx":177
  *         return True
  * 
  *     def before_resolve(self, tasks):  # before_resolve(const pub_result &pr)             # <<<<<<<<<<<<<<
@@ -3759,7 +3749,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_4before_resolve(
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":193
+/* "mds/containers.pyx":180
  *         return NotImplemented
  * 
  *     def before_run(self, IsolationContext ctxt):             # <<<<<<<<<<<<<<
@@ -3773,7 +3763,7 @@ static PyObject *__pyx_pw_3mds_10containers_17PublicationResult_7before_run(PyOb
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("before_run (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ctxt), __pyx_ptype_3mds_10containers_IsolationContext, 1, "ctxt", 0))) __PYX_ERR(0, 193, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ctxt), __pyx_ptype_3mds_10containers_IsolationContext, 1, "ctxt", 0))) __PYX_ERR(1, 180, __pyx_L1_error)
   __pyx_r = __pyx_pf_3mds_10containers_17PublicationResult_6before_run(((struct __pyx_obj_3mds_10containers_PublicationResult *)__pyx_v_self), ((struct __pyx_obj_3mds_10containers_IsolationContext *)__pyx_v_ctxt));
 
   /* function exit code */
@@ -3790,7 +3780,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_6before_run(CYTH
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("before_run", 0);
 
-  /* "mds/containers.pyx":194
+  /* "mds/containers.pyx":181
  * 
  *     def before_run(self, IsolationContext ctxt):
  *         return NotImplemented             # <<<<<<<<<<<<<<
@@ -3802,7 +3792,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_6before_run(CYTH
   __pyx_r = __pyx_builtin_NotImplemented;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":193
+  /* "mds/containers.pyx":180
  *         return NotImplemented
  * 
  *     def before_run(self, IsolationContext ctxt):             # <<<<<<<<<<<<<<
@@ -3817,7 +3807,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_6before_run(CYTH
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":196
+/* "mds/containers.pyx":183
  *         return NotImplemented
  * 
  *     def note_success(self):             # <<<<<<<<<<<<<<
@@ -3843,7 +3833,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_8note_success(CY
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("note_success", 0);
 
-  /* "mds/containers.pyx":197
+  /* "mds/containers.pyx":184
  * 
  *     def note_success(self):
  *         return NotImplemented             # <<<<<<<<<<<<<<
@@ -3855,7 +3845,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_8note_success(CY
   __pyx_r = __pyx_builtin_NotImplemented;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":196
+  /* "mds/containers.pyx":183
  *         return NotImplemented
  * 
  *     def note_success(self):             # <<<<<<<<<<<<<<
@@ -3870,7 +3860,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_8note_success(CY
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":199
+/* "mds/containers.pyx":186
  *         return NotImplemented
  * 
  *     def note_failure(self):             # <<<<<<<<<<<<<<
@@ -3896,7 +3886,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_10note_failure(C
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("note_failure", 0);
 
-  /* "mds/containers.pyx":200
+  /* "mds/containers.pyx":187
  * 
  *     def note_failure(self):
  *         return NotImplemented             # <<<<<<<<<<<<<<
@@ -3908,7 +3898,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_10note_failure(C
   __pyx_r = __pyx_builtin_NotImplemented;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":199
+  /* "mds/containers.pyx":186
  *         return NotImplemented
  * 
  *     def note_failure(self):             # <<<<<<<<<<<<<<
@@ -3923,7 +3913,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_10note_failure(C
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":202
+/* "mds/containers.pyx":189
  *         return NotImplemented
  * 
  *     def resolve(self, report):             # <<<<<<<<<<<<<<
@@ -3944,7 +3934,7 @@ static PyObject *__pyx_pw_3mds_10containers_17PublicationResult_13resolve(PyObje
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":233
+/* "mds/containers.pyx":220
  *                 needs_task_prepare = True
  * 
  *         def worker(ts):             # <<<<<<<<<<<<<<
@@ -3980,7 +3970,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_7resolve_worker(
   int __pyx_t_8;
   __Pyx_RefNannySetupContext("worker", 0);
 
-  /* "mds/containers.pyx":234
+  /* "mds/containers.pyx":221
  * 
  *         def worker(ts):
  *             for t in ts:             # <<<<<<<<<<<<<<
@@ -3991,26 +3981,26 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_7resolve_worker(
     __pyx_t_1 = __pyx_v_ts; __Pyx_INCREF(__pyx_t_1); __pyx_t_2 = 0;
     __pyx_t_3 = NULL;
   } else {
-    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_ts); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_2 = -1; __pyx_t_1 = PyObject_GetIter(__pyx_v_ts); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 221, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 234, __pyx_L1_error)
+    __pyx_t_3 = Py_TYPE(__pyx_t_1)->tp_iternext; if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 221, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_3)) {
       if (likely(PyList_CheckExact(__pyx_t_1))) {
         if (__pyx_t_2 >= PyList_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 234, __pyx_L1_error)
+        __pyx_t_4 = PyList_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(1, 221, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 234, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 221, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       } else {
         if (__pyx_t_2 >= PyTuple_GET_SIZE(__pyx_t_1)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(0, 234, __pyx_L1_error)
+        __pyx_t_4 = PyTuple_GET_ITEM(__pyx_t_1, __pyx_t_2); __Pyx_INCREF(__pyx_t_4); __pyx_t_2++; if (unlikely(0 < 0)) __PYX_ERR(1, 221, __pyx_L1_error)
         #else
-        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 234, __pyx_L1_error)
+        __pyx_t_4 = PySequence_ITEM(__pyx_t_1, __pyx_t_2); __pyx_t_2++; if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 221, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         #endif
       }
@@ -4020,7 +4010,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_7resolve_worker(
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 234, __pyx_L1_error)
+          else __PYX_ERR(1, 221, __pyx_L1_error)
         }
         break;
       }
@@ -4029,20 +4019,20 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_7resolve_worker(
     __Pyx_XDECREF_SET(__pyx_v_t, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "mds/containers.pyx":235
+    /* "mds/containers.pyx":222
  *         def worker(ts):
  *             for t in ts:
  *                 if t.expired:             # <<<<<<<<<<<<<<
  *                     continue
  *                 elif not t.prepare_for_redo():
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_t, __pyx_n_s_expired); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 235, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_t, __pyx_n_s_expired); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 222, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 235, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(1, 222, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_5) {
 
-      /* "mds/containers.pyx":236
+      /* "mds/containers.pyx":223
  *             for t in ts:
  *                 if t.expired:
  *                     continue             # <<<<<<<<<<<<<<
@@ -4051,7 +4041,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_7resolve_worker(
  */
       goto __pyx_L3_continue;
 
-      /* "mds/containers.pyx":235
+      /* "mds/containers.pyx":222
  *         def worker(ts):
  *             for t in ts:
  *                 if t.expired:             # <<<<<<<<<<<<<<
@@ -4060,14 +4050,14 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_7resolve_worker(
  */
     }
 
-    /* "mds/containers.pyx":237
+    /* "mds/containers.pyx":224
  *                 if t.expired:
  *                     continue
  *                 elif not t.prepare_for_redo():             # <<<<<<<<<<<<<<
  *                     return False
  * 
  */
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_t, __pyx_n_s_prepare_for_redo); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 237, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_t, __pyx_n_s_prepare_for_redo); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 224, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_6))) {
@@ -4080,19 +4070,19 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_7resolve_worker(
       }
     }
     if (__pyx_t_7) {
-      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 237, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_6, __pyx_t_7); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 224, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     } else {
-      __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 237, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_CallNoArg(__pyx_t_6); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 224, __pyx_L1_error)
     }
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 237, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(1, 224, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_8 = ((!__pyx_t_5) != 0);
     if (__pyx_t_8) {
 
-      /* "mds/containers.pyx":238
+      /* "mds/containers.pyx":225
  *                     continue
  *                 elif not t.prepare_for_redo():
  *                     return False             # <<<<<<<<<<<<<<
@@ -4105,7 +4095,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_7resolve_worker(
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       goto __pyx_L0;
 
-      /* "mds/containers.pyx":237
+      /* "mds/containers.pyx":224
  *                 if t.expired:
  *                     continue
  *                 elif not t.prepare_for_redo():             # <<<<<<<<<<<<<<
@@ -4114,7 +4104,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_7resolve_worker(
  */
     }
 
-    /* "mds/containers.pyx":234
+    /* "mds/containers.pyx":221
  * 
  *         def worker(ts):
  *             for t in ts:             # <<<<<<<<<<<<<<
@@ -4125,7 +4115,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_7resolve_worker(
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":240
+  /* "mds/containers.pyx":227
  *                     return False
  * 
  *             return True             # <<<<<<<<<<<<<<
@@ -4137,7 +4127,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_7resolve_worker(
   __pyx_r = Py_True;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":233
+  /* "mds/containers.pyx":220
  *                 needs_task_prepare = True
  * 
  *         def worker(ts):             # <<<<<<<<<<<<<<
@@ -4160,7 +4150,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_7resolve_worker(
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":202
+/* "mds/containers.pyx":189
  *         return NotImplemented
  * 
  *     def resolve(self, report):             # <<<<<<<<<<<<<<
@@ -4198,31 +4188,31 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
   Py_ssize_t __pyx_t_15;
   __Pyx_RefNannySetupContext("resolve", 0);
 
-  /* "mds/containers.pyx":204
+  /* "mds/containers.pyx":191
  *     def resolve(self, report):
  *         # TODO Pretty sure this is very broken
  *         tasks = []             # <<<<<<<<<<<<<<
  *         task_map = IsolationContext.redoable_tasks.get_context_task_map(self.source_context)
  * 
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 204, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 191, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_tasks = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":205
+  /* "mds/containers.pyx":192
  *         # TODO Pretty sure this is very broken
  *         tasks = []
  *         task_map = IsolationContext.redoable_tasks.get_context_task_map(self.source_context)             # <<<<<<<<<<<<<<
  * 
  *         if not task_map:
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext), __pyx_n_s_redoable_tasks); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext), __pyx_n_s_redoable_tasks); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_get_context_task_map); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_get_context_task_map); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_source_context); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 205, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_source_context); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -4235,14 +4225,14 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
     }
   }
   if (!__pyx_t_4) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 205, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 192, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_2};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 205, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 192, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -4251,20 +4241,20 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_2};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 205, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 192, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 205, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 192, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
       __Pyx_GIVEREF(__pyx_t_2);
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_2);
       __pyx_t_2 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 205, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 192, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
@@ -4273,18 +4263,18 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
   __pyx_v_task_map = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":207
+  /* "mds/containers.pyx":194
  *         task_map = IsolationContext.redoable_tasks.get_context_task_map(self.source_context)
  * 
  *         if not task_map:             # <<<<<<<<<<<<<<
  *             return False
  * 
  */
-  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_task_map); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 207, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_v_task_map); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(1, 194, __pyx_L1_error)
   __pyx_t_7 = ((!__pyx_t_6) != 0);
   if (__pyx_t_7) {
 
-    /* "mds/containers.pyx":208
+    /* "mds/containers.pyx":195
  * 
  *         if not task_map:
  *             return False             # <<<<<<<<<<<<<<
@@ -4296,7 +4286,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
     __pyx_r = Py_False;
     goto __pyx_L0;
 
-    /* "mds/containers.pyx":207
+    /* "mds/containers.pyx":194
  *         task_map = IsolationContext.redoable_tasks.get_context_task_map(self.source_context)
  * 
  *         if not task_map:             # <<<<<<<<<<<<<<
@@ -4305,7 +4295,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
  */
   }
 
-  /* "mds/containers.pyx":210
+  /* "mds/containers.pyx":197
  *             return False
  * 
  *         cdef vector[task_handle] handles = self._handle.redo_tasks_by_start_time()             # <<<<<<<<<<<<<<
@@ -4314,7 +4304,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
  */
   __pyx_v_handles = __pyx_v_self->_handle.redo_tasks_by_start_time();
 
-  /* "mds/containers.pyx":212
+  /* "mds/containers.pyx":199
  *         cdef vector[task_handle] handles = self._handle.redo_tasks_by_start_time()
  * 
  *         for handle in handles:             # <<<<<<<<<<<<<<
@@ -4328,7 +4318,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
     ++__pyx_t_8;
     __pyx_v_handle = __pyx_t_9;
 
-    /* "mds/containers.pyx":213
+    /* "mds/containers.pyx":200
  * 
  *         for handle in handles:
  *             task_hash_val = hash_task(handle)             # <<<<<<<<<<<<<<
@@ -4337,7 +4327,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
  */
     __pyx_v_task_hash_val = mds::python::tasks::hash_task(__pyx_v_handle);
 
-    /* "mds/containers.pyx":215
+    /* "mds/containers.pyx":202
  *             task_hash_val = hash_task(handle)
  * 
  *             try:             # <<<<<<<<<<<<<<
@@ -4353,19 +4343,19 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
       __Pyx_XGOTREF(__pyx_t_12);
       /*try:*/ {
 
-        /* "mds/containers.pyx":216
+        /* "mds/containers.pyx":203
  * 
  *             try:
  *                 tasks.append(task_map[task_hash_val])             # <<<<<<<<<<<<<<
  *             except Exception:
  *                 continue
  */
-        __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_task_map, __pyx_v_task_hash_val, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 216, __pyx_L6_error)
+        __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_task_map, __pyx_v_task_hash_val, size_t, 0, __Pyx_PyInt_FromSize_t, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 203, __pyx_L6_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_tasks, __pyx_t_1); if (unlikely(__pyx_t_13 == -1)) __PYX_ERR(0, 216, __pyx_L6_error)
+        __pyx_t_13 = __Pyx_PyList_Append(__pyx_v_tasks, __pyx_t_1); if (unlikely(__pyx_t_13 == -1)) __PYX_ERR(1, 203, __pyx_L6_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "mds/containers.pyx":215
+        /* "mds/containers.pyx":202
  *             task_hash_val = hash_task(handle)
  * 
  *             try:             # <<<<<<<<<<<<<<
@@ -4385,7 +4375,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "mds/containers.pyx":217
+      /* "mds/containers.pyx":204
  *             try:
  *                 tasks.append(task_map[task_hash_val])
  *             except Exception:             # <<<<<<<<<<<<<<
@@ -4395,12 +4385,12 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
       __pyx_t_14 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
       if (__pyx_t_14) {
         __Pyx_AddTraceback("mds.containers.PublicationResult.resolve", __pyx_clineno, __pyx_lineno, __pyx_filename);
-        if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_3, &__pyx_t_5) < 0) __PYX_ERR(0, 217, __pyx_L8_except_error)
+        if (__Pyx_GetException(&__pyx_t_1, &__pyx_t_3, &__pyx_t_5) < 0) __PYX_ERR(1, 204, __pyx_L8_except_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_GOTREF(__pyx_t_5);
 
-        /* "mds/containers.pyx":218
+        /* "mds/containers.pyx":205
  *                 tasks.append(task_map[task_hash_val])
  *             except Exception:
  *                 continue             # <<<<<<<<<<<<<<
@@ -4417,7 +4407,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
       goto __pyx_L8_except_error;
       __pyx_L8_except_error:;
 
-      /* "mds/containers.pyx":215
+      /* "mds/containers.pyx":202
  *             task_hash_val = hash_task(handle)
  * 
  *             try:             # <<<<<<<<<<<<<<
@@ -4440,7 +4430,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
       __pyx_L13_try_end:;
     }
 
-    /* "mds/containers.pyx":212
+    /* "mds/containers.pyx":199
  *         cdef vector[task_handle] handles = self._handle.redo_tasks_by_start_time()
  * 
  *         for handle in handles:             # <<<<<<<<<<<<<<
@@ -4450,7 +4440,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
     __pyx_L4_continue:;
   }
 
-  /* "mds/containers.pyx":220
+  /* "mds/containers.pyx":207
  *                 continue
  * 
  *         if not tasks:             # <<<<<<<<<<<<<<
@@ -4461,7 +4451,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
   __pyx_t_6 = ((!__pyx_t_7) != 0);
   if (__pyx_t_6) {
 
-    /* "mds/containers.pyx":221
+    /* "mds/containers.pyx":208
  * 
  *         if not tasks:
  *             return True             # <<<<<<<<<<<<<<
@@ -4473,7 +4463,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
     __pyx_r = Py_True;
     goto __pyx_L0;
 
-    /* "mds/containers.pyx":220
+    /* "mds/containers.pyx":207
  *                 continue
  * 
  *         if not tasks:             # <<<<<<<<<<<<<<
@@ -4482,14 +4472,14 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
  */
   }
 
-  /* "mds/containers.pyx":223
+  /* "mds/containers.pyx":210
  *             return True
  * 
  *         report.before_resolve(tasks)  # TODO: Where is this used             # <<<<<<<<<<<<<<
  *         need_task_prepare = False
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_report, __pyx_n_s_before_resolve); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 223, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_report, __pyx_n_s_before_resolve); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 210, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_1 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -4502,13 +4492,13 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
     }
   }
   if (!__pyx_t_1) {
-    __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_tasks); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 223, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_tasks); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 210, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_1, __pyx_v_tasks};
-      __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 223, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 210, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_5);
     } else
@@ -4516,19 +4506,19 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_3)) {
       PyObject *__pyx_temp[2] = {__pyx_t_1, __pyx_v_tasks};
-      __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 223, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyCFunction_FastCall(__pyx_t_3, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 210, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_GOTREF(__pyx_t_5);
     } else
     #endif
     {
-      __pyx_t_2 = PyTuple_New(1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 223, __pyx_L1_error)
+      __pyx_t_2 = PyTuple_New(1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 210, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_GIVEREF(__pyx_t_1); PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1); __pyx_t_1 = NULL;
       __Pyx_INCREF(__pyx_v_tasks);
       __Pyx_GIVEREF(__pyx_v_tasks);
       PyTuple_SET_ITEM(__pyx_t_2, 0+1, __pyx_v_tasks);
-      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 223, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_3, __pyx_t_2, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 210, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
@@ -4536,7 +4526,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "mds/containers.pyx":224
+  /* "mds/containers.pyx":211
  * 
  *         report.before_resolve(tasks)  # TODO: Where is this used
  *         need_task_prepare = False             # <<<<<<<<<<<<<<
@@ -4545,7 +4535,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
  */
   __pyx_v_need_task_prepare = 0;
 
-  /* "mds/containers.pyx":226
+  /* "mds/containers.pyx":213
  *         need_task_prepare = False
  * 
  *         for task in tasks:             # <<<<<<<<<<<<<<
@@ -4556,28 +4546,28 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
   for (;;) {
     if (__pyx_t_15 >= PyList_GET_SIZE(__pyx_t_5)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_15); __Pyx_INCREF(__pyx_t_3); __pyx_t_15++; if (unlikely(0 < 0)) __PYX_ERR(0, 226, __pyx_L1_error)
+    __pyx_t_3 = PyList_GET_ITEM(__pyx_t_5, __pyx_t_15); __Pyx_INCREF(__pyx_t_3); __pyx_t_15++; if (unlikely(0 < 0)) __PYX_ERR(1, 213, __pyx_L1_error)
     #else
-    __pyx_t_3 = PySequence_ITEM(__pyx_t_5, __pyx_t_15); __pyx_t_15++; if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 226, __pyx_L1_error)
+    __pyx_t_3 = PySequence_ITEM(__pyx_t_5, __pyx_t_15); __pyx_t_15++; if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 213, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     #endif
     __Pyx_XDECREF_SET(__pyx_v_task, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "mds/containers.pyx":227
+    /* "mds/containers.pyx":214
  * 
  *         for task in tasks:
  *             if task.expired:  # Maybe between then and now it's gone...             # <<<<<<<<<<<<<<
  *                 return False
  * 
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_n_s_expired); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 227, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_n_s_expired); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 214, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 227, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(1, 214, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_6) {
 
-      /* "mds/containers.pyx":228
+      /* "mds/containers.pyx":215
  *         for task in tasks:
  *             if task.expired:  # Maybe between then and now it's gone...
  *                 return False             # <<<<<<<<<<<<<<
@@ -4590,7 +4580,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       goto __pyx_L0;
 
-      /* "mds/containers.pyx":227
+      /* "mds/containers.pyx":214
  * 
  *         for task in tasks:
  *             if task.expired:  # Maybe between then and now it's gone...             # <<<<<<<<<<<<<<
@@ -4599,20 +4589,20 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
  */
     }
 
-    /* "mds/containers.pyx":230
+    /* "mds/containers.pyx":217
  *                 return False
  * 
  *             if task.needs_prepare_for_redo:             # <<<<<<<<<<<<<<
  *                 needs_task_prepare = True
  * 
  */
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_n_s_needs_prepare_for_redo); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 230, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_n_s_needs_prepare_for_redo); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 217, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 230, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(1, 217, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_6) {
 
-      /* "mds/containers.pyx":231
+      /* "mds/containers.pyx":218
  * 
  *             if task.needs_prepare_for_redo:
  *                 needs_task_prepare = True             # <<<<<<<<<<<<<<
@@ -4621,7 +4611,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
  */
       __pyx_v_needs_task_prepare = 1;
 
-      /* "mds/containers.pyx":230
+      /* "mds/containers.pyx":217
  *                 return False
  * 
  *             if task.needs_prepare_for_redo:             # <<<<<<<<<<<<<<
@@ -4630,7 +4620,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
  */
     }
 
-    /* "mds/containers.pyx":226
+    /* "mds/containers.pyx":213
  *         need_task_prepare = False
  * 
  *         for task in tasks:             # <<<<<<<<<<<<<<
@@ -4640,19 +4630,19 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
   }
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "mds/containers.pyx":233
+  /* "mds/containers.pyx":220
  *                 needs_task_prepare = True
  * 
  *         def worker(ts):             # <<<<<<<<<<<<<<
  *             for t in ts:
  *                 if t.expired:
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_17PublicationResult_7resolve_1worker, 0, __pyx_n_s_resolve_locals_worker, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 233, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_17PublicationResult_7resolve_1worker, 0, __pyx_n_s_resolve_locals_worker, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__2)); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_v_worker = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "mds/containers.pyx":249
+  /* "mds/containers.pyx":236
  *         # prepare_for_redo() code to take place in the top-level task of
  *         # the child context.
  *         if need_task_prepare:             # <<<<<<<<<<<<<<
@@ -4662,48 +4652,48 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
   __pyx_t_6 = (__pyx_v_need_task_prepare != 0);
   if (__pyx_t_6) {
 
-    /* "mds/containers.pyx":250
+    /* "mds/containers.pyx":237
  *         # the child context.
  *         if need_task_prepare:
  *             t1_task = self.source_context.top_level_task             # <<<<<<<<<<<<<<
  * 
  *             # TODO: ERROR: This won't work, by design Tasks don't return, except here in C++
  */
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_source_context); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 250, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_source_context); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 237, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_top_level_task); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 250, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_top_level_task); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 237, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_v_t1_task = __pyx_t_3;
     __pyx_t_3 = 0;
 
-    /* "mds/containers.pyx":253
+    /* "mds/containers.pyx":240
  * 
  *             # TODO: ERROR: This won't work, by design Tasks don't return, except here in C++
  *             if not Task(t1_task, fn=worker, args=(tasks,)).run():             # <<<<<<<<<<<<<<
  *                 return False
  * 
  */
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 253, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 240, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_INCREF(__pyx_v_t1_task);
     __Pyx_GIVEREF(__pyx_v_t1_task);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_v_t1_task);
-    __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 253, __pyx_L1_error)
+    __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 240, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_fn, __pyx_v_worker) < 0) __PYX_ERR(0, 253, __pyx_L1_error)
-    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 253, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_fn, __pyx_v_worker) < 0) __PYX_ERR(1, 240, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 240, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_tasks);
     __Pyx_GIVEREF(__pyx_v_tasks);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_tasks);
-    if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_args, __pyx_t_1) < 0) __PYX_ERR(0, 253, __pyx_L1_error)
+    if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_args, __pyx_t_1) < 0) __PYX_ERR(1, 240, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_t_5, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 253, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_t_5, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 240, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_run); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 253, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_run); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 240, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = NULL;
@@ -4717,19 +4707,19 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
       }
     }
     if (__pyx_t_1) {
-      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 253, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 240, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     } else {
-      __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 253, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 240, __pyx_L1_error)
     }
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 253, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(1, 240, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_7 = ((!__pyx_t_6) != 0);
     if (__pyx_t_7) {
 
-      /* "mds/containers.pyx":254
+      /* "mds/containers.pyx":241
  *             # TODO: ERROR: This won't work, by design Tasks don't return, except here in C++
  *             if not Task(t1_task, fn=worker, args=(tasks,)).run():
  *                 return False             # <<<<<<<<<<<<<<
@@ -4741,7 +4731,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
       __pyx_r = Py_False;
       goto __pyx_L0;
 
-      /* "mds/containers.pyx":253
+      /* "mds/containers.pyx":240
  * 
  *             # TODO: ERROR: This won't work, by design Tasks don't return, except here in C++
  *             if not Task(t1_task, fn=worker, args=(tasks,)).run():             # <<<<<<<<<<<<<<
@@ -4750,7 +4740,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
  */
     }
 
-    /* "mds/containers.pyx":249
+    /* "mds/containers.pyx":236
  *         # prepare_for_redo() code to take place in the top-level task of
  *         # the child context.
  *         if need_task_prepare:             # <<<<<<<<<<<<<<
@@ -4759,14 +4749,14 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
  */
   }
 
-  /* "mds/containers.pyx":256
+  /* "mds/containers.pyx":243
  *                 return False
  * 
  *         if not self.prepare_for_redo():             # <<<<<<<<<<<<<<
  *             return False
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_prepare_for_redo); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_prepare_for_redo); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 243, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_1 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -4779,19 +4769,19 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
     }
   }
   if (__pyx_t_1) {
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 256, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_1); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 243, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   } else {
-    __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 256, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 243, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 256, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(1, 243, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_6 = ((!__pyx_t_7) != 0);
   if (__pyx_t_6) {
 
-    /* "mds/containers.pyx":257
+    /* "mds/containers.pyx":244
  * 
  *         if not self.prepare_for_redo():
  *             return False             # <<<<<<<<<<<<<<
@@ -4803,7 +4793,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
     __pyx_r = Py_False;
     goto __pyx_L0;
 
-    /* "mds/containers.pyx":256
+    /* "mds/containers.pyx":243
  *                 return False
  * 
  *         if not self.prepare_for_redo():             # <<<<<<<<<<<<<<
@@ -4812,7 +4802,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
  */
   }
 
-  /* "mds/containers.pyx":262
+  /* "mds/containers.pyx":249
  *         # thread. Eventually, we'll need to pay attention to the bounds
  *         # and get the necessary parallelism going.
  *         for task in tasks:             # <<<<<<<<<<<<<<
@@ -4823,22 +4813,22 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
   for (;;) {
     if (__pyx_t_15 >= PyList_GET_SIZE(__pyx_t_3)) break;
     #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_15); __Pyx_INCREF(__pyx_t_2); __pyx_t_15++; if (unlikely(0 < 0)) __PYX_ERR(0, 262, __pyx_L1_error)
+    __pyx_t_2 = PyList_GET_ITEM(__pyx_t_3, __pyx_t_15); __Pyx_INCREF(__pyx_t_2); __pyx_t_15++; if (unlikely(0 < 0)) __PYX_ERR(1, 249, __pyx_L1_error)
     #else
-    __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_15); __pyx_t_15++; if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 262, __pyx_L1_error)
+    __pyx_t_2 = PySequence_ITEM(__pyx_t_3, __pyx_t_15); __pyx_t_15++; if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     #endif
     __Pyx_XDECREF_SET(__pyx_v_task, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "mds/containers.pyx":263
+    /* "mds/containers.pyx":250
  *         # and get the necessary parallelism going.
  *         for task in tasks:
  *             task.run()  # t.establish_and_run(ti->function);             # <<<<<<<<<<<<<<
  * 
  *         return True
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_n_s_run); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 263, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_task, __pyx_n_s_run); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 250, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_5 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -4851,16 +4841,16 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
       }
     }
     if (__pyx_t_5) {
-      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 263, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 250, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     } else {
-      __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 263, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 250, __pyx_L1_error)
     }
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "mds/containers.pyx":262
+    /* "mds/containers.pyx":249
  *         # thread. Eventually, we'll need to pay attention to the bounds
  *         # and get the necessary parallelism going.
  *         for task in tasks:             # <<<<<<<<<<<<<<
@@ -4870,7 +4860,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "mds/containers.pyx":265
+  /* "mds/containers.pyx":252
  *             task.run()  # t.establish_and_run(ti->function);
  * 
  *         return True             # <<<<<<<<<<<<<<
@@ -4882,7 +4872,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
   __pyx_r = Py_True;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":202
+  /* "mds/containers.pyx":189
  *         return NotImplemented
  * 
  *     def resolve(self, report):             # <<<<<<<<<<<<<<
@@ -4910,7 +4900,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_12resolve(struct
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":268
+/* "mds/containers.pyx":255
  * 
  *     property source_context:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4937,7 +4927,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_14source_context
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":269
+  /* "mds/containers.pyx":256
  *     property source_context:
  *         def __get__(self):
  *             return IsolationContext_Init(self._handle.source_context())             # <<<<<<<<<<<<<<
@@ -4945,13 +4935,13 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_14source_context
  *     property target_context:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(__pyx_v_self->_handle.source_context()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 269, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(__pyx_v_self->_handle.source_context()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 256, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":268
+  /* "mds/containers.pyx":255
  * 
  *     property source_context:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4970,7 +4960,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_14source_context
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":272
+/* "mds/containers.pyx":259
  * 
  *     property target_context:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -4997,7 +4987,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_14target_context
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":273
+  /* "mds/containers.pyx":260
  *     property target_context:
  *         def __get__(self):
  *             return IsolationContext_Init(self._handle.source_context().parent())             # <<<<<<<<<<<<<<
@@ -5005,13 +4995,13 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_14target_context
  *     property number_to_redo:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(__pyx_v_self->_handle.source_context().parent()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 273, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(__pyx_v_self->_handle.source_context().parent()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 260, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":272
+  /* "mds/containers.pyx":259
  * 
  *     property target_context:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -5030,7 +5020,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_14target_context
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":276
+/* "mds/containers.pyx":263
  * 
  *     property number_to_redo:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -5057,7 +5047,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_14number_to_redo
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":277
+  /* "mds/containers.pyx":264
  *     property number_to_redo:
  *         def __get__(self):
  *             return <int> self._handle.n_to_redo()             # <<<<<<<<<<<<<<
@@ -5065,13 +5055,13 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_14number_to_redo
  *     property succeeded:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(((int)__pyx_v_self->_handle.n_to_redo())); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 277, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(((int)__pyx_v_self->_handle.n_to_redo())); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 264, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":276
+  /* "mds/containers.pyx":263
  * 
  *     property number_to_redo:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -5090,7 +5080,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_14number_to_redo
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":280
+/* "mds/containers.pyx":267
  * 
  *     property succeeded:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -5117,7 +5107,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_9succeeded___get
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":281
+  /* "mds/containers.pyx":268
  *     property succeeded:
  *         def __get__(self):
  *             return <bint> self._handle.succeeded()             # <<<<<<<<<<<<<<
@@ -5125,13 +5115,13 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_9succeeded___get
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong((__pyx_v_self->_handle.succeeded() != 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 281, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong((__pyx_v_self->_handle.succeeded() != 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 268, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":280
+  /* "mds/containers.pyx":267
  * 
  *     property succeeded:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -5150,85 +5140,8 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_9succeeded___get
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":284
- * 
- * 
- * cdef PublicationResult_Init(publication_attempt_handle handle):             # <<<<<<<<<<<<<<
- *     initialize_base_task()
- *     result = PublicationResult()
- */
-
-static PyObject *__pyx_f_3mds_10containers_PublicationResult_Init(mds::api::publication_attempt_handle __pyx_v_handle) {
-  struct __pyx_obj_3mds_10containers_PublicationResult *__pyx_v_result = NULL;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  __Pyx_RefNannySetupContext("PublicationResult_Init", 0);
-
-  /* "mds/containers.pyx":285
- * 
- * cdef PublicationResult_Init(publication_attempt_handle handle):
- *     initialize_base_task()             # <<<<<<<<<<<<<<
- *     result = PublicationResult()
- *     result._handle = handle
- */
-  mds::python::tasks::initialize_base_task();
-
-  /* "mds/containers.pyx":286
- * cdef PublicationResult_Init(publication_attempt_handle handle):
- *     initialize_base_task()
- *     result = PublicationResult()             # <<<<<<<<<<<<<<
- *     result._handle = handle
- *     return result
- */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_PublicationResult), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 286, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_result = ((struct __pyx_obj_3mds_10containers_PublicationResult *)__pyx_t_1);
-  __pyx_t_1 = 0;
-
-  /* "mds/containers.pyx":287
- *     initialize_base_task()
- *     result = PublicationResult()
- *     result._handle = handle             # <<<<<<<<<<<<<<
- *     return result
- * 
- */
-  __pyx_v_result->_handle = __pyx_v_handle;
-
-  /* "mds/containers.pyx":288
- *     result = PublicationResult()
- *     result._handle = handle
- *     return result             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(((PyObject *)__pyx_v_result));
-  __pyx_r = ((PyObject *)__pyx_v_result);
-  goto __pyx_L0;
-
-  /* "mds/containers.pyx":284
- * 
- * 
- * cdef PublicationResult_Init(publication_attempt_handle handle):             # <<<<<<<<<<<<<<
- *     initialize_base_task()
- *     result = PublicationResult()
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("mds.containers.PublicationResult_Init", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
-  __pyx_L0:;
-  __Pyx_XDECREF((PyObject *)__pyx_v_result);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "mds/containers.pyx":296
- *     cdef task_handle _handle
+/* "mds/containers.pyx":273
+ * cdef class Use(object):
  * 
  *     def __cinit__(self, IsolationContext ctxt):             # <<<<<<<<<<<<<<
  *         self._handle = ctxt._handle.push_prevailing()
@@ -5260,7 +5173,7 @@ static int __pyx_pw_3mds_10containers_3Use_1__cinit__(PyObject *__pyx_v_self, Py
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 296, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(1, 273, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -5271,13 +5184,13 @@ static int __pyx_pw_3mds_10containers_3Use_1__cinit__(PyObject *__pyx_v_self, Py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 296, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 273, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.containers.Use.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return -1;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ctxt), __pyx_ptype_3mds_10containers_IsolationContext, 1, "ctxt", 0))) __PYX_ERR(0, 296, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_ctxt), __pyx_ptype_3mds_10containers_IsolationContext, 1, "ctxt", 0))) __PYX_ERR(1, 273, __pyx_L1_error)
   __pyx_r = __pyx_pf_3mds_10containers_3Use___cinit__(((struct __pyx_obj_3mds_10containers_Use *)__pyx_v_self), __pyx_v_ctxt);
 
   /* function exit code */
@@ -5294,7 +5207,7 @@ static int __pyx_pf_3mds_10containers_3Use___cinit__(struct __pyx_obj_3mds_10con
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/containers.pyx":297
+  /* "mds/containers.pyx":274
  * 
  *     def __cinit__(self, IsolationContext ctxt):
  *         self._handle = ctxt._handle.push_prevailing()             # <<<<<<<<<<<<<<
@@ -5303,7 +5216,7 @@ static int __pyx_pf_3mds_10containers_3Use___cinit__(struct __pyx_obj_3mds_10con
  */
   __pyx_v_self->_handle = __pyx_v_ctxt->_handle.push_prevailing();
 
-  /* "mds/containers.pyx":298
+  /* "mds/containers.pyx":275
  *     def __cinit__(self, IsolationContext ctxt):
  *         self._handle = ctxt._handle.push_prevailing()
  *         self._establish = make_unique[Establish](self._handle)             # <<<<<<<<<<<<<<
@@ -5312,8 +5225,8 @@ static int __pyx_pf_3mds_10containers_3Use___cinit__(struct __pyx_obj_3mds_10con
  */
   __pyx_v_self->_establish = std::make_unique<mds::python::tasks::TaskWrapper::Establish>(__pyx_v_self->_handle);
 
-  /* "mds/containers.pyx":296
- *     cdef task_handle _handle
+  /* "mds/containers.pyx":273
+ * cdef class Use(object):
  * 
  *     def __cinit__(self, IsolationContext ctxt):             # <<<<<<<<<<<<<<
  *         self._handle = ctxt._handle.push_prevailing()
@@ -5326,7 +5239,7 @@ static int __pyx_pf_3mds_10containers_3Use___cinit__(struct __pyx_obj_3mds_10con
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":300
+/* "mds/containers.pyx":277
  *         self._establish = make_unique[Establish](self._handle)
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -5355,14 +5268,14 @@ static void __pyx_pf_3mds_10containers_3Use_2__dealloc__(struct __pyx_obj_3mds_1
   int __pyx_t_6;
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "mds/containers.pyx":301
+  /* "mds/containers.pyx":278
  * 
  *     def __dealloc__(self):
  *         if hash(Task.get_current()) != hash(Task_Init(self._handle)):             # <<<<<<<<<<<<<<
  *             raise RuntimeError("Improper stack discipline.")
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_n_s_get_current); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_n_s_get_current); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -5375,36 +5288,36 @@ static void __pyx_pf_3mds_10containers_3Use_2__dealloc__(struct __pyx_obj_3mds_1
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 278, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 278, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = PyObject_Hash(__pyx_t_1); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_t_4 = PyObject_Hash(__pyx_t_1); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(1, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __pyx_f_3mds_10containers_Task_Init(__pyx_v_self->_handle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_Task_Init(__pyx_v_self->_handle); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 278, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_5 = PyObject_Hash(__pyx_t_1); if (unlikely(__pyx_t_5 == -1)) __PYX_ERR(0, 301, __pyx_L1_error)
+  __pyx_t_5 = PyObject_Hash(__pyx_t_1); if (unlikely(__pyx_t_5 == -1)) __PYX_ERR(1, 278, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_6 = ((__pyx_t_4 != __pyx_t_5) != 0);
   if (__pyx_t_6) {
 
-    /* "mds/containers.pyx":302
+    /* "mds/containers.pyx":279
  *     def __dealloc__(self):
  *         if hash(Task.get_current()) != hash(Task_Init(self._handle)):
  *             raise RuntimeError("Improper stack discipline.")             # <<<<<<<<<<<<<<
  * 
  * 
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 302, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 279, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 302, __pyx_L1_error)
+    __PYX_ERR(1, 279, __pyx_L1_error)
 
-    /* "mds/containers.pyx":301
+    /* "mds/containers.pyx":278
  * 
  *     def __dealloc__(self):
  *         if hash(Task.get_current()) != hash(Task_Init(self._handle)):             # <<<<<<<<<<<<<<
@@ -5413,7 +5326,7 @@ static void __pyx_pf_3mds_10containers_3Use_2__dealloc__(struct __pyx_obj_3mds_1
  */
   }
 
-  /* "mds/containers.pyx":300
+  /* "mds/containers.pyx":277
  *         self._establish = make_unique[Establish](self._handle)
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
@@ -5432,7 +5345,7 @@ static void __pyx_pf_3mds_10containers_3Use_2__dealloc__(struct __pyx_obj_3mds_1
   __Pyx_RefNannyFinishContext();
 }
 
-/* "mds/containers.pyx":310
+/* "mds/containers.pyx":286
  *     redoable_tasks = ContextTaskMapping()
  * 
  *     def __hash__(self):             # <<<<<<<<<<<<<<
@@ -5458,17 +5371,17 @@ static Py_hash_t __pyx_pf_3mds_10containers_16IsolationContext___hash__(struct _
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__hash__", 0);
 
-  /* "mds/containers.pyx":311
+  /* "mds/containers.pyx":287
  * 
  *     def __hash__(self):
  *         return hash_isoctxt(self._handle)             # <<<<<<<<<<<<<<
  * 
- *     cdef __create_child(self, str kind, bool snapshot):
+ *     def create_child(self, kind="live", snapshot=False):
  */
   __pyx_r = mds::python::isoctxts::hash_isoctxt(__pyx_v_self->_handle);
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":310
+  /* "mds/containers.pyx":286
  *     redoable_tasks = ContextTaskMapping()
  * 
  *     def __hash__(self):             # <<<<<<<<<<<<<<
@@ -5483,350 +5396,8 @@ static Py_hash_t __pyx_pf_3mds_10containers_16IsolationContext___hash__(struct _
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":313
+/* "mds/containers.pyx":289
  *         return hash_isoctxt(self._handle)
- * 
- *     cdef __create_child(self, str kind, bool snapshot):             # <<<<<<<<<<<<<<
- *         cdef:
- *             iso_context_handle handle
- */
-
-static PyObject *__pyx_f_3mds_10containers_16IsolationContext___create_child(struct __pyx_obj_3mds_10containers_IsolationContext *__pyx_v_self, PyObject *__pyx_v_kind, bool __pyx_v_snapshot) {
-  mds::api::iso_context_handle __pyx_v_handle;
-  PyObject *__pyx_v_k_live = 0;
-  PyObject *__pyx_v_k_read_only = 0;
-  PyObject *__pyx_v_k_detached = 0;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  int __pyx_t_2;
-  PyObject *__pyx_t_3 = NULL;
-  mds::api::iso_context_handle __pyx_t_4;
-  __Pyx_RefNannySetupContext("__create_child", 0);
-
-  /* "mds/containers.pyx":316
- *         cdef:
- *             iso_context_handle handle
- *             str k_live = "live"             # <<<<<<<<<<<<<<
- *             str k_read_only = "read_only"
- *             str k_detached = "detached"
- */
-  __Pyx_INCREF(__pyx_n_u_live);
-  __pyx_v_k_live = __pyx_n_u_live;
-
-  /* "mds/containers.pyx":317
- *             iso_context_handle handle
- *             str k_live = "live"
- *             str k_read_only = "read_only"             # <<<<<<<<<<<<<<
- *             str k_detached = "detached"
- * 
- */
-  __Pyx_INCREF(__pyx_n_u_read_only);
-  __pyx_v_k_read_only = __pyx_n_u_read_only;
-
-  /* "mds/containers.pyx":318
- *             str k_live = "live"
- *             str k_read_only = "read_only"
- *             str k_detached = "detached"             # <<<<<<<<<<<<<<
- * 
- *         # Do the sanity checking here
- */
-  __Pyx_INCREF(__pyx_n_u_detached);
-  __pyx_v_k_detached = __pyx_n_u_detached;
-
-  /* "mds/containers.pyx":321
- * 
- *         # Do the sanity checking here
- *         if self._handle.is_read_only():             # <<<<<<<<<<<<<<
- *             if kind == k_live:
- *                 raise RuntimeError(
- */
-  __pyx_t_1 = (__pyx_v_self->_handle.is_read_only() != 0);
-  if (__pyx_t_1) {
-
-    /* "mds/containers.pyx":322
- *         # Do the sanity checking here
- *         if self._handle.is_read_only():
- *             if kind == k_live:             # <<<<<<<<<<<<<<
- *                 raise RuntimeError(
- *                     "Can't create a `live` child from `read_only` parent."
- */
-    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_kind, __pyx_v_k_live, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 322, __pyx_L1_error)
-    __pyx_t_2 = (__pyx_t_1 != 0);
-    if (__pyx_t_2) {
-
-      /* "mds/containers.pyx":323
- *         if self._handle.is_read_only():
- *             if kind == k_live:
- *                 raise RuntimeError(             # <<<<<<<<<<<<<<
- *                     "Can't create a `live` child from `read_only` parent."
- *                 )
- */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 323, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 323, __pyx_L1_error)
-
-      /* "mds/containers.pyx":322
- *         # Do the sanity checking here
- *         if self._handle.is_read_only():
- *             if kind == k_live:             # <<<<<<<<<<<<<<
- *                 raise RuntimeError(
- *                     "Can't create a `live` child from `read_only` parent."
- */
-    }
-
-    /* "mds/containers.pyx":321
- * 
- *         # Do the sanity checking here
- *         if self._handle.is_read_only():             # <<<<<<<<<<<<<<
- *             if kind == k_live:
- *                 raise RuntimeError(
- */
-  }
-
-  /* "mds/containers.pyx":327
- *                 )
- * 
- *         if snapshot:             # <<<<<<<<<<<<<<
- *             if kind == k_read_only:
- *                 handle = self._handle.new_read_only_snapshot_child()
- */
-  __pyx_t_2 = (__pyx_v_snapshot != 0);
-  if (__pyx_t_2) {
-
-    /* "mds/containers.pyx":328
- * 
- *         if snapshot:
- *             if kind == k_read_only:             # <<<<<<<<<<<<<<
- *                 handle = self._handle.new_read_only_snapshot_child()
- *             elif kind == k_detached:
- */
-    __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_kind, __pyx_v_k_read_only, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 328, __pyx_L1_error)
-    __pyx_t_1 = (__pyx_t_2 != 0);
-    if (__pyx_t_1) {
-
-      /* "mds/containers.pyx":329
- *         if snapshot:
- *             if kind == k_read_only:
- *                 handle = self._handle.new_read_only_snapshot_child()             # <<<<<<<<<<<<<<
- *             elif kind == k_detached:
- *                 handle = self._handle.new_detached_snapshot_child()
- */
-      try {
-        __pyx_t_4 = __pyx_v_self->_handle.new_read_only_snapshot_child();
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 329, __pyx_L1_error)
-      }
-      __pyx_v_handle = __pyx_t_4;
-
-      /* "mds/containers.pyx":328
- * 
- *         if snapshot:
- *             if kind == k_read_only:             # <<<<<<<<<<<<<<
- *                 handle = self._handle.new_read_only_snapshot_child()
- *             elif kind == k_detached:
- */
-      goto __pyx_L6;
-    }
-
-    /* "mds/containers.pyx":330
- *             if kind == k_read_only:
- *                 handle = self._handle.new_read_only_snapshot_child()
- *             elif kind == k_detached:             # <<<<<<<<<<<<<<
- *                 handle = self._handle.new_detached_snapshot_child()
- *             else:
- */
-    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_kind, __pyx_v_k_detached, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 330, __pyx_L1_error)
-    __pyx_t_2 = (__pyx_t_1 != 0);
-    if (__pyx_t_2) {
-
-      /* "mds/containers.pyx":331
- *                 handle = self._handle.new_read_only_snapshot_child()
- *             elif kind == k_detached:
- *                 handle = self._handle.new_detached_snapshot_child()             # <<<<<<<<<<<<<<
- *             else:
- *                 handle = self._handle.new_snapshot_child()
- */
-      try {
-        __pyx_t_4 = __pyx_v_self->_handle.new_detached_snapshot_child();
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 331, __pyx_L1_error)
-      }
-      __pyx_v_handle = __pyx_t_4;
-
-      /* "mds/containers.pyx":330
- *             if kind == k_read_only:
- *                 handle = self._handle.new_read_only_snapshot_child()
- *             elif kind == k_detached:             # <<<<<<<<<<<<<<
- *                 handle = self._handle.new_detached_snapshot_child()
- *             else:
- */
-      goto __pyx_L6;
-    }
-
-    /* "mds/containers.pyx":333
- *                 handle = self._handle.new_detached_snapshot_child()
- *             else:
- *                 handle = self._handle.new_snapshot_child()             # <<<<<<<<<<<<<<
- *         else:
- *             if kind == k_read_only:
- */
-    /*else*/ {
-      try {
-        __pyx_t_4 = __pyx_v_self->_handle.new_snapshot_child();
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 333, __pyx_L1_error)
-      }
-      __pyx_v_handle = __pyx_t_4;
-    }
-    __pyx_L6:;
-
-    /* "mds/containers.pyx":327
- *                 )
- * 
- *         if snapshot:             # <<<<<<<<<<<<<<
- *             if kind == k_read_only:
- *                 handle = self._handle.new_read_only_snapshot_child()
- */
-    goto __pyx_L5;
-  }
-
-  /* "mds/containers.pyx":335
- *                 handle = self._handle.new_snapshot_child()
- *         else:
- *             if kind == k_read_only:             # <<<<<<<<<<<<<<
- *                 handle = self._handle.new_read_only_nonsnapshot_child()
- *             elif kind == k_detached:
- */
-  /*else*/ {
-    __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_kind, __pyx_v_k_read_only, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 335, __pyx_L1_error)
-    __pyx_t_1 = (__pyx_t_2 != 0);
-    if (__pyx_t_1) {
-
-      /* "mds/containers.pyx":336
- *         else:
- *             if kind == k_read_only:
- *                 handle = self._handle.new_read_only_nonsnapshot_child()             # <<<<<<<<<<<<<<
- *             elif kind == k_detached:
- *                 handle = self._handle.new_detached_nonsnapshot_child()
- */
-      try {
-        __pyx_t_4 = __pyx_v_self->_handle.new_read_only_nonsnapshot_child();
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 336, __pyx_L1_error)
-      }
-      __pyx_v_handle = __pyx_t_4;
-
-      /* "mds/containers.pyx":335
- *                 handle = self._handle.new_snapshot_child()
- *         else:
- *             if kind == k_read_only:             # <<<<<<<<<<<<<<
- *                 handle = self._handle.new_read_only_nonsnapshot_child()
- *             elif kind == k_detached:
- */
-      goto __pyx_L7;
-    }
-
-    /* "mds/containers.pyx":337
- *             if kind == k_read_only:
- *                 handle = self._handle.new_read_only_nonsnapshot_child()
- *             elif kind == k_detached:             # <<<<<<<<<<<<<<
- *                 handle = self._handle.new_detached_nonsnapshot_child()
- *             else:
- */
-    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_kind, __pyx_v_k_detached, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 337, __pyx_L1_error)
-    __pyx_t_2 = (__pyx_t_1 != 0);
-    if (__pyx_t_2) {
-
-      /* "mds/containers.pyx":338
- *                 handle = self._handle.new_read_only_nonsnapshot_child()
- *             elif kind == k_detached:
- *                 handle = self._handle.new_detached_nonsnapshot_child()             # <<<<<<<<<<<<<<
- *             else:
- *                 handle = self._handle.new_nonsnapshot_child()
- */
-      try {
-        __pyx_t_4 = __pyx_v_self->_handle.new_detached_nonsnapshot_child();
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 338, __pyx_L1_error)
-      }
-      __pyx_v_handle = __pyx_t_4;
-
-      /* "mds/containers.pyx":337
- *             if kind == k_read_only:
- *                 handle = self._handle.new_read_only_nonsnapshot_child()
- *             elif kind == k_detached:             # <<<<<<<<<<<<<<
- *                 handle = self._handle.new_detached_nonsnapshot_child()
- *             else:
- */
-      goto __pyx_L7;
-    }
-
-    /* "mds/containers.pyx":340
- *                 handle = self._handle.new_detached_nonsnapshot_child()
- *             else:
- *                 handle = self._handle.new_nonsnapshot_child()             # <<<<<<<<<<<<<<
- * 
- *         return IsolationContext_Init(handle=handle)
- */
-    /*else*/ {
-      try {
-        __pyx_t_4 = __pyx_v_self->_handle.new_nonsnapshot_child();
-      } catch(...) {
-        __Pyx_CppExn2PyErr();
-        __PYX_ERR(0, 340, __pyx_L1_error)
-      }
-      __pyx_v_handle = __pyx_t_4;
-    }
-    __pyx_L7:;
-  }
-  __pyx_L5:;
-
-  /* "mds/containers.pyx":342
- *                 handle = self._handle.new_nonsnapshot_child()
- * 
- *         return IsolationContext_Init(handle=handle)             # <<<<<<<<<<<<<<
- * 
- *     def create_child(self, kind="live", snapshot=False):
- */
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_f_3mds_10containers_IsolationContext_Init(__pyx_v_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 342, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_r = __pyx_t_3;
-  __pyx_t_3 = 0;
-  goto __pyx_L0;
-
-  /* "mds/containers.pyx":313
- *         return hash_isoctxt(self._handle)
- * 
- *     cdef __create_child(self, str kind, bool snapshot):             # <<<<<<<<<<<<<<
- *         cdef:
- *             iso_context_handle handle
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("mds.containers.IsolationContext.__create_child", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v_k_live);
-  __Pyx_XDECREF(__pyx_v_k_read_only);
-  __Pyx_XDECREF(__pyx_v_k_detached);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "mds/containers.pyx":344
- *         return IsolationContext_Init(handle=handle)
  * 
  *     def create_child(self, kind="live", snapshot=False):             # <<<<<<<<<<<<<<
  *         kinds = ("live", "read_only", "detached")
@@ -5869,7 +5440,7 @@ static PyObject *__pyx_pw_3mds_10containers_16IsolationContext_3create_child(PyO
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create_child") < 0)) __PYX_ERR(0, 344, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create_child") < 0)) __PYX_ERR(1, 289, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -5884,7 +5455,7 @@ static PyObject *__pyx_pw_3mds_10containers_16IsolationContext_3create_child(PyO
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create_child", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 344, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create_child", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 289, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.containers.IsolationContext.create_child", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -5911,17 +5482,17 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_2create_child(str
   bool __pyx_t_8;
   __Pyx_RefNannySetupContext("create_child", 0);
 
-  /* "mds/containers.pyx":345
+  /* "mds/containers.pyx":290
  * 
  *     def create_child(self, kind="live", snapshot=False):
  *         kinds = ("live", "read_only", "detached")             # <<<<<<<<<<<<<<
  * 
  *         if not isinstance(kind, str) and kind not in kinds:
  */
-  __Pyx_INCREF(__pyx_tuple__5);
-  __pyx_v_kinds = __pyx_tuple__5;
+  __Pyx_INCREF(__pyx_tuple__4);
+  __pyx_v_kinds = __pyx_tuple__4;
 
-  /* "mds/containers.pyx":347
+  /* "mds/containers.pyx":292
  *         kinds = ("live", "read_only", "detached")
  * 
  *         if not isinstance(kind, str) and kind not in kinds:             # <<<<<<<<<<<<<<
@@ -5935,20 +5506,20 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_2create_child(str
     __pyx_t_1 = __pyx_t_3;
     goto __pyx_L4_bool_binop_done;
   }
-  __pyx_t_3 = (__Pyx_PySequence_ContainsTF(__pyx_v_kind, __pyx_v_kinds, Py_NE)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 347, __pyx_L1_error)
+  __pyx_t_3 = (__Pyx_PySequence_ContainsTF(__pyx_v_kind, __pyx_v_kinds, Py_NE)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(1, 292, __pyx_L1_error)
   __pyx_t_2 = (__pyx_t_3 != 0);
   __pyx_t_1 = __pyx_t_2;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
 
-    /* "mds/containers.pyx":349
+    /* "mds/containers.pyx":294
  *         if not isinstance(kind, str) and kind not in kinds:
  *             raise TypeError(
  *                 "`kind` must be a `str` value from {}".format(kinds)             # <<<<<<<<<<<<<<
  *             )
  * 
  */
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_kind_must_be_a_str_value_from, __pyx_n_s_format); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 349, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_kind_must_be_a_str_value_from, __pyx_n_s_format); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 294, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_5))) {
@@ -5961,13 +5532,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_2create_child(str
       }
     }
     if (!__pyx_t_6) {
-      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_kinds); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 349, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_CallOneArg(__pyx_t_5, __pyx_v_kinds); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 294, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
     } else {
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_5)) {
         PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_v_kinds};
-        __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 349, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 294, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_GOTREF(__pyx_t_4);
       } else
@@ -5975,45 +5546,45 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_2create_child(str
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
         PyObject *__pyx_temp[2] = {__pyx_t_6, __pyx_v_kinds};
-        __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 349, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 294, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
         __Pyx_GOTREF(__pyx_t_4);
       } else
       #endif
       {
-        __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 349, __pyx_L1_error)
+        __pyx_t_7 = PyTuple_New(1+1); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 294, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_6); __pyx_t_6 = NULL;
         __Pyx_INCREF(__pyx_v_kinds);
         __Pyx_GIVEREF(__pyx_v_kinds);
         PyTuple_SET_ITEM(__pyx_t_7, 0+1, __pyx_v_kinds);
-        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_7, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 349, __pyx_L1_error)
+        __pyx_t_4 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_7, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 294, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       }
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "mds/containers.pyx":348
+    /* "mds/containers.pyx":293
  * 
  *         if not isinstance(kind, str) and kind not in kinds:
  *             raise TypeError(             # <<<<<<<<<<<<<<
  *                 "`kind` must be a `str` value from {}".format(kinds)
  *             )
  */
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 348, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 293, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_4);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
     __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 348, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_t_5, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 293, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_Raise(__pyx_t_4, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __PYX_ERR(0, 348, __pyx_L1_error)
+    __PYX_ERR(1, 293, __pyx_L1_error)
 
-    /* "mds/containers.pyx":347
+    /* "mds/containers.pyx":292
  *         kinds = ("live", "read_only", "detached")
  * 
  *         if not isinstance(kind, str) and kind not in kinds:             # <<<<<<<<<<<<<<
@@ -6022,7 +5593,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_2create_child(str
  */
   }
 
-  /* "mds/containers.pyx":352
+  /* "mds/containers.pyx":297
  *             )
  * 
  *         return self.__create_child(kind, snapshot)             # <<<<<<<<<<<<<<
@@ -6030,16 +5601,16 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_2create_child(str
  *     def call(self, fn=None, args=tuple()):
  */
   __Pyx_XDECREF(__pyx_r);
-  if (!(likely(PyUnicode_CheckExact(__pyx_v_kind))||((__pyx_v_kind) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_v_kind)->tp_name), 0))) __PYX_ERR(0, 352, __pyx_L1_error)
-  __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_v_snapshot); if (unlikely((__pyx_t_8 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 352, __pyx_L1_error)
-  __pyx_t_4 = ((struct __pyx_vtabstruct_3mds_10containers_IsolationContext *)__pyx_v_self->__pyx_vtab)->__pyx___create_child(__pyx_v_self, ((PyObject*)__pyx_v_kind), __pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 352, __pyx_L1_error)
+  if (!(likely(PyUnicode_CheckExact(__pyx_v_kind))||((__pyx_v_kind) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_v_kind)->tp_name), 0))) __PYX_ERR(1, 297, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_v_snapshot); if (unlikely((__pyx_t_8 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(1, 297, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3mds_10containers_16IsolationContext___create_child(__pyx_v_self, ((PyObject*)__pyx_v_kind), __pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 297, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":344
- *         return IsolationContext_Init(handle=handle)
+  /* "mds/containers.pyx":289
+ *         return hash_isoctxt(self._handle)
  * 
  *     def create_child(self, kind="live", snapshot=False):             # <<<<<<<<<<<<<<
  *         kinds = ("live", "read_only", "detached")
@@ -6061,7 +5632,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_2create_child(str
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":354
+/* "mds/containers.pyx":299
  *         return self.__create_child(kind, snapshot)
  * 
  *     def call(self, fn=None, args=tuple()):             # <<<<<<<<<<<<<<
@@ -6081,7 +5652,7 @@ static PyObject *__pyx_pw_3mds_10containers_16IsolationContext_5call(PyObject *_
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_fn,&__pyx_n_s_args,0};
     PyObject* values[2] = {0,0};
     values[0] = ((PyObject *)Py_None);
-    values[1] = __pyx_k__6;
+    values[1] = __pyx_k__5;
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
@@ -6105,7 +5676,7 @@ static PyObject *__pyx_pw_3mds_10containers_16IsolationContext_5call(PyObject *_
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "call") < 0)) __PYX_ERR(0, 354, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "call") < 0)) __PYX_ERR(1, 299, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -6120,7 +5691,7 @@ static PyObject *__pyx_pw_3mds_10containers_16IsolationContext_5call(PyObject *_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("call", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 354, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("call", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 299, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.containers.IsolationContext.call", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6142,14 +5713,14 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_4call(struct __py
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("call", 0);
 
-  /* "mds/containers.pyx":355
+  /* "mds/containers.pyx":300
  * 
  *     def call(self, fn=None, args=tuple()):
  *         this_context = self.use()             # <<<<<<<<<<<<<<
  *         return in_isoctxt(self._handle, fn, args)
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_use); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 355, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_use); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 300, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -6162,17 +5733,17 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_4call(struct __py
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 355, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 300, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 355, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 300, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_this_context = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":356
+  /* "mds/containers.pyx":301
  *     def call(self, fn=None, args=tuple()):
  *         this_context = self.use()
  *         return in_isoctxt(self._handle, fn, args)             # <<<<<<<<<<<<<<
@@ -6180,13 +5751,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_4call(struct __py
  *     def use(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3mds_10containers_in_isoctxt(__pyx_v_self->_handle, __pyx_v_fn, __pyx_v_args); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 356, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_in_isoctxt(__pyx_v_self->_handle, __pyx_v_fn, __pyx_v_args); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 301, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":354
+  /* "mds/containers.pyx":299
  *         return self.__create_child(kind, snapshot)
  * 
  *     def call(self, fn=None, args=tuple()):             # <<<<<<<<<<<<<<
@@ -6208,7 +5779,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_4call(struct __py
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":358
+/* "mds/containers.pyx":303
  *         return in_isoctxt(self._handle, fn, args)
  * 
  *     def use(self):             # <<<<<<<<<<<<<<
@@ -6236,7 +5807,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_6use(struct __pyx
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("use", 0);
 
-  /* "mds/containers.pyx":359
+  /* "mds/containers.pyx":304
  * 
  *     def use(self):
  *         return Use(self)             # <<<<<<<<<<<<<<
@@ -6244,19 +5815,19 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_6use(struct __pyx
  *     def __try_publish(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 359, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 304, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   PyTuple_SET_ITEM(__pyx_t_1, 0, ((PyObject *)__pyx_v_self));
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_Use), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 359, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_Use), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 304, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":358
+  /* "mds/containers.pyx":303
  *         return in_isoctxt(self._handle, fn, args)
  * 
  *     def use(self):             # <<<<<<<<<<<<<<
@@ -6276,7 +5847,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_6use(struct __pyx
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":361
+/* "mds/containers.pyx":306
  *         return Use(self)
  * 
  *     def __try_publish(self):             # <<<<<<<<<<<<<<
@@ -6303,7 +5874,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_8__try_publish(st
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__try_publish", 0);
 
-  /* "mds/containers.pyx":362
+  /* "mds/containers.pyx":307
  * 
  *     def __try_publish(self):
  *         return PublicationResult_Init(self._handle.publish())             # <<<<<<<<<<<<<<
@@ -6311,13 +5882,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_8__try_publish(st
  *     def publish(self, resolve_opts, reports):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3mds_10containers_PublicationResult_Init(__pyx_v_self->_handle.publish()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 362, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_PublicationResult_Init(__pyx_v_self->_handle.publish()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 307, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":361
+  /* "mds/containers.pyx":306
  *         return Use(self)
  * 
  *     def __try_publish(self):             # <<<<<<<<<<<<<<
@@ -6336,7 +5907,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_8__try_publish(st
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":364
+/* "mds/containers.pyx":309
  *         return PublicationResult_Init(self._handle.publish())
  * 
  *     def publish(self, resolve_opts, reports):             # <<<<<<<<<<<<<<
@@ -6372,11 +5943,11 @@ static PyObject *__pyx_pw_3mds_10containers_16IsolationContext_11publish(PyObjec
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_reports)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("publish", 1, 2, 2, 1); __PYX_ERR(0, 364, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("publish", 1, 2, 2, 1); __PYX_ERR(1, 309, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "publish") < 0)) __PYX_ERR(0, 364, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "publish") < 0)) __PYX_ERR(1, 309, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -6389,7 +5960,7 @@ static PyObject *__pyx_pw_3mds_10containers_16IsolationContext_11publish(PyObjec
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("publish", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 364, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("publish", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 309, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.containers.IsolationContext.publish", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6416,7 +5987,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
   PyObject *__pyx_t_7 = NULL;
   __Pyx_RefNannySetupContext("publish", 0);
 
-  /* "mds/containers.pyx":365
+  /* "mds/containers.pyx":310
  * 
  *     def publish(self, resolve_opts, reports):
  *         assert isinstance(ResolveOptions, resolve_opts)             # <<<<<<<<<<<<<<
@@ -6425,18 +5996,18 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_ResolveOptions); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 365, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_ResolveOptions); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 310, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyObject_IsInstance(__pyx_t_1, __pyx_v_resolve_opts); if (unlikely(__pyx_t_2 == -1)) __PYX_ERR(0, 365, __pyx_L1_error)
+    __pyx_t_2 = PyObject_IsInstance(__pyx_t_1, __pyx_v_resolve_opts); if (unlikely(__pyx_t_2 == -1)) __PYX_ERR(1, 310, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (unlikely(!(__pyx_t_2 != 0))) {
       PyErr_SetNone(PyExc_AssertionError);
-      __PYX_ERR(0, 365, __pyx_L1_error)
+      __PYX_ERR(1, 310, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "mds/containers.pyx":366
+  /* "mds/containers.pyx":311
  *     def publish(self, resolve_opts, reports):
  *         assert isinstance(ResolveOptions, resolve_opts)
  *         assert isinstance(ReportOptions, reports)             # <<<<<<<<<<<<<<
@@ -6445,25 +6016,25 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
  */
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
-    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_ReportOptions); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 366, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_ReportOptions); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 311, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyObject_IsInstance(__pyx_t_1, __pyx_v_reports); if (unlikely(__pyx_t_2 == -1)) __PYX_ERR(0, 366, __pyx_L1_error)
+    __pyx_t_2 = PyObject_IsInstance(__pyx_t_1, __pyx_v_reports); if (unlikely(__pyx_t_2 == -1)) __PYX_ERR(1, 311, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (unlikely(!(__pyx_t_2 != 0))) {
       PyErr_SetNone(PyExc_AssertionError);
-      __PYX_ERR(0, 366, __pyx_L1_error)
+      __PYX_ERR(1, 311, __pyx_L1_error)
     }
   }
   #endif
 
-  /* "mds/containers.pyx":368
+  /* "mds/containers.pyx":313
  *         assert isinstance(ReportOptions, reports)
  * 
  *         pr = self.__try_publish()             # <<<<<<<<<<<<<<
  * 
  *         if not pr.succeeded:
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_try_publish); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 368, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_try_publish); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 313, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_3))) {
@@ -6476,43 +6047,43 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
     }
   }
   if (__pyx_t_4) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 368, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 313, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 368, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 313, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_pr = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":370
+  /* "mds/containers.pyx":315
  *         pr = self.__try_publish()
  * 
  *         if not pr.succeeded:             # <<<<<<<<<<<<<<
  *             controls = resolve_opts.controls
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_pr, __pyx_n_s_succeeded); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 370, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_pr, __pyx_n_s_succeeded); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 315, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 370, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 315, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_5 = ((!__pyx_t_2) != 0);
   if (__pyx_t_5) {
 
-    /* "mds/containers.pyx":371
+    /* "mds/containers.pyx":316
  * 
  *         if not pr.succeeded:
  *             controls = resolve_opts.controls             # <<<<<<<<<<<<<<
  * 
  *             # TODO: Implement these *Options and see why .check is static
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_resolve_opts, __pyx_n_s_controls); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 371, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_resolve_opts, __pyx_n_s_controls); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 316, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_v_controls = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "mds/containers.pyx":374
+    /* "mds/containers.pyx":319
  * 
  *             # TODO: Implement these *Options and see why .check is static
  *             while ResolveOptions.check(controls, pr) and pr.resolve(reports):             # <<<<<<<<<<<<<<
@@ -6520,9 +6091,9 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
  * 
  */
     while (1) {
-      __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_ResolveOptions); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 374, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_ResolveOptions); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 319, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_check); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 374, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_check); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 319, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __pyx_t_3 = NULL;
@@ -6540,7 +6111,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
       #if CYTHON_FAST_PYCALL
       if (PyFunction_Check(__pyx_t_4)) {
         PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_controls, __pyx_v_pr};
-        __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 374, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 319, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
         __Pyx_GOTREF(__pyx_t_1);
       } else
@@ -6548,13 +6119,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
       #if CYTHON_FAST_PYCCALL
       if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
         PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_controls, __pyx_v_pr};
-        __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 374, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-__pyx_t_6, 2+__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 319, __pyx_L1_error)
         __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
         __Pyx_GOTREF(__pyx_t_1);
       } else
       #endif
       {
-        __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 374, __pyx_L1_error)
+        __pyx_t_7 = PyTuple_New(2+__pyx_t_6); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 319, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         if (__pyx_t_3) {
           __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -6565,19 +6136,19 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
         __Pyx_INCREF(__pyx_v_pr);
         __Pyx_GIVEREF(__pyx_v_pr);
         PyTuple_SET_ITEM(__pyx_t_7, 1+__pyx_t_6, __pyx_v_pr);
-        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 374, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_7, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 319, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 374, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 319, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (__pyx_t_2) {
       } else {
         __pyx_t_5 = __pyx_t_2;
         goto __pyx_L6_bool_binop_done;
       }
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_pr, __pyx_n_s_resolve); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 374, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_v_pr, __pyx_n_s_resolve); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 319, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_7 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -6590,13 +6161,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
         }
       }
       if (!__pyx_t_7) {
-        __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v_reports); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 374, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v_reports); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 319, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
       } else {
         #if CYTHON_FAST_PYCALL
         if (PyFunction_Check(__pyx_t_4)) {
           PyObject *__pyx_temp[2] = {__pyx_t_7, __pyx_v_reports};
-          __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 374, __pyx_L1_error)
+          __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 319, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_GOTREF(__pyx_t_1);
         } else
@@ -6604,38 +6175,38 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
         #if CYTHON_FAST_PYCCALL
         if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
           PyObject *__pyx_temp[2] = {__pyx_t_7, __pyx_v_reports};
-          __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 374, __pyx_L1_error)
+          __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 319, __pyx_L1_error)
           __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
           __Pyx_GOTREF(__pyx_t_1);
         } else
         #endif
         {
-          __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 374, __pyx_L1_error)
+          __pyx_t_3 = PyTuple_New(1+1); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 319, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_7); __pyx_t_7 = NULL;
           __Pyx_INCREF(__pyx_v_reports);
           __Pyx_GIVEREF(__pyx_v_reports);
           PyTuple_SET_ITEM(__pyx_t_3, 0+1, __pyx_v_reports);
-          __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 374, __pyx_L1_error)
+          __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 319, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_1);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
         }
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 374, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 319, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __pyx_t_5 = __pyx_t_2;
       __pyx_L6_bool_binop_done:;
       if (!__pyx_t_5) break;
 
-      /* "mds/containers.pyx":375
+      /* "mds/containers.pyx":320
  *             # TODO: Implement these *Options and see why .check is static
  *             while ResolveOptions.check(controls, pr) and pr.resolve(reports):
  *                 pr = self.__try_publish()             # <<<<<<<<<<<<<<
  * 
  *                 if pr.successful:
  */
-      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_try_publish); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 375, __pyx_L1_error)
+      __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_try_publish); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 320, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = NULL;
       if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_4))) {
@@ -6648,30 +6219,30 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
         }
       }
       if (__pyx_t_3) {
-        __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 375, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 320, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       } else {
-        __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 375, __pyx_L1_error)
+        __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 320, __pyx_L1_error)
       }
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF_SET(__pyx_v_pr, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "mds/containers.pyx":377
+      /* "mds/containers.pyx":322
  *                 pr = self.__try_publish()
  * 
  *                 if pr.successful:             # <<<<<<<<<<<<<<
  *                     break
  * 
  */
-      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_pr, __pyx_n_s_successful); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 377, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_pr, __pyx_n_s_successful); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 322, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
-      __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(0, 377, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(1, 322, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (__pyx_t_5) {
 
-        /* "mds/containers.pyx":378
+        /* "mds/containers.pyx":323
  * 
  *                 if pr.successful:
  *                     break             # <<<<<<<<<<<<<<
@@ -6680,7 +6251,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
  */
         goto __pyx_L5_break;
 
-        /* "mds/containers.pyx":377
+        /* "mds/containers.pyx":322
  *                 pr = self.__try_publish()
  * 
  *                 if pr.successful:             # <<<<<<<<<<<<<<
@@ -6691,7 +6262,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
     }
     __pyx_L5_break:;
 
-    /* "mds/containers.pyx":370
+    /* "mds/containers.pyx":315
  *         pr = self.__try_publish()
  * 
  *         if not pr.succeeded:             # <<<<<<<<<<<<<<
@@ -6700,7 +6271,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
  */
   }
 
-  /* "mds/containers.pyx":380
+  /* "mds/containers.pyx":325
  *                     break
  * 
  *         return pr             # <<<<<<<<<<<<<<
@@ -6712,7 +6283,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
   __pyx_r = __pyx_v_pr;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":364
+  /* "mds/containers.pyx":309
  *         return PublicationResult_Init(self._handle.publish())
  * 
  *     def publish(self, resolve_opts, reports):             # <<<<<<<<<<<<<<
@@ -6736,7 +6307,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_10publish(struct 
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":383
+/* "mds/containers.pyx":328
  * 
  *     @staticmethod
  *     def get_global():             # <<<<<<<<<<<<<<
@@ -6767,7 +6338,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_12get_global() {
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("get_global", 0);
 
-  /* "mds/containers.pyx":384
+  /* "mds/containers.pyx":329
  *     @staticmethod
  *     def get_global():
  *         return IsolationContext_Init(iso_context_handle._global())             # <<<<<<<<<<<<<<
@@ -6775,13 +6346,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_12get_global() {
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(mds::api::iso_context_handle::global()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 384, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(mds::api::iso_context_handle::global()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 329, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":383
+  /* "mds/containers.pyx":328
  * 
  *     @staticmethod
  *     def get_global():             # <<<<<<<<<<<<<<
@@ -6800,7 +6371,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_12get_global() {
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":387
+/* "mds/containers.pyx":332
  * 
  *     @staticmethod
  *     def get_current():             # <<<<<<<<<<<<<<
@@ -6831,7 +6402,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_14get_current() {
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("get_current", 0);
 
-  /* "mds/containers.pyx":388
+  /* "mds/containers.pyx":333
  *     @staticmethod
  *     def get_current():
  *         return IsolationContext_Init(TaskWrapper.current().get_context())             # <<<<<<<<<<<<<<
@@ -6839,13 +6410,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_14get_current() {
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(mds::python::tasks::TaskWrapper::current().get_context()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 388, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(mds::python::tasks::TaskWrapper::current().get_context()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 333, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":387
+  /* "mds/containers.pyx":332
  * 
  *     @staticmethod
  *     def get_current():             # <<<<<<<<<<<<<<
@@ -6864,7 +6435,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_14get_current() {
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":391
+/* "mds/containers.pyx":336
  * 
  *     @staticmethod
  *     def get_for_process():             # <<<<<<<<<<<<<<
@@ -6895,7 +6466,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_16get_for_process
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("get_for_process", 0);
 
-  /* "mds/containers.pyx":392
+  /* "mds/containers.pyx":337
  *     @staticmethod
  *     def get_for_process():
  *         return IsolationContext_Init(iso_context_handle.for_process())             # <<<<<<<<<<<<<<
@@ -6903,13 +6474,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_16get_for_process
  *     property top_level_task:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(mds::api::iso_context_handle::for_process()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 392, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(mds::api::iso_context_handle::for_process()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 337, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":391
+  /* "mds/containers.pyx":336
  * 
  *     @staticmethod
  *     def get_for_process():             # <<<<<<<<<<<<<<
@@ -6928,7 +6499,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_16get_for_process
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":395
+/* "mds/containers.pyx":340
  * 
  *     property top_level_task:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -6955,7 +6526,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_14top_level_task_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":396
+  /* "mds/containers.pyx":341
  *     property top_level_task:
  *         def __get__(self):
  *             return Task_Init(self._handle.top_level_task())             # <<<<<<<<<<<<<<
@@ -6963,13 +6534,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_14top_level_task_
  *     property creation_task:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3mds_10containers_Task_Init(__pyx_v_self->_handle.top_level_task()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 396, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_Task_Init(__pyx_v_self->_handle.top_level_task()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 341, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":395
+  /* "mds/containers.pyx":340
  * 
  *     property top_level_task:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -6988,7 +6559,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_14top_level_task_
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":399
+/* "mds/containers.pyx":344
  * 
  *     property creation_task:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7015,7 +6586,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_13creation_task__
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":400
+  /* "mds/containers.pyx":345
  *     property creation_task:
  *         def __get__(self):
  *             return Task_Init(self._handle.creation_task())             # <<<<<<<<<<<<<<
@@ -7023,13 +6594,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_13creation_task__
  *     property parent:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3mds_10containers_Task_Init(__pyx_v_self->_handle.creation_task()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 400, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_Task_Init(__pyx_v_self->_handle.creation_task()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 345, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":399
+  /* "mds/containers.pyx":344
  * 
  *     property creation_task:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7048,7 +6619,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_13creation_task__
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":403
+/* "mds/containers.pyx":348
  * 
  *     property parent:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7075,7 +6646,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_6parent___get__(s
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":404
+  /* "mds/containers.pyx":349
  *     property parent:
  *         def __get__(self):
  *             return IsolationContext_Init(handle=self._handle.parent())             # <<<<<<<<<<<<<<
@@ -7083,13 +6654,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_6parent___get__(s
  *     property is_snapshot:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(__pyx_v_self->_handle.parent()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 404, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(__pyx_v_self->_handle.parent()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 349, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":403
+  /* "mds/containers.pyx":348
  * 
  *     property parent:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7108,7 +6679,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_6parent___get__(s
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":407
+/* "mds/containers.pyx":352
  * 
  *     property is_snapshot:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7135,7 +6706,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_11is_snapshot___g
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":408
+  /* "mds/containers.pyx":353
  *     property is_snapshot:
  *         def __get__(self):
  *             return self._handle.is_snapshot()             # <<<<<<<<<<<<<<
@@ -7143,13 +6714,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_11is_snapshot___g
  *     property is_read_only:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->_handle.is_snapshot()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 408, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->_handle.is_snapshot()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 353, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":407
+  /* "mds/containers.pyx":352
  * 
  *     property is_snapshot:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7168,7 +6739,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_11is_snapshot___g
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":411
+/* "mds/containers.pyx":356
  * 
  *     property is_read_only:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7195,7 +6766,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_12is_read_only___
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":412
+  /* "mds/containers.pyx":357
  *     property is_read_only:
  *         def __get__(self):
  *             return self._handle.is_read_only()             # <<<<<<<<<<<<<<
@@ -7203,13 +6774,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_12is_read_only___
  *     property is_publishable:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->_handle.is_read_only()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 412, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->_handle.is_read_only()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 357, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":411
+  /* "mds/containers.pyx":356
  * 
  *     property is_read_only:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7228,7 +6799,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_12is_read_only___
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":415
+/* "mds/containers.pyx":360
  * 
  *     property is_publishable:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7255,7 +6826,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_14is_publishable_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":416
+  /* "mds/containers.pyx":361
  *     property is_publishable:
  *         def __get__(self):
  *             return self._handle.is_publishable()             # <<<<<<<<<<<<<<
@@ -7263,13 +6834,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_14is_publishable_
  *     property has_conflicts:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->_handle.is_publishable()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 416, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->_handle.is_publishable()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 361, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":415
+  /* "mds/containers.pyx":360
  * 
  *     property is_publishable:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7288,7 +6859,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_14is_publishable_
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":419
+/* "mds/containers.pyx":364
  * 
  *     property has_conflicts:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7315,7 +6886,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_13has_conflicts__
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":420
+  /* "mds/containers.pyx":365
  *     property has_conflicts:
  *         def __get__(self):
  *             return self._handle.has_conflicts()             # <<<<<<<<<<<<<<
@@ -7323,13 +6894,13 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_13has_conflicts__
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->_handle.has_conflicts()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 420, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->_handle.has_conflicts()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 365, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":419
+  /* "mds/containers.pyx":364
  * 
  *     property has_conflicts:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -7348,86 +6919,9 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_13has_conflicts__
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":423
- * 
- * 
- * cdef IsolationContext_Init(iso_context_handle handle):             # <<<<<<<<<<<<<<
- *     initialize_base_task()
- *     result = IsolationContext()
- */
-
-static PyObject *__pyx_f_3mds_10containers_IsolationContext_Init(mds::api::iso_context_handle __pyx_v_handle) {
-  struct __pyx_obj_3mds_10containers_IsolationContext *__pyx_v_result = NULL;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  __Pyx_RefNannySetupContext("IsolationContext_Init", 0);
-
-  /* "mds/containers.pyx":424
- * 
- * cdef IsolationContext_Init(iso_context_handle handle):
- *     initialize_base_task()             # <<<<<<<<<<<<<<
- *     result = IsolationContext()
- *     result._handle = handle
- */
-  mds::python::tasks::initialize_base_task();
-
-  /* "mds/containers.pyx":425
- * cdef IsolationContext_Init(iso_context_handle handle):
- *     initialize_base_task()
- *     result = IsolationContext()             # <<<<<<<<<<<<<<
- *     result._handle = handle
- *     return result
- */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 425, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_result = ((struct __pyx_obj_3mds_10containers_IsolationContext *)__pyx_t_1);
-  __pyx_t_1 = 0;
-
-  /* "mds/containers.pyx":426
- *     initialize_base_task()
- *     result = IsolationContext()
- *     result._handle = handle             # <<<<<<<<<<<<<<
- *     return result
- * 
- */
-  __pyx_v_result->_handle = __pyx_v_handle;
-
-  /* "mds/containers.pyx":427
- *     result = IsolationContext()
- *     result._handle = handle
- *     return result             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(((PyObject *)__pyx_v_result));
-  __pyx_r = ((PyObject *)__pyx_v_result);
-  goto __pyx_L0;
-
-  /* "mds/containers.pyx":423
- * 
- * 
- * cdef IsolationContext_Init(iso_context_handle handle):             # <<<<<<<<<<<<<<
- *     initialize_base_task()
- *     result = IsolationContext()
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("mds.containers.IsolationContext_Init", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
-  __pyx_L0:;
-  __Pyx_XDECREF((PyObject *)__pyx_v_result);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "mds/containers.pyx":445
- *         iso_context_handle _ctxt
- * 
+/* "mds/containers.pyx":376
+ *     Look into Python's weak_reference -> what happens when in keys etc.
+ *     """
  *     def __cinit__(self, target=None, args=tuple()):             # <<<<<<<<<<<<<<
  *         Task.initialize_base_task()
  *         self.__target = target
@@ -7445,7 +6939,7 @@ static int __pyx_pw_3mds_10containers_4Task_1__cinit__(PyObject *__pyx_v_self, P
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_target,&__pyx_n_s_args,0};
     PyObject* values[2] = {0,0};
     values[0] = ((PyObject *)Py_None);
-    values[1] = __pyx_k__7;
+    values[1] = __pyx_k__6;
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
@@ -7469,7 +6963,7 @@ static int __pyx_pw_3mds_10containers_4Task_1__cinit__(PyObject *__pyx_v_self, P
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 445, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(1, 376, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -7484,7 +6978,7 @@ static int __pyx_pw_3mds_10containers_4Task_1__cinit__(PyObject *__pyx_v_self, P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 445, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 0, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 376, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.containers.Task.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -7507,14 +7001,14 @@ static int __pyx_pf_3mds_10containers_4Task___cinit__(struct __pyx_obj_3mds_10co
   int __pyx_t_5;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "mds/containers.pyx":446
- * 
+  /* "mds/containers.pyx":377
+ *     """
  *     def __cinit__(self, target=None, args=tuple()):
  *         Task.initialize_base_task()             # <<<<<<<<<<<<<<
  *         self.__target = target
  *         self.__args = args
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_n_s_initialize_base_task); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 446, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_n_s_initialize_base_task); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 377, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -7527,16 +7021,16 @@ static int __pyx_pf_3mds_10containers_4Task___cinit__(struct __pyx_obj_3mds_10co
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 446, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 377, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 446, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 377, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":447
+  /* "mds/containers.pyx":378
  *     def __cinit__(self, target=None, args=tuple()):
  *         Task.initialize_base_task()
  *         self.__target = target             # <<<<<<<<<<<<<<
@@ -7549,14 +7043,14 @@ static int __pyx_pf_3mds_10containers_4Task___cinit__(struct __pyx_obj_3mds_10co
   __Pyx_DECREF(__pyx_v_self->__pyx___target);
   __pyx_v_self->__pyx___target = __pyx_v_target;
 
-  /* "mds/containers.pyx":448
+  /* "mds/containers.pyx":379
  *         Task.initialize_base_task()
  *         self.__target = target
  *         self.__args = args             # <<<<<<<<<<<<<<
  * 
  *         if target is not None:
  */
-  if (!(likely(PyTuple_CheckExact(__pyx_v_args))||((__pyx_v_args) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v_args)->tp_name), 0))) __PYX_ERR(0, 448, __pyx_L1_error)
+  if (!(likely(PyTuple_CheckExact(__pyx_v_args))||((__pyx_v_args) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v_args)->tp_name), 0))) __PYX_ERR(1, 379, __pyx_L1_error)
   __pyx_t_1 = __pyx_v_args;
   __Pyx_INCREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -7565,7 +7059,7 @@ static int __pyx_pf_3mds_10containers_4Task___cinit__(struct __pyx_obj_3mds_10co
   __pyx_v_self->__pyx___args = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":450
+  /* "mds/containers.pyx":381
  *         self.__args = args
  * 
  *         if target is not None:             # <<<<<<<<<<<<<<
@@ -7576,7 +7070,7 @@ static int __pyx_pf_3mds_10containers_4Task___cinit__(struct __pyx_obj_3mds_10co
   __pyx_t_5 = (__pyx_t_4 != 0);
   if (__pyx_t_5) {
 
-    /* "mds/containers.pyx":451
+    /* "mds/containers.pyx":382
  * 
  *         if target is not None:
  *             self.__expired = False             # <<<<<<<<<<<<<<
@@ -7585,18 +7079,18 @@ static int __pyx_pf_3mds_10containers_4Task___cinit__(struct __pyx_obj_3mds_10co
  */
     __pyx_v_self->__pyx___expired = 0;
 
-    /* "mds/containers.pyx":452
+    /* "mds/containers.pyx":383
  *         if target is not None:
  *             self.__expired = False
  *             add_task_handle(self, TaskWrapper.current().get_context().push_prevailing())             # <<<<<<<<<<<<<<
  *             self._ctxt = self._handle.get_context()
  *         else:
  */
-    __pyx_t_1 = __pyx_f_3mds_10containers_add_task_handle(__pyx_v_self, mds::python::tasks::TaskWrapper::current().get_context().push_prevailing()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 452, __pyx_L1_error)
+    __pyx_t_1 = __pyx_f_3mds_10containers_add_task_handle(__pyx_v_self, mds::python::tasks::TaskWrapper::current().get_context().push_prevailing()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 383, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "mds/containers.pyx":453
+    /* "mds/containers.pyx":384
  *             self.__expired = False
  *             add_task_handle(self, TaskWrapper.current().get_context().push_prevailing())
  *             self._ctxt = self._handle.get_context()             # <<<<<<<<<<<<<<
@@ -7605,7 +7099,7 @@ static int __pyx_pf_3mds_10containers_4Task___cinit__(struct __pyx_obj_3mds_10co
  */
     __pyx_v_self->_ctxt = __pyx_v_self->_handle.get_context();
 
-    /* "mds/containers.pyx":450
+    /* "mds/containers.pyx":381
  *         self.__args = args
  * 
  *         if target is not None:             # <<<<<<<<<<<<<<
@@ -7615,7 +7109,7 @@ static int __pyx_pf_3mds_10containers_4Task___cinit__(struct __pyx_obj_3mds_10co
     goto __pyx_L3;
   }
 
-  /* "mds/containers.pyx":455
+  /* "mds/containers.pyx":386
  *             self._ctxt = self._handle.get_context()
  *         else:
  *             self.__expired = True             # <<<<<<<<<<<<<<
@@ -7627,9 +7121,9 @@ static int __pyx_pf_3mds_10containers_4Task___cinit__(struct __pyx_obj_3mds_10co
   }
   __pyx_L3:;
 
-  /* "mds/containers.pyx":445
- *         iso_context_handle _ctxt
- * 
+  /* "mds/containers.pyx":376
+ *     Look into Python's weak_reference -> what happens when in keys etc.
+ *     """
  *     def __cinit__(self, target=None, args=tuple()):             # <<<<<<<<<<<<<<
  *         Task.initialize_base_task()
  *         self.__target = target
@@ -7649,7 +7143,7 @@ static int __pyx_pf_3mds_10containers_4Task___cinit__(struct __pyx_obj_3mds_10co
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":457
+/* "mds/containers.pyx":388
  *             self.__expired = True
  * 
  *     def __hash__(self):             # <<<<<<<<<<<<<<
@@ -7679,7 +7173,7 @@ static Py_hash_t __pyx_pf_3mds_10containers_4Task_2__hash__(struct __pyx_obj_3md
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__hash__", 0);
 
-  /* "mds/containers.pyx":462
+  /* "mds/containers.pyx":393
  *         handle within MDS itself.
  *         """
  *         return hash_task(self._handle)             # <<<<<<<<<<<<<<
@@ -7689,7 +7183,7 @@ static Py_hash_t __pyx_pf_3mds_10containers_4Task_2__hash__(struct __pyx_obj_3md
   __pyx_r = mds::python::tasks::hash_task(__pyx_v_self->_handle);
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":457
+  /* "mds/containers.pyx":388
  *             self.__expired = True
  * 
  *     def __hash__(self):             # <<<<<<<<<<<<<<
@@ -7704,7 +7198,7 @@ static Py_hash_t __pyx_pf_3mds_10containers_4Task_2__hash__(struct __pyx_obj_3md
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":464
+/* "mds/containers.pyx":395
  *         return hash_task(self._handle)
  * 
  *     def add_dependent(self, other):             # <<<<<<<<<<<<<<
@@ -7735,7 +7229,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_4add_dependent(struct __pyx_ob
   Py_hash_t __pyx_t_5;
   __Pyx_RefNannySetupContext("add_dependent", 0);
 
-  /* "mds/containers.pyx":465
+  /* "mds/containers.pyx":396
  * 
  *     def add_dependent(self, other):
  *         if not isinstance(other, Task):             # <<<<<<<<<<<<<<
@@ -7746,20 +7240,20 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_4add_dependent(struct __pyx_ob
   __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
   if (__pyx_t_2) {
 
-    /* "mds/containers.pyx":466
+    /* "mds/containers.pyx":397
  *     def add_dependent(self, other):
  *         if not isinstance(other, Task):
  *             raise TypeError('Argument must be of type Task')             # <<<<<<<<<<<<<<
  * 
  *         if hash(self) != hash(other):
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 466, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 397, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 466, __pyx_L1_error)
+    __PYX_ERR(1, 397, __pyx_L1_error)
 
-    /* "mds/containers.pyx":465
+    /* "mds/containers.pyx":396
  * 
  *     def add_dependent(self, other):
  *         if not isinstance(other, Task):             # <<<<<<<<<<<<<<
@@ -7768,31 +7262,31 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_4add_dependent(struct __pyx_ob
  */
   }
 
-  /* "mds/containers.pyx":468
+  /* "mds/containers.pyx":399
  *             raise TypeError('Argument must be of type Task')
  * 
  *         if hash(self) != hash(other):             # <<<<<<<<<<<<<<
  *             _task_add_dependent(self, other)
  * 
  */
-  __pyx_t_4 = PyObject_Hash(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(0, 468, __pyx_L1_error)
-  __pyx_t_5 = PyObject_Hash(__pyx_v_other); if (unlikely(__pyx_t_5 == -1)) __PYX_ERR(0, 468, __pyx_L1_error)
+  __pyx_t_4 = PyObject_Hash(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(1, 399, __pyx_L1_error)
+  __pyx_t_5 = PyObject_Hash(__pyx_v_other); if (unlikely(__pyx_t_5 == -1)) __PYX_ERR(1, 399, __pyx_L1_error)
   __pyx_t_2 = ((__pyx_t_4 != __pyx_t_5) != 0);
   if (__pyx_t_2) {
 
-    /* "mds/containers.pyx":469
+    /* "mds/containers.pyx":400
  * 
  *         if hash(self) != hash(other):
  *             _task_add_dependent(self, other)             # <<<<<<<<<<<<<<
  * 
  *     def depends_on(self, other):
  */
-    if (!(likely(((__pyx_v_other) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_other, __pyx_ptype_3mds_10containers_Task))))) __PYX_ERR(0, 469, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3mds_10containers__task_add_dependent(__pyx_v_self, ((struct __pyx_obj_3mds_10containers_Task *)__pyx_v_other)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 469, __pyx_L1_error)
+    if (!(likely(((__pyx_v_other) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_other, __pyx_ptype_3mds_10containers_Task))))) __PYX_ERR(1, 400, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3mds_10containers__task_add_dependent(__pyx_v_self, ((struct __pyx_obj_3mds_10containers_Task *)__pyx_v_other)); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 400, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "mds/containers.pyx":468
+    /* "mds/containers.pyx":399
  *             raise TypeError('Argument must be of type Task')
  * 
  *         if hash(self) != hash(other):             # <<<<<<<<<<<<<<
@@ -7801,7 +7295,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_4add_dependent(struct __pyx_ob
  */
   }
 
-  /* "mds/containers.pyx":464
+  /* "mds/containers.pyx":395
  *         return hash_task(self._handle)
  * 
  *     def add_dependent(self, other):             # <<<<<<<<<<<<<<
@@ -7822,7 +7316,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_4add_dependent(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":471
+/* "mds/containers.pyx":402
  *             _task_add_dependent(self, other)
  * 
  *     def depends_on(self, other):             # <<<<<<<<<<<<<<
@@ -7853,7 +7347,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_6depends_on(struct __pyx_obj_3
   Py_hash_t __pyx_t_5;
   __Pyx_RefNannySetupContext("depends_on", 0);
 
-  /* "mds/containers.pyx":472
+  /* "mds/containers.pyx":403
  * 
  *     def depends_on(self, other):
  *         if not isinstance(other, Task):             # <<<<<<<<<<<<<<
@@ -7864,20 +7358,20 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_6depends_on(struct __pyx_obj_3
   __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
   if (__pyx_t_2) {
 
-    /* "mds/containers.pyx":473
+    /* "mds/containers.pyx":404
  *     def depends_on(self, other):
  *         if not isinstance(other, Task):
  *             raise TypeError('Task can only depend on other Tasks')             # <<<<<<<<<<<<<<
  * 
  *         if hash(self) != hash(other):
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 473, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 404, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 473, __pyx_L1_error)
+    __PYX_ERR(1, 404, __pyx_L1_error)
 
-    /* "mds/containers.pyx":472
+    /* "mds/containers.pyx":403
  * 
  *     def depends_on(self, other):
  *         if not isinstance(other, Task):             # <<<<<<<<<<<<<<
@@ -7886,31 +7380,31 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_6depends_on(struct __pyx_obj_3
  */
   }
 
-  /* "mds/containers.pyx":475
+  /* "mds/containers.pyx":406
  *             raise TypeError('Task can only depend on other Tasks')
  * 
  *         if hash(self) != hash(other):             # <<<<<<<<<<<<<<
  *             _task_add_dependent(other, self)
  * 
  */
-  __pyx_t_4 = PyObject_Hash(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(0, 475, __pyx_L1_error)
-  __pyx_t_5 = PyObject_Hash(__pyx_v_other); if (unlikely(__pyx_t_5 == -1)) __PYX_ERR(0, 475, __pyx_L1_error)
+  __pyx_t_4 = PyObject_Hash(((PyObject *)__pyx_v_self)); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(1, 406, __pyx_L1_error)
+  __pyx_t_5 = PyObject_Hash(__pyx_v_other); if (unlikely(__pyx_t_5 == -1)) __PYX_ERR(1, 406, __pyx_L1_error)
   __pyx_t_2 = ((__pyx_t_4 != __pyx_t_5) != 0);
   if (__pyx_t_2) {
 
-    /* "mds/containers.pyx":476
+    /* "mds/containers.pyx":407
  * 
  *         if hash(self) != hash(other):
  *             _task_add_dependent(other, self)             # <<<<<<<<<<<<<<
  * 
  *     def depends_on_all(self, others):
  */
-    if (!(likely(((__pyx_v_other) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_other, __pyx_ptype_3mds_10containers_Task))))) __PYX_ERR(0, 476, __pyx_L1_error)
-    __pyx_t_3 = __pyx_f_3mds_10containers__task_add_dependent(((struct __pyx_obj_3mds_10containers_Task *)__pyx_v_other), __pyx_v_self); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 476, __pyx_L1_error)
+    if (!(likely(((__pyx_v_other) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_other, __pyx_ptype_3mds_10containers_Task))))) __PYX_ERR(1, 407, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_3mds_10containers__task_add_dependent(((struct __pyx_obj_3mds_10containers_Task *)__pyx_v_other), __pyx_v_self); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 407, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "mds/containers.pyx":475
+    /* "mds/containers.pyx":406
  *             raise TypeError('Task can only depend on other Tasks')
  * 
  *         if hash(self) != hash(other):             # <<<<<<<<<<<<<<
@@ -7919,7 +7413,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_6depends_on(struct __pyx_obj_3
  */
   }
 
-  /* "mds/containers.pyx":471
+  /* "mds/containers.pyx":402
  *             _task_add_dependent(self, other)
  * 
  *     def depends_on(self, other):             # <<<<<<<<<<<<<<
@@ -7940,7 +7434,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_6depends_on(struct __pyx_obj_3
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":478
+/* "mds/containers.pyx":409
  *             _task_add_dependent(other, self)
  * 
  *     def depends_on_all(self, others):             # <<<<<<<<<<<<<<
@@ -7968,16 +7462,16 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_8depends_on_all(struct __pyx_o
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("depends_on_all", 0);
 
-  /* "mds/containers.pyx":479
+  /* "mds/containers.pyx":410
  * 
  *     def depends_on_all(self, others):
  *         map(self.depends_on, others)             # <<<<<<<<<<<<<<
  * 
  *     # TODO: Deal with this in options
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_depends_on); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 479, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_depends_on); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 410, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 479, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 410, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
@@ -7985,12 +7479,12 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_8depends_on_all(struct __pyx_o
   __Pyx_GIVEREF(__pyx_v_others);
   PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_others);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 479, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_map, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 410, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":478
+  /* "mds/containers.pyx":409
  *             _task_add_dependent(other, self)
  * 
  *     def depends_on_all(self, others):             # <<<<<<<<<<<<<<
@@ -8012,7 +7506,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_8depends_on_all(struct __pyx_o
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":482
+/* "mds/containers.pyx":413
  * 
  *     # TODO: Deal with this in options
  *     def always_redo(self):             # <<<<<<<<<<<<<<
@@ -8038,7 +7532,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_10always_redo(struct __pyx_obj
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("always_redo", 0);
 
-  /* "mds/containers.pyx":483
+  /* "mds/containers.pyx":414
  *     # TODO: Deal with this in options
  *     def always_redo(self):
  *         self._handle.always_redo()             # <<<<<<<<<<<<<<
@@ -8047,7 +7541,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_10always_redo(struct __pyx_obj
  */
   __pyx_v_self->_handle.always_redo();
 
-  /* "mds/containers.pyx":482
+  /* "mds/containers.pyx":413
  * 
  *     # TODO: Deal with this in options
  *     def always_redo(self):             # <<<<<<<<<<<<<<
@@ -8062,7 +7556,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_10always_redo(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":485
+/* "mds/containers.pyx":416
  *         self._handle.always_redo()
  * 
  *     def cannot_redo(self):             # <<<<<<<<<<<<<<
@@ -8088,7 +7582,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_12cannot_redo(struct __pyx_obj
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("cannot_redo", 0);
 
-  /* "mds/containers.pyx":486
+  /* "mds/containers.pyx":417
  * 
  *     def cannot_redo(self):
  *         self._handle.cannot_redo()             # <<<<<<<<<<<<<<
@@ -8097,7 +7591,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_12cannot_redo(struct __pyx_obj
  */
   __pyx_v_self->_handle.cannot_redo();
 
-  /* "mds/containers.pyx":485
+  /* "mds/containers.pyx":416
  *         self._handle.always_redo()
  * 
  *     def cannot_redo(self):             # <<<<<<<<<<<<<<
@@ -8112,7 +7606,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_12cannot_redo(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":488
+/* "mds/containers.pyx":419
  *         self._handle.cannot_redo()
  * 
  *     def run(self):             # <<<<<<<<<<<<<<
@@ -8146,44 +7640,44 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_14run(struct __pyx_obj_3mds_10
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("run", 0);
 
-  /* "mds/containers.pyx":489
+  /* "mds/containers.pyx":420
  * 
  *     def run(self):
  *         if not self.expired:             # <<<<<<<<<<<<<<
  *             IsolationContext.redoable_tasks.add_task_to_context(
  *                 self.isolation_context, self
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_expired); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 489, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_expired); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 420, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 489, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(1, 420, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = ((!__pyx_t_2) != 0);
   if (__pyx_t_3) {
 
-    /* "mds/containers.pyx":490
+    /* "mds/containers.pyx":421
  *     def run(self):
  *         if not self.expired:
  *             IsolationContext.redoable_tasks.add_task_to_context(             # <<<<<<<<<<<<<<
  *                 self.isolation_context, self
  *             )
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext), __pyx_n_s_redoable_tasks); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 490, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext), __pyx_n_s_redoable_tasks); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 421, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_add_task_to_context); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 490, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_add_task_to_context); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 421, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "mds/containers.pyx":491
+    /* "mds/containers.pyx":422
  *         if not self.expired:
  *             IsolationContext.redoable_tasks.add_task_to_context(
  *                 self.isolation_context, self             # <<<<<<<<<<<<<<
  *             )
  * 
  */
-    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_isolation_context); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 491, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_isolation_context); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 422, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
 
-    /* "mds/containers.pyx":492
+    /* "mds/containers.pyx":423
  *             IsolationContext.redoable_tasks.add_task_to_context(
  *                 self.isolation_context, self
  *             )             # <<<<<<<<<<<<<<
@@ -8205,7 +7699,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_14run(struct __pyx_obj_3mds_10
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_5)) {
       PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_4, ((PyObject *)__pyx_v_self)};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 490, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 421, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -8214,14 +7708,14 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_14run(struct __pyx_obj_3mds_10
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_5)) {
       PyObject *__pyx_temp[3] = {__pyx_t_6, __pyx_t_4, ((PyObject *)__pyx_v_self)};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 490, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_5, __pyx_temp+1-__pyx_t_7, 2+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 421, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     } else
     #endif
     {
-      __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 490, __pyx_L1_error)
+      __pyx_t_8 = PyTuple_New(2+__pyx_t_7); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 421, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
       if (__pyx_t_6) {
         __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -8232,14 +7726,14 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_14run(struct __pyx_obj_3mds_10
       __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
       PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_7, ((PyObject *)__pyx_v_self));
       __pyx_t_4 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 490, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 421, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "mds/containers.pyx":494
+    /* "mds/containers.pyx":425
  *             )
  * 
  *             in_task(self._handle, self.__target, self.__args)             # <<<<<<<<<<<<<<
@@ -8254,7 +7748,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_14run(struct __pyx_obj_3mds_10
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "mds/containers.pyx":489
+    /* "mds/containers.pyx":420
  * 
  *     def run(self):
  *         if not self.expired:             # <<<<<<<<<<<<<<
@@ -8263,7 +7757,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_14run(struct __pyx_obj_3mds_10
  */
   }
 
-  /* "mds/containers.pyx":488
+  /* "mds/containers.pyx":419
  *         self._handle.cannot_redo()
  * 
  *     def run(self):             # <<<<<<<<<<<<<<
@@ -8288,7 +7782,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_14run(struct __pyx_obj_3mds_10
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":496
+/* "mds/containers.pyx":427
  *             in_task(self._handle, self.__target, self.__args)
  * 
  *     def expire(self):             # <<<<<<<<<<<<<<
@@ -8320,7 +7814,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_16expire(struct __pyx_obj_3mds
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("expire", 0);
 
-  /* "mds/containers.pyx":506
+  /* "mds/containers.pyx":437
  *         This operation is irreversible.
  *         """
  *         if self.__expired:             # <<<<<<<<<<<<<<
@@ -8330,7 +7824,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_16expire(struct __pyx_obj_3mds
   __pyx_t_1 = (__pyx_v_self->__pyx___expired != 0);
   if (__pyx_t_1) {
 
-    /* "mds/containers.pyx":507
+    /* "mds/containers.pyx":438
  *         """
  *         if self.__expired:
  *             return             # <<<<<<<<<<<<<<
@@ -8341,7 +7835,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_16expire(struct __pyx_obj_3mds
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "mds/containers.pyx":506
+    /* "mds/containers.pyx":437
  *         This operation is irreversible.
  *         """
  *         if self.__expired:             # <<<<<<<<<<<<<<
@@ -8350,7 +7844,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_16expire(struct __pyx_obj_3mds
  */
   }
 
-  /* "mds/containers.pyx":509
+  /* "mds/containers.pyx":440
  *             return
  * 
  *         self.__expired = True             # <<<<<<<<<<<<<<
@@ -8359,7 +7853,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_16expire(struct __pyx_obj_3mds
  */
   __pyx_v_self->__pyx___expired = 1;
 
-  /* "mds/containers.pyx":510
+  /* "mds/containers.pyx":441
  * 
  *         self.__expired = True
  *         self.__target = None             # <<<<<<<<<<<<<<
@@ -8372,7 +7866,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_16expire(struct __pyx_obj_3mds
   __Pyx_DECREF(__pyx_v_self->__pyx___target);
   __pyx_v_self->__pyx___target = Py_None;
 
-  /* "mds/containers.pyx":511
+  /* "mds/containers.pyx":442
  *         self.__expired = True
  *         self.__target = None
  *         self.__args = None             # <<<<<<<<<<<<<<
@@ -8385,16 +7879,16 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_16expire(struct __pyx_obj_3mds
   __Pyx_DECREF(__pyx_v_self->__pyx___args);
   __pyx_v_self->__pyx___args = ((PyObject*)Py_None);
 
-  /* "mds/containers.pyx":513
+  /* "mds/containers.pyx":444
  *         self.__args = None
  *         # TODO: With ptr management, drop the handle pointer (-> nullptr)
  *         IsolationContext.redoable_tasks.expunge(self)             # <<<<<<<<<<<<<<
  * 
  *     @staticmethod
  */
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext), __pyx_n_s_redoable_tasks); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 513, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext), __pyx_n_s_redoable_tasks); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 444, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_expunge); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 513, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_expunge); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 444, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_t_3 = NULL;
@@ -8408,13 +7902,13 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_16expire(struct __pyx_obj_3mds
     }
   }
   if (!__pyx_t_3) {
-    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_4, ((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 513, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_4, ((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 444, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, ((PyObject *)__pyx_v_self)};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 513, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 444, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
@@ -8422,19 +7916,19 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_16expire(struct __pyx_obj_3mds
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_4)) {
       PyObject *__pyx_temp[2] = {__pyx_t_3, ((PyObject *)__pyx_v_self)};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 513, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_4, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 444, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 513, __pyx_L1_error)
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 444, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
       __Pyx_INCREF(((PyObject *)__pyx_v_self));
       __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
       PyTuple_SET_ITEM(__pyx_t_5, 0+1, ((PyObject *)__pyx_v_self));
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 513, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_4, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 444, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
@@ -8442,7 +7936,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_16expire(struct __pyx_obj_3mds
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mds/containers.pyx":496
+  /* "mds/containers.pyx":427
  *             in_task(self._handle, self.__target, self.__args)
  * 
  *     def expire(self):             # <<<<<<<<<<<<<<
@@ -8466,7 +7960,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_16expire(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":516
+/* "mds/containers.pyx":447
  * 
  *     @staticmethod
  *     def as_task(fn, args):             # <<<<<<<<<<<<<<
@@ -8504,11 +7998,11 @@ static PyObject *__pyx_pw_3mds_10containers_4Task_19as_task(CYTHON_UNUSED PyObje
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_args)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("as_task", 1, 2, 2, 1); __PYX_ERR(0, 516, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("as_task", 1, 2, 2, 1); __PYX_ERR(1, 447, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "as_task") < 0)) __PYX_ERR(0, 516, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "as_task") < 0)) __PYX_ERR(1, 447, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -8521,7 +8015,7 @@ static PyObject *__pyx_pw_3mds_10containers_4Task_19as_task(CYTHON_UNUSED PyObje
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("as_task", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 516, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("as_task", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 447, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.containers.Task.as_task", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -8546,14 +8040,14 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_18as_task(PyObject *__pyx_v_fn
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("as_task", 0);
 
-  /* "mds/containers.pyx":529
+  /* "mds/containers.pyx":460
  *         being possible.
  *         """
  *         current_task = Task.get_current()             # <<<<<<<<<<<<<<
  *         current_isoctxt = current_task.isolation_context
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_n_s_get_current); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 529, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_n_s_get_current); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 460, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -8566,49 +8060,49 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_18as_task(PyObject *__pyx_v_fn
     }
   }
   if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 529, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 460, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 529, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 460, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_current_task = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":530
+  /* "mds/containers.pyx":461
  *         """
  *         current_task = Task.get_current()
  *         current_isoctxt = current_task.isolation_context             # <<<<<<<<<<<<<<
  * 
  *         if current_isoctxt.is_publishable:
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_current_task, __pyx_n_s_isolation_context); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 530, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_current_task, __pyx_n_s_isolation_context); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 461, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_current_isoctxt = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":532
+  /* "mds/containers.pyx":463
  *         current_isoctxt = current_task.isolation_context
  * 
  *         if current_isoctxt.is_publishable:             # <<<<<<<<<<<<<<
  *             task = Task(fn, args)
  *             update_context_handle_in_task(task, current_isoctxt)
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_current_isoctxt, __pyx_n_s_is_publishable); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_current_isoctxt, __pyx_n_s_is_publishable); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 463, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 532, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(1, 463, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_4) {
 
-    /* "mds/containers.pyx":533
+    /* "mds/containers.pyx":464
  * 
  *         if current_isoctxt.is_publishable:
  *             task = Task(fn, args)             # <<<<<<<<<<<<<<
  *             update_context_handle_in_task(task, current_isoctxt)
  *             task.run()
  */
-    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 533, __pyx_L1_error)
+    __pyx_t_1 = PyTuple_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 464, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v_fn);
     __Pyx_GIVEREF(__pyx_v_fn);
@@ -8616,32 +8110,32 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_18as_task(PyObject *__pyx_v_fn
     __Pyx_INCREF(__pyx_v_args);
     __Pyx_GIVEREF(__pyx_v_args);
     PyTuple_SET_ITEM(__pyx_t_1, 1, __pyx_v_args);
-    __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 533, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 464, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_task = ((struct __pyx_obj_3mds_10containers_Task *)__pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "mds/containers.pyx":534
+    /* "mds/containers.pyx":465
  *         if current_isoctxt.is_publishable:
  *             task = Task(fn, args)
  *             update_context_handle_in_task(task, current_isoctxt)             # <<<<<<<<<<<<<<
  *             task.run()
  *         else:
  */
-    if (!(likely(((__pyx_v_current_isoctxt) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_current_isoctxt, __pyx_ptype_3mds_10containers_IsolationContext))))) __PYX_ERR(0, 534, __pyx_L1_error)
-    __pyx_t_2 = __pyx_f_3mds_10containers_update_context_handle_in_task(__pyx_v_task, ((struct __pyx_obj_3mds_10containers_IsolationContext *)__pyx_v_current_isoctxt)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 534, __pyx_L1_error)
+    if (!(likely(((__pyx_v_current_isoctxt) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_current_isoctxt, __pyx_ptype_3mds_10containers_IsolationContext))))) __PYX_ERR(1, 465, __pyx_L1_error)
+    __pyx_t_2 = __pyx_f_3mds_10containers_update_context_handle_in_task(__pyx_v_task, ((struct __pyx_obj_3mds_10containers_IsolationContext *)__pyx_v_current_isoctxt)); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 465, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "mds/containers.pyx":535
+    /* "mds/containers.pyx":466
  *             task = Task(fn, args)
  *             update_context_handle_in_task(task, current_isoctxt)
  *             task.run()             # <<<<<<<<<<<<<<
  *         else:
  *             # TODO: Warning here
  */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_task), __pyx_n_s_run); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 535, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_task), __pyx_n_s_run); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 466, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_3 = NULL;
     if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
@@ -8654,16 +8148,16 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_18as_task(PyObject *__pyx_v_fn
       }
     }
     if (__pyx_t_3) {
-      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 535, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_t_1, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 466, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     } else {
-      __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 535, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyObject_CallNoArg(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 466, __pyx_L1_error)
     }
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "mds/containers.pyx":532
+    /* "mds/containers.pyx":463
  *         current_isoctxt = current_task.isolation_context
  * 
  *         if current_isoctxt.is_publishable:             # <<<<<<<<<<<<<<
@@ -8673,7 +8167,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_18as_task(PyObject *__pyx_v_fn
     goto __pyx_L3;
   }
 
-  /* "mds/containers.pyx":538
+  /* "mds/containers.pyx":469
  *         else:
  *             # TODO: Warning here
  *             print("Context not publishable")             # <<<<<<<<<<<<<<
@@ -8681,27 +8175,27 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_18as_task(PyObject *__pyx_v_fn
  * 
  */
   /*else*/ {
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 538, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 469, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "mds/containers.pyx":539
+    /* "mds/containers.pyx":470
  *             # TODO: Warning here
  *             print("Context not publishable")
  *             fn(*args)             # <<<<<<<<<<<<<<
  * 
  *     @staticmethod
  */
-    __pyx_t_2 = PySequence_Tuple(__pyx_v_args); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 539, __pyx_L1_error)
+    __pyx_t_2 = PySequence_Tuple(__pyx_v_args); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 470, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_v_fn, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 539, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_v_fn, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 470, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   }
   __pyx_L3:;
 
-  /* "mds/containers.pyx":516
+  /* "mds/containers.pyx":447
  * 
  *     @staticmethod
  *     def as_task(fn, args):             # <<<<<<<<<<<<<<
@@ -8727,7 +8221,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_18as_task(PyObject *__pyx_v_fn
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":542
+/* "mds/containers.pyx":473
  * 
  *     @staticmethod
  *     def initialize_base_task():             # <<<<<<<<<<<<<<
@@ -8758,7 +8252,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_20initialize_base_task() {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("initialize_base_task", 0);
 
-  /* "mds/containers.pyx":546
+  /* "mds/containers.pyx":477
  *         Delegates to the C++ implemented initializer from Python-land.
  *         """
  *         initialize_base_task()             # <<<<<<<<<<<<<<
@@ -8767,7 +8261,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_20initialize_base_task() {
  */
   mds::python::tasks::initialize_base_task();
 
-  /* "mds/containers.pyx":542
+  /* "mds/containers.pyx":473
  * 
  *     @staticmethod
  *     def initialize_base_task():             # <<<<<<<<<<<<<<
@@ -8782,7 +8276,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_20initialize_base_task() {
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":549
+/* "mds/containers.pyx":480
  * 
  *     @staticmethod
  *     def get_current():             # <<<<<<<<<<<<<<
@@ -8814,7 +8308,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_22get_current() {
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("get_current", 0);
 
-  /* "mds/containers.pyx":553
+  /* "mds/containers.pyx":484
  *         Returns a Task object for the thread-relative current task.
  *         """
  *         return Task_Init(TaskWrapper.current())             # <<<<<<<<<<<<<<
@@ -8822,13 +8316,13 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_22get_current() {
  *     property isolation_context:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3mds_10containers_Task_Init(mds::python::tasks::TaskWrapper::current()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 553, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_Task_Init(mds::python::tasks::TaskWrapper::current()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 484, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":549
+  /* "mds/containers.pyx":480
  * 
  *     @staticmethod
  *     def get_current():             # <<<<<<<<<<<<<<
@@ -8847,7 +8341,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_22get_current() {
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":556
+/* "mds/containers.pyx":487
  * 
  *     property isolation_context:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -8874,7 +8368,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_17isolation_context___get__(st
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":557
+  /* "mds/containers.pyx":488
  *     property isolation_context:
  *         def __get__(self):
  *             return IsolationContext_Init(self._ctxt)             # <<<<<<<<<<<<<<
@@ -8882,13 +8376,13 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_17isolation_context___get__(st
  *     property parent:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(__pyx_v_self->_ctxt); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 557, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_IsolationContext_Init(__pyx_v_self->_ctxt); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 488, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":556
+  /* "mds/containers.pyx":487
  * 
  *     property isolation_context:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -8907,7 +8401,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_17isolation_context___get__(st
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":560
+/* "mds/containers.pyx":491
  * 
  *     property parent:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -8934,7 +8428,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_6parent___get__(struct __pyx_o
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":561
+  /* "mds/containers.pyx":492
  *     property parent:
  *         def __get__(self):
  *             return Task_Init(self._handle.get_parent())             # <<<<<<<<<<<<<<
@@ -8942,13 +8436,13 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_6parent___get__(struct __pyx_o
  *     property expired:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3mds_10containers_Task_Init(__pyx_v_self->_handle.get_parent()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 561, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_10containers_Task_Init(__pyx_v_self->_handle.get_parent()); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 492, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":560
+  /* "mds/containers.pyx":491
  * 
  *     property parent:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -8967,7 +8461,7 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_6parent___get__(struct __pyx_o
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":564
+/* "mds/containers.pyx":495
  * 
  *     property expired:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -8994,21 +8488,21 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_7expired___get__(struct __pyx_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "mds/containers.pyx":565
+  /* "mds/containers.pyx":496
  *     property expired:
  *         def __get__(self):
  *             return self.__expired             # <<<<<<<<<<<<<<
  * 
- * # Helper functions, emulate C++/Java APIs
+ * # Helper functions, emulate C++/Java APIs  # TODO: Isolated?
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->__pyx___expired); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 565, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_self->__pyx___expired); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 496, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":564
+  /* "mds/containers.pyx":495
  * 
  *     property expired:
  *         def __get__(self):             # <<<<<<<<<<<<<<
@@ -9027,12 +8521,11 @@ static PyObject *__pyx_pf_3mds_10containers_4Task_7expired___get__(struct __pyx_
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":569
- * # Helper functions, emulate C++/Java APIs
+/* "mds/containers.pyx":500
+ * # Helper functions, emulate C++/Java APIs  # TODO: Isolated?
  * 
  * def as_task(fn, args):             # <<<<<<<<<<<<<<
  *     Task.as_task(fn, args);
- * 
  */
 
 /* Python wrapper */
@@ -9064,11 +8557,11 @@ static PyObject *__pyx_pw_3mds_10containers_1as_task(PyObject *__pyx_self, PyObj
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_args)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("as_task", 1, 2, 2, 1); __PYX_ERR(0, 569, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("as_task", 1, 2, 2, 1); __PYX_ERR(1, 500, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "as_task") < 0)) __PYX_ERR(0, 569, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "as_task") < 0)) __PYX_ERR(1, 500, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -9081,7 +8574,7 @@ static PyObject *__pyx_pw_3mds_10containers_1as_task(PyObject *__pyx_self, PyObj
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("as_task", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 569, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("as_task", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(1, 500, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.containers.as_task", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -9104,14 +8597,12 @@ static PyObject *__pyx_pf_3mds_10containers_as_task(CYTHON_UNUSED PyObject *__py
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("as_task", 0);
 
-  /* "mds/containers.pyx":570
+  /* "mds/containers.pyx":501
  * 
  * def as_task(fn, args):
  *     Task.as_task(fn, args);             # <<<<<<<<<<<<<<
- * 
- * # Internal functions
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_n_s_as_task); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 570, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_n_s_as_task); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 501, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   __pyx_t_4 = 0;
@@ -9128,7 +8619,7 @@ static PyObject *__pyx_pf_3mds_10containers_as_task(CYTHON_UNUSED PyObject *__py
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_fn, __pyx_v_args};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 570, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 501, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
@@ -9136,13 +8627,13 @@ static PyObject *__pyx_pf_3mds_10containers_as_task(CYTHON_UNUSED PyObject *__py
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
     PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_v_fn, __pyx_v_args};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 570, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 501, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 570, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 501, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_3) {
       __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
@@ -9153,19 +8644,18 @@ static PyObject *__pyx_pf_3mds_10containers_as_task(CYTHON_UNUSED PyObject *__py
     __Pyx_INCREF(__pyx_v_args);
     __Pyx_GIVEREF(__pyx_v_args);
     PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_args);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 570, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 501, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":569
- * # Helper functions, emulate C++/Java APIs
+  /* "mds/containers.pyx":500
+ * # Helper functions, emulate C++/Java APIs  # TODO: Isolated?
  * 
  * def as_task(fn, args):             # <<<<<<<<<<<<<<
  *     Task.as_task(fn, args);
- * 
  */
 
   /* function exit code */
@@ -9184,219 +8674,417 @@ static PyObject *__pyx_pf_3mds_10containers_as_task(CYTHON_UNUSED PyObject *__py
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":574
- * # Internal functions
+/* "mds/containers.pxd":44
+ *     cdef iso_context_handle _handle
  * 
- * cdef inline add_task_handle(Task task, task_handle handle):             # <<<<<<<<<<<<<<
- *     task._handle = handle
- * 
+ *     cdef inline __create_child(self, str kind, bool snapshot):             # <<<<<<<<<<<<<<
+ *         cdef:
+ *             iso_context_handle handle
  */
 
-static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_add_task_handle(struct __pyx_obj_3mds_10containers_Task *__pyx_v_task, mds::api::task_handle __pyx_v_handle) {
+static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_16IsolationContext___create_child(struct __pyx_obj_3mds_10containers_IsolationContext *__pyx_v_self, PyObject *__pyx_v_kind, bool __pyx_v_snapshot) {
+  mds::api::iso_context_handle __pyx_v_handle;
+  PyObject *__pyx_v_k_live = 0;
+  PyObject *__pyx_v_k_read_only = 0;
+  PyObject *__pyx_v_k_detached = 0;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("add_task_handle", 0);
+  int __pyx_t_1;
+  int __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  mds::api::iso_context_handle __pyx_t_4;
+  __Pyx_RefNannySetupContext("__create_child", 0);
 
-  /* "mds/containers.pyx":575
- * 
- * cdef inline add_task_handle(Task task, task_handle handle):
- *     task._handle = handle             # <<<<<<<<<<<<<<
- * 
- * cdef inline update_context_handle_in_task(Task task, IsolationContext ctxt):
+  /* "mds/containers.pxd":47
+ *         cdef:
+ *             iso_context_handle handle
+ *             str k_live = "live"             # <<<<<<<<<<<<<<
+ *             str k_read_only = "read_only"
+ *             str k_detached = "detached"
  */
-  __pyx_v_task->_handle = __pyx_v_handle;
+  __Pyx_INCREF(__pyx_n_u_live);
+  __pyx_v_k_live = __pyx_n_u_live;
 
-  /* "mds/containers.pyx":574
- * # Internal functions
+  /* "mds/containers.pxd":48
+ *             iso_context_handle handle
+ *             str k_live = "live"
+ *             str k_read_only = "read_only"             # <<<<<<<<<<<<<<
+ *             str k_detached = "detached"
  * 
- * cdef inline add_task_handle(Task task, task_handle handle):             # <<<<<<<<<<<<<<
- *     task._handle = handle
+ */
+  __Pyx_INCREF(__pyx_n_u_read_only);
+  __pyx_v_k_read_only = __pyx_n_u_read_only;
+
+  /* "mds/containers.pxd":49
+ *             str k_live = "live"
+ *             str k_read_only = "read_only"
+ *             str k_detached = "detached"             # <<<<<<<<<<<<<<
  * 
+ *         # Do the sanity checking here
+ */
+  __Pyx_INCREF(__pyx_n_u_detached);
+  __pyx_v_k_detached = __pyx_n_u_detached;
+
+  /* "mds/containers.pxd":52
+ * 
+ *         # Do the sanity checking here
+ *         if self._handle.is_read_only():             # <<<<<<<<<<<<<<
+ *             if kind == k_live:
+ *                 raise RuntimeError(
+ */
+  __pyx_t_1 = (__pyx_v_self->_handle.is_read_only() != 0);
+  if (__pyx_t_1) {
+
+    /* "mds/containers.pxd":53
+ *         # Do the sanity checking here
+ *         if self._handle.is_read_only():
+ *             if kind == k_live:             # <<<<<<<<<<<<<<
+ *                 raise RuntimeError(
+ *                     "Can't create a `live` child from `read_only` parent."
+ */
+    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_kind, __pyx_v_k_live, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 53, __pyx_L1_error)
+    __pyx_t_2 = (__pyx_t_1 != 0);
+    if (__pyx_t_2) {
+
+      /* "mds/containers.pxd":54
+ *         if self._handle.is_read_only():
+ *             if kind == k_live:
+ *                 raise RuntimeError(             # <<<<<<<<<<<<<<
+ *                     "Can't create a `live` child from `read_only` parent."
+ *                 )
+ */
+      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+      __PYX_ERR(0, 54, __pyx_L1_error)
+
+      /* "mds/containers.pxd":53
+ *         # Do the sanity checking here
+ *         if self._handle.is_read_only():
+ *             if kind == k_live:             # <<<<<<<<<<<<<<
+ *                 raise RuntimeError(
+ *                     "Can't create a `live` child from `read_only` parent."
+ */
+    }
+
+    /* "mds/containers.pxd":52
+ * 
+ *         # Do the sanity checking here
+ *         if self._handle.is_read_only():             # <<<<<<<<<<<<<<
+ *             if kind == k_live:
+ *                 raise RuntimeError(
+ */
+  }
+
+  /* "mds/containers.pxd":58
+ *                 )
+ * 
+ *         if snapshot:             # <<<<<<<<<<<<<<
+ *             if kind == k_read_only:
+ *                 handle = self._handle.new_read_only_snapshot_child()
+ */
+  __pyx_t_2 = (__pyx_v_snapshot != 0);
+  if (__pyx_t_2) {
+
+    /* "mds/containers.pxd":59
+ * 
+ *         if snapshot:
+ *             if kind == k_read_only:             # <<<<<<<<<<<<<<
+ *                 handle = self._handle.new_read_only_snapshot_child()
+ *             elif kind == k_detached:
+ */
+    __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_kind, __pyx_v_k_read_only, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 59, __pyx_L1_error)
+    __pyx_t_1 = (__pyx_t_2 != 0);
+    if (__pyx_t_1) {
+
+      /* "mds/containers.pxd":60
+ *         if snapshot:
+ *             if kind == k_read_only:
+ *                 handle = self._handle.new_read_only_snapshot_child()             # <<<<<<<<<<<<<<
+ *             elif kind == k_detached:
+ *                 handle = self._handle.new_detached_snapshot_child()
+ */
+      try {
+        __pyx_t_4 = __pyx_v_self->_handle.new_read_only_snapshot_child();
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        __PYX_ERR(0, 60, __pyx_L1_error)
+      }
+      __pyx_v_handle = __pyx_t_4;
+
+      /* "mds/containers.pxd":59
+ * 
+ *         if snapshot:
+ *             if kind == k_read_only:             # <<<<<<<<<<<<<<
+ *                 handle = self._handle.new_read_only_snapshot_child()
+ *             elif kind == k_detached:
+ */
+      goto __pyx_L6;
+    }
+
+    /* "mds/containers.pxd":61
+ *             if kind == k_read_only:
+ *                 handle = self._handle.new_read_only_snapshot_child()
+ *             elif kind == k_detached:             # <<<<<<<<<<<<<<
+ *                 handle = self._handle.new_detached_snapshot_child()
+ *             else:
+ */
+    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_kind, __pyx_v_k_detached, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 61, __pyx_L1_error)
+    __pyx_t_2 = (__pyx_t_1 != 0);
+    if (__pyx_t_2) {
+
+      /* "mds/containers.pxd":62
+ *                 handle = self._handle.new_read_only_snapshot_child()
+ *             elif kind == k_detached:
+ *                 handle = self._handle.new_detached_snapshot_child()             # <<<<<<<<<<<<<<
+ *             else:
+ *                 handle = self._handle.new_snapshot_child()
+ */
+      try {
+        __pyx_t_4 = __pyx_v_self->_handle.new_detached_snapshot_child();
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        __PYX_ERR(0, 62, __pyx_L1_error)
+      }
+      __pyx_v_handle = __pyx_t_4;
+
+      /* "mds/containers.pxd":61
+ *             if kind == k_read_only:
+ *                 handle = self._handle.new_read_only_snapshot_child()
+ *             elif kind == k_detached:             # <<<<<<<<<<<<<<
+ *                 handle = self._handle.new_detached_snapshot_child()
+ *             else:
+ */
+      goto __pyx_L6;
+    }
+
+    /* "mds/containers.pxd":64
+ *                 handle = self._handle.new_detached_snapshot_child()
+ *             else:
+ *                 handle = self._handle.new_snapshot_child()             # <<<<<<<<<<<<<<
+ *         else:
+ *             if kind == k_read_only:
+ */
+    /*else*/ {
+      try {
+        __pyx_t_4 = __pyx_v_self->_handle.new_snapshot_child();
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        __PYX_ERR(0, 64, __pyx_L1_error)
+      }
+      __pyx_v_handle = __pyx_t_4;
+    }
+    __pyx_L6:;
+
+    /* "mds/containers.pxd":58
+ *                 )
+ * 
+ *         if snapshot:             # <<<<<<<<<<<<<<
+ *             if kind == k_read_only:
+ *                 handle = self._handle.new_read_only_snapshot_child()
+ */
+    goto __pyx_L5;
+  }
+
+  /* "mds/containers.pxd":66
+ *                 handle = self._handle.new_snapshot_child()
+ *         else:
+ *             if kind == k_read_only:             # <<<<<<<<<<<<<<
+ *                 handle = self._handle.new_read_only_nonsnapshot_child()
+ *             elif kind == k_detached:
+ */
+  /*else*/ {
+    __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_kind, __pyx_v_k_read_only, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __pyx_t_1 = (__pyx_t_2 != 0);
+    if (__pyx_t_1) {
+
+      /* "mds/containers.pxd":67
+ *         else:
+ *             if kind == k_read_only:
+ *                 handle = self._handle.new_read_only_nonsnapshot_child()             # <<<<<<<<<<<<<<
+ *             elif kind == k_detached:
+ *                 handle = self._handle.new_detached_nonsnapshot_child()
+ */
+      try {
+        __pyx_t_4 = __pyx_v_self->_handle.new_read_only_nonsnapshot_child();
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        __PYX_ERR(0, 67, __pyx_L1_error)
+      }
+      __pyx_v_handle = __pyx_t_4;
+
+      /* "mds/containers.pxd":66
+ *                 handle = self._handle.new_snapshot_child()
+ *         else:
+ *             if kind == k_read_only:             # <<<<<<<<<<<<<<
+ *                 handle = self._handle.new_read_only_nonsnapshot_child()
+ *             elif kind == k_detached:
+ */
+      goto __pyx_L7;
+    }
+
+    /* "mds/containers.pxd":68
+ *             if kind == k_read_only:
+ *                 handle = self._handle.new_read_only_nonsnapshot_child()
+ *             elif kind == k_detached:             # <<<<<<<<<<<<<<
+ *                 handle = self._handle.new_detached_nonsnapshot_child()
+ *             else:
+ */
+    __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_kind, __pyx_v_k_detached, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
+    __pyx_t_2 = (__pyx_t_1 != 0);
+    if (__pyx_t_2) {
+
+      /* "mds/containers.pxd":69
+ *                 handle = self._handle.new_read_only_nonsnapshot_child()
+ *             elif kind == k_detached:
+ *                 handle = self._handle.new_detached_nonsnapshot_child()             # <<<<<<<<<<<<<<
+ *             else:
+ *                 handle = self._handle.new_nonsnapshot_child()
+ */
+      try {
+        __pyx_t_4 = __pyx_v_self->_handle.new_detached_nonsnapshot_child();
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        __PYX_ERR(0, 69, __pyx_L1_error)
+      }
+      __pyx_v_handle = __pyx_t_4;
+
+      /* "mds/containers.pxd":68
+ *             if kind == k_read_only:
+ *                 handle = self._handle.new_read_only_nonsnapshot_child()
+ *             elif kind == k_detached:             # <<<<<<<<<<<<<<
+ *                 handle = self._handle.new_detached_nonsnapshot_child()
+ *             else:
+ */
+      goto __pyx_L7;
+    }
+
+    /* "mds/containers.pxd":71
+ *                 handle = self._handle.new_detached_nonsnapshot_child()
+ *             else:
+ *                 handle = self._handle.new_nonsnapshot_child()             # <<<<<<<<<<<<<<
+ * 
+ *         return IsolationContext_Init(handle=handle)
+ */
+    /*else*/ {
+      try {
+        __pyx_t_4 = __pyx_v_self->_handle.new_nonsnapshot_child();
+      } catch(...) {
+        __Pyx_CppExn2PyErr();
+        __PYX_ERR(0, 71, __pyx_L1_error)
+      }
+      __pyx_v_handle = __pyx_t_4;
+    }
+    __pyx_L7:;
+  }
+  __pyx_L5:;
+
+  /* "mds/containers.pxd":73
+ *                 handle = self._handle.new_nonsnapshot_child()
+ * 
+ *         return IsolationContext_Init(handle=handle)             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_3 = __pyx_f_3mds_10containers_IsolationContext_Init(__pyx_v_handle); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
+  goto __pyx_L0;
+
+  /* "mds/containers.pxd":44
+ *     cdef iso_context_handle _handle
+ * 
+ *     cdef inline __create_child(self, str kind, bool snapshot):             # <<<<<<<<<<<<<<
+ *         cdef:
+ *             iso_context_handle handle
  */
 
   /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_AddTraceback("mds.containers.IsolationContext.__create_child", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_k_live);
+  __Pyx_XDECREF(__pyx_v_k_read_only);
+  __Pyx_XDECREF(__pyx_v_k_detached);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":577
- *     task._handle = handle
+/* "mds/containers.pxd":76
  * 
- * cdef inline update_context_handle_in_task(Task task, IsolationContext ctxt):             # <<<<<<<<<<<<<<
- *     task._ctxt = ctxt._handle
  * 
+ * cdef inline IsolationContext_Init(iso_context_handle handle):             # <<<<<<<<<<<<<<
+ *     initialize_base_task()
+ *     result = IsolationContext()
  */
 
-static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_update_context_handle_in_task(struct __pyx_obj_3mds_10containers_Task *__pyx_v_task, struct __pyx_obj_3mds_10containers_IsolationContext *__pyx_v_ctxt) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  mds::api::iso_context_handle __pyx_t_1;
-  __Pyx_RefNannySetupContext("update_context_handle_in_task", 0);
-
-  /* "mds/containers.pyx":578
- * 
- * cdef inline update_context_handle_in_task(Task task, IsolationContext ctxt):
- *     task._ctxt = ctxt._handle             # <<<<<<<<<<<<<<
- * 
- * cdef Task_Init(task_handle handle):
- */
-  __pyx_t_1 = __pyx_v_ctxt->_handle;
-  __pyx_v_task->_ctxt = __pyx_t_1;
-
-  /* "mds/containers.pyx":577
- *     task._handle = handle
- * 
- * cdef inline update_context_handle_in_task(Task task, IsolationContext ctxt):             # <<<<<<<<<<<<<<
- *     task._ctxt = ctxt._handle
- * 
- */
-
-  /* function exit code */
-  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "mds/containers.pyx":580
- *     task._ctxt = ctxt._handle
- * 
- * cdef Task_Init(task_handle handle):             # <<<<<<<<<<<<<<
- *     print("Initializing task with hash {}".format(hash_task(handle)))
- *     result = Task()
- */
-
-static PyObject *__pyx_f_3mds_10containers_Task_Init(mds::api::task_handle __pyx_v_handle) {
-  struct __pyx_obj_3mds_10containers_Task *__pyx_v_result = NULL;
+static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_IsolationContext_Init(mds::api::iso_context_handle __pyx_v_handle) {
+  struct __pyx_obj_3mds_10containers_IsolationContext *__pyx_v_result = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  PyObject *__pyx_t_5 = NULL;
-  __Pyx_RefNannySetupContext("Task_Init", 0);
+  __Pyx_RefNannySetupContext("IsolationContext_Init", 0);
 
-  /* "mds/containers.pyx":581
+  /* "mds/containers.pxd":77
  * 
- * cdef Task_Init(task_handle handle):
- *     print("Initializing task with hash {}".format(hash_task(handle)))             # <<<<<<<<<<<<<<
- *     result = Task()
- *     add_task_handle(result, handle)
+ * cdef inline IsolationContext_Init(iso_context_handle handle):
+ *     initialize_base_task()             # <<<<<<<<<<<<<<
+ *     result = IsolationContext()
+ *     result._handle = handle
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Initializing_task_with_hash, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 581, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_PyInt_FromSize_t(mds::python::tasks::hash_task(__pyx_v_handle)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 581, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = NULL;
-  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_4)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_4);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  if (!__pyx_t_4) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 581, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_GOTREF(__pyx_t_1);
-  } else {
-    #if CYTHON_FAST_PYCALL
-    if (PyFunction_Check(__pyx_t_2)) {
-      PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_3};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 581, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    } else
-    #endif
-    #if CYTHON_FAST_PYCCALL
-    if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-      PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_3};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 581, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    } else
-    #endif
-    {
-      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 581, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
-      __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
-      __Pyx_GIVEREF(__pyx_t_3);
-      PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_3);
-      __pyx_t_3 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 581, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    }
-  }
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 581, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_GIVEREF(__pyx_t_1);
-  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
-  __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 581, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  mds::python::tasks::initialize_base_task();
 
-  /* "mds/containers.pyx":582
- * cdef Task_Init(task_handle handle):
- *     print("Initializing task with hash {}".format(hash_task(handle)))
- *     result = Task()             # <<<<<<<<<<<<<<
- *     add_task_handle(result, handle)
+  /* "mds/containers.pxd":78
+ * cdef inline IsolationContext_Init(iso_context_handle handle):
+ *     initialize_base_task()
+ *     result = IsolationContext()             # <<<<<<<<<<<<<<
+ *     result._handle = handle
  *     return result
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 582, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_result = ((struct __pyx_obj_3mds_10containers_Task *)__pyx_t_1);
+  __pyx_v_result = ((struct __pyx_obj_3mds_10containers_IsolationContext *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":583
- *     print("Initializing task with hash {}".format(hash_task(handle)))
- *     result = Task()
- *     add_task_handle(result, handle)             # <<<<<<<<<<<<<<
+  /* "mds/containers.pxd":79
+ *     initialize_base_task()
+ *     result = IsolationContext()
+ *     result._handle = handle             # <<<<<<<<<<<<<<
  *     return result
  * 
  */
-  __pyx_t_1 = __pyx_f_3mds_10containers_add_task_handle(__pyx_v_result, __pyx_v_handle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 583, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_v_result->_handle = __pyx_v_handle;
 
-  /* "mds/containers.pyx":584
- *     result = Task()
- *     add_task_handle(result, handle)
+  /* "mds/containers.pxd":80
+ *     result = IsolationContext()
+ *     result._handle = handle
  *     return result             # <<<<<<<<<<<<<<
  * 
- * cdef inline _py_callable_wrapper _wrap(object fn, object args):
+ * cdef inline object _isoctxt_execution_wrapper(_py_callable_wrapper wrapped):
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_result));
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":580
- *     task._ctxt = ctxt._handle
+  /* "mds/containers.pxd":76
  * 
- * cdef Task_Init(task_handle handle):             # <<<<<<<<<<<<<<
- *     print("Initializing task with hash {}".format(hash_task(handle)))
- *     result = Task()
+ * 
+ * cdef inline IsolationContext_Init(iso_context_handle handle):             # <<<<<<<<<<<<<<
+ *     initialize_base_task()
+ *     result = IsolationContext()
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("mds.containers.Task_Init", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("mds.containers.IsolationContext_Init", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF((PyObject *)__pyx_v_result);
@@ -9405,64 +9093,8 @@ static PyObject *__pyx_f_3mds_10containers_Task_Init(mds::api::task_handle __pyx
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":586
+/* "mds/containers.pxd":82
  *     return result
- * 
- * cdef inline _py_callable_wrapper _wrap(object fn, object args):             # <<<<<<<<<<<<<<
- *     cdef _py_callable_wrapper py_wrap
- *     py_wrap.fn = <PyObject *> fn
- */
-
-static CYTHON_INLINE mds::python::_py_callable_wrapper __pyx_f_3mds_10containers__wrap(PyObject *__pyx_v_fn, PyObject *__pyx_v_args) {
-  mds::python::_py_callable_wrapper __pyx_v_py_wrap;
-  mds::python::_py_callable_wrapper __pyx_r;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_wrap", 0);
-
-  /* "mds/containers.pyx":588
- * cdef inline _py_callable_wrapper _wrap(object fn, object args):
- *     cdef _py_callable_wrapper py_wrap
- *     py_wrap.fn = <PyObject *> fn             # <<<<<<<<<<<<<<
- *     py_wrap.args = <PyObject *> args
- *     return py_wrap
- */
-  __pyx_v_py_wrap.fn = ((PyObject *)__pyx_v_fn);
-
-  /* "mds/containers.pyx":589
- *     cdef _py_callable_wrapper py_wrap
- *     py_wrap.fn = <PyObject *> fn
- *     py_wrap.args = <PyObject *> args             # <<<<<<<<<<<<<<
- *     return py_wrap
- * 
- */
-  __pyx_v_py_wrap.args = ((PyObject *)__pyx_v_args);
-
-  /* "mds/containers.pyx":590
- *     py_wrap.fn = <PyObject *> fn
- *     py_wrap.args = <PyObject *> args
- *     return py_wrap             # <<<<<<<<<<<<<<
- * 
- * cdef inline object _isoctxt_execution_wrapper(_py_callable_wrapper wrapped):
- */
-  __pyx_r = __pyx_v_py_wrap;
-  goto __pyx_L0;
-
-  /* "mds/containers.pyx":586
- *     return result
- * 
- * cdef inline _py_callable_wrapper _wrap(object fn, object args):             # <<<<<<<<<<<<<<
- *     cdef _py_callable_wrapper py_wrap
- *     py_wrap.fn = <PyObject *> fn
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "mds/containers.pyx":592
- *     return py_wrap
  * 
  * cdef inline object _isoctxt_execution_wrapper(_py_callable_wrapper wrapped):             # <<<<<<<<<<<<<<
  *     cdef:
@@ -9478,7 +9110,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers__isoctxt_execution_wrap
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("_isoctxt_execution_wrapper", 0);
 
-  /* "mds/containers.pyx":594
+  /* "mds/containers.pxd":84
  * cdef inline object _isoctxt_execution_wrapper(_py_callable_wrapper wrapped):
  *     cdef:
  *         object fn = <object> wrapped.fn             # <<<<<<<<<<<<<<
@@ -9490,7 +9122,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers__isoctxt_execution_wrap
   __pyx_v_fn = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":595
+  /* "mds/containers.pxd":85
  *     cdef:
  *         object fn = <object> wrapped.fn
  *         object args = <object> wrapped.args             # <<<<<<<<<<<<<<
@@ -9502,7 +9134,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers__isoctxt_execution_wrap
   __pyx_v_args = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":597
+  /* "mds/containers.pxd":87
  *         object args = <object> wrapped.args
  * 
  *     return fn(*args)             # <<<<<<<<<<<<<<
@@ -9510,17 +9142,17 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers__isoctxt_execution_wrap
  * cdef inline object in_isoctxt(iso_context_handle ich, object fn, object args):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PySequence_Tuple(__pyx_v_args); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 597, __pyx_L1_error)
+  __pyx_t_1 = PySequence_Tuple(__pyx_v_args); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_v_fn, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 597, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_v_fn, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":592
- *     return py_wrap
+  /* "mds/containers.pxd":82
+ *     return result
  * 
  * cdef inline object _isoctxt_execution_wrapper(_py_callable_wrapper wrapped):             # <<<<<<<<<<<<<<
  *     cdef:
@@ -9541,7 +9173,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers__isoctxt_execution_wrap
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":599
+/* "mds/containers.pxd":89
  *     return fn(*args)
  * 
  * cdef inline object in_isoctxt(iso_context_handle ich, object fn, object args):             # <<<<<<<<<<<<<<
@@ -9555,26 +9187,26 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_in_isoctxt(mds::api::is
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("in_isoctxt", 0);
 
-  /* "mds/containers.pyx":600
+  /* "mds/containers.pxd":90
  * 
  * cdef inline object in_isoctxt(iso_context_handle ich, object fn, object args):
  *     return run_in_iso_ctxt(ich, &_isoctxt_execution_wrapper, _wrap(fn, args))             # <<<<<<<<<<<<<<
  * 
- * cdef inline void _task_execution_wrapper(_py_callable_wrapper wrapped):
+ * # =========================================================================
  */
   __Pyx_XDECREF(__pyx_r);
   try {
     __pyx_t_1 = mds::python::isoctxts::run_in_iso_ctxt(__pyx_v_ich, (&__pyx_f_3mds_10containers__isoctxt_execution_wrapper), __pyx_f_3mds_10containers__wrap(__pyx_v_fn, __pyx_v_args));
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 600, __pyx_L1_error)
+    __PYX_ERR(0, 90, __pyx_L1_error)
   }
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":599
+  /* "mds/containers.pxd":89
  *     return fn(*args)
  * 
  * cdef inline object in_isoctxt(iso_context_handle ich, object fn, object args):             # <<<<<<<<<<<<<<
@@ -9593,8 +9225,229 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_in_isoctxt(mds::api::is
   return __pyx_r;
 }
 
-/* "mds/containers.pyx":602
- *     return run_in_iso_ctxt(ich, &_isoctxt_execution_wrapper, _wrap(fn, args))
+/* "mds/containers.pxd":105
+ * 
+ * 
+ * cdef inline Task_Init(task_handle handle):             # <<<<<<<<<<<<<<
+ *     # TODO Remove me, DEBUG
+ *     print("Initializing task with hash {}".format(hash_task(handle)))
+ */
+
+static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_Task_Init(mds::api::task_handle __pyx_v_handle) {
+  struct __pyx_obj_3mds_10containers_Task *__pyx_v_result = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_5 = NULL;
+  __Pyx_RefNannySetupContext("Task_Init", 0);
+
+  /* "mds/containers.pxd":107
+ * cdef inline Task_Init(task_handle handle):
+ *     # TODO Remove me, DEBUG
+ *     print("Initializing task with hash {}".format(hash_task(handle)))             # <<<<<<<<<<<<<<
+ *     result = Task()
+ *     add_task_handle(result, handle)
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_kp_u_Initializing_task_with_hash, __pyx_n_s_format); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyInt_FromSize_t(mds::python::tasks::hash_task(__pyx_v_handle)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_4)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  if (!__pyx_t_4) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __Pyx_GOTREF(__pyx_t_1);
+  } else {
+    #if CYTHON_FAST_PYCALL
+    if (PyFunction_Check(__pyx_t_2)) {
+      PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_3};
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    } else
+    #endif
+    #if CYTHON_FAST_PYCCALL
+    if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
+      PyObject *__pyx_temp[2] = {__pyx_t_4, __pyx_t_3};
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    } else
+    #endif
+    {
+      __pyx_t_5 = PyTuple_New(1+1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 107, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_5);
+      __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
+      __Pyx_GIVEREF(__pyx_t_3);
+      PyTuple_SET_ITEM(__pyx_t_5, 0+1, __pyx_t_3);
+      __pyx_t_3 = 0;
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    }
+  }
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+  __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_print, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 107, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "mds/containers.pxd":108
+ *     # TODO Remove me, DEBUG
+ *     print("Initializing task with hash {}".format(hash_task(handle)))
+ *     result = Task()             # <<<<<<<<<<<<<<
+ *     add_task_handle(result, handle)
+ *     return result
+ */
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_Task), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_result = ((struct __pyx_obj_3mds_10containers_Task *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "mds/containers.pxd":109
+ *     print("Initializing task with hash {}".format(hash_task(handle)))
+ *     result = Task()
+ *     add_task_handle(result, handle)             # <<<<<<<<<<<<<<
+ *     return result
+ * 
+ */
+  __pyx_t_1 = __pyx_f_3mds_10containers_add_task_handle(__pyx_v_result, __pyx_v_handle); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
+  /* "mds/containers.pxd":110
+ *     result = Task()
+ *     add_task_handle(result, handle)
+ *     return result             # <<<<<<<<<<<<<<
+ * 
+ * cdef inline add_task_handle(Task task, task_handle handle):
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(((PyObject *)__pyx_v_result));
+  __pyx_r = ((PyObject *)__pyx_v_result);
+  goto __pyx_L0;
+
+  /* "mds/containers.pxd":105
+ * 
+ * 
+ * cdef inline Task_Init(task_handle handle):             # <<<<<<<<<<<<<<
+ *     # TODO Remove me, DEBUG
+ *     print("Initializing task with hash {}".format(hash_task(handle)))
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_5);
+  __Pyx_AddTraceback("mds.containers.Task_Init", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF((PyObject *)__pyx_v_result);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "mds/containers.pxd":112
+ *     return result
+ * 
+ * cdef inline add_task_handle(Task task, task_handle handle):             # <<<<<<<<<<<<<<
+ *     task._handle = handle
+ * 
+ */
+
+static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_add_task_handle(struct __pyx_obj_3mds_10containers_Task *__pyx_v_task, mds::api::task_handle __pyx_v_handle) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("add_task_handle", 0);
+
+  /* "mds/containers.pxd":113
+ * 
+ * cdef inline add_task_handle(Task task, task_handle handle):
+ *     task._handle = handle             # <<<<<<<<<<<<<<
+ * 
+ * cdef inline update_context_handle_in_task(Task task, IsolationContext ctxt):
+ */
+  __pyx_v_task->_handle = __pyx_v_handle;
+
+  /* "mds/containers.pxd":112
+ *     return result
+ * 
+ * cdef inline add_task_handle(Task task, task_handle handle):             # <<<<<<<<<<<<<<
+ *     task._handle = handle
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "mds/containers.pxd":115
+ *     task._handle = handle
+ * 
+ * cdef inline update_context_handle_in_task(Task task, IsolationContext ctxt):             # <<<<<<<<<<<<<<
+ *     task._ctxt = ctxt._handle
+ * 
+ */
+
+static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_update_context_handle_in_task(struct __pyx_obj_3mds_10containers_Task *__pyx_v_task, struct __pyx_obj_3mds_10containers_IsolationContext *__pyx_v_ctxt) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  mds::api::iso_context_handle __pyx_t_1;
+  __Pyx_RefNannySetupContext("update_context_handle_in_task", 0);
+
+  /* "mds/containers.pxd":116
+ * 
+ * cdef inline update_context_handle_in_task(Task task, IsolationContext ctxt):
+ *     task._ctxt = ctxt._handle             # <<<<<<<<<<<<<<
+ * 
+ * cdef inline void _task_execution_wrapper(_py_callable_wrapper wrapped):
+ */
+  __pyx_t_1 = __pyx_v_ctxt->_handle;
+  __pyx_v_task->_ctxt = __pyx_t_1;
+
+  /* "mds/containers.pxd":115
+ *     task._handle = handle
+ * 
+ * cdef inline update_context_handle_in_task(Task task, IsolationContext ctxt):             # <<<<<<<<<<<<<<
+ *     task._ctxt = ctxt._handle
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "mds/containers.pxd":118
+ *     task._ctxt = ctxt._handle
  * 
  * cdef inline void _task_execution_wrapper(_py_callable_wrapper wrapped):             # <<<<<<<<<<<<<<
  *     """
@@ -9609,7 +9462,7 @@ static CYTHON_INLINE void __pyx_f_3mds_10containers__task_execution_wrapper(mds:
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("_task_execution_wrapper", 0);
 
-  /* "mds/containers.pyx":608
+  /* "mds/containers.pxd":124
  *     """
  *     cdef:
  *         object fn = <object> wrapped.fn             # <<<<<<<<<<<<<<
@@ -9621,7 +9474,7 @@ static CYTHON_INLINE void __pyx_f_3mds_10containers__task_execution_wrapper(mds:
   __pyx_v_fn = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":609
+  /* "mds/containers.pxd":125
  *     cdef:
  *         object fn = <object> wrapped.fn
  *         object args = <object> wrapped.args             # <<<<<<<<<<<<<<
@@ -9633,22 +9486,22 @@ static CYTHON_INLINE void __pyx_f_3mds_10containers__task_execution_wrapper(mds:
   __pyx_v_args = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":611
+  /* "mds/containers.pxd":127
  *         object args = <object> wrapped.args
  * 
  *     fn(*args)             # <<<<<<<<<<<<<<
  * 
  * cdef inline void in_task(task_handle th, object fn, object args):
  */
-  __pyx_t_1 = PySequence_Tuple(__pyx_v_args); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 611, __pyx_L1_error)
+  __pyx_t_1 = PySequence_Tuple(__pyx_v_args); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_v_fn, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 611, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_v_fn, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 127, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mds/containers.pyx":602
- *     return run_in_iso_ctxt(ich, &_isoctxt_execution_wrapper, _wrap(fn, args))
+  /* "mds/containers.pxd":118
+ *     task._ctxt = ctxt._handle
  * 
  * cdef inline void _task_execution_wrapper(_py_callable_wrapper wrapped):             # <<<<<<<<<<<<<<
  *     """
@@ -9667,7 +9520,7 @@ static CYTHON_INLINE void __pyx_f_3mds_10containers__task_execution_wrapper(mds:
   __Pyx_RefNannyFinishContext();
 }
 
-/* "mds/containers.pyx":613
+/* "mds/containers.pxd":129
  *     fn(*args)
  * 
  * cdef inline void in_task(task_handle th, object fn, object args):             # <<<<<<<<<<<<<<
@@ -9681,7 +9534,7 @@ static CYTHON_INLINE void __pyx_f_3mds_10containers_in_task(mds::api::task_handl
   mds::python::tasks::TaskWrapper __pyx_t_1;
   __Pyx_RefNannySetupContext("in_task", 0);
 
-  /* "mds/containers.pyx":618
+  /* "mds/containers.pxd":134
  *     to wrap things up nicely for Cython to generate the appropriate code.
  *     """
  *     cdef TaskWrapper task_wrap = TaskWrapper(th)             # <<<<<<<<<<<<<<
@@ -9692,11 +9545,11 @@ static CYTHON_INLINE void __pyx_f_3mds_10containers_in_task(mds::api::task_handl
     __pyx_t_1 = mds::python::tasks::TaskWrapper(__pyx_v_th);
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 618, __pyx_L1_error)
+    __PYX_ERR(0, 134, __pyx_L1_error)
   }
   __pyx_v_task_wrap = __pyx_t_1;
 
-  /* "mds/containers.pyx":619
+  /* "mds/containers.pxd":135
  *     """
  *     cdef TaskWrapper task_wrap = TaskWrapper(th)
  *     task_wrap.run(&_task_execution_wrapper, _wrap(fn, args))             # <<<<<<<<<<<<<<
@@ -9707,10 +9560,10 @@ static CYTHON_INLINE void __pyx_f_3mds_10containers_in_task(mds::api::task_handl
     __pyx_v_task_wrap.run((&__pyx_f_3mds_10containers__task_execution_wrapper), __pyx_f_3mds_10containers__wrap(__pyx_v_fn, __pyx_v_args));
   } catch(...) {
     __Pyx_CppExn2PyErr();
-    __PYX_ERR(0, 619, __pyx_L1_error)
+    __PYX_ERR(0, 135, __pyx_L1_error)
   }
 
-  /* "mds/containers.pyx":613
+  /* "mds/containers.pxd":129
  *     fn(*args)
  * 
  * cdef inline void in_task(task_handle th, object fn, object args):             # <<<<<<<<<<<<<<
@@ -9726,7 +9579,7 @@ static CYTHON_INLINE void __pyx_f_3mds_10containers_in_task(mds::api::task_handl
   __Pyx_RefNannyFinishContext();
 }
 
-/* "mds/containers.pyx":621
+/* "mds/containers.pxd":137
  *     task_wrap.run(&_task_execution_wrapper, _wrap(fn, args))
  * 
  * cdef inline _task_add_dependent(Task first, Task second):             # <<<<<<<<<<<<<<
@@ -9739,7 +9592,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers__task_add_dependent(str
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_task_add_dependent", 0);
 
-  /* "mds/containers.pyx":622
+  /* "mds/containers.pxd":138
  * 
  * cdef inline _task_add_dependent(Task first, Task second):
  *     first._handle.add_dependent(second._handle)             # <<<<<<<<<<<<<<
@@ -9748,18 +9601,19 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers__task_add_dependent(str
  */
   __pyx_v_first->_handle.add_dependent(__pyx_v_second->_handle);
 
-  /* "mds/containers.pyx":623
+  /* "mds/containers.pxd":139
  * cdef inline _task_add_dependent(Task first, Task second):
  *     first._handle.add_dependent(second._handle)
  *     return first             # <<<<<<<<<<<<<<
  * 
+ * # =========================================================================
  */
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_first));
   __pyx_r = ((PyObject *)__pyx_v_first);
   goto __pyx_L0;
 
-  /* "mds/containers.pyx":621
+  /* "mds/containers.pxd":137
  *     task_wrap.run(&_task_execution_wrapper, _wrap(fn, args))
  * 
  * cdef inline _task_add_dependent(Task first, Task second):             # <<<<<<<<<<<<<<
@@ -9774,318 +9628,135 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers__task_add_dependent(str
   return __pyx_r;
 }
 
-static PyObject *__pyx_tp_new_3mds_10containers_ContextTaskMapping(PyTypeObject *t, PyObject *a, PyObject *k) {
-  PyObject *o = (&PyDict_Type)->tp_new(t, a, k);
-  if (unlikely(!o)) return 0;
-  return o;
+/* "mds/containers.pxd":149
+ * 
+ * 
+ * cdef inline PublicationResult_Init(publication_attempt_handle handle):             # <<<<<<<<<<<<<<
+ *     initialize_base_task()
+ *     result = PublicationResult()
+ */
+
+static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_PublicationResult_Init(mds::api::publication_attempt_handle __pyx_v_handle) {
+  struct __pyx_obj_3mds_10containers_PublicationResult *__pyx_v_result = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("PublicationResult_Init", 0);
+
+  /* "mds/containers.pxd":150
+ * 
+ * cdef inline PublicationResult_Init(publication_attempt_handle handle):
+ *     initialize_base_task()             # <<<<<<<<<<<<<<
+ *     result = PublicationResult()
+ *     result._handle = handle
+ */
+  mds::python::tasks::initialize_base_task();
+
+  /* "mds/containers.pxd":151
+ * cdef inline PublicationResult_Init(publication_attempt_handle handle):
+ *     initialize_base_task()
+ *     result = PublicationResult()             # <<<<<<<<<<<<<<
+ *     result._handle = handle
+ *     return result
+ */
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_PublicationResult), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 151, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_result = ((struct __pyx_obj_3mds_10containers_PublicationResult *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "mds/containers.pxd":152
+ *     initialize_base_task()
+ *     result = PublicationResult()
+ *     result._handle = handle             # <<<<<<<<<<<<<<
+ *     return result
+ * 
+ */
+  __pyx_v_result->_handle = __pyx_v_handle;
+
+  /* "mds/containers.pxd":153
+ *     result = PublicationResult()
+ *     result._handle = handle
+ *     return result             # <<<<<<<<<<<<<<
+ * 
+ * # =========================================================================
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(((PyObject *)__pyx_v_result));
+  __pyx_r = ((PyObject *)__pyx_v_result);
+  goto __pyx_L0;
+
+  /* "mds/containers.pxd":149
+ * 
+ * 
+ * cdef inline PublicationResult_Init(publication_attempt_handle handle):             # <<<<<<<<<<<<<<
+ *     initialize_base_task()
+ *     result = PublicationResult()
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("mds.containers.PublicationResult_Init", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF((PyObject *)__pyx_v_result);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
 }
 
-static void __pyx_tp_dealloc_3mds_10containers_ContextTaskMapping(PyObject *o) {
-  #if PY_VERSION_HEX >= 0x030400a1
-  if (unlikely(Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
-    if (PyObject_CallFinalizerFromDealloc(o)) return;
-  }
-  #endif
-  PyObject_GC_UnTrack(o);
-  PyObject_GC_Track(o);
-  (&PyDict_Type)->tp_dealloc(o);
+/* "mds/containers.pxd":164
+ *         task_handle _handle
+ * 
+ * cdef inline _py_callable_wrapper _wrap(object fn, object args):             # <<<<<<<<<<<<<<
+ *     cdef _py_callable_wrapper py_wrap
+ *     py_wrap.fn = <PyObject *> fn
+ */
+
+static CYTHON_INLINE mds::python::_py_callable_wrapper __pyx_f_3mds_10containers__wrap(PyObject *__pyx_v_fn, PyObject *__pyx_v_args) {
+  mds::python::_py_callable_wrapper __pyx_v_py_wrap;
+  mds::python::_py_callable_wrapper __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("_wrap", 0);
+
+  /* "mds/containers.pxd":166
+ * cdef inline _py_callable_wrapper _wrap(object fn, object args):
+ *     cdef _py_callable_wrapper py_wrap
+ *     py_wrap.fn = <PyObject *> fn             # <<<<<<<<<<<<<<
+ *     py_wrap.args = <PyObject *> args
+ *     return py_wrap
+ */
+  __pyx_v_py_wrap.fn = ((PyObject *)__pyx_v_fn);
+
+  /* "mds/containers.pxd":167
+ *     cdef _py_callable_wrapper py_wrap
+ *     py_wrap.fn = <PyObject *> fn
+ *     py_wrap.args = <PyObject *> args             # <<<<<<<<<<<<<<
+ *     return py_wrap
+ */
+  __pyx_v_py_wrap.args = ((PyObject *)__pyx_v_args);
+
+  /* "mds/containers.pxd":168
+ *     py_wrap.fn = <PyObject *> fn
+ *     py_wrap.args = <PyObject *> args
+ *     return py_wrap             # <<<<<<<<<<<<<<
+ */
+  __pyx_r = __pyx_v_py_wrap;
+  goto __pyx_L0;
+
+  /* "mds/containers.pxd":164
+ *         task_handle _handle
+ * 
+ * cdef inline _py_callable_wrapper _wrap(object fn, object args):             # <<<<<<<<<<<<<<
+ *     cdef _py_callable_wrapper py_wrap
+ *     py_wrap.fn = <PyObject *> fn
+ */
+
+  /* function exit code */
+  __pyx_L0:;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
 }
-
-static int __pyx_tp_traverse_3mds_10containers_ContextTaskMapping(PyObject *o, visitproc v, void *a) {
-  int e;
-  if (!(&PyDict_Type)->tp_traverse); else { e = (&PyDict_Type)->tp_traverse(o,v,a); if (e) return e; }
-  return 0;
-}
-
-static int __pyx_tp_clear_3mds_10containers_ContextTaskMapping(PyObject *o) {
-  if (!(&PyDict_Type)->tp_clear); else (&PyDict_Type)->tp_clear(o);
-  return 0;
-}
-
-static PyMethodDef __pyx_methods_3mds_10containers_ContextTaskMapping[] = {
-  {"add_task_to_context", (PyCFunction)__pyx_pw_3mds_10containers_18ContextTaskMapping_1add_task_to_context, METH_VARARGS|METH_KEYWORDS, 0},
-  {"context_has_task", (PyCFunction)__pyx_pw_3mds_10containers_18ContextTaskMapping_3context_has_task, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_context_task_map", (PyCFunction)__pyx_pw_3mds_10containers_18ContextTaskMapping_5get_context_task_map, METH_O, 0},
-  {"expunge", (PyCFunction)__pyx_pw_3mds_10containers_18ContextTaskMapping_7expunge, METH_O, 0},
-  {0, 0, 0, 0}
-};
-
-static PyTypeObject __pyx_type_3mds_10containers_ContextTaskMapping = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "mds.containers.ContextTaskMapping", /*tp_name*/
-  sizeof(struct __pyx_obj_3mds_10containers_ContextTaskMapping), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_3mds_10containers_ContextTaskMapping, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_3mds_10containers_ContextTaskMapping, /*tp_traverse*/
-  __pyx_tp_clear_3mds_10containers_ContextTaskMapping, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  __pyx_methods_3mds_10containers_ContextTaskMapping, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_3mds_10containers_ContextTaskMapping, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
-
-static PyObject *__pyx_tp_new_3mds_10containers_PublicationResult(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  struct __pyx_obj_3mds_10containers_PublicationResult *p;
-  PyObject *o;
-  if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
-    o = (*t->tp_alloc)(t, 0);
-  } else {
-    o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
-  }
-  if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_3mds_10containers_PublicationResult *)o);
-  new((void*)&(p->_handle)) mds::api::publication_attempt_handle();
-  return o;
-}
-
-static void __pyx_tp_dealloc_3mds_10containers_PublicationResult(PyObject *o) {
-  struct __pyx_obj_3mds_10containers_PublicationResult *p = (struct __pyx_obj_3mds_10containers_PublicationResult *)o;
-  #if PY_VERSION_HEX >= 0x030400a1
-  if (unlikely(Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
-    if (PyObject_CallFinalizerFromDealloc(o)) return;
-  }
-  #endif
-  __Pyx_call_destructor(p->_handle);
-  (*Py_TYPE(o)->tp_free)(o);
-}
-
-static PyObject *__pyx_getprop_3mds_10containers_17PublicationResult_source_context(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_3mds_10containers_17PublicationResult_14source_context_1__get__(o);
-}
-
-static PyObject *__pyx_getprop_3mds_10containers_17PublicationResult_target_context(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_3mds_10containers_17PublicationResult_14target_context_1__get__(o);
-}
-
-static PyObject *__pyx_getprop_3mds_10containers_17PublicationResult_number_to_redo(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_3mds_10containers_17PublicationResult_14number_to_redo_1__get__(o);
-}
-
-static PyObject *__pyx_getprop_3mds_10containers_17PublicationResult_succeeded(PyObject *o, CYTHON_UNUSED void *x) {
-  return __pyx_pw_3mds_10containers_17PublicationResult_9succeeded_1__get__(o);
-}
-
-static PyMethodDef __pyx_methods_3mds_10containers_PublicationResult[] = {
-  {"prepare_for_redo", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_1prepare_for_redo, METH_NOARGS, 0},
-  {"redo", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_3redo, METH_O, 0},
-  {"before_resolve", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_5before_resolve, METH_O, 0},
-  {"before_run", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_7before_run, METH_O, 0},
-  {"note_success", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_9note_success, METH_NOARGS, 0},
-  {"note_failure", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_11note_failure, METH_NOARGS, 0},
-  {"resolve", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_13resolve, METH_O, 0},
-  {0, 0, 0, 0}
-};
-
-static struct PyGetSetDef __pyx_getsets_3mds_10containers_PublicationResult[] = {
-  {(char *)"source_context", __pyx_getprop_3mds_10containers_17PublicationResult_source_context, 0, (char *)0, 0},
-  {(char *)"target_context", __pyx_getprop_3mds_10containers_17PublicationResult_target_context, 0, (char *)0, 0},
-  {(char *)"number_to_redo", __pyx_getprop_3mds_10containers_17PublicationResult_number_to_redo, 0, (char *)0, 0},
-  {(char *)"succeeded", __pyx_getprop_3mds_10containers_17PublicationResult_succeeded, 0, (char *)0, 0},
-  {0, 0, 0, 0, 0}
-};
-
-static PyTypeObject __pyx_type_3mds_10containers_PublicationResult = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "mds.containers.PublicationResult", /*tp_name*/
-  sizeof(struct __pyx_obj_3mds_10containers_PublicationResult), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_3mds_10containers_PublicationResult, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE, /*tp_flags*/
-  0, /*tp_doc*/
-  0, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  __pyx_methods_3mds_10containers_PublicationResult, /*tp_methods*/
-  0, /*tp_members*/
-  __pyx_getsets_3mds_10containers_PublicationResult, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_3mds_10containers_PublicationResult, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
-
-static PyObject *__pyx_tp_new_3mds_10containers_Use(PyTypeObject *t, PyObject *a, PyObject *k) {
-  struct __pyx_obj_3mds_10containers_Use *p;
-  PyObject *o;
-  if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
-    o = (*t->tp_alloc)(t, 0);
-  } else {
-    o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
-  }
-  if (unlikely(!o)) return 0;
-  p = ((struct __pyx_obj_3mds_10containers_Use *)o);
-  new((void*)&(p->_establish)) std::unique_ptr<mds::python::tasks::TaskWrapper::Establish> ();
-  new((void*)&(p->_handle)) mds::api::task_handle();
-  if (unlikely(__pyx_pw_3mds_10containers_3Use_1__cinit__(o, a, k) < 0)) goto bad;
-  return o;
-  bad:
-  Py_DECREF(o); o = 0;
-  return NULL;
-}
-
-static void __pyx_tp_dealloc_3mds_10containers_Use(PyObject *o) {
-  struct __pyx_obj_3mds_10containers_Use *p = (struct __pyx_obj_3mds_10containers_Use *)o;
-  #if PY_VERSION_HEX >= 0x030400a1
-  if (unlikely(Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
-    if (PyObject_CallFinalizerFromDealloc(o)) return;
-  }
-  #endif
-  {
-    PyObject *etype, *eval, *etb;
-    PyErr_Fetch(&etype, &eval, &etb);
-    ++Py_REFCNT(o);
-    __pyx_pw_3mds_10containers_3Use_3__dealloc__(o);
-    --Py_REFCNT(o);
-    PyErr_Restore(etype, eval, etb);
-  }
-  __Pyx_call_destructor(p->_establish);
-  __Pyx_call_destructor(p->_handle);
-  (*Py_TYPE(o)->tp_free)(o);
-}
-
-static PyMethodDef __pyx_methods_3mds_10containers_Use[] = {
-  {0, 0, 0, 0}
-};
-
-static PyTypeObject __pyx_type_3mds_10containers_Use = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "mds.containers.Use", /*tp_name*/
-  sizeof(struct __pyx_obj_3mds_10containers_Use), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_3mds_10containers_Use, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE, /*tp_flags*/
-  0, /*tp_doc*/
-  0, /*tp_traverse*/
-  0, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  __pyx_methods_3mds_10containers_Use, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_3mds_10containers_Use, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
 static struct __pyx_vtabstruct_3mds_10containers_IsolationContext __pyx_vtable_3mds_10containers_IsolationContext;
 
 static PyObject *__pyx_tp_new_3mds_10containers_IsolationContext(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
@@ -10374,6 +10045,319 @@ static PyTypeObject __pyx_type_3mds_10containers_Task = {
   #endif
 };
 
+static PyObject *__pyx_tp_new_3mds_10containers_PublicationResult(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  struct __pyx_obj_3mds_10containers_PublicationResult *p;
+  PyObject *o;
+  if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
+    o = (*t->tp_alloc)(t, 0);
+  } else {
+    o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
+  }
+  if (unlikely(!o)) return 0;
+  p = ((struct __pyx_obj_3mds_10containers_PublicationResult *)o);
+  new((void*)&(p->_handle)) mds::api::publication_attempt_handle();
+  return o;
+}
+
+static void __pyx_tp_dealloc_3mds_10containers_PublicationResult(PyObject *o) {
+  struct __pyx_obj_3mds_10containers_PublicationResult *p = (struct __pyx_obj_3mds_10containers_PublicationResult *)o;
+  #if PY_VERSION_HEX >= 0x030400a1
+  if (unlikely(Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
+    if (PyObject_CallFinalizerFromDealloc(o)) return;
+  }
+  #endif
+  __Pyx_call_destructor(p->_handle);
+  (*Py_TYPE(o)->tp_free)(o);
+}
+
+static PyObject *__pyx_getprop_3mds_10containers_17PublicationResult_source_context(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_3mds_10containers_17PublicationResult_14source_context_1__get__(o);
+}
+
+static PyObject *__pyx_getprop_3mds_10containers_17PublicationResult_target_context(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_3mds_10containers_17PublicationResult_14target_context_1__get__(o);
+}
+
+static PyObject *__pyx_getprop_3mds_10containers_17PublicationResult_number_to_redo(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_3mds_10containers_17PublicationResult_14number_to_redo_1__get__(o);
+}
+
+static PyObject *__pyx_getprop_3mds_10containers_17PublicationResult_succeeded(PyObject *o, CYTHON_UNUSED void *x) {
+  return __pyx_pw_3mds_10containers_17PublicationResult_9succeeded_1__get__(o);
+}
+
+static PyMethodDef __pyx_methods_3mds_10containers_PublicationResult[] = {
+  {"prepare_for_redo", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_1prepare_for_redo, METH_NOARGS, 0},
+  {"redo", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_3redo, METH_O, 0},
+  {"before_resolve", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_5before_resolve, METH_O, 0},
+  {"before_run", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_7before_run, METH_O, 0},
+  {"note_success", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_9note_success, METH_NOARGS, 0},
+  {"note_failure", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_11note_failure, METH_NOARGS, 0},
+  {"resolve", (PyCFunction)__pyx_pw_3mds_10containers_17PublicationResult_13resolve, METH_O, 0},
+  {0, 0, 0, 0}
+};
+
+static struct PyGetSetDef __pyx_getsets_3mds_10containers_PublicationResult[] = {
+  {(char *)"source_context", __pyx_getprop_3mds_10containers_17PublicationResult_source_context, 0, (char *)0, 0},
+  {(char *)"target_context", __pyx_getprop_3mds_10containers_17PublicationResult_target_context, 0, (char *)0, 0},
+  {(char *)"number_to_redo", __pyx_getprop_3mds_10containers_17PublicationResult_number_to_redo, 0, (char *)0, 0},
+  {(char *)"succeeded", __pyx_getprop_3mds_10containers_17PublicationResult_succeeded, 0, (char *)0, 0},
+  {0, 0, 0, 0, 0}
+};
+
+static PyTypeObject __pyx_type_3mds_10containers_PublicationResult = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "mds.containers.PublicationResult", /*tp_name*/
+  sizeof(struct __pyx_obj_3mds_10containers_PublicationResult), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_3mds_10containers_PublicationResult, /*tp_dealloc*/
+  0, /*tp_print*/
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE, /*tp_flags*/
+  0, /*tp_doc*/
+  0, /*tp_traverse*/
+  0, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  __pyx_methods_3mds_10containers_PublicationResult, /*tp_methods*/
+  0, /*tp_members*/
+  __pyx_getsets_3mds_10containers_PublicationResult, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_3mds_10containers_PublicationResult, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+};
+
+static PyObject *__pyx_tp_new_3mds_10containers_Use(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_3mds_10containers_Use *p;
+  PyObject *o;
+  if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
+    o = (*t->tp_alloc)(t, 0);
+  } else {
+    o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
+  }
+  if (unlikely(!o)) return 0;
+  p = ((struct __pyx_obj_3mds_10containers_Use *)o);
+  new((void*)&(p->_establish)) std::unique_ptr<mds::python::tasks::TaskWrapper::Establish> ();
+  new((void*)&(p->_handle)) mds::api::task_handle();
+  if (unlikely(__pyx_pw_3mds_10containers_3Use_1__cinit__(o, a, k) < 0)) goto bad;
+  return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
+}
+
+static void __pyx_tp_dealloc_3mds_10containers_Use(PyObject *o) {
+  struct __pyx_obj_3mds_10containers_Use *p = (struct __pyx_obj_3mds_10containers_Use *)o;
+  #if PY_VERSION_HEX >= 0x030400a1
+  if (unlikely(Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
+    if (PyObject_CallFinalizerFromDealloc(o)) return;
+  }
+  #endif
+  {
+    PyObject *etype, *eval, *etb;
+    PyErr_Fetch(&etype, &eval, &etb);
+    ++Py_REFCNT(o);
+    __pyx_pw_3mds_10containers_3Use_3__dealloc__(o);
+    --Py_REFCNT(o);
+    PyErr_Restore(etype, eval, etb);
+  }
+  __Pyx_call_destructor(p->_establish);
+  __Pyx_call_destructor(p->_handle);
+  (*Py_TYPE(o)->tp_free)(o);
+}
+
+static PyMethodDef __pyx_methods_3mds_10containers_Use[] = {
+  {0, 0, 0, 0}
+};
+
+static PyTypeObject __pyx_type_3mds_10containers_Use = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "mds.containers.Use", /*tp_name*/
+  sizeof(struct __pyx_obj_3mds_10containers_Use), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_3mds_10containers_Use, /*tp_dealloc*/
+  0, /*tp_print*/
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE, /*tp_flags*/
+  0, /*tp_doc*/
+  0, /*tp_traverse*/
+  0, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  __pyx_methods_3mds_10containers_Use, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_3mds_10containers_Use, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+};
+
+static PyObject *__pyx_tp_new_3mds_10containers_ContextTaskMapping(PyTypeObject *t, PyObject *a, PyObject *k) {
+  PyObject *o = (&PyDict_Type)->tp_new(t, a, k);
+  if (unlikely(!o)) return 0;
+  return o;
+}
+
+static void __pyx_tp_dealloc_3mds_10containers_ContextTaskMapping(PyObject *o) {
+  #if PY_VERSION_HEX >= 0x030400a1
+  if (unlikely(Py_TYPE(o)->tp_finalize) && !_PyGC_FINALIZED(o)) {
+    if (PyObject_CallFinalizerFromDealloc(o)) return;
+  }
+  #endif
+  PyObject_GC_UnTrack(o);
+  PyObject_GC_Track(o);
+  (&PyDict_Type)->tp_dealloc(o);
+}
+
+static int __pyx_tp_traverse_3mds_10containers_ContextTaskMapping(PyObject *o, visitproc v, void *a) {
+  int e;
+  if (!(&PyDict_Type)->tp_traverse); else { e = (&PyDict_Type)->tp_traverse(o,v,a); if (e) return e; }
+  return 0;
+}
+
+static int __pyx_tp_clear_3mds_10containers_ContextTaskMapping(PyObject *o) {
+  if (!(&PyDict_Type)->tp_clear); else (&PyDict_Type)->tp_clear(o);
+  return 0;
+}
+
+static PyMethodDef __pyx_methods_3mds_10containers_ContextTaskMapping[] = {
+  {"add_task_to_context", (PyCFunction)__pyx_pw_3mds_10containers_18ContextTaskMapping_1add_task_to_context, METH_VARARGS|METH_KEYWORDS, 0},
+  {"context_has_task", (PyCFunction)__pyx_pw_3mds_10containers_18ContextTaskMapping_3context_has_task, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_context_task_map", (PyCFunction)__pyx_pw_3mds_10containers_18ContextTaskMapping_5get_context_task_map, METH_O, 0},
+  {"expunge", (PyCFunction)__pyx_pw_3mds_10containers_18ContextTaskMapping_7expunge, METH_O, 0},
+  {0, 0, 0, 0}
+};
+
+static PyTypeObject __pyx_type_3mds_10containers_ContextTaskMapping = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "mds.containers.ContextTaskMapping", /*tp_name*/
+  sizeof(struct __pyx_obj_3mds_10containers_ContextTaskMapping), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_3mds_10containers_ContextTaskMapping, /*tp_dealloc*/
+  0, /*tp_print*/
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
+  0, /*tp_doc*/
+  __pyx_tp_traverse_3mds_10containers_ContextTaskMapping, /*tp_traverse*/
+  __pyx_tp_clear_3mds_10containers_ContextTaskMapping, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  __pyx_methods_3mds_10containers_ContextTaskMapping, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_3mds_10containers_ContextTaskMapping, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+};
+
 static PyMethodDef __pyx_methods[] = {
   {0, 0, 0, 0}
 };
@@ -10454,7 +10438,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_get_for_process, __pyx_k_get_for_process, sizeof(__pyx_k_get_for_process), 0, 0, 1, 1},
   {&__pyx_n_s_get_global, __pyx_k_get_global, sizeof(__pyx_k_get_global), 0, 0, 1, 1},
   {&__pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_k_home_pughma_repo_mds_public_pyt, sizeof(__pyx_k_home_pughma_repo_mds_public_pyt), 0, 0, 1, 0},
-  {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_init, __pyx_k_init, sizeof(__pyx_k_init), 0, 0, 1, 1},
   {&__pyx_n_s_initialize_base_task, __pyx_k_initialize_base_task, sizeof(__pyx_k_initialize_base_task), 0, 0, 1, 1},
   {&__pyx_n_s_is_publishable, __pyx_k_is_publishable, sizeof(__pyx_k_is_publishable), 0, 0, 1, 1},
@@ -10463,7 +10446,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_kind, __pyx_k_kind, sizeof(__pyx_k_kind), 0, 0, 1, 1},
   {&__pyx_kp_u_kind_must_be_a_str_value_from, __pyx_k_kind_must_be_a_str_value_from, sizeof(__pyx_k_kind_must_be_a_str_value_from), 0, 1, 0, 0},
   {&__pyx_n_u_live, __pyx_k_live, sizeof(__pyx_k_live), 0, 1, 0, 1},
-  {&__pyx_n_s_local, __pyx_k_local, sizeof(__pyx_k_local), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_map, __pyx_k_map, sizeof(__pyx_k_map), 0, 0, 1, 1},
   {&__pyx_n_s_max_tries, __pyx_k_max_tries, sizeof(__pyx_k_max_tries), 0, 0, 1, 1},
@@ -10498,7 +10480,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_target, __pyx_k_target, sizeof(__pyx_k_target), 0, 0, 1, 1},
   {&__pyx_n_s_task, __pyx_k_task, sizeof(__pyx_k_task), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
-  {&__pyx_n_s_threading, __pyx_k_threading, sizeof(__pyx_k_threading), 0, 0, 1, 1},
   {&__pyx_n_s_timedelta, __pyx_k_timedelta, sizeof(__pyx_k_timedelta), 0, 0, 1, 1},
   {&__pyx_n_s_top_level_task, __pyx_k_top_level_task, sizeof(__pyx_k_top_level_task), 0, 0, 1, 1},
   {&__pyx_n_s_try_for, __pyx_k_try_for, sizeof(__pyx_k_try_for), 0, 0, 1, 1},
@@ -10514,14 +10495,14 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_object = __Pyx_GetBuiltinName(__pyx_n_s_object); if (!__pyx_builtin_object) __PYX_ERR(0, 41, __pyx_L1_error)
-  __pyx_builtin_staticmethod = __Pyx_GetBuiltinName(__pyx_n_s_staticmethod); if (!__pyx_builtin_staticmethod) __PYX_ERR(0, 116, __pyx_L1_error)
-  __pyx_builtin_KeyError = __Pyx_GetBuiltinName(__pyx_n_s_KeyError); if (!__pyx_builtin_KeyError) __PYX_ERR(0, 163, __pyx_L1_error)
-  __pyx_builtin_NotImplemented = __Pyx_GetBuiltinName(__pyx_n_s_NotImplemented); if (!__pyx_builtin_NotImplemented) __PYX_ERR(0, 191, __pyx_L1_error)
-  __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(0, 302, __pyx_L1_error)
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 348, __pyx_L1_error)
-  __pyx_builtin_map = __Pyx_GetBuiltinName(__pyx_n_s_map); if (!__pyx_builtin_map) __PYX_ERR(0, 479, __pyx_L1_error)
-  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 538, __pyx_L1_error)
+  __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_builtin_print = __Pyx_GetBuiltinName(__pyx_n_s_print); if (!__pyx_builtin_print) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_builtin_object = __Pyx_GetBuiltinName(__pyx_n_s_object); if (!__pyx_builtin_object) __PYX_ERR(1, 30, __pyx_L1_error)
+  __pyx_builtin_staticmethod = __Pyx_GetBuiltinName(__pyx_n_s_staticmethod); if (!__pyx_builtin_staticmethod) __PYX_ERR(1, 105, __pyx_L1_error)
+  __pyx_builtin_KeyError = __Pyx_GetBuiltinName(__pyx_n_s_KeyError); if (!__pyx_builtin_KeyError) __PYX_ERR(1, 152, __pyx_L1_error)
+  __pyx_builtin_NotImplemented = __Pyx_GetBuiltinName(__pyx_n_s_NotImplemented); if (!__pyx_builtin_NotImplemented) __PYX_ERR(1, 178, __pyx_L1_error)
+  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 293, __pyx_L1_error)
+  __pyx_builtin_map = __Pyx_GetBuiltinName(__pyx_n_s_map); if (!__pyx_builtin_map) __PYX_ERR(1, 410, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -10531,260 +10512,259 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "mds/containers.pyx":233
+  /* "mds/containers.pyx":220
  *                 needs_task_prepare = True
  * 
  *         def worker(ts):             # <<<<<<<<<<<<<<
  *             for t in ts:
  *                 if t.expired:
  */
-  __pyx_tuple_ = PyTuple_Pack(2, __pyx_n_s_ts, __pyx_n_s_t); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 233, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(2, __pyx_n_s_ts, __pyx_n_s_t); if (unlikely(!__pyx_tuple_)) __PYX_ERR(1, 220, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
-  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_worker, 233, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(0, 233, __pyx_L1_error)
+  __pyx_codeobj__2 = (PyObject*)__Pyx_PyCode_New(1, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple_, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_worker, 220, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__2)) __PYX_ERR(1, 220, __pyx_L1_error)
 
-  /* "mds/containers.pyx":302
+  /* "mds/containers.pyx":279
  *     def __dealloc__(self):
  *         if hash(Task.get_current()) != hash(Task_Init(self._handle)):
  *             raise RuntimeError("Improper stack discipline.")             # <<<<<<<<<<<<<<
  * 
  * 
  */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_u_Improper_stack_discipline); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 302, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_u_Improper_stack_discipline); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(1, 279, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "mds/containers.pyx":323
- *         if self._handle.is_read_only():
- *             if kind == k_live:
- *                 raise RuntimeError(             # <<<<<<<<<<<<<<
- *                     "Can't create a `live` child from `read_only` parent."
- *                 )
- */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_u_Can_t_create_a_live_child_from_r); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 323, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__4);
-  __Pyx_GIVEREF(__pyx_tuple__4);
-
-  /* "mds/containers.pyx":345
+  /* "mds/containers.pyx":290
  * 
  *     def create_child(self, kind="live", snapshot=False):
  *         kinds = ("live", "read_only", "detached")             # <<<<<<<<<<<<<<
  * 
  *         if not isinstance(kind, str) and kind not in kinds:
  */
-  __pyx_tuple__5 = PyTuple_Pack(3, __pyx_n_u_live, __pyx_n_u_read_only, __pyx_n_u_detached); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 345, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__5);
-  __Pyx_GIVEREF(__pyx_tuple__5);
+  __pyx_tuple__4 = PyTuple_Pack(3, __pyx_n_u_live, __pyx_n_u_read_only, __pyx_n_u_detached); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(1, 290, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__4);
+  __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "mds/containers.pyx":466
+  /* "mds/containers.pyx":397
  *     def add_dependent(self, other):
  *         if not isinstance(other, Task):
  *             raise TypeError('Argument must be of type Task')             # <<<<<<<<<<<<<<
  * 
  *         if hash(self) != hash(other):
  */
-  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_u_Argument_must_be_of_type_Task); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 466, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__8);
-  __Pyx_GIVEREF(__pyx_tuple__8);
+  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_u_Argument_must_be_of_type_Task); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(1, 397, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__7);
+  __Pyx_GIVEREF(__pyx_tuple__7);
 
-  /* "mds/containers.pyx":473
+  /* "mds/containers.pyx":404
  *     def depends_on(self, other):
  *         if not isinstance(other, Task):
  *             raise TypeError('Task can only depend on other Tasks')             # <<<<<<<<<<<<<<
  * 
  *         if hash(self) != hash(other):
  */
-  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_u_Task_can_only_depend_on_other_Ta); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 473, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__9);
-  __Pyx_GIVEREF(__pyx_tuple__9);
+  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_u_Task_can_only_depend_on_other_Ta); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(1, 404, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__8);
+  __Pyx_GIVEREF(__pyx_tuple__8);
 
-  /* "mds/containers.pyx":538
+  /* "mds/containers.pyx":469
  *         else:
  *             # TODO: Warning here
  *             print("Context not publishable")             # <<<<<<<<<<<<<<
  *             fn(*args)
  * 
  */
-  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_u_Context_not_publishable); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 538, __pyx_L1_error)
+  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_u_Context_not_publishable); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(1, 469, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__9);
+  __Pyx_GIVEREF(__pyx_tuple__9);
+
+  /* "mds/containers.pxd":54
+ *         if self._handle.is_read_only():
+ *             if kind == k_live:
+ *                 raise RuntimeError(             # <<<<<<<<<<<<<<
+ *                     "Can't create a `live` child from `read_only` parent."
+ *                 )
+ */
+  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_u_Can_t_create_a_live_child_from_r); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
 
-  /* "mds/containers.pyx":52
+  /* "mds/containers.pyx":41
  *         """
  * 
  *         def __init__(self, num_attempts):             # <<<<<<<<<<<<<<
  *             self.__num_attempts = num_attempts
  *             self.__i = 0
  */
-  __pyx_tuple__11 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_num_attempts); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_num_attempts); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(1, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_init, 52, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_init, 41, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(1, 41, __pyx_L1_error)
 
-  /* "mds/containers.pyx":56
+  /* "mds/containers.pyx":45
  *             self.__i = 0
  * 
  *         def __call__(self):             # <<<<<<<<<<<<<<
  *             if self.__i >= self.__num_attempts:
  *                 return True
  */
-  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(1, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_call, 56, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_call, 45, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(1, 45, __pyx_L1_error)
 
-  /* "mds/containers.pyx":76
+  /* "mds/containers.pyx":65
  *         """
  * 
  *         def __init__(self, condition, args=tuple()):             # <<<<<<<<<<<<<<
  *             assert callable(condition)
  *             self.__condition = condition
  */
-  __pyx_tuple__15 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_condition, __pyx_n_s_args); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_tuple__15 = PyTuple_Pack(3, __pyx_n_s_self, __pyx_n_s_condition, __pyx_n_s_args); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(1, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
-  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_init, 76, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_codeobj__16 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__15, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_init, 65, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__16)) __PYX_ERR(1, 65, __pyx_L1_error)
 
-  /* "mds/containers.pyx":81
+  /* "mds/containers.pyx":70
  *             self.__args = args
  * 
  *         def __call__(self):             # <<<<<<<<<<<<<<
  *             return not self.__condition(*self.__args)
  * 
  */
-  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(1, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__17);
   __Pyx_GIVEREF(__pyx_tuple__17);
-  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_call, 81, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_codeobj__18 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__17, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_call, 70, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__18)) __PYX_ERR(1, 70, __pyx_L1_error)
 
-  /* "mds/containers.pyx":92
+  /* "mds/containers.pyx":81
  *         """
  * 
  *         def __init__(self, conclusion):             # <<<<<<<<<<<<<<
  *             assert isinstance(conclusion, datetime)
  *             self._conclusion = conclusion
  */
-  __pyx_tuple__19 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_conclusion); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_tuple__19 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_conclusion); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(1, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__19);
   __Pyx_GIVEREF(__pyx_tuple__19);
-  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_init, 92, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__19, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_init, 81, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(1, 81, __pyx_L1_error)
 
-  /* "mds/containers.pyx":96
+  /* "mds/containers.pyx":85
  *             self._conclusion = conclusion
  * 
  *         def __call__(self):             # <<<<<<<<<<<<<<
  *             return datetime.now() > self._conclusion
  * 
  */
-  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(1, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__21);
   __Pyx_GIVEREF(__pyx_tuple__21);
-  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_call, 96, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_call, 85, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(1, 85, __pyx_L1_error)
 
-  /* "mds/containers.pyx":109
+  /* "mds/containers.pyx":98
  *         """
  * 
  *         def __init__(self, conclusion):             # <<<<<<<<<<<<<<
  *             assert isinstance(conclusion, timedelta)
  *             self._conclusion = datetime.now() + conclusion
  */
-  __pyx_tuple__23 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_conclusion); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_tuple__23 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_conclusion); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(1, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__23);
   __Pyx_GIVEREF(__pyx_tuple__23);
-  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_init, 109, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_init, 98, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(1, 98, __pyx_L1_error)
 
-  /* "mds/containers.pyx":113
+  /* "mds/containers.pyx":102
  *             self._conclusion = datetime.now() + conclusion
  * 
  *     def __init__(self):             # <<<<<<<<<<<<<<
  *         pass
  * 
  */
-  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(1, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__25);
   __Pyx_GIVEREF(__pyx_tuple__25);
-  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_init, 113, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_init, 102, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(1, 102, __pyx_L1_error)
 
-  /* "mds/containers.pyx":117
+  /* "mds/containers.pyx":106
  * 
  *     @staticmethod
  *     def check(self):             # <<<<<<<<<<<<<<
  *         pass
  * 
  */
-  __pyx_tuple__27 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_tuple__27 = PyTuple_Pack(1, __pyx_n_s_self); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(1, 106, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__27);
   __Pyx_GIVEREF(__pyx_tuple__27);
-  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_check, 117, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_check, 106, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(1, 106, __pyx_L1_error)
 
-  /* "mds/containers.pyx":383
+  /* "mds/containers.pyx":328
  * 
  *     @staticmethod
  *     def get_global():             # <<<<<<<<<<<<<<
  *         return IsolationContext_Init(iso_context_handle._global())
  * 
  */
-  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_get_global, 383, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 383, __pyx_L1_error)
+  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_get_global, 328, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(1, 328, __pyx_L1_error)
 
-  /* "mds/containers.pyx":387
+  /* "mds/containers.pyx":332
  * 
  *     @staticmethod
  *     def get_current():             # <<<<<<<<<<<<<<
  *         return IsolationContext_Init(TaskWrapper.current().get_context())
  * 
  */
-  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_get_current, 387, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) __PYX_ERR(0, 387, __pyx_L1_error)
+  __pyx_codeobj__30 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_get_current, 332, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__30)) __PYX_ERR(1, 332, __pyx_L1_error)
 
-  /* "mds/containers.pyx":391
+  /* "mds/containers.pyx":336
  * 
  *     @staticmethod
  *     def get_for_process():             # <<<<<<<<<<<<<<
  *         return IsolationContext_Init(iso_context_handle.for_process())
  * 
  */
-  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_get_for_process, 391, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 391, __pyx_L1_error)
+  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_get_for_process, 336, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(1, 336, __pyx_L1_error)
 
-  /* "mds/containers.pyx":516
+  /* "mds/containers.pyx":447
  * 
  *     @staticmethod
  *     def as_task(fn, args):             # <<<<<<<<<<<<<<
  *         """
  *         Wraps callable object ``fn`` which takes the arguments in ``args``
  */
-  __pyx_tuple__32 = PyTuple_Pack(5, __pyx_n_s_fn, __pyx_n_s_args, __pyx_n_s_current_task, __pyx_n_s_current_isoctxt, __pyx_n_s_task); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 516, __pyx_L1_error)
+  __pyx_tuple__32 = PyTuple_Pack(5, __pyx_n_s_fn, __pyx_n_s_args, __pyx_n_s_current_task, __pyx_n_s_current_isoctxt, __pyx_n_s_task); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(1, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__32);
   __Pyx_GIVEREF(__pyx_tuple__32);
-  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_as_task, 516, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 516, __pyx_L1_error)
+  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_as_task, 447, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(1, 447, __pyx_L1_error)
 
-  /* "mds/containers.pyx":542
+  /* "mds/containers.pyx":473
  * 
  *     @staticmethod
  *     def initialize_base_task():             # <<<<<<<<<<<<<<
  *         """
  *         Delegates to the C++ implemented initializer from Python-land.
  */
-  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_initialize_base_task, 542, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) __PYX_ERR(0, 542, __pyx_L1_error)
+  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_initialize_base_task, 473, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) __PYX_ERR(1, 473, __pyx_L1_error)
 
-  /* "mds/containers.pyx":549
+  /* "mds/containers.pyx":480
  * 
  *     @staticmethod
  *     def get_current():             # <<<<<<<<<<<<<<
  *         """
  *         Returns a Task object for the thread-relative current task.
  */
-  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_get_current, 549, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 549, __pyx_L1_error)
+  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_get_current, 480, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(1, 480, __pyx_L1_error)
 
-  /* "mds/containers.pyx":569
- * # Helper functions, emulate C++/Java APIs
+  /* "mds/containers.pyx":500
+ * # Helper functions, emulate C++/Java APIs  # TODO: Isolated?
  * 
  * def as_task(fn, args):             # <<<<<<<<<<<<<<
  *     Task.as_task(fn, args);
- * 
  */
-  __pyx_tuple__36 = PyTuple_Pack(2, __pyx_n_s_fn, __pyx_n_s_args); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 569, __pyx_L1_error)
+  __pyx_tuple__36 = PyTuple_Pack(2, __pyx_n_s_fn, __pyx_n_s_args); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(1, 500, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__36);
   __Pyx_GIVEREF(__pyx_tuple__36);
-  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_as_task, 569, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 569, __pyx_L1_error)
+  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(2, 0, 2, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_as_task, 500, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(1, 500, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -10793,9 +10773,9 @@ static int __Pyx_InitCachedConstants(void) {
 }
 
 static int __Pyx_InitGlobals(void) {
-  if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
-  __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(1, 1, __pyx_L1_error);
+  __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(1, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -10828,24 +10808,24 @@ PyMODINIT_FUNC PyInit_containers(void)
   }
   #endif
   __Pyx_RefNannySetupContext("PyMODINIT_FUNC PyInit_containers(void)", 0);
-  if (__Pyx_check_binary_version() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_empty_tuple = PyTuple_New(0); if (unlikely(!__pyx_empty_tuple)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_empty_bytes = PyBytes_FromStringAndSize("", 0); if (unlikely(!__pyx_empty_bytes)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_empty_unicode = PyUnicode_FromStringAndSize("", 0); if (unlikely(!__pyx_empty_unicode)) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_check_binary_version() < 0) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_empty_tuple = PyTuple_New(0); if (unlikely(!__pyx_empty_tuple)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_empty_bytes = PyBytes_FromStringAndSize("", 0); if (unlikely(!__pyx_empty_bytes)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_empty_unicode = PyUnicode_FromStringAndSize("", 0); if (unlikely(!__pyx_empty_unicode)) __PYX_ERR(1, 1, __pyx_L1_error)
   #ifdef __Pyx_CyFunction_USED
-  if (__pyx_CyFunction_init() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__pyx_CyFunction_init() < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   #endif
   #ifdef __Pyx_FusedFunction_USED
-  if (__pyx_FusedFunction_init() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__pyx_FusedFunction_init() < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   #endif
   #ifdef __Pyx_Coroutine_USED
-  if (__pyx_Coroutine_init() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__pyx_Coroutine_init() < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   #endif
   #ifdef __Pyx_Generator_USED
-  if (__pyx_Generator_init() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__pyx_Generator_init() < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   #endif
   #ifdef __Pyx_StopAsyncIteration_USED
-  if (__pyx_StopAsyncIteration_init() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__pyx_StopAsyncIteration_init() < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   #endif
   /*--- Library function declarations ---*/
   /*--- Threads initialization code ---*/
@@ -10860,63 +10840,50 @@ PyMODINIT_FUNC PyInit_containers(void)
   #else
   __pyx_m = PyModule_Create(&__pyx_moduledef);
   #endif
-  if (unlikely(!__pyx_m)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_d = PyModule_GetDict(__pyx_m); if (unlikely(!__pyx_d)) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (unlikely(!__pyx_m)) __PYX_ERR(1, 1, __pyx_L1_error)
+  __pyx_d = PyModule_GetDict(__pyx_m); if (unlikely(!__pyx_d)) __PYX_ERR(1, 1, __pyx_L1_error)
   Py_INCREF(__pyx_d);
-  __pyx_b = PyImport_AddModule(__Pyx_BUILTIN_MODULE_NAME); if (unlikely(!__pyx_b)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_b = PyImport_AddModule(__Pyx_BUILTIN_MODULE_NAME); if (unlikely(!__pyx_b)) __PYX_ERR(1, 1, __pyx_L1_error)
   #if CYTHON_COMPILING_IN_PYPY
   Py_INCREF(__pyx_b);
   #endif
-  if (PyObject_SetAttrString(__pyx_m, "__builtins__", __pyx_b) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
+  if (PyObject_SetAttrString(__pyx_m, "__builtins__", __pyx_b) < 0) __PYX_ERR(1, 1, __pyx_L1_error);
   /*--- Initialize various global constants etc. ---*/
-  if (__Pyx_InitGlobals() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_InitGlobals() < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
-  if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   #endif
   if (__pyx_module_is_main_mds__containers) {
-    if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (PyObject_SetAttrString(__pyx_m, "__name__", __pyx_n_s_main) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
-    PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
+    PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(1, 1, __pyx_L1_error)
     if (!PyDict_GetItemString(modules, "mds.containers")) {
-      if (unlikely(PyDict_SetItemString(modules, "mds.containers", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+      if (unlikely(PyDict_SetItemString(modules, "mds.containers", __pyx_m) < 0)) __PYX_ERR(1, 1, __pyx_L1_error)
     }
   }
   #endif
   /*--- Builtin init code ---*/
-  if (__Pyx_InitCachedBuiltins() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_InitCachedBuiltins() < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   /*--- Constants init code ---*/
-  if (__Pyx_InitCachedConstants() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_InitCachedConstants() < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   /*--- Global init code ---*/
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
-  __pyx_type_3mds_10containers_ContextTaskMapping.tp_base = (&PyDict_Type);
-  if (PyType_Ready(&__pyx_type_3mds_10containers_ContextTaskMapping) < 0) __PYX_ERR(0, 133, __pyx_L1_error)
-  __pyx_type_3mds_10containers_ContextTaskMapping.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "ContextTaskMapping", (PyObject *)&__pyx_type_3mds_10containers_ContextTaskMapping) < 0) __PYX_ERR(0, 133, __pyx_L1_error)
-  __pyx_ptype_3mds_10containers_ContextTaskMapping = &__pyx_type_3mds_10containers_ContextTaskMapping;
-  if (PyType_Ready(&__pyx_type_3mds_10containers_PublicationResult) < 0) __PYX_ERR(0, 170, __pyx_L1_error)
-  __pyx_type_3mds_10containers_PublicationResult.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "PublicationResult", (PyObject *)&__pyx_type_3mds_10containers_PublicationResult) < 0) __PYX_ERR(0, 170, __pyx_L1_error)
-  __pyx_ptype_3mds_10containers_PublicationResult = &__pyx_type_3mds_10containers_PublicationResult;
-  if (PyType_Ready(&__pyx_type_3mds_10containers_Use) < 0) __PYX_ERR(0, 291, __pyx_L1_error)
-  __pyx_type_3mds_10containers_Use.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "Use", (PyObject *)&__pyx_type_3mds_10containers_Use) < 0) __PYX_ERR(0, 291, __pyx_L1_error)
-  __pyx_ptype_3mds_10containers_Use = &__pyx_type_3mds_10containers_Use;
   __pyx_vtabptr_3mds_10containers_IsolationContext = &__pyx_vtable_3mds_10containers_IsolationContext;
   __pyx_vtable_3mds_10containers_IsolationContext.__pyx___create_child = (PyObject *(*)(struct __pyx_obj_3mds_10containers_IsolationContext *, PyObject *, bool))__pyx_f_3mds_10containers_16IsolationContext___create_child;
-  if (PyType_Ready(&__pyx_type_3mds_10containers_IsolationContext) < 0) __PYX_ERR(0, 305, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_10containers_IsolationContext) < 0) __PYX_ERR(1, 282, __pyx_L1_error)
   __pyx_type_3mds_10containers_IsolationContext.tp_print = 0;
-  if (__Pyx_SetVtable(__pyx_type_3mds_10containers_IsolationContext.tp_dict, __pyx_vtabptr_3mds_10containers_IsolationContext) < 0) __PYX_ERR(0, 305, __pyx_L1_error)
-  if (PyObject_SetAttrString(__pyx_m, "IsolationContext", (PyObject *)&__pyx_type_3mds_10containers_IsolationContext) < 0) __PYX_ERR(0, 305, __pyx_L1_error)
+  if (__Pyx_SetVtable(__pyx_type_3mds_10containers_IsolationContext.tp_dict, __pyx_vtabptr_3mds_10containers_IsolationContext) < 0) __PYX_ERR(1, 282, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "IsolationContext", (PyObject *)&__pyx_type_3mds_10containers_IsolationContext) < 0) __PYX_ERR(1, 282, __pyx_L1_error)
   __pyx_ptype_3mds_10containers_IsolationContext = &__pyx_type_3mds_10containers_IsolationContext;
-  if (PyType_Ready(&__pyx_type_3mds_10containers_Task) < 0) __PYX_ERR(0, 430, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3mds_10containers_Task) < 0) __PYX_ERR(1, 368, __pyx_L1_error)
   __pyx_type_3mds_10containers_Task.tp_print = 0;
   #if CYTHON_COMPILING_IN_CPYTHON
   {
-    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_3mds_10containers_Task, "__hash__"); if (unlikely(!wrapper)) __PYX_ERR(0, 430, __pyx_L1_error)
+    PyObject *wrapper = PyObject_GetAttrString((PyObject *)&__pyx_type_3mds_10containers_Task, "__hash__"); if (unlikely(!wrapper)) __PYX_ERR(1, 368, __pyx_L1_error)
     if (Py_TYPE(wrapper) == &PyWrapperDescr_Type) {
       __pyx_wrapperbase_3mds_10containers_4Task_2__hash__ = *((PyWrapperDescrObject *)wrapper)->d_base;
       __pyx_wrapperbase_3mds_10containers_4Task_2__hash__.doc = __pyx_doc_3mds_10containers_4Task_2__hash__;
@@ -10924,8 +10891,21 @@ PyMODINIT_FUNC PyInit_containers(void)
     }
   }
   #endif
-  if (PyObject_SetAttrString(__pyx_m, "Task", (PyObject *)&__pyx_type_3mds_10containers_Task) < 0) __PYX_ERR(0, 430, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "Task", (PyObject *)&__pyx_type_3mds_10containers_Task) < 0) __PYX_ERR(1, 368, __pyx_L1_error)
   __pyx_ptype_3mds_10containers_Task = &__pyx_type_3mds_10containers_Task;
+  if (PyType_Ready(&__pyx_type_3mds_10containers_PublicationResult) < 0) __PYX_ERR(1, 159, __pyx_L1_error)
+  __pyx_type_3mds_10containers_PublicationResult.tp_print = 0;
+  if (PyObject_SetAttrString(__pyx_m, "PublicationResult", (PyObject *)&__pyx_type_3mds_10containers_PublicationResult) < 0) __PYX_ERR(1, 159, __pyx_L1_error)
+  __pyx_ptype_3mds_10containers_PublicationResult = &__pyx_type_3mds_10containers_PublicationResult;
+  if (PyType_Ready(&__pyx_type_3mds_10containers_Use) < 0) __PYX_ERR(1, 271, __pyx_L1_error)
+  __pyx_type_3mds_10containers_Use.tp_print = 0;
+  if (PyObject_SetAttrString(__pyx_m, "Use", (PyObject *)&__pyx_type_3mds_10containers_Use) < 0) __PYX_ERR(1, 271, __pyx_L1_error)
+  __pyx_ptype_3mds_10containers_Use = &__pyx_type_3mds_10containers_Use;
+  __pyx_type_3mds_10containers_ContextTaskMapping.tp_base = (&PyDict_Type);
+  if (PyType_Ready(&__pyx_type_3mds_10containers_ContextTaskMapping) < 0) __PYX_ERR(1, 122, __pyx_L1_error)
+  __pyx_type_3mds_10containers_ContextTaskMapping.tp_print = 0;
+  if (PyObject_SetAttrString(__pyx_m, "ContextTaskMapping", (PyObject *)&__pyx_type_3mds_10containers_ContextTaskMapping) < 0) __PYX_ERR(1, 122, __pyx_L1_error)
+  __pyx_ptype_3mds_10containers_ContextTaskMapping = &__pyx_type_3mds_10containers_ContextTaskMapping;
   /*--- Type import code ---*/
   __pyx_ptype_7cpython_4type_type = __Pyx_ImportType(__Pyx_BUILTIN_MODULE_NAME, "type", 
   #if CYTHON_COMPILING_IN_PYPY
@@ -10933,64 +10913,15 @@ PyMODINIT_FUNC PyInit_containers(void)
   #else
   sizeof(PyHeapTypeObject),
   #endif
-  0); if (unlikely(!__pyx_ptype_7cpython_4type_type)) __PYX_ERR(1, 9, __pyx_L1_error)
+  0); if (unlikely(!__pyx_ptype_7cpython_4type_type)) __PYX_ERR(2, 9, __pyx_L1_error)
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
   /*--- Execution code ---*/
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
-  if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_patch_abc() < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   #endif
 
-  /* "mds/containers.pyx":34
- * from mds.core.api_isolation_contexts cimport *
- * 
- * from datetime import datetime, timedelta             # <<<<<<<<<<<<<<
- * from threading import local
- * 
- */
-  __pyx_t_1 = PyList_New(2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_n_s_datetime);
-  __Pyx_GIVEREF(__pyx_n_s_datetime);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_datetime);
-  __Pyx_INCREF(__pyx_n_s_timedelta);
-  __Pyx_GIVEREF(__pyx_n_s_timedelta);
-  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_timedelta);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_datetime, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_datetime); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_datetime, __pyx_t_1) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_timedelta); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_timedelta, __pyx_t_1) < 0) __PYX_ERR(0, 34, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-
-  /* "mds/containers.pyx":35
- * 
- * from datetime import datetime, timedelta
- * from threading import local             # <<<<<<<<<<<<<<
- * 
- * # Call this on module load
- */
-  __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_INCREF(__pyx_n_s_local);
-  __Pyx_GIVEREF(__pyx_n_s_local);
-  PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_local);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_threading, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_local); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_local, __pyx_t_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "mds/containers.pyx":38
+  /* "mds/containers.pyx":27
  * 
  * # Call this on module load
  * initialize_base_task()             # <<<<<<<<<<<<<<
@@ -10999,199 +10930,199 @@ PyMODINIT_FUNC PyInit_containers(void)
  */
   mds::python::tasks::initialize_base_task();
 
-  /* "mds/containers.pyx":41
+  /* "mds/containers.pyx":30
  * 
  * 
  * class OptionsBase(object):             # <<<<<<<<<<<<<<
  * 
  *     class max_tries(object):
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_builtin_object);
   __Pyx_GIVEREF(__pyx_builtin_object);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_builtin_object);
-  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_OptionsBase, __pyx_n_s_OptionsBase, (PyObject *) NULL, __pyx_n_s_mds_containers, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_OptionsBase, __pyx_n_s_OptionsBase, (PyObject *) NULL, __pyx_n_s_mds_containers, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
 
-  /* "mds/containers.pyx":43
+  /* "mds/containers.pyx":32
  * class OptionsBase(object):
  * 
  *     class max_tries(object):             # <<<<<<<<<<<<<<
  *         """
  *         This condition will allow up to `num_attempts` calls to it as an option
  */
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_builtin_object);
   __Pyx_GIVEREF(__pyx_builtin_object);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_builtin_object);
-  __pyx_t_5 = __Pyx_CalculateMetaclass(NULL, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CalculateMetaclass(NULL, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_Py3MetaclassPrepare(__pyx_t_5, __pyx_t_4, __pyx_n_s_max_tries, __pyx_n_s_OptionsBase_max_tries, (PyObject *) NULL, __pyx_n_s_mds_containers, __pyx_kp_s_This_condition_will_allow_up_to); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_Py3MetaclassPrepare(__pyx_t_5, __pyx_t_4, __pyx_n_s_max_tries, __pyx_n_s_OptionsBase_max_tries, (PyObject *) NULL, __pyx_n_s_mds_containers, __pyx_kp_s_This_condition_will_allow_up_to); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
 
-  /* "mds/containers.pyx":52
+  /* "mds/containers.pyx":41
  *         """
  * 
  *         def __init__(self, num_attempts):             # <<<<<<<<<<<<<<
  *             self.__num_attempts = num_attempts
  *             self.__i = 0
  */
-  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_9max_tries_1__init__, 0, __pyx_n_s_OptionsBase_max_tries___init, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_9max_tries_1__init__, 0, __pyx_n_s_OptionsBase_max_tries___init, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 41, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_init, __pyx_t_7) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_init, __pyx_t_7) < 0) __PYX_ERR(1, 41, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "mds/containers.pyx":56
+  /* "mds/containers.pyx":45
  *             self.__i = 0
  * 
  *         def __call__(self):             # <<<<<<<<<<<<<<
  *             if self.__i >= self.__num_attempts:
  *                 return True
  */
-  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_9max_tries_3__call__, 0, __pyx_n_s_OptionsBase_max_tries___call, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_9max_tries_3__call__, 0, __pyx_n_s_OptionsBase_max_tries___call, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_call, __pyx_t_7) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_call, __pyx_t_7) < 0) __PYX_ERR(1, 45, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "mds/containers.pyx":43
+  /* "mds/containers.pyx":32
  * class OptionsBase(object):
  * 
  *     class max_tries(object):             # <<<<<<<<<<<<<<
  *         """
  *         This condition will allow up to `num_attempts` calls to it as an option
  */
-  __pyx_t_7 = __Pyx_Py3ClassCreate(__pyx_t_5, __pyx_n_s_max_tries, __pyx_t_4, __pyx_t_6, NULL, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_Py3ClassCreate(__pyx_t_5, __pyx_n_s_max_tries, __pyx_t_4, __pyx_t_6, NULL, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 32, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_max_tries, __pyx_t_7) < 0) __PYX_ERR(0, 43, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_max_tries, __pyx_t_7) < 0) __PYX_ERR(1, 32, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mds/containers.pyx":63
+  /* "mds/containers.pyx":52
  *             return False
  * 
  *     class try_while(object):             # <<<<<<<<<<<<<<
  *         """
  *         This condition allows the passing of a `callable` object that must
  */
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_builtin_object);
   __Pyx_GIVEREF(__pyx_builtin_object);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_builtin_object);
-  __pyx_t_5 = __Pyx_CalculateMetaclass(NULL, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CalculateMetaclass(NULL, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_Py3MetaclassPrepare(__pyx_t_5, __pyx_t_4, __pyx_n_s_try_while, __pyx_n_s_OptionsBase_try_while, (PyObject *) NULL, __pyx_n_s_mds_containers, __pyx_kp_s_This_condition_allows_the_passi); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_Py3MetaclassPrepare(__pyx_t_5, __pyx_t_4, __pyx_n_s_try_while, __pyx_n_s_OptionsBase_try_while, (PyObject *) NULL, __pyx_n_s_mds_containers, __pyx_kp_s_This_condition_allows_the_passi); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
 
-  /* "mds/containers.pyx":76
+  /* "mds/containers.pyx":65
  *         """
  * 
  *         def __init__(self, condition, args=tuple()):             # <<<<<<<<<<<<<<
  *             assert callable(condition)
  *             self.__condition = condition
  */
-  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_9try_while_1__init__, 0, __pyx_n_s_OptionsBase_try_while___init, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__16)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 76, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_9try_while_1__init__, 0, __pyx_n_s_OptionsBase_try_while___init, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__16)); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_7, sizeof(__pyx_defaults), 1)) __PYX_ERR(0, 76, __pyx_L1_error)
-  __pyx_t_8 = __Pyx_PyObject_Call(((PyObject *)(&PyTuple_Type)), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 76, __pyx_L1_error)
+  if (!__Pyx_CyFunction_InitDefaults(__pyx_t_7, sizeof(__pyx_defaults), 1)) __PYX_ERR(1, 65, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyObject_Call(((PyObject *)(&PyTuple_Type)), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_CyFunction_Defaults(__pyx_defaults, __pyx_t_7)->__pyx_arg_args = __pyx_t_8;
   __Pyx_GIVEREF(__pyx_t_8);
   __pyx_t_8 = 0;
   __Pyx_CyFunction_SetDefaultsGetter(__pyx_t_7, __pyx_pf_3mds_10containers_2__defaults__);
-  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_init, __pyx_t_7) < 0) __PYX_ERR(0, 76, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_init, __pyx_t_7) < 0) __PYX_ERR(1, 65, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "mds/containers.pyx":81
+  /* "mds/containers.pyx":70
  *             self.__args = args
  * 
  *         def __call__(self):             # <<<<<<<<<<<<<<
  *             return not self.__condition(*self.__args)
  * 
  */
-  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_9try_while_3__call__, 0, __pyx_n_s_OptionsBase_try_while___call, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__18)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_9try_while_3__call__, 0, __pyx_n_s_OptionsBase_try_while___call, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__18)); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_call, __pyx_t_7) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_call, __pyx_t_7) < 0) __PYX_ERR(1, 70, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "mds/containers.pyx":63
+  /* "mds/containers.pyx":52
  *             return False
  * 
  *     class try_while(object):             # <<<<<<<<<<<<<<
  *         """
  *         This condition allows the passing of a `callable` object that must
  */
-  __pyx_t_7 = __Pyx_Py3ClassCreate(__pyx_t_5, __pyx_n_s_try_while, __pyx_t_4, __pyx_t_6, NULL, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_Py3ClassCreate(__pyx_t_5, __pyx_n_s_try_while, __pyx_t_4, __pyx_t_6, NULL, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_try_while, __pyx_t_7) < 0) __PYX_ERR(0, 63, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_try_while, __pyx_t_7) < 0) __PYX_ERR(1, 52, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mds/containers.pyx":84
+  /* "mds/containers.pyx":73
  *             return not self.__condition(*self.__args)
  * 
  *     class try_until(object):             # <<<<<<<<<<<<<<
  *         """
  *         This condition remains valid until the `datetime` object provided.
  */
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_INCREF(__pyx_builtin_object);
   __Pyx_GIVEREF(__pyx_builtin_object);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_builtin_object);
-  __pyx_t_5 = __Pyx_CalculateMetaclass(NULL, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CalculateMetaclass(NULL, __pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_6 = __Pyx_Py3MetaclassPrepare(__pyx_t_5, __pyx_t_4, __pyx_n_s_try_until, __pyx_n_s_OptionsBase_try_until, (PyObject *) NULL, __pyx_n_s_mds_containers, __pyx_kp_s_This_condition_remains_valid_un); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_Py3MetaclassPrepare(__pyx_t_5, __pyx_t_4, __pyx_n_s_try_until, __pyx_n_s_OptionsBase_try_until, (PyObject *) NULL, __pyx_n_s_mds_containers, __pyx_kp_s_This_condition_remains_valid_un); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
 
-  /* "mds/containers.pyx":92
+  /* "mds/containers.pyx":81
  *         """
  * 
  *         def __init__(self, conclusion):             # <<<<<<<<<<<<<<
  *             assert isinstance(conclusion, datetime)
  *             self._conclusion = conclusion
  */
-  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_9try_until_1__init__, 0, __pyx_n_s_OptionsBase_try_until___init, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__20)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_9try_until_1__init__, 0, __pyx_n_s_OptionsBase_try_until___init, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__20)); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_init, __pyx_t_7) < 0) __PYX_ERR(0, 92, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_init, __pyx_t_7) < 0) __PYX_ERR(1, 81, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "mds/containers.pyx":96
+  /* "mds/containers.pyx":85
  *             self._conclusion = conclusion
  * 
  *         def __call__(self):             # <<<<<<<<<<<<<<
  *             return datetime.now() > self._conclusion
  * 
  */
-  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_9try_until_3__call__, 0, __pyx_n_s_OptionsBase_try_until___call, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__22)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 96, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_9try_until_3__call__, 0, __pyx_n_s_OptionsBase_try_until___call, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__22)); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 85, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_call, __pyx_t_7) < 0) __PYX_ERR(0, 96, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_call, __pyx_t_7) < 0) __PYX_ERR(1, 85, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "mds/containers.pyx":84
+  /* "mds/containers.pyx":73
  *             return not self.__condition(*self.__args)
  * 
  *     class try_until(object):             # <<<<<<<<<<<<<<
  *         """
  *         This condition remains valid until the `datetime` object provided.
  */
-  __pyx_t_7 = __Pyx_Py3ClassCreate(__pyx_t_5, __pyx_n_s_try_until, __pyx_t_4, __pyx_t_6, NULL, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_Py3ClassCreate(__pyx_t_5, __pyx_n_s_try_until, __pyx_t_4, __pyx_t_6, NULL, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_try_until, __pyx_t_7) < 0) __PYX_ERR(0, 84, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_try_until, __pyx_t_7) < 0) __PYX_ERR(1, 73, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "mds/containers.pyx":99
+  /* "mds/containers.pyx":88
  *             return datetime.now() > self._conclusion
  * 
  *     class try_for(try_until):             # <<<<<<<<<<<<<<
@@ -11203,575 +11134,574 @@ PyMODINIT_FUNC PyInit_containers(void)
     PyErr_Clear();
     __pyx_t_4 = __Pyx_GetModuleGlobalName(__pyx_n_s_try_until);
   }
-  if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 99, __pyx_L1_error)
+  if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_GIVEREF(__pyx_t_4);
   PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4);
   __pyx_t_4 = 0;
-  __pyx_t_4 = __Pyx_CalculateMetaclass(NULL, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_CalculateMetaclass(NULL, __pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_6 = __Pyx_Py3MetaclassPrepare(__pyx_t_4, __pyx_t_5, __pyx_n_s_try_for, __pyx_n_s_OptionsBase_try_for, (PyObject *) NULL, __pyx_n_s_mds_containers, __pyx_kp_s_This_condition_remains_valid_un_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_6 = __Pyx_Py3MetaclassPrepare(__pyx_t_4, __pyx_t_5, __pyx_n_s_try_for, __pyx_n_s_OptionsBase_try_for, (PyObject *) NULL, __pyx_n_s_mds_containers, __pyx_kp_s_This_condition_remains_valid_un_2); if (unlikely(!__pyx_t_6)) __PYX_ERR(1, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
 
-  /* "mds/containers.pyx":109
+  /* "mds/containers.pyx":98
  *         """
  * 
  *         def __init__(self, conclusion):             # <<<<<<<<<<<<<<
  *             assert isinstance(conclusion, timedelta)
  *             self._conclusion = datetime.now() + conclusion
  */
-  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_7try_for_1__init__, 0, __pyx_n_s_OptionsBase_try_for___init, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_7try_for_1__init__, 0, __pyx_n_s_OptionsBase_try_for___init, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_init, __pyx_t_7) < 0) __PYX_ERR(0, 109, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_6, __pyx_n_s_init, __pyx_t_7) < 0) __PYX_ERR(1, 98, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "mds/containers.pyx":99
+  /* "mds/containers.pyx":88
  *             return datetime.now() > self._conclusion
  * 
  *     class try_for(try_until):             # <<<<<<<<<<<<<<
  *         """
  *         This condition remains valid until the time-offset provided by
  */
-  __pyx_t_7 = __Pyx_Py3ClassCreate(__pyx_t_4, __pyx_n_s_try_for, __pyx_t_5, __pyx_t_6, NULL, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 99, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_Py3ClassCreate(__pyx_t_4, __pyx_n_s_try_for, __pyx_t_5, __pyx_t_6, NULL, 0, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(1, 88, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_try_for, __pyx_t_7) < 0) __PYX_ERR(0, 99, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_try_for, __pyx_t_7) < 0) __PYX_ERR(1, 88, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "mds/containers.pyx":113
+  /* "mds/containers.pyx":102
  *             self._conclusion = datetime.now() + conclusion
  * 
  *     def __init__(self):             # <<<<<<<<<<<<<<
  *         pass
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_11OptionsBase_1__init__, 0, __pyx_n_s_OptionsBase___init, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 113, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_11OptionsBase_1__init__, 0, __pyx_n_s_OptionsBase___init, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(0, 113, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_init, __pyx_t_5) < 0) __PYX_ERR(1, 102, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "mds/containers.pyx":117
+  /* "mds/containers.pyx":106
  * 
  *     @staticmethod
  *     def check(self):             # <<<<<<<<<<<<<<
  *         pass
  * 
  */
-  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_11OptionsBase_3check, __Pyx_CYFUNCTION_STATICMETHOD, __pyx_n_s_OptionsBase_check, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__28)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_CyFunction_NewEx(&__pyx_mdef_3mds_10containers_11OptionsBase_3check, __Pyx_CYFUNCTION_STATICMETHOD, __pyx_n_s_OptionsBase_check, NULL, __pyx_n_s_mds_containers, __pyx_d, ((PyObject *)__pyx_codeobj__28)); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 106, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
 
-  /* "mds/containers.pyx":116
+  /* "mds/containers.pyx":105
  *         pass
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def check(self):
  *         pass
  */
-  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_4 = PyTuple_New(1); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __Pyx_GIVEREF(__pyx_t_5);
   PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_5);
   __pyx_t_5 = 0;
-  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 116, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_4, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_check, __pyx_t_5) < 0) __PYX_ERR(0, 117, __pyx_L1_error)
+  if (PyObject_SetItem(__pyx_t_3, __pyx_n_s_check, __pyx_t_5) < 0) __PYX_ERR(1, 106, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "mds/containers.pyx":41
+  /* "mds/containers.pyx":30
  * 
  * 
  * class OptionsBase(object):             # <<<<<<<<<<<<<<
  * 
  *     class max_tries(object):
  */
-  __pyx_t_5 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_OptionsBase, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 41, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_OptionsBase, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_OptionsBase, __pyx_t_5) < 0) __PYX_ERR(0, 41, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_OptionsBase, __pyx_t_5) < 0) __PYX_ERR(1, 30, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":121
+  /* "mds/containers.pyx":110
  * 
  * 
  * class ResolveOptions(OptionsBase):             # <<<<<<<<<<<<<<
  *     pass
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_OptionsBase); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_OptionsBase); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_ResolveOptions, __pyx_n_s_ResolveOptions, (PyObject *) NULL, __pyx_n_s_mds_containers, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_ResolveOptions, __pyx_n_s_ResolveOptions, (PyObject *) NULL, __pyx_n_s_mds_containers, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_ResolveOptions, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 121, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_ResolveOptions, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 110, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ResolveOptions, __pyx_t_5) < 0) __PYX_ERR(0, 121, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ResolveOptions, __pyx_t_5) < 0) __PYX_ERR(1, 110, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mds/containers.pyx":125
+  /* "mds/containers.pyx":114
  * 
  * 
  * class ReportOptions(OptionsBase):             # <<<<<<<<<<<<<<
  *     pass
  * 
  */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_OptionsBase); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_OptionsBase); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ReportOptions, __pyx_n_s_ReportOptions, (PyObject *) NULL, __pyx_n_s_mds_containers, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ReportOptions, __pyx_n_s_ReportOptions, (PyObject *) NULL, __pyx_n_s_mds_containers, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_ReportOptions, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_ReportOptions, __pyx_t_1, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ReportOptions, __pyx_t_5) < 0) __PYX_ERR(0, 125, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ReportOptions, __pyx_t_5) < 0) __PYX_ERR(1, 114, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "mds/containers.pyx":129
+  /* "mds/containers.pyx":118
  * 
  * 
  * class PublicationOptions(OptionsBase):             # <<<<<<<<<<<<<<
  *     pass
  * 
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_OptionsBase); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_OptionsBase); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_CalculateMetaclass(NULL, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_PublicationOptions, __pyx_n_s_PublicationOptions, (PyObject *) NULL, __pyx_n_s_mds_containers, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_1, __pyx_t_2, __pyx_n_s_PublicationOptions, __pyx_n_s_PublicationOptions, (PyObject *) NULL, __pyx_n_s_mds_containers, (PyObject *) NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_5 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_PublicationOptions, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_Py3ClassCreate(__pyx_t_1, __pyx_n_s_PublicationOptions, __pyx_t_2, __pyx_t_3, NULL, 0, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(1, 118, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PublicationOptions, __pyx_t_5) < 0) __PYX_ERR(0, 129, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PublicationOptions, __pyx_t_5) < 0) __PYX_ERR(1, 118, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "mds/containers.pyx":308
+  /* "mds/containers.pyx":284
+ * cdef class IsolationContext(object):
  * 
- *     cdef iso_context_handle _handle
  *     redoable_tasks = ContextTaskMapping()             # <<<<<<<<<<<<<<
  * 
  *     def __hash__(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_ContextTaskMapping), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 308, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_10containers_ContextTaskMapping), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 284, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_redoable_tasks, __pyx_t_2) < 0) __PYX_ERR(0, 308, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_redoable_tasks, __pyx_t_2) < 0) __PYX_ERR(1, 284, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_3mds_10containers_IsolationContext);
 
-  /* "mds/containers.pyx":354
+  /* "mds/containers.pyx":299
  *         return self.__create_child(kind, snapshot)
  * 
  *     def call(self, fn=None, args=tuple()):             # <<<<<<<<<<<<<<
  *         this_context = self.use()
  *         return in_isoctxt(self._handle, fn, args)
  */
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyTuple_Type)), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 354, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyTuple_Type)), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 299, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_k__5 = __pyx_t_2;
+  __Pyx_GIVEREF(__pyx_t_2);
+  __pyx_t_2 = 0;
+
+  /* "mds/containers.pyx":328
+ * 
+ *     @staticmethod
+ *     def get_global():             # <<<<<<<<<<<<<<
+ *         return IsolationContext_Init(iso_context_handle._global())
+ * 
+ */
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_16IsolationContext_13get_global, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 328, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+
+  /* "mds/containers.pyx":327
+ *         return pr
+ * 
+ *     @staticmethod             # <<<<<<<<<<<<<<
+ *     def get_global():
+ *         return IsolationContext_Init(iso_context_handle._global())
+ */
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 327, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 327, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_get_global, __pyx_t_2) < 0) __PYX_ERR(1, 328, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  PyType_Modified(__pyx_ptype_3mds_10containers_IsolationContext);
+
+  /* "mds/containers.pyx":328
+ * 
+ *     @staticmethod
+ *     def get_global():             # <<<<<<<<<<<<<<
+ *         return IsolationContext_Init(iso_context_handle._global())
+ * 
+ */
+  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext, __pyx_n_s_get_global); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 328, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+
+  /* "mds/containers.pyx":327
+ *         return pr
+ * 
+ *     @staticmethod             # <<<<<<<<<<<<<<
+ *     def get_global():
+ *         return IsolationContext_Init(iso_context_handle._global())
+ */
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 327, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 327, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_get_global, __pyx_t_2) < 0) __PYX_ERR(1, 328, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  PyType_Modified(__pyx_ptype_3mds_10containers_IsolationContext);
+
+  /* "mds/containers.pyx":332
+ * 
+ *     @staticmethod
+ *     def get_current():             # <<<<<<<<<<<<<<
+ *         return IsolationContext_Init(TaskWrapper.current().get_context())
+ * 
+ */
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_16IsolationContext_15get_current, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 332, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+
+  /* "mds/containers.pyx":331
+ *         return IsolationContext_Init(iso_context_handle._global())
+ * 
+ *     @staticmethod             # <<<<<<<<<<<<<<
+ *     def get_current():
+ *         return IsolationContext_Init(TaskWrapper.current().get_context())
+ */
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 331, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 331, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_get_current, __pyx_t_2) < 0) __PYX_ERR(1, 332, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  PyType_Modified(__pyx_ptype_3mds_10containers_IsolationContext);
+
+  /* "mds/containers.pyx":332
+ * 
+ *     @staticmethod
+ *     def get_current():             # <<<<<<<<<<<<<<
+ *         return IsolationContext_Init(TaskWrapper.current().get_context())
+ * 
+ */
+  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext, __pyx_n_s_get_current); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 332, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+
+  /* "mds/containers.pyx":331
+ *         return IsolationContext_Init(iso_context_handle._global())
+ * 
+ *     @staticmethod             # <<<<<<<<<<<<<<
+ *     def get_current():
+ *         return IsolationContext_Init(TaskWrapper.current().get_context())
+ */
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 331, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 331, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_get_current, __pyx_t_2) < 0) __PYX_ERR(1, 332, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  PyType_Modified(__pyx_ptype_3mds_10containers_IsolationContext);
+
+  /* "mds/containers.pyx":336
+ * 
+ *     @staticmethod
+ *     def get_for_process():             # <<<<<<<<<<<<<<
+ *         return IsolationContext_Init(iso_context_handle.for_process())
+ * 
+ */
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_16IsolationContext_17get_for_process, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 336, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+
+  /* "mds/containers.pyx":335
+ *         return IsolationContext_Init(TaskWrapper.current().get_context())
+ * 
+ *     @staticmethod             # <<<<<<<<<<<<<<
+ *     def get_for_process():
+ *         return IsolationContext_Init(iso_context_handle.for_process())
+ */
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 335, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 335, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_get_for_process, __pyx_t_2) < 0) __PYX_ERR(1, 336, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  PyType_Modified(__pyx_ptype_3mds_10containers_IsolationContext);
+
+  /* "mds/containers.pyx":336
+ * 
+ *     @staticmethod
+ *     def get_for_process():             # <<<<<<<<<<<<<<
+ *         return IsolationContext_Init(iso_context_handle.for_process())
+ * 
+ */
+  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext, __pyx_n_s_get_for_process); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 336, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+
+  /* "mds/containers.pyx":335
+ *         return IsolationContext_Init(TaskWrapper.current().get_context())
+ * 
+ *     @staticmethod             # <<<<<<<<<<<<<<
+ *     def get_for_process():
+ *         return IsolationContext_Init(iso_context_handle.for_process())
+ */
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 335, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 335, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_get_for_process, __pyx_t_2) < 0) __PYX_ERR(1, 336, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  PyType_Modified(__pyx_ptype_3mds_10containers_IsolationContext);
+
+  /* "mds/containers.pyx":376
+ *     Look into Python's weak_reference -> what happens when in keys etc.
+ *     """
+ *     def __cinit__(self, target=None, args=tuple()):             # <<<<<<<<<<<<<<
+ *         Task.initialize_base_task()
+ *         self.__target = target
+ */
+  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyTuple_Type)), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 376, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_k__6 = __pyx_t_2;
   __Pyx_GIVEREF(__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "mds/containers.pyx":383
- * 
- *     @staticmethod
- *     def get_global():             # <<<<<<<<<<<<<<
- *         return IsolationContext_Init(iso_context_handle._global())
- * 
- */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_16IsolationContext_13get_global, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 383, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-
-  /* "mds/containers.pyx":382
- *         return pr
- * 
- *     @staticmethod             # <<<<<<<<<<<<<<
- *     def get_global():
- *         return IsolationContext_Init(iso_context_handle._global())
- */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 382, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 382, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_get_global, __pyx_t_2) < 0) __PYX_ERR(0, 383, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  PyType_Modified(__pyx_ptype_3mds_10containers_IsolationContext);
-
-  /* "mds/containers.pyx":383
- * 
- *     @staticmethod
- *     def get_global():             # <<<<<<<<<<<<<<
- *         return IsolationContext_Init(iso_context_handle._global())
- * 
- */
-  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext, __pyx_n_s_get_global); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 383, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-
-  /* "mds/containers.pyx":382
- *         return pr
- * 
- *     @staticmethod             # <<<<<<<<<<<<<<
- *     def get_global():
- *         return IsolationContext_Init(iso_context_handle._global())
- */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 382, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 382, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_get_global, __pyx_t_2) < 0) __PYX_ERR(0, 383, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  PyType_Modified(__pyx_ptype_3mds_10containers_IsolationContext);
-
-  /* "mds/containers.pyx":387
- * 
- *     @staticmethod
- *     def get_current():             # <<<<<<<<<<<<<<
- *         return IsolationContext_Init(TaskWrapper.current().get_context())
- * 
- */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_16IsolationContext_15get_current, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 387, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-
-  /* "mds/containers.pyx":386
- *         return IsolationContext_Init(iso_context_handle._global())
- * 
- *     @staticmethod             # <<<<<<<<<<<<<<
- *     def get_current():
- *         return IsolationContext_Init(TaskWrapper.current().get_context())
- */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 386, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 386, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_get_current, __pyx_t_2) < 0) __PYX_ERR(0, 387, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  PyType_Modified(__pyx_ptype_3mds_10containers_IsolationContext);
-
-  /* "mds/containers.pyx":387
- * 
- *     @staticmethod
- *     def get_current():             # <<<<<<<<<<<<<<
- *         return IsolationContext_Init(TaskWrapper.current().get_context())
- * 
- */
-  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext, __pyx_n_s_get_current); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 387, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-
-  /* "mds/containers.pyx":386
- *         return IsolationContext_Init(iso_context_handle._global())
- * 
- *     @staticmethod             # <<<<<<<<<<<<<<
- *     def get_current():
- *         return IsolationContext_Init(TaskWrapper.current().get_context())
- */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 386, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 386, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_get_current, __pyx_t_2) < 0) __PYX_ERR(0, 387, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  PyType_Modified(__pyx_ptype_3mds_10containers_IsolationContext);
-
-  /* "mds/containers.pyx":391
- * 
- *     @staticmethod
- *     def get_for_process():             # <<<<<<<<<<<<<<
- *         return IsolationContext_Init(iso_context_handle.for_process())
- * 
- */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_16IsolationContext_17get_for_process, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 391, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-
-  /* "mds/containers.pyx":390
- *         return IsolationContext_Init(TaskWrapper.current().get_context())
- * 
- *     @staticmethod             # <<<<<<<<<<<<<<
- *     def get_for_process():
- *         return IsolationContext_Init(iso_context_handle.for_process())
- */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 390, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 390, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_get_for_process, __pyx_t_2) < 0) __PYX_ERR(0, 391, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  PyType_Modified(__pyx_ptype_3mds_10containers_IsolationContext);
-
-  /* "mds/containers.pyx":391
- * 
- *     @staticmethod
- *     def get_for_process():             # <<<<<<<<<<<<<<
- *         return IsolationContext_Init(iso_context_handle.for_process())
- * 
- */
-  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext, __pyx_n_s_get_for_process); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 391, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-
-  /* "mds/containers.pyx":390
- *         return IsolationContext_Init(TaskWrapper.current().get_context())
- * 
- *     @staticmethod             # <<<<<<<<<<<<<<
- *     def get_for_process():
- *         return IsolationContext_Init(iso_context_handle.for_process())
- */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 390, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GIVEREF(__pyx_t_2);
-  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
-  __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 390, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_IsolationContext->tp_dict, __pyx_n_s_get_for_process, __pyx_t_2) < 0) __PYX_ERR(0, 391, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  PyType_Modified(__pyx_ptype_3mds_10containers_IsolationContext);
-
-  /* "mds/containers.pyx":445
- *         iso_context_handle _ctxt
- * 
- *     def __cinit__(self, target=None, args=tuple()):             # <<<<<<<<<<<<<<
- *         Task.initialize_base_task()
- *         self.__target = target
- */
-  __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)(&PyTuple_Type)), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 445, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_k__7 = __pyx_t_2;
-  __Pyx_GIVEREF(__pyx_t_2);
-  __pyx_t_2 = 0;
-
-  /* "mds/containers.pyx":516
+  /* "mds/containers.pyx":447
  * 
  *     @staticmethod
  *     def as_task(fn, args):             # <<<<<<<<<<<<<<
  *         """
  *         Wraps callable object ``fn`` which takes the arguments in ``args``
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_4Task_19as_task, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 516, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_4Task_19as_task, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "mds/containers.pyx":515
+  /* "mds/containers.pyx":446
  *         IsolationContext.redoable_tasks.expunge(self)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def as_task(fn, args):
  *         """
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 515, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 515, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_Task->tp_dict, __pyx_n_s_as_task, __pyx_t_2) < 0) __PYX_ERR(0, 516, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_Task->tp_dict, __pyx_n_s_as_task, __pyx_t_2) < 0) __PYX_ERR(1, 447, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_3mds_10containers_Task);
 
-  /* "mds/containers.pyx":516
+  /* "mds/containers.pyx":447
  * 
  *     @staticmethod
  *     def as_task(fn, args):             # <<<<<<<<<<<<<<
  *         """
  *         Wraps callable object ``fn`` which takes the arguments in ``args``
  */
-  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_10containers_Task, __pyx_n_s_as_task); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 516, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_10containers_Task, __pyx_n_s_as_task); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 447, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "mds/containers.pyx":515
+  /* "mds/containers.pyx":446
  *         IsolationContext.redoable_tasks.expunge(self)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def as_task(fn, args):
  *         """
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 515, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 515, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 446, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_Task->tp_dict, __pyx_n_s_as_task, __pyx_t_2) < 0) __PYX_ERR(0, 516, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_Task->tp_dict, __pyx_n_s_as_task, __pyx_t_2) < 0) __PYX_ERR(1, 447, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_3mds_10containers_Task);
 
-  /* "mds/containers.pyx":542
+  /* "mds/containers.pyx":473
  * 
  *     @staticmethod
  *     def initialize_base_task():             # <<<<<<<<<<<<<<
  *         """
  *         Delegates to the C++ implemented initializer from Python-land.
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_4Task_21initialize_base_task, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 542, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_4Task_21initialize_base_task, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 473, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "mds/containers.pyx":541
+  /* "mds/containers.pyx":472
  *             fn(*args)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def initialize_base_task():
  *         """
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 541, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 472, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 541, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 472, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_Task->tp_dict, __pyx_n_s_initialize_base_task, __pyx_t_2) < 0) __PYX_ERR(0, 542, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_Task->tp_dict, __pyx_n_s_initialize_base_task, __pyx_t_2) < 0) __PYX_ERR(1, 473, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_3mds_10containers_Task);
 
-  /* "mds/containers.pyx":542
+  /* "mds/containers.pyx":473
  * 
  *     @staticmethod
  *     def initialize_base_task():             # <<<<<<<<<<<<<<
  *         """
  *         Delegates to the C++ implemented initializer from Python-land.
  */
-  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_10containers_Task, __pyx_n_s_initialize_base_task); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 542, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_10containers_Task, __pyx_n_s_initialize_base_task); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 473, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "mds/containers.pyx":541
+  /* "mds/containers.pyx":472
  *             fn(*args)
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def initialize_base_task():
  *         """
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 541, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 472, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 541, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 472, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_Task->tp_dict, __pyx_n_s_initialize_base_task, __pyx_t_2) < 0) __PYX_ERR(0, 542, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_Task->tp_dict, __pyx_n_s_initialize_base_task, __pyx_t_2) < 0) __PYX_ERR(1, 473, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_3mds_10containers_Task);
 
-  /* "mds/containers.pyx":549
+  /* "mds/containers.pyx":480
  * 
  *     @staticmethod
  *     def get_current():             # <<<<<<<<<<<<<<
  *         """
  *         Returns a Task object for the thread-relative current task.
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_4Task_23get_current, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 549, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_4Task_23get_current, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 480, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "mds/containers.pyx":548
+  /* "mds/containers.pyx":479
  *         initialize_base_task()
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def get_current():
  *         """
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 548, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 479, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 548, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 479, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_Task->tp_dict, __pyx_n_s_get_current, __pyx_t_2) < 0) __PYX_ERR(0, 549, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_Task->tp_dict, __pyx_n_s_get_current, __pyx_t_2) < 0) __PYX_ERR(1, 480, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_3mds_10containers_Task);
 
-  /* "mds/containers.pyx":549
+  /* "mds/containers.pyx":480
  * 
  *     @staticmethod
  *     def get_current():             # <<<<<<<<<<<<<<
  *         """
  *         Returns a Task object for the thread-relative current task.
  */
-  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_10containers_Task, __pyx_n_s_get_current); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 549, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_10containers_Task, __pyx_n_s_get_current); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 480, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
 
-  /* "mds/containers.pyx":548
+  /* "mds/containers.pyx":479
  *         initialize_base_task()
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def get_current():
  *         """
  */
-  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 548, __pyx_L1_error)
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 479, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_2);
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
   __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 548, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 479, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_Task->tp_dict, __pyx_n_s_get_current, __pyx_t_2) < 0) __PYX_ERR(0, 549, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_10containers_Task->tp_dict, __pyx_n_s_get_current, __pyx_t_2) < 0) __PYX_ERR(1, 480, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   PyType_Modified(__pyx_ptype_3mds_10containers_Task);
 
-  /* "mds/containers.pyx":569
- * # Helper functions, emulate C++/Java APIs
+  /* "mds/containers.pyx":500
+ * # Helper functions, emulate C++/Java APIs  # TODO: Isolated?
  * 
  * def as_task(fn, args):             # <<<<<<<<<<<<<<
  *     Task.as_task(fn, args);
- * 
  */
-  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_1as_task, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 569, __pyx_L1_error)
+  __pyx_t_2 = PyCFunction_NewEx(&__pyx_mdef_3mds_10containers_1as_task, NULL, __pyx_n_s_mds_containers); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 500, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_as_task, __pyx_t_2) < 0) __PYX_ERR(0, 569, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_as_task, __pyx_t_2) < 0) __PYX_ERR(1, 500, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "mds/containers.pyx":1
@@ -11779,10 +11709,18 @@ PyMODINIT_FUNC PyInit_containers(void)
  * """
  * Managed Data Structures
  */
-  __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_t_2 = PyDict_New(); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+
+  /* "mds/containers.pxd":164
+ *         task_handle _handle
+ * 
+ * cdef inline _py_callable_wrapper _wrap(object fn, object args):             # <<<<<<<<<<<<<<
+ *     cdef _py_callable_wrapper py_wrap
+ *     py_wrap.fn = <PyObject *> fn
+ */
 
   /*--- Wrapped vars code ---*/
 
@@ -13740,6 +13678,59 @@ bad:
 #endif
 }
 
+/* KeywordStringCheck */
+                static CYTHON_INLINE int __Pyx_CheckKeywordStrings(
+    PyObject *kwdict,
+    const char* function_name,
+    int kw_allowed)
+{
+    PyObject* key = 0;
+    Py_ssize_t pos = 0;
+#if CYTHON_COMPILING_IN_PYPY
+    if (!kw_allowed && PyDict_Next(kwdict, &pos, &key, 0))
+        goto invalid_keyword;
+    return 1;
+#else
+    while (PyDict_Next(kwdict, &pos, &key, 0)) {
+        #if PY_MAJOR_VERSION < 3
+        if (unlikely(!PyString_CheckExact(key)) && unlikely(!PyString_Check(key)))
+        #endif
+            if (unlikely(!PyUnicode_Check(key)))
+                goto invalid_keyword_type;
+    }
+    if ((!kw_allowed) && unlikely(key))
+        goto invalid_keyword;
+    return 1;
+invalid_keyword_type:
+    PyErr_Format(PyExc_TypeError,
+        "%.200s() keywords must be strings", function_name);
+    return 0;
+#endif
+invalid_keyword:
+    PyErr_Format(PyExc_TypeError,
+    #if PY_MAJOR_VERSION < 3
+        "%.200s() got an unexpected keyword argument '%.200s'",
+        function_name, PyString_AsString(key));
+    #else
+        "%s() got an unexpected keyword argument '%U'",
+        function_name, key);
+    #endif
+    return 0;
+}
+
+/* ExtTypeTest */
+                static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
+    if (unlikely(!type)) {
+        PyErr_SetString(PyExc_SystemError, "Missing type object");
+        return 0;
+    }
+    if (likely(PyObject_TypeCheck(obj, type)))
+        return 1;
+    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
+                 Py_TYPE(obj)->tp_name, type->tp_name);
+    return 0;
+}
+
 /* BytesEquals */
                 static CYTHON_INLINE int __Pyx_PyBytes_Equals(PyObject* s1, PyObject* s2, int equals) {
 #if CYTHON_COMPILING_IN_PYPY
@@ -13862,59 +13853,6 @@ return_ne:
 #endif
 }
 
-/* KeywordStringCheck */
-                static CYTHON_INLINE int __Pyx_CheckKeywordStrings(
-    PyObject *kwdict,
-    const char* function_name,
-    int kw_allowed)
-{
-    PyObject* key = 0;
-    Py_ssize_t pos = 0;
-#if CYTHON_COMPILING_IN_PYPY
-    if (!kw_allowed && PyDict_Next(kwdict, &pos, &key, 0))
-        goto invalid_keyword;
-    return 1;
-#else
-    while (PyDict_Next(kwdict, &pos, &key, 0)) {
-        #if PY_MAJOR_VERSION < 3
-        if (unlikely(!PyString_CheckExact(key)) && unlikely(!PyString_Check(key)))
-        #endif
-            if (unlikely(!PyUnicode_Check(key)))
-                goto invalid_keyword_type;
-    }
-    if ((!kw_allowed) && unlikely(key))
-        goto invalid_keyword;
-    return 1;
-invalid_keyword_type:
-    PyErr_Format(PyExc_TypeError,
-        "%.200s() keywords must be strings", function_name);
-    return 0;
-#endif
-invalid_keyword:
-    PyErr_Format(PyExc_TypeError,
-    #if PY_MAJOR_VERSION < 3
-        "%.200s() got an unexpected keyword argument '%.200s'",
-        function_name, PyString_AsString(key));
-    #else
-        "%s() got an unexpected keyword argument '%U'",
-        function_name, key);
-    #endif
-    return 0;
-}
-
-/* ExtTypeTest */
-                static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
-    if (unlikely(!type)) {
-        PyErr_SetString(PyExc_SystemError, "Missing type object");
-        return 0;
-    }
-    if (likely(PyObject_TypeCheck(obj, type)))
-        return 1;
-    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
-                 Py_TYPE(obj)->tp_name, type->tp_name);
-    return 0;
-}
-
 /* SetVTable */
                 static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
 #if PY_VERSION_HEX >= 0x02070000
@@ -13931,94 +13869,6 @@ invalid_keyword:
 bad:
     Py_XDECREF(ob);
     return -1;
-}
-
-/* Import */
-                static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {
-    PyObject *empty_list = 0;
-    PyObject *module = 0;
-    PyObject *global_dict = 0;
-    PyObject *empty_dict = 0;
-    PyObject *list;
-    #if PY_VERSION_HEX < 0x03030000
-    PyObject *py_import;
-    py_import = __Pyx_PyObject_GetAttrStr(__pyx_b, __pyx_n_s_import);
-    if (!py_import)
-        goto bad;
-    #endif
-    if (from_list)
-        list = from_list;
-    else {
-        empty_list = PyList_New(0);
-        if (!empty_list)
-            goto bad;
-        list = empty_list;
-    }
-    global_dict = PyModule_GetDict(__pyx_m);
-    if (!global_dict)
-        goto bad;
-    empty_dict = PyDict_New();
-    if (!empty_dict)
-        goto bad;
-    {
-        #if PY_MAJOR_VERSION >= 3
-        if (level == -1) {
-            if (strchr(__Pyx_MODULE_NAME, '.')) {
-                #if PY_VERSION_HEX < 0x03030000
-                PyObject *py_level = PyInt_FromLong(1);
-                if (!py_level)
-                    goto bad;
-                module = PyObject_CallFunctionObjArgs(py_import,
-                    name, global_dict, empty_dict, list, py_level, NULL);
-                Py_DECREF(py_level);
-                #else
-                module = PyImport_ImportModuleLevelObject(
-                    name, global_dict, empty_dict, list, 1);
-                #endif
-                if (!module) {
-                    if (!PyErr_ExceptionMatches(PyExc_ImportError))
-                        goto bad;
-                    PyErr_Clear();
-                }
-            }
-            level = 0;
-        }
-        #endif
-        if (!module) {
-            #if PY_VERSION_HEX < 0x03030000
-            PyObject *py_level = PyInt_FromLong(level);
-            if (!py_level)
-                goto bad;
-            module = PyObject_CallFunctionObjArgs(py_import,
-                name, global_dict, empty_dict, list, py_level, NULL);
-            Py_DECREF(py_level);
-            #else
-            module = PyImport_ImportModuleLevelObject(
-                name, global_dict, empty_dict, list, level);
-            #endif
-        }
-    }
-bad:
-    #if PY_VERSION_HEX < 0x03030000
-    Py_XDECREF(py_import);
-    #endif
-    Py_XDECREF(empty_list);
-    Py_XDECREF(empty_dict);
-    return module;
-}
-
-/* ImportFrom */
-                static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
-    PyObject* value = __Pyx_PyObject_GetAttrStr(module, name);
-    if (unlikely(!value) && PyErr_ExceptionMatches(PyExc_AttributeError)) {
-        PyErr_Format(PyExc_ImportError,
-        #if PY_MAJOR_VERSION < 3
-            "cannot import name %.230s", PyString_AS_STRING(name));
-        #else
-            "cannot import name %S", name);
-        #endif
-    }
-    return value;
 }
 
 /* CalculateMetaclass */

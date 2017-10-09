@@ -23,17 +23,6 @@ Application during this compilation process under terms of your choice,
 provided you also meet the terms and conditions of the Application license.
 """
 
-from cpython.ref cimport PyObject
-
-from cython.operator cimport dereference as deref
-from libcpp.memory cimport unique_ptr, make_unique
-
-from mds.core.api_tasks cimport *
-from mds.core.api_isolation_contexts cimport *
-
-from datetime import datetime, timedelta
-from threading import local
-
 # Call this on module load
 initialize_base_task()
 
@@ -169,8 +158,6 @@ cdef class ContextTaskMapping(dict):
 
 cdef class PublicationResult(object):
 
-    cdef publication_attempt_handle _handle
-
     def prepare_for_redo(self):
         self._handle.prepare_for_redo()
 
@@ -281,17 +268,7 @@ cdef class PublicationResult(object):
             return <bint> self._handle.succeeded()
 
 
-cdef PublicationResult_Init(publication_attempt_handle handle):
-    initialize_base_task()
-    result = PublicationResult()
-    result._handle = handle
-    return result
-
-
 cdef class Use(object):
-
-    cdef unique_ptr[Establish] _establish
-    cdef task_handle _handle
 
     def __cinit__(self, IsolationContext ctxt):
         self._handle = ctxt._handle.push_prevailing()
@@ -304,42 +281,10 @@ cdef class Use(object):
 
 cdef class IsolationContext(object):
 
-    cdef iso_context_handle _handle
     redoable_tasks = ContextTaskMapping()
 
     def __hash__(self):
         return hash_isoctxt(self._handle)
-
-    cdef __create_child(self, str kind, bool snapshot):
-        cdef:
-            iso_context_handle handle
-            str k_live = "live"
-            str k_read_only = "read_only"
-            str k_detached = "detached"
-
-        # Do the sanity checking here
-        if self._handle.is_read_only():
-            if kind == k_live:
-                raise RuntimeError(
-                    "Can't create a `live` child from `read_only` parent."
-                )
-
-        if snapshot:
-            if kind == k_read_only:
-                handle = self._handle.new_read_only_snapshot_child()
-            elif kind == k_detached:
-                handle = self._handle.new_detached_snapshot_child()
-            else:
-                handle = self._handle.new_snapshot_child()
-        else:
-            if kind == k_read_only:
-                handle = self._handle.new_read_only_nonsnapshot_child()
-            elif kind == k_detached:
-                handle = self._handle.new_detached_nonsnapshot_child()
-            else:
-                handle = self._handle.new_nonsnapshot_child()
-
-        return IsolationContext_Init(handle=handle)
 
     def create_child(self, kind="live", snapshot=False):
         kinds = ("live", "read_only", "detached")
@@ -420,13 +365,6 @@ cdef class IsolationContext(object):
             return self._handle.has_conflicts()
 
 
-cdef IsolationContext_Init(iso_context_handle handle):
-    initialize_base_task()
-    result = IsolationContext()
-    result._handle = handle
-    return result
-
-
 cdef class Task(object):
     """
     TODO: Really need to think about what happens with this when we have
@@ -435,13 +373,6 @@ cdef class Task(object):
 
     Look into Python's weak_reference -> what happens when in keys etc.
     """
-    cdef:
-        tuple __args
-        object __target
-        bint __expired
-        task_handle _handle
-        iso_context_handle _ctxt
-
     def __cinit__(self, target=None, args=tuple()):
         Task.initialize_base_task()
         self.__target = target
@@ -564,61 +495,7 @@ cdef class Task(object):
         def __get__(self):
             return self.__expired
 
-# Helper functions, emulate C++/Java APIs
+# Helper functions, emulate C++/Java APIs  # TODO: Isolated?
 
 def as_task(fn, args):
     Task.as_task(fn, args);
-
-# Internal functions
-
-cdef inline add_task_handle(Task task, task_handle handle):
-    task._handle = handle
-
-cdef inline update_context_handle_in_task(Task task, IsolationContext ctxt):
-    task._ctxt = ctxt._handle
-
-cdef Task_Init(task_handle handle):
-    print("Initializing task with hash {}".format(hash_task(handle)))
-    result = Task()
-    add_task_handle(result, handle)
-    return result
-
-cdef inline _py_callable_wrapper _wrap(object fn, object args):
-    cdef _py_callable_wrapper py_wrap
-    py_wrap.fn = <PyObject *> fn
-    py_wrap.args = <PyObject *> args
-    return py_wrap
-
-cdef inline object _isoctxt_execution_wrapper(_py_callable_wrapper wrapped):
-    cdef:
-        object fn = <object> wrapped.fn
-        object args = <object> wrapped.args
-   
-    return fn(*args)
-
-cdef inline object in_isoctxt(iso_context_handle ich, object fn, object args):
-    return run_in_iso_ctxt(ich, &_isoctxt_execution_wrapper, _wrap(fn, args))
-
-cdef inline void _task_execution_wrapper(_py_callable_wrapper wrapped):
-    """
-    This is the wrapper function that Cython uses to generate the appropriate
-    C++ that uses the Py*{Eval,CallObject}(py_callable, py_tuple) boilerplate.
-    """
-    cdef:
-        object fn = <object> wrapped.fn
-        object args = <object> wrapped.args
-   
-    fn(*args)
-
-cdef inline void in_task(task_handle th, object fn, object args):
-    """
-    Delegate the running of this tasklet through to the compiled library, need
-    to wrap things up nicely for Cython to generate the appropriate code.
-    """
-    cdef TaskWrapper task_wrap = TaskWrapper(th)
-    task_wrap.run(&_task_execution_wrapper, _wrap(fn, args))
-
-cdef inline _task_add_dependent(Task first, Task second):
-    first._handle.add_dependent(second._handle)
-    return first
-

@@ -68,13 +68,16 @@ def tmpl_record_field_wrapper_math(t):
 
 def tmpl_record_field_wrapper(t):
     EXTRA = tmpl_record_field_wrapper_math(t) if t.use_atomic_math else ""
+    compiled = ""
 
-    return f"""
+    for prefix in ("", "const_"):
+        wrapper_name = t.record_field if prefix == "" else t.const_record_field
+        compiled += f"""
     # BEGIN {t.api}
 
-    cdef cppclass {t.record_field} "mds:api::record_field_handle<{t.kind}>":
-        {t.record_field}()
-        {t.record_field}({t.record_field}&)
+    cdef cppclass {wrapper_name} "mds::api::{prefix}record_field_handle<{t.kind}>":
+        {wrapper_name}()
+        {wrapper_name}({wrapper_name}&)
         {t.c_type} free_read(const managed_record_handle&)
         {t.c_type} frozen_read(const managed_record_handle&)
         bool has_value(const managed_record_handle&)
@@ -82,9 +85,10 @@ def tmpl_record_field_wrapper(t):
         {t.c_type} write(const managed_record_handle&, const {t.c_type}&)
         interned_string_handle name()
         {EXTRA}
-        #const_record_type_handle rec_type()
+        const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 """
+    return compiled
  
 def tmpl_primitive_wrapper(t):
     return f"""
@@ -124,7 +128,7 @@ def tmpl_array_wrapper(t):
     EXTRA = tmpl_array_wrapper_math(t) if t.use_atomic_math else ""
 
     return f"""
-    cdef cppclass {t.array} "array_type_handle<{t.kind}>":
+    cdef cppclass {t.array} "mds::api::array_type_handle<{t.kind}>":
         # const_managed_type_handle<K> element_type()
         {t.managed_array} create_array(size_t)
         bool is_same_as(const {t.array}&)
@@ -151,6 +155,52 @@ def tmpl_int_primitive_bounds(t):
             return {t.bounds.max} 
 """
 
+def tmpl_record_member(t):
+    s = f"""
+cdef class {t.title_record_member}(RecordMemberBase):
+
+    cdef {t.record_field} _handle
+ 
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    def write(self, value):
+        self._handle.write(value)
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = {t.managed_type_handle}().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+cdef class {t.title_const_record_member}(ConstRecordMemberBase):
+
+    cdef {t.const_record_field} _handle
+ 
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = {t.managed_type_handle}().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+"""
+
 def tmpl_concrete_array(t):
     primitive_extra = ""
 
@@ -172,7 +222,7 @@ cdef class {t.title}({t.primitive_parent}):
         pass
     {primitive_extra}
 
-cdef class {t.title}Array({t.array_parent}):
+cdef class {t.title_array}({t.array_parent}):
 
     cdef {t.managed_array} _handle
     _primitive = {t.title}
@@ -203,11 +253,11 @@ cdef class {t.title}Array({t.array_parent}):
         for i in range(l):
             h.write(i, {t.managed_value}(<{t.c_type}> self[i]))
 
-        return {t.title}Array_Init(h)
+        return {t.title_array_init}(h)
 
     @staticmethod
     def create(length):
-        return {t.MDS_BASE_ARRAY}.create("{t.api}", length)
+        return {t.title_array_init}({t.f_create_array}(length))
 """
 
     # Sometimes we need to be creative to coerce the correct Python type
@@ -219,8 +269,8 @@ cdef class {t.title}Array({t.array_parent}):
 """
 
     s += f"""\n
-cdef {t.title}Array_Init({t.managed_array} handle):
-    result = {t.title}Array()
+cdef {t.title_array_init}({t.managed_array} handle):
+    result = {t.title_array}()
     result._handle = handle
     return result\n
 """
@@ -255,6 +305,10 @@ class TypeInfo():
         if self.title.startswith('U'):
             self.title = api[:2].upper() + api[2:]
 
+        self.title_array = f"{self.title}Array"
+        self.title_array_init = f"{self.title_array}_Init"
+        self.title_record_member = f"{self.title}RecordMember"
+        self.title_const_record_member = f"Const{self.title_record_member}"
         self.c_type = c_type
         self.taxonomy = taxonomy
         self.python_type = python_type
@@ -263,6 +317,7 @@ class TypeInfo():
         self.managed_value = f"mv_{api}"
         self.managed_array = f"h_marray_{api}_t"
         self.managed_type_handle = f"managed_{api}_type_handle"
+        self.const_record_field = f"h_const_rfield_{api}_t"
         self.record_field = f"h_rfield_{api}_t"
         self.kind = "mds::api::kind::{}".format(api.upper())
         self.f_create_array = f"create_{api}_marray"

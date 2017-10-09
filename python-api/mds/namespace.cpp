@@ -684,8 +684,10 @@ static const char *__pyx_filename;
 static const char *__pyx_f[] = {
   "mds/namespace.pyx",
   "mds/core/api_strings.pxd",
+  "mds/namespace.pxd",
   "stringsource",
   "type.pxd",
+  "mds/private.pxd",
 };
 
 /* "mds/core/api_strings.pxd":30
@@ -698,30 +700,189 @@ static const char *__pyx_f[] = {
 typedef uint_least16_t __pyx_t_3mds_4core_11api_strings_char_type;
 
 /*--- Type declarations ---*/
+struct __pyx_obj_3mds_7private_MDSObject;
+struct __pyx_obj_3mds_7private_MDSPrimitiveBase;
+struct __pyx_obj_3mds_7private_MDSIntPrimitiveBase;
+struct __pyx_obj_3mds_7private_MDSFloatPrimitiveBase;
+struct __pyx_obj_3mds_7private_MDSArrayBase;
+struct __pyx_obj_3mds_7private_MDSIntArrayBase;
+struct __pyx_obj_3mds_7private_MDSFloatArrayBase;
+struct __pyx_obj_3mds_7private_RecordMemberBase;
+struct __pyx_obj_3mds_7private_ConstRecordMemberBase;
+struct __pyx_obj_3mds_7private_RecordTypeDeclaration;
+struct __pyx_obj_3mds_7private_RecordToken;
+struct __pyx_obj_3mds_7private_UnderflowError;
+struct __pyx_obj_3mds_7private_ConstError;
 struct __pyx_obj_3mds_9namespace_Namespace;
-struct __pyx_opt_args_3mds_9namespace_Namespace_Init;
 
-/* "mds/namespace.pyx":79
+/* "mds/private.pxd":32
+ * # =========================================================================
  * 
+ * cdef class MDSObject(object):             # <<<<<<<<<<<<<<
+ *     cdef bint _const
  * 
- * cdef Namespace_Init(namespace_handle handle=namespace_handle._global()):             # <<<<<<<<<<<<<<
- *     initialize_base_task()
- *     result = Namespace()
  */
-struct __pyx_opt_args_3mds_9namespace_Namespace_Init {
-  int __pyx_n;
-  mds::api::namespace_handle handle;
+struct __pyx_obj_3mds_7private_MDSObject {
+  PyObject_HEAD
+  int _const;
 };
 
-/* "mds/namespace.pyx":36
+
+/* "mds/private.pxd":40
+ * # =========================================================================
+ * 
+ * cdef class MDSPrimitiveBase(MDSObject):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_3mds_7private_MDSPrimitiveBase {
+  struct __pyx_obj_3mds_7private_MDSObject __pyx_base;
+};
+
+
+/* "mds/private.pxd":43
+ *     pass
+ * 
+ * cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_3mds_7private_MDSIntPrimitiveBase {
+  struct __pyx_obj_3mds_7private_MDSPrimitiveBase __pyx_base;
+};
+
+
+/* "mds/private.pxd":46
+ *     pass
+ * 
+ * cdef class MDSFloatPrimitiveBase(MDSPrimitiveBase):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_3mds_7private_MDSFloatPrimitiveBase {
+  struct __pyx_obj_3mds_7private_MDSPrimitiveBase __pyx_base;
+};
+
+
+/* "mds/private.pxd":53
+ * # =========================================================================
+ * 
+ * cdef class MDSArrayBase(MDSObject):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_3mds_7private_MDSArrayBase {
+  struct __pyx_obj_3mds_7private_MDSObject __pyx_base;
+};
+
+
+/* "mds/private.pxd":57
  * 
  * 
- * cdef class Namespace(object):             # <<<<<<<<<<<<<<
+ * cdef class MDSIntArrayBase(MDSArrayBase):             # <<<<<<<<<<<<<<
+ *     pass
  * 
+ */
+struct __pyx_obj_3mds_7private_MDSIntArrayBase {
+  struct __pyx_obj_3mds_7private_MDSArrayBase __pyx_base;
+};
+
+
+/* "mds/private.pxd":61
+ * 
+ * 
+ * cdef class MDSFloatArrayBase(MDSArrayBase):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_3mds_7private_MDSFloatArrayBase {
+  struct __pyx_obj_3mds_7private_MDSArrayBase __pyx_base;
+};
+
+
+/* "mds/private.pxd":68
+ * # =========================================================================
+ * 
+ * cdef class RecordMemberBase(MDSObject):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_3mds_7private_RecordMemberBase {
+  struct __pyx_obj_3mds_7private_MDSObject __pyx_base;
+};
+
+
+/* "mds/private.pxd":71
+ *     pass
+ * 
+ * cdef class ConstRecordMemberBase(RecordMemberBase):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_3mds_7private_ConstRecordMemberBase {
+  struct __pyx_obj_3mds_7private_RecordMemberBase __pyx_base;
+};
+
+
+/* "mds/private.pxd":74
+ *     pass
+ * 
+ * cdef class RecordTypeDeclaration(MDSObject):             # <<<<<<<<<<<<<<
+ *     cdef:
+ *         managed_record_handle _handle
+ */
+struct __pyx_obj_3mds_7private_RecordTypeDeclaration {
+  struct __pyx_obj_3mds_7private_MDSObject __pyx_base;
+  mds::api::managed_record_handle _handle;
+  mds::api::record_type_handle _declared_type;
+  mds::api::record_type_handle _created_type;
+};
+
+
+/* "mds/private.pxd":80
+ *         record_type_handle _created_type
+ * 
+ * cdef class RecordToken(MDSObject):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_3mds_7private_RecordToken {
+  struct __pyx_obj_3mds_7private_MDSObject __pyx_base;
+};
+
+
+/* "mds/private.pxd":87
+ * # =========================================================================
+ * 
+ * cdef class UnderflowError(Exception):             # <<<<<<<<<<<<<<
+ *     pass
+ * 
+ */
+struct __pyx_obj_3mds_7private_UnderflowError {
+  PyBaseExceptionObject __pyx_base;
+};
+
+
+/* "mds/private.pxd":90
+ *     pass
+ * 
+ * cdef class ConstError(Exception):             # <<<<<<<<<<<<<<
+ *     pass
+ */
+struct __pyx_obj_3mds_7private_ConstError {
+  PyBaseExceptionObject __pyx_base;
+};
+
+
+/* "mds/namespace.pxd":35
+ * from mds.private cimport MDSObject
+ * 
+ * cdef class Namespace(MDSObject):             # <<<<<<<<<<<<<<
  *     cdef namespace_handle _handle
+ * 
  */
 struct __pyx_obj_3mds_9namespace_Namespace {
-  PyObject_HEAD
+  struct __pyx_obj_3mds_7private_MDSObject __pyx_base;
   mds::api::namespace_handle _handle;
 };
 
@@ -813,21 +974,6 @@ static PyObject *__Pyx_GetBuiltinName(PyObject *name);
 static CYTHON_INLINE int __Pyx_ArgTypeTest(PyObject *obj, PyTypeObject *type, int none_allowed,
     const char *name, int exact);
 
-/* RaiseDoubleKeywords.proto */
-static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
-
-/* ParseKeywords.proto */
-static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
-    PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
-    const char* function_name);
-
-/* RaiseArgTupleInvalid.proto */
-static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
-    Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
-
-/* KeywordStringCheck.proto */
-static CYTHON_INLINE int __Pyx_CheckKeywordStrings(PyObject *kwdict, const char* function_name, int kw_allowed);
-
 /* PyObjectCall.proto */
 #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_Call(PyObject *func, PyObject *arg, PyObject *kw);
@@ -862,10 +1008,28 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 /* RaiseException.proto */
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
 
+/* RaiseDoubleKeywords.proto */
+static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
+
+/* ParseKeywords.proto */
+static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
+    PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
+    const char* function_name);
+
+/* RaiseArgTupleInvalid.proto */
+static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
+    Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
+
+/* KeywordStringCheck.proto */
+static CYTHON_INLINE int __Pyx_CheckKeywordStrings(PyObject *kwdict, const char* function_name, int kw_allowed);
+
 /* WriteUnraisableException.proto */
 static void __Pyx_WriteUnraisable(const char *name, int clineno,
                                   int lineno, const char *filename,
                                   int full_traceback, int nogil);
+
+/* CallNextTpDealloc.proto */
+static void __Pyx_call_next_tp_dealloc(PyObject* obj, destructor current_tp_dealloc);
 
 /* GetModuleGlobalName.proto */
 static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name);
@@ -966,9 +1130,24 @@ static CYTHON_INLINE mds::api::interned_string_handle __pyx_f_3mds_4core_11api_s
 
 /* Module declarations from 'mds.core.api_namespaces' */
 
+/* Module declarations from 'mds.private' */
+static PyTypeObject *__pyx_ptype_3mds_7private_MDSObject = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_MDSPrimitiveBase = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_MDSIntPrimitiveBase = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_MDSFloatPrimitiveBase = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_MDSArrayBase = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_MDSIntArrayBase = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_MDSFloatArrayBase = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_RecordMemberBase = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ConstRecordMemberBase = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_RecordTypeDeclaration = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_RecordToken = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_UnderflowError = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ConstError = 0;
+
 /* Module declarations from 'mds.namespace' */
 static PyTypeObject *__pyx_ptype_3mds_9namespace_Namespace = 0;
-static PyObject *__pyx_f_3mds_9namespace_Namespace_Init(struct __pyx_opt_args_3mds_9namespace_Namespace_Init *__pyx_optional_args); /*proto*/
+static CYTHON_INLINE PyObject *__pyx_f_3mds_9namespace_Namespace_Init(mds::api::namespace_handle); /*proto*/
 static std::string __pyx_convert_string_from_py_std__in_string(PyObject *); /*proto*/
 #define __Pyx_MODULE_NAME "mds.namespace"
 int __pyx_module_is_main_mds__namespace = 0;
@@ -985,18 +1164,22 @@ static const char __pyx_k_child_id[] = "child_id";
 static const char __pyx_k_TypeError[] = "TypeError";
 static const char __pyx_k_from_path[] = "from_path";
 static const char __pyx_k_get_global[] = "get_global";
+static const char __pyx_k_get_current[] = "get_current";
 static const char __pyx_k_staticmethod[] = "staticmethod";
 static const char __pyx_k_mds_namespace[] = "mds.namespace";
 static const char __pyx_k_create_if_missing[] = "create_if_missing";
 static const char __pyx_k_Base_string_must_be_in_instance[] = "Base string must be in instance of `str` or `bytes`";
 static const char __pyx_k_Managed_Data_Structures_Copyrig[] = "\nManaged Data Structures\nCopyright \302\251 2017 Hewlett Packard Enterprise Development Company LP.\n\nThis program is free software: you can redistribute it and/or modify\nit under the terms of the GNU Lesser General Public License as published by\nthe Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU Lesser General Public License for more details.\n\nYou should have received a copy of the GNU Lesser General Public License\nalong with this program.  If not, see <http://www.gnu.org/licenses/>.\n\nAs an exception, the copyright holders of this Library grant you permission\nto (i) compile an Application with the Library, and (ii) distribute the\nApplication containing code generated by the Library and added to the\nApplication during this compilation process under terms of your choice,\nprovided you also meet the terms and conditions of the Application license.\n";
 static const char __pyx_k_home_pughma_repo_mds_public_pyt[] = "/home/pughma/repo/mds-public/python-api/mds/namespace.pyx";
+static const char __pyx_k_Cannot_commit_a_non_MDS_type_int[] = "Cannot commit a non-MDS type into a MDS namespace";
 static PyObject *__pyx_kp_u_Base_string_must_be_in_instance;
+static PyObject *__pyx_kp_u_Cannot_commit_a_non_MDS_type_int;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_n_s_child_id;
 static PyObject *__pyx_n_s_create_if_missing;
 static PyObject *__pyx_n_s_encode;
 static PyObject *__pyx_n_s_from_path;
+static PyObject *__pyx_n_s_get_current;
 static PyObject *__pyx_n_s_get_global;
 static PyObject *__pyx_kp_s_home_pughma_repo_mds_public_pyt;
 static PyObject *__pyx_n_s_main;
@@ -1009,19 +1192,21 @@ static int __pyx_pf_3mds_9namespace_9Namespace___setitem__(struct __pyx_obj_3mds
 static PyObject *__pyx_pf_3mds_9namespace_9Namespace_2__getitem__(struct __pyx_obj_3mds_9namespace_Namespace *__pyx_v_self, PyObject *__pyx_v_key); /* proto */
 static PyObject *__pyx_pf_3mds_9namespace_9Namespace_4create_child(struct __pyx_obj_3mds_9namespace_Namespace *__pyx_v_self, PyObject *__pyx_v_child_id, int __pyx_v_create_if_missing); /* proto */
 static PyObject *__pyx_pf_3mds_9namespace_9Namespace_6from_path(CYTHON_UNUSED PyObject *__pyx_v_path); /* proto */
-static PyObject *__pyx_pf_3mds_9namespace_9Namespace_8get_global(); /* proto */
+static PyObject *__pyx_pf_3mds_9namespace_9Namespace_8get_current(); /* proto */
+static PyObject *__pyx_pf_3mds_9namespace_9Namespace_10get_global(); /* proto */
 static PyObject *__pyx_pf_3mds_9namespace_9Namespace_7is_root___get__(CYTHON_UNUSED struct __pyx_obj_3mds_9namespace_Namespace *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3mds_9namespace_9Namespace_6parent___get__(CYTHON_UNUSED struct __pyx_obj_3mds_9namespace_Namespace *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_3mds_9namespace_Namespace(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static mds::api::namespace_handle __pyx_k_;
+static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__2;
 static PyObject *__pyx_tuple__3;
 static PyObject *__pyx_tuple__4;
 static PyObject *__pyx_codeobj__5;
 static PyObject *__pyx_codeobj__6;
+static PyObject *__pyx_codeobj__7;
 
-/* "mds/namespace.pyx":40
- *     cdef namespace_handle _handle
+/* "mds/namespace.pyx":30
+ * cdef class Namespace(object):
  * 
  *     def __setitem__(self, str key, value):             # <<<<<<<<<<<<<<
  *         # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
@@ -1034,7 +1219,7 @@ static int __pyx_pw_3mds_9namespace_9Namespace_1__setitem__(PyObject *__pyx_v_se
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setitem__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_key), (&PyUnicode_Type), 1, "key", 1))) __PYX_ERR(0, 40, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_key), (&PyUnicode_Type), 1, "key", 1))) __PYX_ERR(0, 30, __pyx_L1_error)
   __pyx_r = __pyx_pf_3mds_9namespace_9Namespace___setitem__(((struct __pyx_obj_3mds_9namespace_Namespace *)__pyx_v_self), ((PyObject*)__pyx_v_key), ((PyObject *)__pyx_v_value));
 
   /* function exit code */
@@ -1050,30 +1235,66 @@ static int __pyx_pf_3mds_9namespace_9Namespace___setitem__(struct __pyx_obj_3mds
   mds::api::interned_string_handle __pyx_v_ish;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
-  uint16_t __pyx_t_1;
+  int __pyx_t_1;
+  int __pyx_t_2;
+  PyObject *__pyx_t_3 = NULL;
+  uint16_t __pyx_t_4;
   __Pyx_RefNannySetupContext("__setitem__", 0);
 
-  /* "mds/namespace.pyx":42
+  /* "mds/namespace.pyx":32
  *     def __setitem__(self, str key, value):
  *         # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
  *         cdef interned_string_handle ish = convert_py_to_ish(key)             # <<<<<<<<<<<<<<
- *         self._handle.bind(ish, <uint16_t> value)
  * 
+ *         if not issubclass(value, MDSObject):
  */
   __pyx_v_ish = __pyx_f_3mds_4core_11api_strings_convert_py_to_ish(__pyx_v_key);
 
-  /* "mds/namespace.pyx":43
- *         # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
+  /* "mds/namespace.pyx":34
  *         cdef interned_string_handle ish = convert_py_to_ish(key)
+ * 
+ *         if not issubclass(value, MDSObject):             # <<<<<<<<<<<<<<
+ *             raise TypeError('Cannot commit a non-MDS type into a MDS namespace')
+ * 
+ */
+  __pyx_t_1 = PyObject_IsSubclass(__pyx_v_value, ((PyObject *)__pyx_ptype_3mds_7private_MDSObject)); if (unlikely(__pyx_t_1 == -1)) __PYX_ERR(0, 34, __pyx_L1_error)
+  __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
+  if (__pyx_t_2) {
+
+    /* "mds/namespace.pyx":35
+ * 
+ *         if not issubclass(value, MDSObject):
+ *             raise TypeError('Cannot commit a non-MDS type into a MDS namespace')             # <<<<<<<<<<<<<<
+ * 
+ *         # TODO: get the boxed item to release its wrapped value into bind...
+ */
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 35, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_3);
+    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __PYX_ERR(0, 35, __pyx_L1_error)
+
+    /* "mds/namespace.pyx":34
+ *         cdef interned_string_handle ish = convert_py_to_ish(key)
+ * 
+ *         if not issubclass(value, MDSObject):             # <<<<<<<<<<<<<<
+ *             raise TypeError('Cannot commit a non-MDS type into a MDS namespace')
+ * 
+ */
+  }
+
+  /* "mds/namespace.pyx":38
+ * 
+ *         # TODO: get the boxed item to release its wrapped value into bind...
  *         self._handle.bind(ish, <uint16_t> value)             # <<<<<<<<<<<<<<
  * 
  *     def __getitem__(self, str key):
  */
-  __pyx_t_1 = __Pyx_PyInt_As_uint16_t(__pyx_v_value); if (unlikely((__pyx_t_1 == ((uint16_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L1_error)
-  __pyx_v_self->_handle.bind<mds::api::kind::DOUBLE>(__pyx_v_ish, ((uint16_t)__pyx_t_1));
+  __pyx_t_4 = __Pyx_PyInt_As_uint16_t(__pyx_v_value); if (unlikely((__pyx_t_4 == ((uint16_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L1_error)
+  __pyx_v_self->_handle.bind<mds::api::kind::DOUBLE>(__pyx_v_ish, ((uint16_t)__pyx_t_4));
 
-  /* "mds/namespace.pyx":40
- *     cdef namespace_handle _handle
+  /* "mds/namespace.pyx":30
+ * cdef class Namespace(object):
  * 
  *     def __setitem__(self, str key, value):             # <<<<<<<<<<<<<<
  *         # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
@@ -1084,6 +1305,7 @@ static int __pyx_pf_3mds_9namespace_9Namespace___setitem__(struct __pyx_obj_3mds
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_AddTraceback("mds.namespace.Namespace.__setitem__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
@@ -1091,12 +1313,12 @@ static int __pyx_pf_3mds_9namespace_9Namespace___setitem__(struct __pyx_obj_3mds
   return __pyx_r;
 }
 
-/* "mds/namespace.pyx":45
+/* "mds/namespace.pyx":40
  *         self._handle.bind(ish, <uint16_t> value)
  * 
  *     def __getitem__(self, str key):             # <<<<<<<<<<<<<<
+ *         # TODO: Need some type inference here, require explicit third param?
  *         cdef:
- *             uint16_t retval
  */
 
 /* Python wrapper */
@@ -1105,7 +1327,7 @@ static PyObject *__pyx_pw_3mds_9namespace_9Namespace_3__getitem__(PyObject *__py
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__getitem__ (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_key), (&PyUnicode_Type), 1, "key", 1))) __PYX_ERR(0, 45, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_key), (&PyUnicode_Type), 1, "key", 1))) __PYX_ERR(0, 40, __pyx_L1_error)
   __pyx_r = __pyx_pf_3mds_9namespace_9Namespace_2__getitem__(((struct __pyx_obj_3mds_9namespace_Namespace *)__pyx_v_self), ((PyObject*)__pyx_v_key));
 
   /* function exit code */
@@ -1125,7 +1347,7 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_2__getitem__(struct __pyx_o
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__getitem__", 0);
 
-  /* "mds/namespace.pyx":48
+  /* "mds/namespace.pyx":44
  *         cdef:
  *             uint16_t retval
  *             interned_string_handle ish = convert_py_to_ish(key)             # <<<<<<<<<<<<<<
@@ -1134,7 +1356,7 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_2__getitem__(struct __pyx_o
  */
   __pyx_v_ish = __pyx_f_3mds_4core_11api_strings_convert_py_to_ish(__pyx_v_key);
 
-  /* "mds/namespace.pyx":50
+  /* "mds/namespace.pyx":46
  *             interned_string_handle ish = convert_py_to_ish(key)
  * 
  *         retval = self._handle.lookup(ish, managed_ushort_type_handle())             # <<<<<<<<<<<<<<
@@ -1143,7 +1365,7 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_2__getitem__(struct __pyx_o
  */
   __pyx_v_retval = __pyx_v_self->_handle.lookup(__pyx_v_ish, mds::api::managed_type_handle<mds::api::kind::USHORT>());
 
-  /* "mds/namespace.pyx":51
+  /* "mds/namespace.pyx":47
  * 
  *         retval = self._handle.lookup(ish, managed_ushort_type_handle())
  *         return retval             # <<<<<<<<<<<<<<
@@ -1151,18 +1373,18 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_2__getitem__(struct __pyx_o
  *     def create_child(self, str child_id, bint create_if_missing=True):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_uint16_t(__pyx_v_retval); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_uint16_t(__pyx_v_retval); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/namespace.pyx":45
+  /* "mds/namespace.pyx":40
  *         self._handle.bind(ish, <uint16_t> value)
  * 
  *     def __getitem__(self, str key):             # <<<<<<<<<<<<<<
+ *         # TODO: Need some type inference here, require explicit third param?
  *         cdef:
- *             uint16_t retval
  */
 
   /* function exit code */
@@ -1176,7 +1398,7 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_2__getitem__(struct __pyx_o
   return __pyx_r;
 }
 
-/* "mds/namespace.pyx":53
+/* "mds/namespace.pyx":49
  *         return retval
  * 
  *     def create_child(self, str child_id, bint create_if_missing=True):             # <<<<<<<<<<<<<<
@@ -1216,7 +1438,7 @@ static PyObject *__pyx_pw_3mds_9namespace_9Namespace_5create_child(PyObject *__p
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create_child") < 0)) __PYX_ERR(0, 53, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "create_child") < 0)) __PYX_ERR(0, 49, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -1228,20 +1450,20 @@ static PyObject *__pyx_pw_3mds_9namespace_9Namespace_5create_child(PyObject *__p
     }
     __pyx_v_child_id = ((PyObject*)values[0]);
     if (values[1]) {
-      __pyx_v_create_if_missing = __Pyx_PyObject_IsTrue(values[1]); if (unlikely((__pyx_v_create_if_missing == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L3_error)
+      __pyx_v_create_if_missing = __Pyx_PyObject_IsTrue(values[1]); if (unlikely((__pyx_v_create_if_missing == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 49, __pyx_L3_error)
     } else {
       __pyx_v_create_if_missing = ((int)1);
     }
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("create_child", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 53, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("create_child", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 49, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.namespace.Namespace.create_child", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_child_id), (&PyUnicode_Type), 1, "child_id", 1))) __PYX_ERR(0, 53, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_child_id), (&PyUnicode_Type), 1, "child_id", 1))) __PYX_ERR(0, 49, __pyx_L1_error)
   __pyx_r = __pyx_pf_3mds_9namespace_9Namespace_4create_child(((struct __pyx_obj_3mds_9namespace_Namespace *)__pyx_v_self), __pyx_v_child_id, __pyx_v_create_if_missing);
 
   /* function exit code */
@@ -1259,10 +1481,9 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_4create_child(struct __pyx_
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  struct __pyx_opt_args_3mds_9namespace_Namespace_Init __pyx_t_2;
   __Pyx_RefNannySetupContext("create_child", 0);
 
-  /* "mds/namespace.pyx":55
+  /* "mds/namespace.pyx":51
  *     def create_child(self, str child_id, bint create_if_missing=True):
  *         cdef:
  *             interned_string_handle ish = convert_py_to_ish(child_id)             # <<<<<<<<<<<<<<
@@ -1271,7 +1492,7 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_4create_child(struct __pyx_
  */
   __pyx_v_ish = __pyx_f_3mds_4core_11api_strings_convert_py_to_ish(__pyx_v_child_id);
 
-  /* "mds/namespace.pyx":56
+  /* "mds/namespace.pyx":52
  *         cdef:
  *             interned_string_handle ish = convert_py_to_ish(child_id)
  *             bool cim = <bool> create_if_missing             # <<<<<<<<<<<<<<
@@ -1280,7 +1501,7 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_4create_child(struct __pyx_
  */
   __pyx_v_cim = ((bool)__pyx_v_create_if_missing);
 
-  /* "mds/namespace.pyx":58
+  /* "mds/namespace.pyx":54
  *             bool cim = <bool> create_if_missing
  * 
  *         return Namespace_Init(self._handle.child_namespace(ish, cim))             # <<<<<<<<<<<<<<
@@ -1288,15 +1509,13 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_4create_child(struct __pyx_
  *     @staticmethod
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2.__pyx_n = 1;
-  __pyx_t_2.handle = __pyx_v_self->_handle.child_namespace(__pyx_v_ish, __pyx_v_cim);
-  __pyx_t_1 = __pyx_f_3mds_9namespace_Namespace_Init(&__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_9namespace_Namespace_Init(__pyx_v_self->_handle.child_namespace(__pyx_v_ish, __pyx_v_cim)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "mds/namespace.pyx":53
+  /* "mds/namespace.pyx":49
  *         return retval
  * 
  *     def create_child(self, str child_id, bint create_if_missing=True):             # <<<<<<<<<<<<<<
@@ -1315,7 +1534,7 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_4create_child(struct __pyx_
   return __pyx_r;
 }
 
-/* "mds/namespace.pyx":61
+/* "mds/namespace.pyx":57
  * 
  *     @staticmethod
  *     def from_path(path):             # <<<<<<<<<<<<<<
@@ -1349,7 +1568,7 @@ static PyObject *__pyx_pw_3mds_9namespace_9Namespace_7from_path(CYTHON_UNUSED Py
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "from_path") < 0)) __PYX_ERR(0, 61, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "from_path") < 0)) __PYX_ERR(0, 57, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 1) {
       goto __pyx_L5_argtuple_error;
@@ -1360,7 +1579,7 @@ static PyObject *__pyx_pw_3mds_9namespace_9Namespace_7from_path(CYTHON_UNUSED Py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("from_path", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 61, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("from_path", 1, 1, 1, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 57, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("mds.namespace.Namespace.from_path", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1385,6 +1604,43 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_6from_path(CYTHON_UNUSED Py
   return __pyx_r;
 }
 
+/* "mds/namespace.pyx":61
+ * 
+ *     @staticmethod
+ *     def get_current():             # <<<<<<<<<<<<<<
+ *         pass  # TODO: mds_namespace::current()
+ * 
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_3mds_9namespace_9Namespace_9get_current(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3mds_9namespace_9Namespace_9get_current = {"get_current", (PyCFunction)__pyx_pw_3mds_9namespace_9Namespace_9get_current, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3mds_9namespace_9Namespace_9get_current(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("get_current (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("get_current", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return NULL;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "get_current", 0))) return NULL;
+  __pyx_r = __pyx_pf_3mds_9namespace_9Namespace_8get_current();
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_3mds_9namespace_9Namespace_8get_current() {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("get_current", 0);
+
+  /* function exit code */
+  __pyx_r = Py_None; __Pyx_INCREF(Py_None);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "mds/namespace.pyx":65
  * 
  *     @staticmethod
@@ -1394,27 +1650,26 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_6from_path(CYTHON_UNUSED Py
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3mds_9namespace_9Namespace_9get_global(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_3mds_9namespace_9Namespace_9get_global = {"get_global", (PyCFunction)__pyx_pw_3mds_9namespace_9Namespace_9get_global, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_3mds_9namespace_9Namespace_9get_global(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_3mds_9namespace_9Namespace_11get_global(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyMethodDef __pyx_mdef_3mds_9namespace_9Namespace_11get_global = {"get_global", (PyCFunction)__pyx_pw_3mds_9namespace_9Namespace_11get_global, METH_VARARGS|METH_KEYWORDS, 0};
+static PyObject *__pyx_pw_3mds_9namespace_9Namespace_11get_global(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("get_global (wrapper)", 0);
   if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
     __Pyx_RaiseArgtupleInvalid("get_global", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return NULL;}
   if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "get_global", 0))) return NULL;
-  __pyx_r = __pyx_pf_3mds_9namespace_9Namespace_8get_global();
+  __pyx_r = __pyx_pf_3mds_9namespace_9Namespace_10get_global();
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3mds_9namespace_9Namespace_8get_global() {
+static PyObject *__pyx_pf_3mds_9namespace_9Namespace_10get_global() {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  struct __pyx_opt_args_3mds_9namespace_Namespace_Init __pyx_t_2;
   __Pyx_RefNannySetupContext("get_global", 0);
 
   /* "mds/namespace.pyx":66
@@ -1425,9 +1680,7 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_8get_global() {
  *     property is_root:
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2.__pyx_n = 1;
-  __pyx_t_2.handle = mds::api::namespace_handle::global();
-  __pyx_t_1 = __pyx_f_3mds_9namespace_Namespace_Init(&__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3mds_9namespace_Namespace_Init(mds::api::namespace_handle::global()); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -1513,88 +1766,6 @@ static PyObject *__pyx_pf_3mds_9namespace_9Namespace_6parent___get__(CYTHON_UNUS
 
   /* function exit code */
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "mds/namespace.pyx":79
- * 
- * 
- * cdef Namespace_Init(namespace_handle handle=namespace_handle._global()):             # <<<<<<<<<<<<<<
- *     initialize_base_task()
- *     result = Namespace()
- */
-
-static PyObject *__pyx_f_3mds_9namespace_Namespace_Init(struct __pyx_opt_args_3mds_9namespace_Namespace_Init *__pyx_optional_args) {
-  mds::api::namespace_handle __pyx_v_handle = __pyx_k_;
-  struct __pyx_obj_3mds_9namespace_Namespace *__pyx_v_result = NULL;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  __Pyx_RefNannySetupContext("Namespace_Init", 0);
-  if (__pyx_optional_args) {
-    if (__pyx_optional_args->__pyx_n > 0) {
-      __pyx_v_handle = __pyx_optional_args->handle;
-    }
-  }
-
-  /* "mds/namespace.pyx":80
- * 
- * cdef Namespace_Init(namespace_handle handle=namespace_handle._global()):
- *     initialize_base_task()             # <<<<<<<<<<<<<<
- *     result = Namespace()
- *     result._handle = handle
- */
-  mds::python::tasks::initialize_base_task();
-
-  /* "mds/namespace.pyx":81
- * cdef Namespace_Init(namespace_handle handle=namespace_handle._global()):
- *     initialize_base_task()
- *     result = Namespace()             # <<<<<<<<<<<<<<
- *     result._handle = handle
- *     return result
- */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_9namespace_Namespace), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v_result = ((struct __pyx_obj_3mds_9namespace_Namespace *)__pyx_t_1);
-  __pyx_t_1 = 0;
-
-  /* "mds/namespace.pyx":82
- *     initialize_base_task()
- *     result = Namespace()
- *     result._handle = handle             # <<<<<<<<<<<<<<
- *     return result
- * 
- */
-  __pyx_v_result->_handle = __pyx_v_handle;
-
-  /* "mds/namespace.pyx":83
- *     result = Namespace()
- *     result._handle = handle
- *     return result             # <<<<<<<<<<<<<<
- * 
- */
-  __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(((PyObject *)__pyx_v_result));
-  __pyx_r = ((PyObject *)__pyx_v_result);
-  goto __pyx_L0;
-
-  /* "mds/namespace.pyx":79
- * 
- * 
- * cdef Namespace_Init(namespace_handle handle=namespace_handle._global()):             # <<<<<<<<<<<<<<
- *     initialize_base_task()
- *     result = Namespace()
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("mds.namespace.Namespace_Init", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = 0;
-  __pyx_L0:;
-  __Pyx_XDECREF((PyObject *)__pyx_v_result);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
@@ -1730,6 +1901,80 @@ static CYTHON_INLINE mds::api::interned_string_handle __pyx_f_3mds_4core_11api_s
   return __pyx_r;
 }
 
+/* "mds/namespace.pxd":38
+ *     cdef namespace_handle _handle
+ * 
+ * cdef inline Namespace_Init(namespace_handle handle):             # <<<<<<<<<<<<<<
+ *     initialize_base_task()
+ *     result = Namespace()
+ */
+
+static CYTHON_INLINE PyObject *__pyx_f_3mds_9namespace_Namespace_Init(mds::api::namespace_handle __pyx_v_handle) {
+  struct __pyx_obj_3mds_9namespace_Namespace *__pyx_v_result = NULL;
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("Namespace_Init", 0);
+
+  /* "mds/namespace.pxd":39
+ * 
+ * cdef inline Namespace_Init(namespace_handle handle):
+ *     initialize_base_task()             # <<<<<<<<<<<<<<
+ *     result = Namespace()
+ *     result._handle = handle
+ */
+  mds::python::tasks::initialize_base_task();
+
+  /* "mds/namespace.pxd":40
+ * cdef inline Namespace_Init(namespace_handle handle):
+ *     initialize_base_task()
+ *     result = Namespace()             # <<<<<<<<<<<<<<
+ *     result._handle = handle
+ *     return result
+ */
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_3mds_9namespace_Namespace), __pyx_empty_tuple, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 40, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_result = ((struct __pyx_obj_3mds_9namespace_Namespace *)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "mds/namespace.pxd":41
+ *     initialize_base_task()
+ *     result = Namespace()
+ *     result._handle = handle             # <<<<<<<<<<<<<<
+ *     return result
+ */
+  __pyx_v_result->_handle = __pyx_v_handle;
+
+  /* "mds/namespace.pxd":42
+ *     result = Namespace()
+ *     result._handle = handle
+ *     return result             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __Pyx_INCREF(((PyObject *)__pyx_v_result));
+  __pyx_r = ((PyObject *)__pyx_v_result);
+  goto __pyx_L0;
+
+  /* "mds/namespace.pxd":38
+ *     cdef namespace_handle _handle
+ * 
+ * cdef inline Namespace_Init(namespace_handle handle):             # <<<<<<<<<<<<<<
+ *     initialize_base_task()
+ *     result = Namespace()
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("mds.namespace.Namespace_Init", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = 0;
+  __pyx_L0:;
+  __Pyx_XDECREF((PyObject *)__pyx_v_result);
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "string.from_py":13
  * 
  * @cname("__pyx_convert_string_from_py_std__in_string")
@@ -1753,7 +1998,7 @@ static std::string __pyx_convert_string_from_py_std__in_string(PyObject *__pyx_v
  *     return string(data, length)
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_AsStringAndSize(__pyx_v_o, (&__pyx_v_length)); if (unlikely(__pyx_t_1 == NULL)) __PYX_ERR(2, 15, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_AsStringAndSize(__pyx_v_o, (&__pyx_v_length)); if (unlikely(__pyx_t_1 == NULL)) __PYX_ERR(3, 15, __pyx_L1_error)
   __pyx_v_data = __pyx_t_1;
 
   /* "string.from_py":16
@@ -1782,14 +2027,9 @@ static std::string __pyx_convert_string_from_py_std__in_string(PyObject *__pyx_v
   return __pyx_r;
 }
 
-static PyObject *__pyx_tp_new_3mds_9namespace_Namespace(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+static PyObject *__pyx_tp_new_3mds_9namespace_Namespace(PyTypeObject *t, PyObject *a, PyObject *k) {
   struct __pyx_obj_3mds_9namespace_Namespace *p;
-  PyObject *o;
-  if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
-    o = (*t->tp_alloc)(t, 0);
-  } else {
-    o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
-  }
+  PyObject *o = __pyx_ptype_3mds_7private_MDSObject->tp_new(t, a, k);
   if (unlikely(!o)) return 0;
   p = ((struct __pyx_obj_3mds_9namespace_Namespace *)o);
   new((void*)&(p->_handle)) mds::api::namespace_handle();
@@ -1804,7 +2044,7 @@ static void __pyx_tp_dealloc_3mds_9namespace_Namespace(PyObject *o) {
   }
   #endif
   __Pyx_call_destructor(p->_handle);
-  (*Py_TYPE(o)->tp_free)(o);
+  if (likely(__pyx_ptype_3mds_7private_MDSObject)) __pyx_ptype_3mds_7private_MDSObject->tp_dealloc(o); else __Pyx_call_next_tp_dealloc(o, __pyx_tp_dealloc_3mds_9namespace_Namespace);
 }
 static PyObject *__pyx_sq_item_3mds_9namespace_Namespace(PyObject *o, Py_ssize_t i) {
   PyObject *r;
@@ -1819,6 +2059,8 @@ static int __pyx_mp_ass_subscript_3mds_9namespace_Namespace(PyObject *o, PyObjec
     return __pyx_pw_3mds_9namespace_9Namespace_1__setitem__(o, i, v);
   }
   else {
+    if (__pyx_ptype_3mds_7private_MDSObject->tp_as_mapping && __pyx_ptype_3mds_7private_MDSObject->tp_as_mapping->mp_ass_subscript)
+      return __pyx_ptype_3mds_7private_MDSObject->tp_as_mapping->mp_ass_subscript(o, i, v);
     PyErr_Format(PyExc_NotImplementedError,
       "Subscript deletion not supported by %.200s", Py_TYPE(o)->tp_name);
     return -1;
@@ -1836,7 +2078,8 @@ static PyObject *__pyx_getprop_3mds_9namespace_9Namespace_parent(PyObject *o, CY
 static PyMethodDef __pyx_methods_3mds_9namespace_Namespace[] = {
   {"create_child", (PyCFunction)__pyx_pw_3mds_9namespace_9Namespace_5create_child, METH_VARARGS|METH_KEYWORDS, 0},
   {"from_path", (PyCFunction)__pyx_pw_3mds_9namespace_9Namespace_7from_path, METH_VARARGS|METH_KEYWORDS, 0},
-  {"get_global", (PyCFunction)__pyx_pw_3mds_9namespace_9Namespace_9get_global, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_current", (PyCFunction)__pyx_pw_3mds_9namespace_9Namespace_9get_current, METH_VARARGS|METH_KEYWORDS, 0},
+  {"get_global", (PyCFunction)__pyx_pw_3mds_9namespace_9Namespace_11get_global, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
@@ -1947,11 +2190,13 @@ static struct PyModuleDef __pyx_moduledef = {
 
 static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_Base_string_must_be_in_instance, __pyx_k_Base_string_must_be_in_instance, sizeof(__pyx_k_Base_string_must_be_in_instance), 0, 1, 0, 0},
+  {&__pyx_kp_u_Cannot_commit_a_non_MDS_type_int, __pyx_k_Cannot_commit_a_non_MDS_type_int, sizeof(__pyx_k_Cannot_commit_a_non_MDS_type_int), 0, 1, 0, 0},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_n_s_child_id, __pyx_k_child_id, sizeof(__pyx_k_child_id), 0, 0, 1, 1},
   {&__pyx_n_s_create_if_missing, __pyx_k_create_if_missing, sizeof(__pyx_k_create_if_missing), 0, 0, 1, 1},
   {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
   {&__pyx_n_s_from_path, __pyx_k_from_path, sizeof(__pyx_k_from_path), 0, 0, 1, 1},
+  {&__pyx_n_s_get_current, __pyx_k_get_current, sizeof(__pyx_k_get_current), 0, 0, 1, 1},
   {&__pyx_n_s_get_global, __pyx_k_get_global, sizeof(__pyx_k_get_global), 0, 0, 1, 1},
   {&__pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_k_home_pughma_repo_mds_public_pyt, sizeof(__pyx_k_home_pughma_repo_mds_public_pyt), 0, 0, 1, 0},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
@@ -1963,8 +2208,8 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_staticmethod = __Pyx_GetBuiltinName(__pyx_n_s_staticmethod); if (!__pyx_builtin_staticmethod) __PYX_ERR(0, 60, __pyx_L1_error)
-  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 65, __pyx_L1_error)
+  __pyx_builtin_staticmethod = __Pyx_GetBuiltinName(__pyx_n_s_staticmethod); if (!__pyx_builtin_staticmethod) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 35, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -1973,6 +2218,17 @@ static int __Pyx_InitCachedBuiltins(void) {
 static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
+
+  /* "mds/namespace.pyx":35
+ * 
+ *         if not issubclass(value, MDSObject):
+ *             raise TypeError('Cannot commit a non-MDS type into a MDS namespace')             # <<<<<<<<<<<<<<
+ * 
+ *         # TODO: get the boxed item to release its wrapped value into bind...
+ */
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_Cannot_commit_a_non_MDS_type_int); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 35, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple_);
+  __Pyx_GIVEREF(__pyx_tuple_);
 
   /* "mds/core/api_strings.pxd":63
  *         msg = value
@@ -1996,17 +2252,26 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "mds/namespace.pyx":61
+  /* "mds/namespace.pyx":57
  * 
  *     @staticmethod
  *     def from_path(path):             # <<<<<<<<<<<<<<
  *         pass
  * 
  */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_n_s_path); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_n_s_path); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
-  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_from_path, 61, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 1, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_from_path, 57, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 57, __pyx_L1_error)
+
+  /* "mds/namespace.pyx":61
+ * 
+ *     @staticmethod
+ *     def get_current():             # <<<<<<<<<<<<<<
+ *         pass  # TODO: mds_namespace::current()
+ * 
+ */
+  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_get_current, 61, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 61, __pyx_L1_error)
 
   /* "mds/namespace.pyx":65
  * 
@@ -2015,7 +2280,7 @@ static int __Pyx_InitCachedConstants(void) {
  *         return Namespace_Init(handle=namespace_handle._global())
  * 
  */
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_get_global, 65, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(0, 0, 0, 0, 0, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_home_pughma_repo_mds_public_pyt, __pyx_n_s_get_global, 65, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -2115,9 +2380,11 @@ PyMODINIT_FUNC PyInit_namespace(void)
   /*--- Variable export code ---*/
   /*--- Function export code ---*/
   /*--- Type init code ---*/
-  if (PyType_Ready(&__pyx_type_3mds_9namespace_Namespace) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_MDSObject = __Pyx_ImportType("mds.private", "MDSObject", sizeof(struct __pyx_obj_3mds_7private_MDSObject), 1); if (unlikely(!__pyx_ptype_3mds_7private_MDSObject)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __pyx_type_3mds_9namespace_Namespace.tp_base = __pyx_ptype_3mds_7private_MDSObject;
+  if (PyType_Ready(&__pyx_type_3mds_9namespace_Namespace) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __pyx_type_3mds_9namespace_Namespace.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "Namespace", (PyObject *)&__pyx_type_3mds_9namespace_Namespace) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "Namespace", (PyObject *)&__pyx_type_3mds_9namespace_Namespace) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
   __pyx_ptype_3mds_9namespace_Namespace = &__pyx_type_3mds_9namespace_Namespace;
   /*--- Type import code ---*/
   __pyx_ptype_7cpython_4type_type = __Pyx_ImportType(__Pyx_BUILTIN_MODULE_NAME, "type", 
@@ -2126,7 +2393,19 @@ PyMODINIT_FUNC PyInit_namespace(void)
   #else
   sizeof(PyHeapTypeObject),
   #endif
-  0); if (unlikely(!__pyx_ptype_7cpython_4type_type)) __PYX_ERR(3, 9, __pyx_L1_error)
+  0); if (unlikely(!__pyx_ptype_7cpython_4type_type)) __PYX_ERR(4, 9, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_MDSPrimitiveBase = __Pyx_ImportType("mds.private", "MDSPrimitiveBase", sizeof(struct __pyx_obj_3mds_7private_MDSPrimitiveBase), 1); if (unlikely(!__pyx_ptype_3mds_7private_MDSPrimitiveBase)) __PYX_ERR(5, 40, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_MDSIntPrimitiveBase = __Pyx_ImportType("mds.private", "MDSIntPrimitiveBase", sizeof(struct __pyx_obj_3mds_7private_MDSIntPrimitiveBase), 1); if (unlikely(!__pyx_ptype_3mds_7private_MDSIntPrimitiveBase)) __PYX_ERR(5, 43, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_MDSFloatPrimitiveBase = __Pyx_ImportType("mds.private", "MDSFloatPrimitiveBase", sizeof(struct __pyx_obj_3mds_7private_MDSFloatPrimitiveBase), 1); if (unlikely(!__pyx_ptype_3mds_7private_MDSFloatPrimitiveBase)) __PYX_ERR(5, 46, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_MDSArrayBase = __Pyx_ImportType("mds.private", "MDSArrayBase", sizeof(struct __pyx_obj_3mds_7private_MDSArrayBase), 1); if (unlikely(!__pyx_ptype_3mds_7private_MDSArrayBase)) __PYX_ERR(5, 53, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_MDSIntArrayBase = __Pyx_ImportType("mds.private", "MDSIntArrayBase", sizeof(struct __pyx_obj_3mds_7private_MDSIntArrayBase), 1); if (unlikely(!__pyx_ptype_3mds_7private_MDSIntArrayBase)) __PYX_ERR(5, 57, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_MDSFloatArrayBase = __Pyx_ImportType("mds.private", "MDSFloatArrayBase", sizeof(struct __pyx_obj_3mds_7private_MDSFloatArrayBase), 1); if (unlikely(!__pyx_ptype_3mds_7private_MDSFloatArrayBase)) __PYX_ERR(5, 61, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_RecordMemberBase = __Pyx_ImportType("mds.private", "RecordMemberBase", sizeof(struct __pyx_obj_3mds_7private_RecordMemberBase), 1); if (unlikely(!__pyx_ptype_3mds_7private_RecordMemberBase)) __PYX_ERR(5, 68, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstRecordMemberBase = __Pyx_ImportType("mds.private", "ConstRecordMemberBase", sizeof(struct __pyx_obj_3mds_7private_ConstRecordMemberBase), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstRecordMemberBase)) __PYX_ERR(5, 71, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_RecordTypeDeclaration = __Pyx_ImportType("mds.private", "RecordTypeDeclaration", sizeof(struct __pyx_obj_3mds_7private_RecordTypeDeclaration), 1); if (unlikely(!__pyx_ptype_3mds_7private_RecordTypeDeclaration)) __PYX_ERR(5, 74, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_RecordToken = __Pyx_ImportType("mds.private", "RecordToken", sizeof(struct __pyx_obj_3mds_7private_RecordToken), 1); if (unlikely(!__pyx_ptype_3mds_7private_RecordToken)) __PYX_ERR(5, 80, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_UnderflowError = __Pyx_ImportType("mds.private", "UnderflowError", sizeof(struct __pyx_obj_3mds_7private_UnderflowError), 1); if (unlikely(!__pyx_ptype_3mds_7private_UnderflowError)) __PYX_ERR(5, 87, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstError = __Pyx_ImportType("mds.private", "ConstError", sizeof(struct __pyx_obj_3mds_7private_ConstError), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstError)) __PYX_ERR(5, 90, __pyx_L1_error)
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
   /*--- Execution code ---*/
@@ -2134,60 +2413,89 @@ PyMODINIT_FUNC PyInit_namespace(void)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "mds/namespace.pyx":33
- * from mds.core.api_strings cimport convert_py_to_ish
+  /* "mds/namespace.pyx":26
+ * """
  * 
  * initialize_base_task()             # <<<<<<<<<<<<<<
  * 
- * 
+ * cdef class Namespace(object):
  */
   mds::python::tasks::initialize_base_task();
 
-  /* "mds/namespace.pyx":61
+  /* "mds/namespace.pyx":57
  * 
  *     @staticmethod
  *     def from_path(path):             # <<<<<<<<<<<<<<
  *         pass
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_9namespace_9Namespace_7from_path, NULL, __pyx_n_s_mds_namespace); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_9namespace_9Namespace_7from_path, NULL, __pyx_n_s_mds_namespace); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
-  /* "mds/namespace.pyx":60
+  /* "mds/namespace.pyx":56
  *         return Namespace_Init(self._handle.child_namespace(ish, cim))
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def from_path(path):
  *         pass
  */
-  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
   __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_9namespace_Namespace->tp_dict, __pyx_n_s_from_path, __pyx_t_1) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_9namespace_Namespace->tp_dict, __pyx_n_s_from_path, __pyx_t_1) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  PyType_Modified(__pyx_ptype_3mds_9namespace_Namespace);
+
+  /* "mds/namespace.pyx":57
+ * 
+ *     @staticmethod
+ *     def from_path(path):             # <<<<<<<<<<<<<<
+ *         pass
+ * 
+ */
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_9namespace_Namespace, __pyx_n_s_from_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+
+  /* "mds/namespace.pyx":56
+ *         return Namespace_Init(self._handle.child_namespace(ish, cim))
+ * 
+ *     @staticmethod             # <<<<<<<<<<<<<<
+ *     def from_path(path):
+ *         pass
+ */
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+  __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_9namespace_Namespace->tp_dict, __pyx_n_s_from_path, __pyx_t_1) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_9namespace_Namespace);
 
   /* "mds/namespace.pyx":61
  * 
  *     @staticmethod
- *     def from_path(path):             # <<<<<<<<<<<<<<
- *         pass
+ *     def get_current():             # <<<<<<<<<<<<<<
+ *         pass  # TODO: mds_namespace::current()
  * 
  */
-  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_9namespace_Namespace, __pyx_n_s_from_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_9namespace_9Namespace_9get_current, NULL, __pyx_n_s_mds_namespace); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
   /* "mds/namespace.pyx":60
- *         return Namespace_Init(self._handle.child_namespace(ish, cim))
+ *         pass
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
- *     def from_path(path):
- *         pass
+ *     def get_current():
+ *         pass  # TODO: mds_namespace::current()
  */
   __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -2197,7 +2505,36 @@ PyMODINIT_FUNC PyInit_namespace(void)
   __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_9namespace_Namespace->tp_dict, __pyx_n_s_from_path, __pyx_t_1) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_9namespace_Namespace->tp_dict, __pyx_n_s_get_current, __pyx_t_1) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  PyType_Modified(__pyx_ptype_3mds_9namespace_Namespace);
+
+  /* "mds/namespace.pyx":61
+ * 
+ *     @staticmethod
+ *     def get_current():             # <<<<<<<<<<<<<<
+ *         pass  # TODO: mds_namespace::current()
+ * 
+ */
+  __pyx_t_1 = __Pyx_GetNameInClass((PyObject *)__pyx_ptype_3mds_9namespace_Namespace, __pyx_n_s_get_current); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+
+  /* "mds/namespace.pyx":60
+ *         pass
+ * 
+ *     @staticmethod             # <<<<<<<<<<<<<<
+ *     def get_current():
+ *         pass  # TODO: mds_namespace::current()
+ */
+  __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_1);
+  __pyx_t_1 = 0;
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_staticmethod, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_9namespace_Namespace->tp_dict, __pyx_n_s_get_current, __pyx_t_1) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_9namespace_Namespace);
 
@@ -2208,11 +2545,11 @@ PyMODINIT_FUNC PyInit_namespace(void)
  *         return Namespace_Init(handle=namespace_handle._global())
  * 
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_9namespace_9Namespace_9get_global, NULL, __pyx_n_s_mds_namespace); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3mds_9namespace_9Namespace_11get_global, NULL, __pyx_n_s_mds_namespace); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
 
   /* "mds/namespace.pyx":64
- *         pass
+ *         pass  # TODO: mds_namespace::current()
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def get_global():
@@ -2241,7 +2578,7 @@ PyMODINIT_FUNC PyInit_namespace(void)
   __Pyx_GOTREF(__pyx_t_1);
 
   /* "mds/namespace.pyx":64
- *         pass
+ *         pass  # TODO: mds_namespace::current()
  * 
  *     @staticmethod             # <<<<<<<<<<<<<<
  *     def get_global():
@@ -2258,15 +2595,6 @@ PyMODINIT_FUNC PyInit_namespace(void)
   if (PyDict_SetItem((PyObject *)__pyx_ptype_3mds_9namespace_Namespace->tp_dict, __pyx_n_s_get_global, __pyx_t_1) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_ptype_3mds_9namespace_Namespace);
-
-  /* "mds/namespace.pyx":79
- * 
- * 
- * cdef Namespace_Init(namespace_handle handle=namespace_handle._global()):             # <<<<<<<<<<<<<<
- *     initialize_base_task()
- *     result = Namespace()
- */
-  __pyx_k_ = mds::api::namespace_handle::global();
 
   /* "mds/namespace.pyx":1
  * # -*- coding: utf-8 -*-             # <<<<<<<<<<<<<<
@@ -2365,188 +2693,6 @@ static CYTHON_INLINE int __Pyx_ArgTypeTest(PyObject *obj, PyTypeObject *type, in
         if (likely(PyObject_TypeCheck(obj, type))) return 1;
     }
     __Pyx_RaiseArgumentTypeInvalid(name, obj, type);
-    return 0;
-}
-
-/* RaiseDoubleKeywords */
-static void __Pyx_RaiseDoubleKeywordsError(
-    const char* func_name,
-    PyObject* kw_name)
-{
-    PyErr_Format(PyExc_TypeError,
-        #if PY_MAJOR_VERSION >= 3
-        "%s() got multiple values for keyword argument '%U'", func_name, kw_name);
-        #else
-        "%s() got multiple values for keyword argument '%s'", func_name,
-        PyString_AsString(kw_name));
-        #endif
-}
-
-/* ParseKeywords */
-static int __Pyx_ParseOptionalKeywords(
-    PyObject *kwds,
-    PyObject **argnames[],
-    PyObject *kwds2,
-    PyObject *values[],
-    Py_ssize_t num_pos_args,
-    const char* function_name)
-{
-    PyObject *key = 0, *value = 0;
-    Py_ssize_t pos = 0;
-    PyObject*** name;
-    PyObject*** first_kw_arg = argnames + num_pos_args;
-    while (PyDict_Next(kwds, &pos, &key, &value)) {
-        name = first_kw_arg;
-        while (*name && (**name != key)) name++;
-        if (*name) {
-            values[name-argnames] = value;
-            continue;
-        }
-        name = first_kw_arg;
-        #if PY_MAJOR_VERSION < 3
-        if (likely(PyString_CheckExact(key)) || likely(PyString_Check(key))) {
-            while (*name) {
-                if ((CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**name) == PyString_GET_SIZE(key))
-                        && _PyString_Eq(**name, key)) {
-                    values[name-argnames] = value;
-                    break;
-                }
-                name++;
-            }
-            if (*name) continue;
-            else {
-                PyObject*** argname = argnames;
-                while (argname != first_kw_arg) {
-                    if ((**argname == key) || (
-                            (CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**argname) == PyString_GET_SIZE(key))
-                             && _PyString_Eq(**argname, key))) {
-                        goto arg_passed_twice;
-                    }
-                    argname++;
-                }
-            }
-        } else
-        #endif
-        if (likely(PyUnicode_Check(key))) {
-            while (*name) {
-                int cmp = (**name == key) ? 0 :
-                #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
-                    (PyUnicode_GET_SIZE(**name) != PyUnicode_GET_SIZE(key)) ? 1 :
-                #endif
-                    PyUnicode_Compare(**name, key);
-                if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
-                if (cmp == 0) {
-                    values[name-argnames] = value;
-                    break;
-                }
-                name++;
-            }
-            if (*name) continue;
-            else {
-                PyObject*** argname = argnames;
-                while (argname != first_kw_arg) {
-                    int cmp = (**argname == key) ? 0 :
-                    #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
-                        (PyUnicode_GET_SIZE(**argname) != PyUnicode_GET_SIZE(key)) ? 1 :
-                    #endif
-                        PyUnicode_Compare(**argname, key);
-                    if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
-                    if (cmp == 0) goto arg_passed_twice;
-                    argname++;
-                }
-            }
-        } else
-            goto invalid_keyword_type;
-        if (kwds2) {
-            if (unlikely(PyDict_SetItem(kwds2, key, value))) goto bad;
-        } else {
-            goto invalid_keyword;
-        }
-    }
-    return 0;
-arg_passed_twice:
-    __Pyx_RaiseDoubleKeywordsError(function_name, key);
-    goto bad;
-invalid_keyword_type:
-    PyErr_Format(PyExc_TypeError,
-        "%.200s() keywords must be strings", function_name);
-    goto bad;
-invalid_keyword:
-    PyErr_Format(PyExc_TypeError,
-    #if PY_MAJOR_VERSION < 3
-        "%.200s() got an unexpected keyword argument '%.200s'",
-        function_name, PyString_AsString(key));
-    #else
-        "%s() got an unexpected keyword argument '%U'",
-        function_name, key);
-    #endif
-bad:
-    return -1;
-}
-
-/* RaiseArgTupleInvalid */
-static void __Pyx_RaiseArgtupleInvalid(
-    const char* func_name,
-    int exact,
-    Py_ssize_t num_min,
-    Py_ssize_t num_max,
-    Py_ssize_t num_found)
-{
-    Py_ssize_t num_expected;
-    const char *more_or_less;
-    if (num_found < num_min) {
-        num_expected = num_min;
-        more_or_less = "at least";
-    } else {
-        num_expected = num_max;
-        more_or_less = "at most";
-    }
-    if (exact) {
-        more_or_less = "exactly";
-    }
-    PyErr_Format(PyExc_TypeError,
-                 "%.200s() takes %.8s %" CYTHON_FORMAT_SSIZE_T "d positional argument%.1s (%" CYTHON_FORMAT_SSIZE_T "d given)",
-                 func_name, more_or_less, num_expected,
-                 (num_expected == 1) ? "" : "s", num_found);
-}
-
-/* KeywordStringCheck */
-static CYTHON_INLINE int __Pyx_CheckKeywordStrings(
-    PyObject *kwdict,
-    const char* function_name,
-    int kw_allowed)
-{
-    PyObject* key = 0;
-    Py_ssize_t pos = 0;
-#if CYTHON_COMPILING_IN_PYPY
-    if (!kw_allowed && PyDict_Next(kwdict, &pos, &key, 0))
-        goto invalid_keyword;
-    return 1;
-#else
-    while (PyDict_Next(kwdict, &pos, &key, 0)) {
-        #if PY_MAJOR_VERSION < 3
-        if (unlikely(!PyString_CheckExact(key)) && unlikely(!PyString_Check(key)))
-        #endif
-            if (unlikely(!PyUnicode_Check(key)))
-                goto invalid_keyword_type;
-    }
-    if ((!kw_allowed) && unlikely(key))
-        goto invalid_keyword;
-    return 1;
-invalid_keyword_type:
-    PyErr_Format(PyExc_TypeError,
-        "%.200s() keywords must be strings", function_name);
-    return 0;
-#endif
-invalid_keyword:
-    PyErr_Format(PyExc_TypeError,
-    #if PY_MAJOR_VERSION < 3
-        "%.200s() got an unexpected keyword argument '%.200s'",
-        function_name, PyString_AsString(key));
-    #else
-        "%s() got an unexpected keyword argument '%U'",
-        function_name, key);
-    #endif
     return 0;
 }
 
@@ -2757,6 +2903,188 @@ bad:
 }
 #endif
 
+/* RaiseDoubleKeywords */
+  static void __Pyx_RaiseDoubleKeywordsError(
+    const char* func_name,
+    PyObject* kw_name)
+{
+    PyErr_Format(PyExc_TypeError,
+        #if PY_MAJOR_VERSION >= 3
+        "%s() got multiple values for keyword argument '%U'", func_name, kw_name);
+        #else
+        "%s() got multiple values for keyword argument '%s'", func_name,
+        PyString_AsString(kw_name));
+        #endif
+}
+
+/* ParseKeywords */
+  static int __Pyx_ParseOptionalKeywords(
+    PyObject *kwds,
+    PyObject **argnames[],
+    PyObject *kwds2,
+    PyObject *values[],
+    Py_ssize_t num_pos_args,
+    const char* function_name)
+{
+    PyObject *key = 0, *value = 0;
+    Py_ssize_t pos = 0;
+    PyObject*** name;
+    PyObject*** first_kw_arg = argnames + num_pos_args;
+    while (PyDict_Next(kwds, &pos, &key, &value)) {
+        name = first_kw_arg;
+        while (*name && (**name != key)) name++;
+        if (*name) {
+            values[name-argnames] = value;
+            continue;
+        }
+        name = first_kw_arg;
+        #if PY_MAJOR_VERSION < 3
+        if (likely(PyString_CheckExact(key)) || likely(PyString_Check(key))) {
+            while (*name) {
+                if ((CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**name) == PyString_GET_SIZE(key))
+                        && _PyString_Eq(**name, key)) {
+                    values[name-argnames] = value;
+                    break;
+                }
+                name++;
+            }
+            if (*name) continue;
+            else {
+                PyObject*** argname = argnames;
+                while (argname != first_kw_arg) {
+                    if ((**argname == key) || (
+                            (CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**argname) == PyString_GET_SIZE(key))
+                             && _PyString_Eq(**argname, key))) {
+                        goto arg_passed_twice;
+                    }
+                    argname++;
+                }
+            }
+        } else
+        #endif
+        if (likely(PyUnicode_Check(key))) {
+            while (*name) {
+                int cmp = (**name == key) ? 0 :
+                #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
+                    (PyUnicode_GET_SIZE(**name) != PyUnicode_GET_SIZE(key)) ? 1 :
+                #endif
+                    PyUnicode_Compare(**name, key);
+                if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
+                if (cmp == 0) {
+                    values[name-argnames] = value;
+                    break;
+                }
+                name++;
+            }
+            if (*name) continue;
+            else {
+                PyObject*** argname = argnames;
+                while (argname != first_kw_arg) {
+                    int cmp = (**argname == key) ? 0 :
+                    #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
+                        (PyUnicode_GET_SIZE(**argname) != PyUnicode_GET_SIZE(key)) ? 1 :
+                    #endif
+                        PyUnicode_Compare(**argname, key);
+                    if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
+                    if (cmp == 0) goto arg_passed_twice;
+                    argname++;
+                }
+            }
+        } else
+            goto invalid_keyword_type;
+        if (kwds2) {
+            if (unlikely(PyDict_SetItem(kwds2, key, value))) goto bad;
+        } else {
+            goto invalid_keyword;
+        }
+    }
+    return 0;
+arg_passed_twice:
+    __Pyx_RaiseDoubleKeywordsError(function_name, key);
+    goto bad;
+invalid_keyword_type:
+    PyErr_Format(PyExc_TypeError,
+        "%.200s() keywords must be strings", function_name);
+    goto bad;
+invalid_keyword:
+    PyErr_Format(PyExc_TypeError,
+    #if PY_MAJOR_VERSION < 3
+        "%.200s() got an unexpected keyword argument '%.200s'",
+        function_name, PyString_AsString(key));
+    #else
+        "%s() got an unexpected keyword argument '%U'",
+        function_name, key);
+    #endif
+bad:
+    return -1;
+}
+
+/* RaiseArgTupleInvalid */
+  static void __Pyx_RaiseArgtupleInvalid(
+    const char* func_name,
+    int exact,
+    Py_ssize_t num_min,
+    Py_ssize_t num_max,
+    Py_ssize_t num_found)
+{
+    Py_ssize_t num_expected;
+    const char *more_or_less;
+    if (num_found < num_min) {
+        num_expected = num_min;
+        more_or_less = "at least";
+    } else {
+        num_expected = num_max;
+        more_or_less = "at most";
+    }
+    if (exact) {
+        more_or_less = "exactly";
+    }
+    PyErr_Format(PyExc_TypeError,
+                 "%.200s() takes %.8s %" CYTHON_FORMAT_SSIZE_T "d positional argument%.1s (%" CYTHON_FORMAT_SSIZE_T "d given)",
+                 func_name, more_or_less, num_expected,
+                 (num_expected == 1) ? "" : "s", num_found);
+}
+
+/* KeywordStringCheck */
+  static CYTHON_INLINE int __Pyx_CheckKeywordStrings(
+    PyObject *kwdict,
+    const char* function_name,
+    int kw_allowed)
+{
+    PyObject* key = 0;
+    Py_ssize_t pos = 0;
+#if CYTHON_COMPILING_IN_PYPY
+    if (!kw_allowed && PyDict_Next(kwdict, &pos, &key, 0))
+        goto invalid_keyword;
+    return 1;
+#else
+    while (PyDict_Next(kwdict, &pos, &key, 0)) {
+        #if PY_MAJOR_VERSION < 3
+        if (unlikely(!PyString_CheckExact(key)) && unlikely(!PyString_Check(key)))
+        #endif
+            if (unlikely(!PyUnicode_Check(key)))
+                goto invalid_keyword_type;
+    }
+    if ((!kw_allowed) && unlikely(key))
+        goto invalid_keyword;
+    return 1;
+invalid_keyword_type:
+    PyErr_Format(PyExc_TypeError,
+        "%.200s() keywords must be strings", function_name);
+    return 0;
+#endif
+invalid_keyword:
+    PyErr_Format(PyExc_TypeError,
+    #if PY_MAJOR_VERSION < 3
+        "%.200s() got an unexpected keyword argument '%.200s'",
+        function_name, PyString_AsString(key));
+    #else
+        "%s() got an unexpected keyword argument '%U'",
+        function_name, key);
+    #endif
+    return 0;
+}
+
 /* WriteUnraisableException */
   static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
                                   CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
@@ -2797,6 +3125,17 @@ bad:
     if (nogil)
         PyGILState_Release(state);
 #endif
+}
+
+/* CallNextTpDealloc */
+  static void __Pyx_call_next_tp_dealloc(PyObject* obj, destructor current_tp_dealloc) {
+    PyTypeObject* type = Py_TYPE(obj);
+    while (type && type->tp_dealloc != current_tp_dealloc)
+        type = type->tp_base;
+    while (type && type->tp_dealloc == current_tp_dealloc)
+        type = type->tp_base;
+    if (type)
+        type->tp_dealloc(obj);
 }
 
 /* GetModuleGlobalName */
