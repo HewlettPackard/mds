@@ -52,6 +52,160 @@ cdef class Record(MDSObject):
 
 # START INJECTION
 
+cdef class Bool(MDSPrimitiveBase):
+    cdef mv_bool _value
+
+
+cdef class BoolArray(MDSArrayBase):
+    cdef h_marray_bool_t _handle
+
+
+cdef inline BoolArray_Init(h_marray_bool_t handle):
+    result = BoolArray()
+    result._handle = handle
+    return result
+
+
+cdef class Byte(MDSIntPrimitiveBase):
+    cdef mv_byte _value
+
+
+cdef class ByteArray(MDSIntArrayBase):
+    cdef h_marray_byte_t _handle
+
+
+cdef inline ByteArray_Init(h_marray_byte_t handle):
+    result = ByteArray()
+    result._handle = handle
+    return result
+
+
+cdef class UByte(MDSIntPrimitiveBase):
+    cdef mv_ubyte _value
+
+
+cdef class UByteArray(MDSIntArrayBase):
+    cdef h_marray_ubyte_t _handle
+
+
+cdef inline UByteArray_Init(h_marray_ubyte_t handle):
+    result = UByteArray()
+    result._handle = handle
+    return result
+
+
+cdef class Short(MDSIntPrimitiveBase):
+    cdef mv_short _value
+
+
+cdef class ShortArray(MDSIntArrayBase):
+    cdef h_marray_short_t _handle
+
+
+cdef inline ShortArray_Init(h_marray_short_t handle):
+    result = ShortArray()
+    result._handle = handle
+    return result
+
+
+cdef class UShort(MDSIntPrimitiveBase):
+    cdef mv_ushort _value
+
+
+cdef class UShortArray(MDSIntArrayBase):
+    cdef h_marray_ushort_t _handle
+
+
+cdef inline UShortArray_Init(h_marray_ushort_t handle):
+    result = UShortArray()
+    result._handle = handle
+    return result
+
+
+cdef class Int(MDSIntPrimitiveBase):
+    cdef mv_int _value
+
+
+cdef class IntArray(MDSIntArrayBase):
+    cdef h_marray_int_t _handle
+
+
+cdef inline IntArray_Init(h_marray_int_t handle):
+    result = IntArray()
+    result._handle = handle
+    return result
+
+
+cdef class UInt(MDSIntPrimitiveBase):
+    cdef mv_uint _value
+
+
+cdef class UIntArray(MDSIntArrayBase):
+    cdef h_marray_uint_t _handle
+
+
+cdef inline UIntArray_Init(h_marray_uint_t handle):
+    result = UIntArray()
+    result._handle = handle
+    return result
+
+
+cdef class Long(MDSIntPrimitiveBase):
+    cdef mv_long _value
+
+
+cdef class LongArray(MDSIntArrayBase):
+    cdef h_marray_long_t _handle
+
+
+cdef inline LongArray_Init(h_marray_long_t handle):
+    result = LongArray()
+    result._handle = handle
+    return result
+
+
+cdef class ULong(MDSIntPrimitiveBase):
+    cdef mv_ulong _value
+
+
+cdef class ULongArray(MDSIntArrayBase):
+    cdef h_marray_ulong_t _handle
+
+
+cdef inline ULongArray_Init(h_marray_ulong_t handle):
+    result = ULongArray()
+    result._handle = handle
+    return result
+
+
+cdef class Float(MDSFloatPrimitiveBase):
+    cdef mv_float _value
+
+
+cdef class FloatArray(MDSFloatArrayBase):
+    cdef h_marray_float_t _handle
+
+
+cdef inline FloatArray_Init(h_marray_float_t handle):
+    result = FloatArray()
+    result._handle = handle
+    return result
+
+
+cdef class Double(MDSFloatPrimitiveBase):
+    cdef mv_double _value
+
+
+cdef class DoubleArray(MDSFloatArrayBase):
+    cdef h_marray_double_t _handle
+
+
+cdef inline DoubleArray_Init(h_marray_double_t handle):
+    result = DoubleArray()
+    result._handle = handle
+    return result
+
+
 # END INJECTION
 
 # =========================================================================

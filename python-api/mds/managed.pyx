@@ -117,8 +117,6 @@ cdef class Record(MDSObject):
 
 cdef class Bool(MDSPrimitiveBase):
 
-    cdef mv_bool _value
-
     def __cinit__(self, value):  # TODO: Set the value in _value
         value = self._sanitize(value)
 
@@ -131,7 +129,6 @@ cdef class Bool(MDSPrimitiveBase):
 
 cdef class BoolArray(MDSArrayBase):
 
-    cdef h_marray_bool_t _handle
     _primitive = Bool
 
     def __cinit__(self, length=None):
@@ -170,16 +167,7 @@ cdef class BoolArray(MDSArrayBase):
         def __get__(self):
             return type(True)
 
-
-cdef BoolArray_Init(h_marray_bool_t handle):
-    result = BoolArray()
-    result._handle = handle
-    return result
-
-
 cdef class Byte(MDSIntPrimitiveBase):
-
-    cdef mv_byte _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
         value = self._sanitize(value)
@@ -201,7 +189,6 @@ cdef class Byte(MDSIntPrimitiveBase):
 
 cdef class ByteArray(MDSIntArrayBase):
 
-    cdef h_marray_byte_t _handle
     _primitive = Byte
 
     def __cinit__(self, length=None):
@@ -236,16 +223,7 @@ cdef class ByteArray(MDSIntArrayBase):
     def create(length):
         return ByteArray_Init(create_byte_marray(length))
 
-
-cdef ByteArray_Init(h_marray_byte_t handle):
-    result = ByteArray()
-    result._handle = handle
-    return result
-
-
 cdef class UByte(MDSIntPrimitiveBase):
-
-    cdef mv_ubyte _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
         value = self._sanitize(value)
@@ -267,7 +245,6 @@ cdef class UByte(MDSIntPrimitiveBase):
 
 cdef class UByteArray(MDSIntArrayBase):
 
-    cdef h_marray_ubyte_t _handle
     _primitive = UByte
 
     def __cinit__(self, length=None):
@@ -302,16 +279,7 @@ cdef class UByteArray(MDSIntArrayBase):
     def create(length):
         return UByteArray_Init(create_ubyte_marray(length))
 
-
-cdef UByteArray_Init(h_marray_ubyte_t handle):
-    result = UByteArray()
-    result._handle = handle
-    return result
-
-
 cdef class Short(MDSIntPrimitiveBase):
-
-    cdef mv_short _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
         value = self._sanitize(value)
@@ -333,7 +301,6 @@ cdef class Short(MDSIntPrimitiveBase):
 
 cdef class ShortArray(MDSIntArrayBase):
 
-    cdef h_marray_short_t _handle
     _primitive = Short
 
     def __cinit__(self, length=None):
@@ -368,16 +335,7 @@ cdef class ShortArray(MDSIntArrayBase):
     def create(length):
         return ShortArray_Init(create_short_marray(length))
 
-
-cdef ShortArray_Init(h_marray_short_t handle):
-    result = ShortArray()
-    result._handle = handle
-    return result
-
-
 cdef class UShort(MDSIntPrimitiveBase):
-
-    cdef mv_ushort _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
         value = self._sanitize(value)
@@ -399,7 +357,6 @@ cdef class UShort(MDSIntPrimitiveBase):
 
 cdef class UShortArray(MDSIntArrayBase):
 
-    cdef h_marray_ushort_t _handle
     _primitive = UShort
 
     def __cinit__(self, length=None):
@@ -434,16 +391,7 @@ cdef class UShortArray(MDSIntArrayBase):
     def create(length):
         return UShortArray_Init(create_ushort_marray(length))
 
-
-cdef UShortArray_Init(h_marray_ushort_t handle):
-    result = UShortArray()
-    result._handle = handle
-    return result
-
-
 cdef class Int(MDSIntPrimitiveBase):
-
-    cdef mv_int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
         value = self._sanitize(value)
@@ -465,7 +413,6 @@ cdef class Int(MDSIntPrimitiveBase):
 
 cdef class IntArray(MDSIntArrayBase):
 
-    cdef h_marray_int_t _handle
     _primitive = Int
 
     def __cinit__(self, length=None):
@@ -500,16 +447,7 @@ cdef class IntArray(MDSIntArrayBase):
     def create(length):
         return IntArray_Init(create_int_marray(length))
 
-
-cdef IntArray_Init(h_marray_int_t handle):
-    result = IntArray()
-    result._handle = handle
-    return result
-
-
 cdef class UInt(MDSIntPrimitiveBase):
-
-    cdef mv_uint _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
         value = self._sanitize(value)
@@ -531,7 +469,6 @@ cdef class UInt(MDSIntPrimitiveBase):
 
 cdef class UIntArray(MDSIntArrayBase):
 
-    cdef h_marray_uint_t _handle
     _primitive = UInt
 
     def __cinit__(self, length=None):
@@ -566,16 +503,7 @@ cdef class UIntArray(MDSIntArrayBase):
     def create(length):
         return UIntArray_Init(create_uint_marray(length))
 
-
-cdef UIntArray_Init(h_marray_uint_t handle):
-    result = UIntArray()
-    result._handle = handle
-    return result
-
-
 cdef class Long(MDSIntPrimitiveBase):
-
-    cdef mv_long _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
         value = self._sanitize(value)
@@ -597,7 +525,6 @@ cdef class Long(MDSIntPrimitiveBase):
 
 cdef class LongArray(MDSIntArrayBase):
 
-    cdef h_marray_long_t _handle
     _primitive = Long
 
     def __cinit__(self, length=None):
@@ -632,16 +559,7 @@ cdef class LongArray(MDSIntArrayBase):
     def create(length):
         return LongArray_Init(create_long_marray(length))
 
-
-cdef LongArray_Init(h_marray_long_t handle):
-    result = LongArray()
-    result._handle = handle
-    return result
-
-
 cdef class ULong(MDSIntPrimitiveBase):
-
-    cdef mv_ulong _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
         value = self._sanitize(value)
@@ -663,7 +581,6 @@ cdef class ULong(MDSIntPrimitiveBase):
 
 cdef class ULongArray(MDSIntArrayBase):
 
-    cdef h_marray_ulong_t _handle
     _primitive = ULong
 
     def __cinit__(self, length=None):
@@ -698,16 +615,7 @@ cdef class ULongArray(MDSIntArrayBase):
     def create(length):
         return ULongArray_Init(create_ulong_marray(length))
 
-
-cdef ULongArray_Init(h_marray_ulong_t handle):
-    result = ULongArray()
-    result._handle = handle
-    return result
-
-
 cdef class Float(MDSFloatPrimitiveBase):
-
-    cdef mv_float _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
         value = self._sanitize(value)
@@ -721,7 +629,6 @@ cdef class Float(MDSFloatPrimitiveBase):
 
 cdef class FloatArray(MDSFloatArrayBase):
 
-    cdef h_marray_float_t _handle
     _primitive = Float
 
     def __cinit__(self, length=None):
@@ -756,16 +663,7 @@ cdef class FloatArray(MDSFloatArrayBase):
     def create(length):
         return FloatArray_Init(create_float_marray(length))
 
-
-cdef FloatArray_Init(h_marray_float_t handle):
-    result = FloatArray()
-    result._handle = handle
-    return result
-
-
 cdef class Double(MDSFloatPrimitiveBase):
-
-    cdef mv_double _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
         value = self._sanitize(value)
@@ -779,7 +677,6 @@ cdef class Double(MDSFloatPrimitiveBase):
 
 cdef class DoubleArray(MDSFloatArrayBase):
 
-    cdef h_marray_double_t _handle
     _primitive = Double
 
     def __cinit__(self, length=None):
@@ -813,13 +710,6 @@ cdef class DoubleArray(MDSFloatArrayBase):
     @staticmethod
     def create(length):
         return DoubleArray_Init(create_double_marray(length))
-
-
-cdef DoubleArray_Init(h_marray_double_t handle):
-    result = DoubleArray()
-    result._handle = handle
-    return result
-
 
 # END INJECTION
 

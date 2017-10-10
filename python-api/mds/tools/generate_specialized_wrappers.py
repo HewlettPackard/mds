@@ -155,12 +155,19 @@ def tmpl_int_primitive_bounds(t):
             return {t.bounds.max} 
 """
 
+def tmpl_define_record_member(t):
+    return f"""
+cdef class {t.title_record_member}(RecordMemberBase):
+    cdef {t.record_field} _handle
+
+cdef class {t.title_const_record_member}(ConstRecordMemberBase):
+    cdef {t.const_record_field} _handle
+"""
+
 def tmpl_record_member(t):
-    s = f"""
+    return f"""
 cdef class {t.title_record_member}(RecordMemberBase):
 
-    cdef {t.record_field} _handle
- 
     def __cinit__(self, type_ident, initial_value):
         self._type_ident = type_ident
         self._initial_value = initial_value            
@@ -180,10 +187,9 @@ cdef class {t.title_record_member}(RecordMemberBase):
         # managed_type<T>::ensure_complete()
         pass
 
+
 cdef class {t.title_const_record_member}(ConstRecordMemberBase):
 
-    cdef {t.const_record_field} _handle
- 
     def __cinit__(self, type_ident, initial_value):
         self._type_ident = type_ident
         self._initial_value = initial_value            
@@ -201,6 +207,22 @@ cdef class {t.title_const_record_member}(ConstRecordMemberBase):
         pass
 """
 
+def tmpl_define_array(t):
+    return f"""
+cdef class {t.title}({t.primitive_parent}):
+    cdef {t.managed_value} _value
+
+
+cdef class {t.title_array}({t.array_parent}):
+    cdef {t.managed_array} _handle
+
+
+cdef inline {t.title_array_init}({t.managed_array} handle):
+    result = {t.title_array}()
+    result._handle = handle
+    return result\n
+"""
+
 def tmpl_concrete_array(t):
     primitive_extra = ""
 
@@ -209,8 +231,6 @@ def tmpl_concrete_array(t):
 
     s = f"""
 cdef class {t.title}({t.primitive_parent}):
-
-    cdef {t.managed_value} _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
         value = self._sanitize(value)
@@ -224,7 +244,6 @@ cdef class {t.title}({t.primitive_parent}):
 
 cdef class {t.title_array}({t.array_parent}):
 
-    cdef {t.managed_array} _handle
     _primitive = {t.title}
 
     def __cinit__(self, length=None):
@@ -266,13 +285,6 @@ cdef class {t.title_array}({t.array_parent}):
     property dtype:
         def __get__(self):
             return type({t.python_type})
-"""
-
-    s += f"""\n
-cdef {t.title_array_init}({t.managed_array} handle):
-    result = {t.title_array}()
-    result._handle = handle
-    return result\n
 """
     return s
 
@@ -423,6 +435,9 @@ TARGETS = [
     InjectionInfo("mds/core/api_arrays.pxd", tmpl_array_wrapper),
     InjectionInfo("mds/core/api_namespaces.pxd", tmpl_namespace_wrapper),
     InjectionInfo("mds/core/api_records.pxd", tmpl_record_field_wrapper),
+    InjectionInfo("mds/private.pxd", tmpl_define_record_member),
+    InjectionInfo("mds/private.pyx", tmpl_record_member),
+    InjectionInfo("mds/managed.pxd", tmpl_define_array),
     InjectionInfo("mds/managed.pyx", tmpl_concrete_array)
 ]
 

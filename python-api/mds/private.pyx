@@ -40,6 +40,7 @@ cdef class MDSObject(object):
     property uuid:
         def __get__(self):
             pass  # TODO
+
 # =========================================================================
 #  Managed Values
 # =========================================================================
@@ -236,6 +237,449 @@ cdef class ConstRecordMemberBase(RecordMemberBase):
     def write(self, value):
         raise ConstError('Can\'t assign value to const field.')
 
+# START INJECTION
+
+cdef class BoolRecordMember(RecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    def write(self, value):
+        self._handle.write(value)
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_bool_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+
+cdef class ConstBoolRecordMember(ConstRecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_bool_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+cdef class ByteRecordMember(RecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    def write(self, value):
+        self._handle.write(value)
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_byte_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+
+cdef class ConstByteRecordMember(ConstRecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_byte_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+cdef class UByteRecordMember(RecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    def write(self, value):
+        self._handle.write(value)
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_ubyte_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+
+cdef class ConstUByteRecordMember(ConstRecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_ubyte_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+cdef class ShortRecordMember(RecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    def write(self, value):
+        self._handle.write(value)
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_short_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+
+cdef class ConstShortRecordMember(ConstRecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_short_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+cdef class UShortRecordMember(RecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    def write(self, value):
+        self._handle.write(value)
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_ushort_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+
+cdef class ConstUShortRecordMember(ConstRecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_ushort_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+cdef class IntRecordMember(RecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    def write(self, value):
+        self._handle.write(value)
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_int_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+
+cdef class ConstIntRecordMember(ConstRecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_int_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+cdef class UIntRecordMember(RecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    def write(self, value):
+        self._handle.write(value)
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_uint_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+
+cdef class ConstUIntRecordMember(ConstRecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_uint_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+cdef class LongRecordMember(RecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    def write(self, value):
+        self._handle.write(value)
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_long_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+
+cdef class ConstLongRecordMember(ConstRecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_long_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+cdef class ULongRecordMember(RecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    def write(self, value):
+        self._handle.write(value)
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_ulong_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+
+cdef class ConstULongRecordMember(ConstRecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_ulong_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+cdef class FloatRecordMember(RecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    def write(self, value):
+        self._handle.write(value)
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_float_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+
+cdef class ConstFloatRecordMember(ConstRecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_float_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+cdef class DoubleRecordMember(RecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    def write(self, value):
+        self._handle.write(value)
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_double_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+
+cdef class ConstDoubleRecordMember(ConstRecordMemberBase):
+
+    def __cinit__(self, type_ident, initial_value):
+        self._type_ident = type_ident
+        self._initial_value = initial_value            
+
+    def read(self):
+        return self._handle.frozen_read()
+
+    cpdef declare(self, str ident, record_type_handle rt):
+        assert(self._handle.is_null())
+        self._handle = managed_double_type_handle().field_in(rt, ident, True)
+        self.write_initial(self._initial_value)
+
+    cpdef ensure_type(self):
+        # managed_type<T>::ensure_complete()
+        pass
+
+# END INJECTION
 
 cdef class RecordTypeDeclaration(MDSObject):
 

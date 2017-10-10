@@ -711,6 +711,28 @@ struct __pyx_obj_3mds_7private_RecordMemberBase;
 struct __pyx_obj_3mds_7private_ConstRecordMemberBase;
 struct __pyx_obj_3mds_7private_RecordTypeDeclaration;
 struct __pyx_obj_3mds_7private_RecordToken;
+struct __pyx_obj_3mds_7private_BoolRecordMember;
+struct __pyx_obj_3mds_7private_ConstBoolRecordMember;
+struct __pyx_obj_3mds_7private_ByteRecordMember;
+struct __pyx_obj_3mds_7private_ConstByteRecordMember;
+struct __pyx_obj_3mds_7private_UByteRecordMember;
+struct __pyx_obj_3mds_7private_ConstUByteRecordMember;
+struct __pyx_obj_3mds_7private_ShortRecordMember;
+struct __pyx_obj_3mds_7private_ConstShortRecordMember;
+struct __pyx_obj_3mds_7private_UShortRecordMember;
+struct __pyx_obj_3mds_7private_ConstUShortRecordMember;
+struct __pyx_obj_3mds_7private_IntRecordMember;
+struct __pyx_obj_3mds_7private_ConstIntRecordMember;
+struct __pyx_obj_3mds_7private_UIntRecordMember;
+struct __pyx_obj_3mds_7private_ConstUIntRecordMember;
+struct __pyx_obj_3mds_7private_LongRecordMember;
+struct __pyx_obj_3mds_7private_ConstLongRecordMember;
+struct __pyx_obj_3mds_7private_ULongRecordMember;
+struct __pyx_obj_3mds_7private_ConstULongRecordMember;
+struct __pyx_obj_3mds_7private_FloatRecordMember;
+struct __pyx_obj_3mds_7private_ConstFloatRecordMember;
+struct __pyx_obj_3mds_7private_DoubleRecordMember;
+struct __pyx_obj_3mds_7private_ConstDoubleRecordMember;
 struct __pyx_obj_3mds_7private_UnderflowError;
 struct __pyx_obj_3mds_7private_ConstError;
 struct __pyx_obj_3mds_9namespace_Namespace;
@@ -851,7 +873,293 @@ struct __pyx_obj_3mds_7private_RecordToken {
 };
 
 
-/* "mds/private.pxd":87
+/* "mds/private.pxd":85
+ * # START INJECTION
+ * 
+ * cdef class BoolRecordMember(RecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_rfield_bool_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_BoolRecordMember {
+  struct __pyx_obj_3mds_7private_RecordMemberBase __pyx_base;
+  mds::api::record_field_handle<mds::api::kind::BOOL> _handle;
+};
+
+
+/* "mds/private.pxd":88
+ *     cdef h_rfield_bool_t _handle
+ * 
+ * cdef class ConstBoolRecordMember(ConstRecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_const_rfield_bool_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ConstBoolRecordMember {
+  struct __pyx_obj_3mds_7private_ConstRecordMemberBase __pyx_base;
+  mds::api::const_record_field_handle<mds::api::kind::BOOL> _handle;
+};
+
+
+/* "mds/private.pxd":91
+ *     cdef h_const_rfield_bool_t _handle
+ * 
+ * cdef class ByteRecordMember(RecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_rfield_byte_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ByteRecordMember {
+  struct __pyx_obj_3mds_7private_RecordMemberBase __pyx_base;
+  mds::api::record_field_handle<mds::api::kind::BYTE> _handle;
+};
+
+
+/* "mds/private.pxd":94
+ *     cdef h_rfield_byte_t _handle
+ * 
+ * cdef class ConstByteRecordMember(ConstRecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_const_rfield_byte_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ConstByteRecordMember {
+  struct __pyx_obj_3mds_7private_ConstRecordMemberBase __pyx_base;
+  mds::api::const_record_field_handle<mds::api::kind::BYTE> _handle;
+};
+
+
+/* "mds/private.pxd":97
+ *     cdef h_const_rfield_byte_t _handle
+ * 
+ * cdef class UByteRecordMember(RecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_rfield_ubyte_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_UByteRecordMember {
+  struct __pyx_obj_3mds_7private_RecordMemberBase __pyx_base;
+  mds::api::record_field_handle<mds::api::kind::UBYTE> _handle;
+};
+
+
+/* "mds/private.pxd":100
+ *     cdef h_rfield_ubyte_t _handle
+ * 
+ * cdef class ConstUByteRecordMember(ConstRecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_const_rfield_ubyte_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ConstUByteRecordMember {
+  struct __pyx_obj_3mds_7private_ConstRecordMemberBase __pyx_base;
+  mds::api::const_record_field_handle<mds::api::kind::UBYTE> _handle;
+};
+
+
+/* "mds/private.pxd":103
+ *     cdef h_const_rfield_ubyte_t _handle
+ * 
+ * cdef class ShortRecordMember(RecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_rfield_short_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ShortRecordMember {
+  struct __pyx_obj_3mds_7private_RecordMemberBase __pyx_base;
+  mds::api::record_field_handle<mds::api::kind::SHORT> _handle;
+};
+
+
+/* "mds/private.pxd":106
+ *     cdef h_rfield_short_t _handle
+ * 
+ * cdef class ConstShortRecordMember(ConstRecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_const_rfield_short_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ConstShortRecordMember {
+  struct __pyx_obj_3mds_7private_ConstRecordMemberBase __pyx_base;
+  mds::api::const_record_field_handle<mds::api::kind::SHORT> _handle;
+};
+
+
+/* "mds/private.pxd":109
+ *     cdef h_const_rfield_short_t _handle
+ * 
+ * cdef class UShortRecordMember(RecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_rfield_ushort_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_UShortRecordMember {
+  struct __pyx_obj_3mds_7private_RecordMemberBase __pyx_base;
+  mds::api::record_field_handle<mds::api::kind::USHORT> _handle;
+};
+
+
+/* "mds/private.pxd":112
+ *     cdef h_rfield_ushort_t _handle
+ * 
+ * cdef class ConstUShortRecordMember(ConstRecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_const_rfield_ushort_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ConstUShortRecordMember {
+  struct __pyx_obj_3mds_7private_ConstRecordMemberBase __pyx_base;
+  mds::api::const_record_field_handle<mds::api::kind::USHORT> _handle;
+};
+
+
+/* "mds/private.pxd":115
+ *     cdef h_const_rfield_ushort_t _handle
+ * 
+ * cdef class IntRecordMember(RecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_rfield_int_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_IntRecordMember {
+  struct __pyx_obj_3mds_7private_RecordMemberBase __pyx_base;
+  mds::api::record_field_handle<mds::api::kind::INT> _handle;
+};
+
+
+/* "mds/private.pxd":118
+ *     cdef h_rfield_int_t _handle
+ * 
+ * cdef class ConstIntRecordMember(ConstRecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_const_rfield_int_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ConstIntRecordMember {
+  struct __pyx_obj_3mds_7private_ConstRecordMemberBase __pyx_base;
+  mds::api::const_record_field_handle<mds::api::kind::INT> _handle;
+};
+
+
+/* "mds/private.pxd":121
+ *     cdef h_const_rfield_int_t _handle
+ * 
+ * cdef class UIntRecordMember(RecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_rfield_uint_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_UIntRecordMember {
+  struct __pyx_obj_3mds_7private_RecordMemberBase __pyx_base;
+  mds::api::record_field_handle<mds::api::kind::UINT> _handle;
+};
+
+
+/* "mds/private.pxd":124
+ *     cdef h_rfield_uint_t _handle
+ * 
+ * cdef class ConstUIntRecordMember(ConstRecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_const_rfield_uint_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ConstUIntRecordMember {
+  struct __pyx_obj_3mds_7private_ConstRecordMemberBase __pyx_base;
+  mds::api::const_record_field_handle<mds::api::kind::UINT> _handle;
+};
+
+
+/* "mds/private.pxd":127
+ *     cdef h_const_rfield_uint_t _handle
+ * 
+ * cdef class LongRecordMember(RecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_rfield_long_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_LongRecordMember {
+  struct __pyx_obj_3mds_7private_RecordMemberBase __pyx_base;
+  mds::api::record_field_handle<mds::api::kind::LONG> _handle;
+};
+
+
+/* "mds/private.pxd":130
+ *     cdef h_rfield_long_t _handle
+ * 
+ * cdef class ConstLongRecordMember(ConstRecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_const_rfield_long_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ConstLongRecordMember {
+  struct __pyx_obj_3mds_7private_ConstRecordMemberBase __pyx_base;
+  mds::api::const_record_field_handle<mds::api::kind::LONG> _handle;
+};
+
+
+/* "mds/private.pxd":133
+ *     cdef h_const_rfield_long_t _handle
+ * 
+ * cdef class ULongRecordMember(RecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_rfield_ulong_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ULongRecordMember {
+  struct __pyx_obj_3mds_7private_RecordMemberBase __pyx_base;
+  mds::api::record_field_handle<mds::api::kind::ULONG> _handle;
+};
+
+
+/* "mds/private.pxd":136
+ *     cdef h_rfield_ulong_t _handle
+ * 
+ * cdef class ConstULongRecordMember(ConstRecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_const_rfield_ulong_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ConstULongRecordMember {
+  struct __pyx_obj_3mds_7private_ConstRecordMemberBase __pyx_base;
+  mds::api::const_record_field_handle<mds::api::kind::ULONG> _handle;
+};
+
+
+/* "mds/private.pxd":139
+ *     cdef h_const_rfield_ulong_t _handle
+ * 
+ * cdef class FloatRecordMember(RecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_rfield_float_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_FloatRecordMember {
+  struct __pyx_obj_3mds_7private_RecordMemberBase __pyx_base;
+  mds::api::record_field_handle<mds::api::kind::FLOAT> _handle;
+};
+
+
+/* "mds/private.pxd":142
+ *     cdef h_rfield_float_t _handle
+ * 
+ * cdef class ConstFloatRecordMember(ConstRecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_const_rfield_float_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ConstFloatRecordMember {
+  struct __pyx_obj_3mds_7private_ConstRecordMemberBase __pyx_base;
+  mds::api::const_record_field_handle<mds::api::kind::FLOAT> _handle;
+};
+
+
+/* "mds/private.pxd":145
+ *     cdef h_const_rfield_float_t _handle
+ * 
+ * cdef class DoubleRecordMember(RecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_rfield_double_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_DoubleRecordMember {
+  struct __pyx_obj_3mds_7private_RecordMemberBase __pyx_base;
+  mds::api::record_field_handle<mds::api::kind::DOUBLE> _handle;
+};
+
+
+/* "mds/private.pxd":148
+ *     cdef h_rfield_double_t _handle
+ * 
+ * cdef class ConstDoubleRecordMember(ConstRecordMemberBase):             # <<<<<<<<<<<<<<
+ *     cdef h_const_rfield_double_t _handle
+ * 
+ */
+struct __pyx_obj_3mds_7private_ConstDoubleRecordMember {
+  struct __pyx_obj_3mds_7private_ConstRecordMemberBase __pyx_base;
+  mds::api::const_record_field_handle<mds::api::kind::DOUBLE> _handle;
+};
+
+
+/* "mds/private.pxd":157
  * # =========================================================================
  * 
  * cdef class UnderflowError(Exception):             # <<<<<<<<<<<<<<
@@ -863,7 +1171,7 @@ struct __pyx_obj_3mds_7private_UnderflowError {
 };
 
 
-/* "mds/private.pxd":90
+/* "mds/private.pxd":160
  *     pass
  * 
  * cdef class ConstError(Exception):             # <<<<<<<<<<<<<<
@@ -1142,6 +1450,28 @@ static PyTypeObject *__pyx_ptype_3mds_7private_RecordMemberBase = 0;
 static PyTypeObject *__pyx_ptype_3mds_7private_ConstRecordMemberBase = 0;
 static PyTypeObject *__pyx_ptype_3mds_7private_RecordTypeDeclaration = 0;
 static PyTypeObject *__pyx_ptype_3mds_7private_RecordToken = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_BoolRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ConstBoolRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ByteRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ConstByteRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_UByteRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ConstUByteRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ShortRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ConstShortRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_UShortRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ConstUShortRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_IntRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ConstIntRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_UIntRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ConstUIntRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_LongRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ConstLongRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ULongRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ConstULongRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_FloatRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ConstFloatRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_DoubleRecordMember = 0;
+static PyTypeObject *__pyx_ptype_3mds_7private_ConstDoubleRecordMember = 0;
 static PyTypeObject *__pyx_ptype_3mds_7private_UnderflowError = 0;
 static PyTypeObject *__pyx_ptype_3mds_7private_ConstError = 0;
 
@@ -2404,8 +2734,30 @@ PyMODINIT_FUNC PyInit_namespace(void)
   __pyx_ptype_3mds_7private_ConstRecordMemberBase = __Pyx_ImportType("mds.private", "ConstRecordMemberBase", sizeof(struct __pyx_obj_3mds_7private_ConstRecordMemberBase), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstRecordMemberBase)) __PYX_ERR(5, 71, __pyx_L1_error)
   __pyx_ptype_3mds_7private_RecordTypeDeclaration = __Pyx_ImportType("mds.private", "RecordTypeDeclaration", sizeof(struct __pyx_obj_3mds_7private_RecordTypeDeclaration), 1); if (unlikely(!__pyx_ptype_3mds_7private_RecordTypeDeclaration)) __PYX_ERR(5, 74, __pyx_L1_error)
   __pyx_ptype_3mds_7private_RecordToken = __Pyx_ImportType("mds.private", "RecordToken", sizeof(struct __pyx_obj_3mds_7private_RecordToken), 1); if (unlikely(!__pyx_ptype_3mds_7private_RecordToken)) __PYX_ERR(5, 80, __pyx_L1_error)
-  __pyx_ptype_3mds_7private_UnderflowError = __Pyx_ImportType("mds.private", "UnderflowError", sizeof(struct __pyx_obj_3mds_7private_UnderflowError), 1); if (unlikely(!__pyx_ptype_3mds_7private_UnderflowError)) __PYX_ERR(5, 87, __pyx_L1_error)
-  __pyx_ptype_3mds_7private_ConstError = __Pyx_ImportType("mds.private", "ConstError", sizeof(struct __pyx_obj_3mds_7private_ConstError), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstError)) __PYX_ERR(5, 90, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_BoolRecordMember = __Pyx_ImportType("mds.private", "BoolRecordMember", sizeof(struct __pyx_obj_3mds_7private_BoolRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_BoolRecordMember)) __PYX_ERR(5, 85, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstBoolRecordMember = __Pyx_ImportType("mds.private", "ConstBoolRecordMember", sizeof(struct __pyx_obj_3mds_7private_ConstBoolRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstBoolRecordMember)) __PYX_ERR(5, 88, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ByteRecordMember = __Pyx_ImportType("mds.private", "ByteRecordMember", sizeof(struct __pyx_obj_3mds_7private_ByteRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ByteRecordMember)) __PYX_ERR(5, 91, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstByteRecordMember = __Pyx_ImportType("mds.private", "ConstByteRecordMember", sizeof(struct __pyx_obj_3mds_7private_ConstByteRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstByteRecordMember)) __PYX_ERR(5, 94, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_UByteRecordMember = __Pyx_ImportType("mds.private", "UByteRecordMember", sizeof(struct __pyx_obj_3mds_7private_UByteRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_UByteRecordMember)) __PYX_ERR(5, 97, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstUByteRecordMember = __Pyx_ImportType("mds.private", "ConstUByteRecordMember", sizeof(struct __pyx_obj_3mds_7private_ConstUByteRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstUByteRecordMember)) __PYX_ERR(5, 100, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ShortRecordMember = __Pyx_ImportType("mds.private", "ShortRecordMember", sizeof(struct __pyx_obj_3mds_7private_ShortRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ShortRecordMember)) __PYX_ERR(5, 103, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstShortRecordMember = __Pyx_ImportType("mds.private", "ConstShortRecordMember", sizeof(struct __pyx_obj_3mds_7private_ConstShortRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstShortRecordMember)) __PYX_ERR(5, 106, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_UShortRecordMember = __Pyx_ImportType("mds.private", "UShortRecordMember", sizeof(struct __pyx_obj_3mds_7private_UShortRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_UShortRecordMember)) __PYX_ERR(5, 109, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstUShortRecordMember = __Pyx_ImportType("mds.private", "ConstUShortRecordMember", sizeof(struct __pyx_obj_3mds_7private_ConstUShortRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstUShortRecordMember)) __PYX_ERR(5, 112, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_IntRecordMember = __Pyx_ImportType("mds.private", "IntRecordMember", sizeof(struct __pyx_obj_3mds_7private_IntRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_IntRecordMember)) __PYX_ERR(5, 115, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstIntRecordMember = __Pyx_ImportType("mds.private", "ConstIntRecordMember", sizeof(struct __pyx_obj_3mds_7private_ConstIntRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstIntRecordMember)) __PYX_ERR(5, 118, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_UIntRecordMember = __Pyx_ImportType("mds.private", "UIntRecordMember", sizeof(struct __pyx_obj_3mds_7private_UIntRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_UIntRecordMember)) __PYX_ERR(5, 121, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstUIntRecordMember = __Pyx_ImportType("mds.private", "ConstUIntRecordMember", sizeof(struct __pyx_obj_3mds_7private_ConstUIntRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstUIntRecordMember)) __PYX_ERR(5, 124, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_LongRecordMember = __Pyx_ImportType("mds.private", "LongRecordMember", sizeof(struct __pyx_obj_3mds_7private_LongRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_LongRecordMember)) __PYX_ERR(5, 127, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstLongRecordMember = __Pyx_ImportType("mds.private", "ConstLongRecordMember", sizeof(struct __pyx_obj_3mds_7private_ConstLongRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstLongRecordMember)) __PYX_ERR(5, 130, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ULongRecordMember = __Pyx_ImportType("mds.private", "ULongRecordMember", sizeof(struct __pyx_obj_3mds_7private_ULongRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ULongRecordMember)) __PYX_ERR(5, 133, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstULongRecordMember = __Pyx_ImportType("mds.private", "ConstULongRecordMember", sizeof(struct __pyx_obj_3mds_7private_ConstULongRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstULongRecordMember)) __PYX_ERR(5, 136, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_FloatRecordMember = __Pyx_ImportType("mds.private", "FloatRecordMember", sizeof(struct __pyx_obj_3mds_7private_FloatRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_FloatRecordMember)) __PYX_ERR(5, 139, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstFloatRecordMember = __Pyx_ImportType("mds.private", "ConstFloatRecordMember", sizeof(struct __pyx_obj_3mds_7private_ConstFloatRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstFloatRecordMember)) __PYX_ERR(5, 142, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_DoubleRecordMember = __Pyx_ImportType("mds.private", "DoubleRecordMember", sizeof(struct __pyx_obj_3mds_7private_DoubleRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_DoubleRecordMember)) __PYX_ERR(5, 145, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstDoubleRecordMember = __Pyx_ImportType("mds.private", "ConstDoubleRecordMember", sizeof(struct __pyx_obj_3mds_7private_ConstDoubleRecordMember), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstDoubleRecordMember)) __PYX_ERR(5, 148, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_UnderflowError = __Pyx_ImportType("mds.private", "UnderflowError", sizeof(struct __pyx_obj_3mds_7private_UnderflowError), 1); if (unlikely(!__pyx_ptype_3mds_7private_UnderflowError)) __PYX_ERR(5, 157, __pyx_L1_error)
+  __pyx_ptype_3mds_7private_ConstError = __Pyx_ImportType("mds.private", "ConstError", sizeof(struct __pyx_obj_3mds_7private_ConstError), 1); if (unlikely(!__pyx_ptype_3mds_7private_ConstError)) __PYX_ERR(5, 160, __pyx_L1_error)
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
   /*--- Execution code ---*/

@@ -80,6 +80,76 @@ cdef class RecordTypeDeclaration(MDSObject):
 cdef class RecordToken(MDSObject):
     pass
 
+# START INJECTION
+
+cdef class BoolRecordMember(RecordMemberBase):
+    cdef h_rfield_bool_t _handle
+
+cdef class ConstBoolRecordMember(ConstRecordMemberBase):
+    cdef h_const_rfield_bool_t _handle
+
+cdef class ByteRecordMember(RecordMemberBase):
+    cdef h_rfield_byte_t _handle
+
+cdef class ConstByteRecordMember(ConstRecordMemberBase):
+    cdef h_const_rfield_byte_t _handle
+
+cdef class UByteRecordMember(RecordMemberBase):
+    cdef h_rfield_ubyte_t _handle
+
+cdef class ConstUByteRecordMember(ConstRecordMemberBase):
+    cdef h_const_rfield_ubyte_t _handle
+
+cdef class ShortRecordMember(RecordMemberBase):
+    cdef h_rfield_short_t _handle
+
+cdef class ConstShortRecordMember(ConstRecordMemberBase):
+    cdef h_const_rfield_short_t _handle
+
+cdef class UShortRecordMember(RecordMemberBase):
+    cdef h_rfield_ushort_t _handle
+
+cdef class ConstUShortRecordMember(ConstRecordMemberBase):
+    cdef h_const_rfield_ushort_t _handle
+
+cdef class IntRecordMember(RecordMemberBase):
+    cdef h_rfield_int_t _handle
+
+cdef class ConstIntRecordMember(ConstRecordMemberBase):
+    cdef h_const_rfield_int_t _handle
+
+cdef class UIntRecordMember(RecordMemberBase):
+    cdef h_rfield_uint_t _handle
+
+cdef class ConstUIntRecordMember(ConstRecordMemberBase):
+    cdef h_const_rfield_uint_t _handle
+
+cdef class LongRecordMember(RecordMemberBase):
+    cdef h_rfield_long_t _handle
+
+cdef class ConstLongRecordMember(ConstRecordMemberBase):
+    cdef h_const_rfield_long_t _handle
+
+cdef class ULongRecordMember(RecordMemberBase):
+    cdef h_rfield_ulong_t _handle
+
+cdef class ConstULongRecordMember(ConstRecordMemberBase):
+    cdef h_const_rfield_ulong_t _handle
+
+cdef class FloatRecordMember(RecordMemberBase):
+    cdef h_rfield_float_t _handle
+
+cdef class ConstFloatRecordMember(ConstRecordMemberBase):
+    cdef h_const_rfield_float_t _handle
+
+cdef class DoubleRecordMember(RecordMemberBase):
+    cdef h_rfield_double_t _handle
+
+cdef class ConstDoubleRecordMember(ConstRecordMemberBase):
+    cdef h_const_rfield_double_t _handle
+
+# END INJECTION
+
 # =========================================================================
 #  Errors & Exceptions
 # =========================================================================
