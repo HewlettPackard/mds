@@ -37,7 +37,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         # TODO uniform_key uuid()
 
 cdef extern from "helpers.h" namespace "mds::python::types":
-# START INJECTION
+# START INJECTION | tmpl_array_wrapper
 
     cdef cppclass h_array_bool_t "mds::api::array_type_handle<mds::api::kind::BOOL>":
         # const_managed_type_handle<K> element_type()
@@ -48,7 +48,6 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         mv_bool frozen_read(size_t)
         mv_bool write(size_t, mv_bool)
         size_t size()
-        # TODO uniform_key uuid()
         bool has_value()
         h_marray_base_t as_base()
         
@@ -63,7 +62,6 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         mv_byte frozen_read(size_t)
         mv_byte write(size_t, mv_byte)
         size_t size()
-        # TODO uniform_key uuid()
         bool has_value()
         h_marray_base_t as_base()
         
@@ -83,7 +81,6 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         mv_ubyte frozen_read(size_t)
         mv_ubyte write(size_t, mv_ubyte)
         size_t size()
-        # TODO uniform_key uuid()
         bool has_value()
         h_marray_base_t as_base()
         
@@ -103,7 +100,6 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         mv_short frozen_read(size_t)
         mv_short write(size_t, mv_short)
         size_t size()
-        # TODO uniform_key uuid()
         bool has_value()
         h_marray_base_t as_base()
         
@@ -123,7 +119,6 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         mv_ushort frozen_read(size_t)
         mv_ushort write(size_t, mv_ushort)
         size_t size()
-        # TODO uniform_key uuid()
         bool has_value()
         h_marray_base_t as_base()
         
@@ -143,7 +138,6 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         mv_int frozen_read(size_t)
         mv_int write(size_t, mv_int)
         size_t size()
-        # TODO uniform_key uuid()
         bool has_value()
         h_marray_base_t as_base()
         
@@ -163,7 +157,6 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         mv_uint frozen_read(size_t)
         mv_uint write(size_t, mv_uint)
         size_t size()
-        # TODO uniform_key uuid()
         bool has_value()
         h_marray_base_t as_base()
         
@@ -183,7 +176,6 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         mv_long frozen_read(size_t)
         mv_long write(size_t, mv_long)
         size_t size()
-        # TODO uniform_key uuid()
         bool has_value()
         h_marray_base_t as_base()
         
@@ -203,7 +195,6 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         mv_ulong frozen_read(size_t)
         mv_ulong write(size_t, mv_ulong)
         size_t size()
-        # TODO uniform_key uuid()
         bool has_value()
         h_marray_base_t as_base()
         
@@ -223,7 +214,6 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         mv_float frozen_read(size_t)
         mv_float write(size_t, mv_float)
         size_t size()
-        # TODO uniform_key uuid()
         bool has_value()
         h_marray_base_t as_base()
         
@@ -243,7 +233,6 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         mv_double frozen_read(size_t)
         mv_double write(size_t, mv_double)
         size_t size()
-        # TODO uniform_key uuid()
         bool has_value()
         h_marray_base_t as_base()
         
@@ -255,4 +244,3 @@ cdef extern from "helpers.h" namespace "mds::python::types":
     h_marray_double_t create_double_marray(size_t)
     
 # END INJECTION
-

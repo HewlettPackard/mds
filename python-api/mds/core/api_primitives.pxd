@@ -41,7 +41,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass mv_record "mv_wrapper<mds::api::kind::RECORD>":
         pass
 
-# START INJECTION
+# START INJECTION | tmpl_primitive_wrapper
 
     # BEGIN bool
 

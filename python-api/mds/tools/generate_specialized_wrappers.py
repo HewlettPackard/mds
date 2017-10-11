@@ -23,12 +23,13 @@ Application during this compilation process under terms of your choice,
 provided you also meet the terms and conditions of the Application license.
 """
 
+import glob
+import os
+import os.path
 import sys
 
 from collections import namedtuple
 
-InjectionInfo = namedtuple("InjectionInfo", ["file_path", "generator_fn"])
-SegmentedFile = namedtuple("SegmentedFile", ["pre", "existing", "post"])
 Taxonomy = namedtuple("Taxonomy", ["primitive", "array"])
 Bounds = namedtuple("Bounds", ["min", "max"])
 
@@ -51,13 +52,88 @@ MDSArrayBase*
 * Should not be instantiable, contains generic methods only.
 """
 
-def tmpl_record_field_wrapper_math(t):
-    return f"""
-        {t.c_type} add(const managed_record_handle&, {t.c_type})
-        {t.c_type} sub(const managed_record_handle&, {t.c_type})
-        {t.c_type} mul(const managed_record_handle&, {t.c_type})
-        {t.c_type} div(const managed_record_handle&, {t.c_type})
-"""
+class TypeInfo():
+    # These bases will be written manually
+    MDS_BASE_ARRAY = "MDSArrayBase"
+    MDS_INTEGRAL_ARRAY = "MDSIntArrayBase"
+    MDS_FLOATING_ARRAY = "MDSFloatArrayBase"
+
+    MDS_BASE_PRIMITIVE = "MDSPrimitiveBase"
+    MDS_INTEGRAL_PRIMITIVE = "MDSIntPrimitiveBase"
+    MDS_FLOATING_PRIMITIVE = "MDSFloatPrimitiveBase"
+
+    MDS_BASE = 1
+    MDS_INTEGRAL = 2
+    MDS_FLOATING = 3
+
+    MDS_TAXONOMY = {
+        MDS_BASE: Taxonomy(MDS_BASE_PRIMITIVE, MDS_BASE_ARRAY),
+        MDS_INTEGRAL: Taxonomy(MDS_INTEGRAL_PRIMITIVE, MDS_INTEGRAL_ARRAY),
+        MDS_FLOATING: Taxonomy(MDS_FLOATING_PRIMITIVE, MDS_FLOATING_ARRAY)
+    }
+
+    MDS_INTEGRAL_BOUNDS = dict()
+
+    def __init__(self, api, c_type, taxonomy, python_type=None):
+        self.api = api
+        self.title = api.title()
+
+        if self.title.startswith('U'):
+            self.title = api[:2].upper() + api[2:]
+
+        self.title_array = f"{self.title}Array"
+        self.title_array_init = f"{self.title_array}_Init"
+        self.title_array_cinit = f"{self.title_array}_Inplace"
+        self.title_record_member = f"{self.title}RecordMember"
+        self.title_const_record_member = f"Const{self.title_record_member}"
+        self.c_type = c_type
+        self.taxonomy = taxonomy
+        self.python_type = python_type
+        self.primitive = f"h_m{api}_t"
+        self.array = f"h_array_{api}_t"
+        self.managed_value = f"mv_{api}"
+        self.managed_array = f"h_marray_{api}_t"
+        self.managed_type_handle = f"managed_{api}_type_handle"
+        self.const_record_field = f"h_const_rfield_{api}_t"
+        self.record_field = f"h_rfield_{api}_t"
+        self.kind = "mds::api::kind::{}".format(api.upper())
+        self.f_create_array = f"create_{api}_marray"
+        self.f_bind = f"bind_{api}"
+
+        self.primitive_parent = self.MDS_TAXONOMY[taxonomy].primitive
+        self.array_parent = self.MDS_TAXONOMY[taxonomy].array
+
+        if not TypeInfo.MDS_INTEGRAL_BOUNDS:
+            for p in (8, 16, 32, 64):
+                TypeInfo.MDS_INTEGRAL_BOUNDS[f"int{p}_t"] = Bounds(-(2 ** (p - 1)), (2 ** (p - 1)) - 1)
+                TypeInfo.MDS_INTEGRAL_BOUNDS[f"uint{p}_t"] = Bounds(0, (2 ** p) - 1)
+
+        if self.taxonomy == self.MDS_INTEGRAL:
+            self.bounds = self.MDS_INTEGRAL_BOUNDS[c_type]
+
+    @property
+    def is_integral(self):
+        return self.taxonomy == self.MDS_INTEGRAL
+
+    @property
+    def use_atomic_math(self):
+        return self.taxonomy in [self.MDS_INTEGRAL, self.MDS_FLOATING]
+
+
+# These types are the ones that this script will generate wrappers for
+TYPE_DETAILS = [
+    TypeInfo("bool", "bool", TypeInfo.MDS_BASE, "True"),
+    TypeInfo("byte", "int8_t", TypeInfo.MDS_INTEGRAL),
+    TypeInfo("ubyte", "uint8_t", TypeInfo.MDS_INTEGRAL),
+    TypeInfo("short", "int16_t", TypeInfo.MDS_INTEGRAL),
+    TypeInfo("ushort", "uint16_t", TypeInfo.MDS_INTEGRAL),
+    TypeInfo("int", "int32_t", TypeInfo.MDS_INTEGRAL),
+    TypeInfo("uint", "uint32_t", TypeInfo.MDS_INTEGRAL),
+    TypeInfo("long", "int64_t", TypeInfo.MDS_INTEGRAL),
+    TypeInfo("ulong", "uint64_t", TypeInfo.MDS_INTEGRAL),
+    TypeInfo("float", "float", TypeInfo.MDS_FLOATING),
+    TypeInfo("double", "double", TypeInfo.MDS_FLOATING)
+]
 
 #TODO: Need record_fields for these:
 #      STRING,
@@ -65,6 +141,17 @@ def tmpl_record_field_wrapper_math(t):
 #      BINDING,
 #      ARRAY,
 #      NAMESPACE,
+
+__generate_specializations = lambda fn: [fn(t) for t in TYPE_DETAILS] + ['\n']
+__ensure_is_list = lambda elem: [elem] if not isinstance(elem, list) else elem
+
+def tmpl_record_field_wrapper_math(t):
+    return f"""
+        {t.c_type} add(const managed_record_handle&, {t.c_type})
+        {t.c_type} sub(const managed_record_handle&, {t.c_type})
+        {t.c_type} mul(const managed_record_handle&, {t.c_type})
+        {t.c_type} div(const managed_record_handle&, {t.c_type})
+"""
 
 def tmpl_record_field_wrapper(t):
     EXTRA = tmpl_record_field_wrapper_math(t) if t.use_atomic_math else ""
@@ -137,7 +224,6 @@ def tmpl_array_wrapper(t):
         {t.managed_value} frozen_read(size_t)
         {t.managed_value} write(size_t, {t.managed_value})
         size_t size()
-        # TODO uniform_key uuid()
         bool has_value()
         h_marray_base_t as_base()
         {EXTRA}
@@ -155,72 +241,45 @@ def tmpl_int_primitive_bounds(t):
             return {t.bounds.max} 
 """
 
-def tmpl_define_record_member(t):
-    return f"""
-cdef class {t.title_record_member}(RecordMemberBase):
-    cdef {t.record_field} _handle
-
-cdef class {t.title_const_record_member}(ConstRecordMemberBase):
-    cdef {t.const_record_field} _handle
-"""
-
 def tmpl_record_member(t):
     return f"""
 cdef class {t.title_record_member}(RecordMemberBase):
 
-    def __cinit__(self, type_ident, initial_value):
-        self._type_ident = type_ident
-        self._initial_value = initial_value            
+    cdef {t.record_field} _handle
 
     def read(self):
-        return self._handle.frozen_read()
+        return self._handle.frozen_read(self._mr_handle)
 
     def write(self, value):
-        self._handle.write(value)
+        self._handle.write(self._mr_handle, value)
 
-    cpdef declare(self, str ident, record_type_handle rt):
-        assert(self._handle.is_null())
-        self._handle = {t.managed_type_handle}().field_in(rt, ident, True)
-        self.write_initial(self._initial_value)
+# TODO: This stuff may need to be duplicated for the const-versions
+#    cpdef declare(self, str ident, record_type_handle rt):
+#        assert(self._handle.is_null())
+#        self._handle = {t.managed_type_handle}().field_in(rt, ident, True)
+#        self.write_initial(self._initial_value)
 
-    cpdef ensure_type(self):
-        # managed_type<T>::ensure_complete()
-        pass
+#    cpdef ensure_type(self):
+#        # managed_type<T>::ensure_complete()
+#        pass
 
 
 cdef class {t.title_const_record_member}(ConstRecordMemberBase):
 
-    def __cinit__(self, type_ident, initial_value):
-        self._type_ident = type_ident
-        self._initial_value = initial_value            
+    cdef {t.const_record_field} _handle
 
     def read(self):
-        return self._handle.frozen_read()
+        return self._handle.frozen_read(self._mr_handle)
 
-    cpdef declare(self, str ident, record_type_handle rt):
-        assert(self._handle.is_null())
-        self._handle = {t.managed_type_handle}().field_in(rt, ident, True)
-        self.write_initial(self._initial_value)
+# TODO: This stuff may need to be duplicated for the const-versions
+#    cpdef declare(self, str ident, record_type_handle rt):
+#        assert(self._handle.is_null())
+#        self._handle = {t.managed_type_handle}().field_in(rt, ident, True)
+#        self.write_initial(self._initial_value)
 
-    cpdef ensure_type(self):
-        # managed_type<T>::ensure_complete()
-        pass
-"""
-
-def tmpl_define_array(t):
-    return f"""
-cdef class {t.title}({t.primitive_parent}):
-    cdef {t.managed_value} _value
-
-
-cdef class {t.title_array}({t.array_parent}):
-    cdef {t.managed_array} _handle
-
-
-cdef inline {t.title_array_init}({t.managed_array} handle):
-    result = {t.title_array}()
-    result._handle = handle
-    return result\n
+#    cpdef ensure_type(self):
+#        # managed_type<T>::ensure_complete()
+#        pass
 """
 
 def tmpl_concrete_array(t):
@@ -232,6 +291,8 @@ def tmpl_concrete_array(t):
     s = f"""
 cdef class {t.title}({t.primitive_parent}):
 
+    cdef {t.managed_value} _value
+
     def __cinit__(self, value):  # TODO: Set the value in _value
         value = self._sanitize(value)
 
@@ -242,15 +303,17 @@ cdef class {t.title}({t.primitive_parent}):
         pass
     {primitive_extra}
 
+cdef inline {t.title_array_cinit}({t.title_array} cls, size_t length):
+    cls._handle = {t.f_create_array}(length)
+
 cdef class {t.title_array}({t.array_parent}):
 
+    cdef {t.managed_array} _handle
     _primitive = {t.title}
 
     def __cinit__(self, length=None):
         if length is not None:
-            self._handle = {t.f_create_array}(length)
-        else:  # TODO: Not sure this is the best, but will avoid segfaults
-            self._handle = {t.f_create_array}(0)
+            {t.title_array_cinit}(self, length)
 
     def __len__(self):
         return self._handle.size()
@@ -264,19 +327,16 @@ cdef class {t.title_array}({t.array_parent}):
         self._handle.write(index, {t.managed_value}(value))
     
     def copy(self):
-        cdef:
-            size_t i = 0
-            size_t l = len(self)
-            {t.managed_array} h = {t.f_create_array}(l)
+        # cdef:
+        #     size_t i = 0
+        #     size_t l = len(self)
+        #     {t.managed_array} h = {t.f_create_array}(l)
 
-        for i in range(l):
-            h.write(i, {t.managed_value}(<{t.c_type}> self[i]))
+        # for i in range(l):
+        #     h.write(i, {t.managed_value}(<{t.c_type}> self[i]))
 
-        return {t.title_array_init}(h)
-
-    @staticmethod
-    def create(length):
-        return {t.title_array_init}({t.f_create_array}(length))
+        # return {t.title_array_init}(h)
+        pass
 """
 
     # Sometimes we need to be creative to coerce the correct Python type
@@ -288,162 +348,74 @@ cdef class {t.title_array}({t.array_parent}):
 """
     return s
 
-class TypeInfo():
-    # These bases will be written manually
-    MDS_BASE_ARRAY = "MDSArrayBase"
-    MDS_INTEGRAL_ARRAY = "MDSIntArrayBase"
-    MDS_FLOATING_ARRAY = "MDSFloatArrayBase"
+TARGETS = {
+    'tmpl_primitive_wrapper': tmpl_primitive_wrapper,
+    'tmpl_array_wrapper': tmpl_array_wrapper,
+    'tmpl_namespace_wrapper': tmpl_namespace_wrapper,
+    'tmpl_record_field_wrapper': tmpl_record_field_wrapper,
+    'tmpl_record_member': tmpl_record_member,
+    'tmpl_concrete_array': tmpl_concrete_array
+}
 
-    MDS_BASE_PRIMITIVE = "MDSPrimitiveBase"
-    MDS_INTEGRAL_PRIMITIVE = "MDSIntPrimitiveBase"
-    MDS_FLOATING_PRIMITIVE = "MDSFloatPrimitiveBase"
-
-    MDS_BASE = 1
-    MDS_INTEGRAL = 2
-    MDS_FLOATING = 3
-
-    MDS_TAXONOMY = {
-        MDS_BASE: Taxonomy(MDS_BASE_PRIMITIVE, MDS_BASE_ARRAY),
-        MDS_INTEGRAL: Taxonomy(MDS_INTEGRAL_PRIMITIVE, MDS_INTEGRAL_ARRAY),
-        MDS_FLOATING: Taxonomy(MDS_FLOATING_PRIMITIVE, MDS_FLOATING_ARRAY)
-    }
-
-    MDS_INTEGRAL_BOUNDS = dict()
-
-    def __init__(self, api, c_type, taxonomy, python_type=None):
-        self.api = api
-        self.title = api.title()
-
-        if self.title.startswith('U'):
-            self.title = api[:2].upper() + api[2:]
-
-        self.title_array = f"{self.title}Array"
-        self.title_array_init = f"{self.title_array}_Init"
-        self.title_record_member = f"{self.title}RecordMember"
-        self.title_const_record_member = f"Const{self.title_record_member}"
-        self.c_type = c_type
-        self.taxonomy = taxonomy
-        self.python_type = python_type
-        self.primitive = f"h_m{api}_t"
-        self.array = f"h_array_{api}_t"
-        self.managed_value = f"mv_{api}"
-        self.managed_array = f"h_marray_{api}_t"
-        self.managed_type_handle = f"managed_{api}_type_handle"
-        self.const_record_field = f"h_const_rfield_{api}_t"
-        self.record_field = f"h_rfield_{api}_t"
-        self.kind = "mds::api::kind::{}".format(api.upper())
-        self.f_create_array = f"create_{api}_marray"
-        self.f_bind = f"bind_{api}"
-
-        self.primitive_parent = self.MDS_TAXONOMY[taxonomy].primitive
-        self.array_parent = self.MDS_TAXONOMY[taxonomy].array
-
-        if not TypeInfo.MDS_INTEGRAL_BOUNDS:
-            for p in (8, 16, 32, 64):
-                TypeInfo.MDS_INTEGRAL_BOUNDS[f"int{p}_t"] = Bounds(-(2 ** (p - 1)), (2 ** (p - 1)) - 1)
-                TypeInfo.MDS_INTEGRAL_BOUNDS[f"uint{p}_t"] = Bounds(0, (2 ** p) - 1)
-
-        if self.taxonomy == self.MDS_INTEGRAL:
-            self.bounds = self.MDS_INTEGRAL_BOUNDS[c_type]
-
-    @property
-    def is_integral(self):
-        return self.taxonomy == self.MDS_INTEGRAL
-
-    @property
-    def use_atomic_math(self):
-        return self.taxonomy in [self.MDS_INTEGRAL, self.MDS_FLOATING]
-
-
-# These types are the ones that this script will generate wrappers for
-TYPE_DETAILS = [
-    TypeInfo("bool", "bool", TypeInfo.MDS_BASE, "True"),
-    TypeInfo("byte", "int8_t", TypeInfo.MDS_INTEGRAL),
-    TypeInfo("ubyte", "uint8_t", TypeInfo.MDS_INTEGRAL),
-    TypeInfo("short", "int16_t", TypeInfo.MDS_INTEGRAL),
-    TypeInfo("ushort", "uint16_t", TypeInfo.MDS_INTEGRAL),
-    TypeInfo("int", "int32_t", TypeInfo.MDS_INTEGRAL),
-    TypeInfo("uint", "uint32_t", TypeInfo.MDS_INTEGRAL),
-    TypeInfo("long", "int64_t", TypeInfo.MDS_INTEGRAL),
-    TypeInfo("ulong", "uint64_t", TypeInfo.MDS_INTEGRAL),
-    TypeInfo("float", "float", TypeInfo.MDS_FLOATING),
-    TypeInfo("double", "double", TypeInfo.MDS_FLOATING)
-]
-
-def generate_specializations(generator_fn):
-    output = []
-
-    for t in TYPE_DETAILS:
-        output.append(generator_fn(t))
-
-    return output + ['\n']
-
-def _ensure_is_list(thing):
-    if not isinstance(thing, list):
-        thing = [thing]
-
-    return thing
-
-def find_and_truncate_injected(file_path):
+def find_and_inject(file_path, dry_run=True, generator_separator='|'):
     with open(file_path, "r") as fp:
         lines = [l for l in fp]
 
-    inj_start = None
-    inj_end = None
+    Target = namedtuple("Target", ["start", "end", "fn_name"])
+    targets = []
+    start = None
+    fn_name = None
 
     for i, line in enumerate(lines):
-        if "START INJECTION" in line:
-            inj_start = i + 1
-        elif "END INJECTION" in line:
-            inj_end = i
-            break
+        if f"START INJECTION {generator_separator}" in line:
+            start = i + 1
+            fn_name = line.split(generator_separator).pop().strip()
+        elif start is not None and "END INJECTION" in line:
+            targets.append(Target(start, i, fn_name))
+            start = fn_name = None
 
-    assert(inj_start is not None and inj_end is not None)
+    if not targets:
+        return
 
-    return SegmentedFile(
-        _ensure_is_list(lines[:inj_start]),
-        _ensure_is_list(lines[inj_start:inj_end]),
-        _ensure_is_list(lines[inj_end:])
-    )
- 
-def do_injection(inject_info, dry_run=False):
-    segmented = find_and_truncate_injected(inject_info.file_path)
-    lines = segmented.pre
-    lines.extend(generate_specializations(inject_info.generator_fn))
-    lines.extend(segmented.post)
+    # If we're here, we have at least 1 injection point.
+    # Let's assume we have N targets and L lines, progressing
+    # and doing the injection i=1..N thru 1..L
+    chunks = []
+    start = 0
+
+    for target in targets:
+        chunks.extend(lines[start:target.start])
+        chunks.extend(__generate_specializations(TARGETS[target.fn_name]))
+        start = target.end
+
+    chunks.extend(lines[start:])
 
     if dry_run:
-        chunks = [
-            ("Previously Generated Code", segmented.existing),        
-            ("New File Output", lines)
-        ]
-        
-        for ident, body in chunks:
-            ident += f" <{inject_info.file_path}>"
-            separator = "=" * (len(ident) + 4)
+        print(file_path)
 
-            print(f"\n{separator}\n| {ident} |\n{separator}\n")
-
-            for line in body:
-                print(line)
+        for line in chunks:
+            print(line)
     else:
-        with open(inject_info.file_path, "w") as fp:
-            fp.writelines(lines)
+        with open(file_path, "w") as fp:
+            fp.writelines(chunks)
 
-TARGETS = [
-    InjectionInfo("mds/core/api_primitives.pxd", tmpl_primitive_wrapper),
-    InjectionInfo("mds/core/api_arrays.pxd", tmpl_array_wrapper),
-    InjectionInfo("mds/core/api_namespaces.pxd", tmpl_namespace_wrapper),
-    InjectionInfo("mds/core/api_records.pxd", tmpl_record_field_wrapper),
-    InjectionInfo("mds/private.pxd", tmpl_define_record_member),
-    InjectionInfo("mds/private.pyx", tmpl_record_member),
-    InjectionInfo("mds/managed.pxd", tmpl_define_array),
-    InjectionInfo("mds/managed.pyx", tmpl_concrete_array)
-]
+def generate_and_inject_all_sources(dry_run=True, root=os.getcwd(), exts=('pyx', 'pxd')):
+    print(f"Injecting Cython Wrappers (simulated={dry_run})")
 
-def generate_and_inject_all_sources(dry_run=True):
-    for t in TARGETS:
-        do_injection(inject_info=t, dry_run=dry_run)
+    def get_all_cython_files(root, exts):
+        paths = set()
+
+        for ext in exts:
+            for found in glob.glob(pathname=f"{root}/**/**.{ext}", recursive=True):
+                paths.add(found)
+
+        return sorted(list(paths))
+
+    for source in get_all_cython_files(root=root, exts=exts):
+        if dry_run:
+            print(f"Evaluating {source}")
+
+        find_and_inject(file_path=source, dry_run=dry_run)
 
 if __name__ == '__main__':
     for arg in sys.argv:
@@ -452,4 +424,3 @@ if __name__ == '__main__':
             break
     else:
         generate_and_inject_all_sources(dry_run=False)
-

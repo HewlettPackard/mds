@@ -42,11 +42,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_super_of(record_type_handle&)
         bool operator!=(record_type_handle&)
 
-        # These 3 were const_record_type_handle, hopefully it'll mangle fine
-        record_type_handle super_type()
-        record_type_handle ensure_created()
+        const_record_type_handle super_type()
+        const_record_type_handle ensure_created()
         @staticmethod
-        record_type_handle find(const interned_string_handle&)
+        const_record_type_handle find(const interned_string_handle&)
 
         @staticmethod
         record_type_handle declare(const interned_string_handle&)
@@ -65,7 +64,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_super_of(const_record_type_handle&)
         bool operator!=(const_record_type_handle&)
 
-        # These 3 were const_const_record_type_handle, hopefully it'll mangle fine
         const_record_type_handle super_type()
         const_record_type_handle ensure_created()
         @staticmethod
@@ -82,7 +80,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
         # TODO uniform_key uuid()
 
-# START INJECTION
+# START INJECTION | tmpl_record_field_wrapper
 
     # BEGIN bool
 

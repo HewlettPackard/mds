@@ -38,6 +38,8 @@ except ImportError:
     print('You need Cython to compile the MDS Python API.', file=sys.stderr)
     sys.exit(1)
 
+# TODO: Test Python version
+
 DEBUG = True
 RUN_TESTS = True
 DIR_REPO = '/home/pughma/repo/'
@@ -49,7 +51,7 @@ ARGS = ['-std=c++14', '-MMD', '-MP', '-fmessage-length=0', '-mcx16']
 LIB_DIR = DIR_REPO + 'public/install/lib'
 LIBS = [f'{LIB_DIR}/lib{l}.a' for l in ['mds_core', 'mpgc', 'ruts']]
 UNDEF_MACROS = []
-MDS_PACKAGES = ['managed', 'containers', 'namespace', 'internal']
+MDS_PACKAGES = ['managed', 'containers', 'internal']
 
 if DEBUG:
     ARGS.extend(['-Og', '-ggdb3'])
@@ -78,7 +80,7 @@ check_and_build_mds_core()
 generate.generate_and_inject_all_sources(dry_run=False)
 
 # Setup our package hierarchy
-extensions = [make_extension(f'mds.{e}') for e in MDS_PACKAGES]
+extensions = [make_extension(f'mds.{e}') for e in MDS_PACKAGES]# + [cythonize(f) for f in SHARED_FILES]
 
 setup(
     name='mds',
