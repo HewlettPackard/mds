@@ -29,7 +29,7 @@ from distutils.core import setup
 from distutils.extension import Extension
 from unittest import TestLoader, TestResult
 
-import mds.tools.generate_specialized_wrappers as generate 
+import inject_wrappers as generate 
 
 try:
     from Cython.Build import cythonize

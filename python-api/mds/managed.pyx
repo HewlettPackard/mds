@@ -35,6 +35,10 @@ from mds.core.api_helpers cimport initialize_base_task
 from mds.core.api_namespaces cimport *
 from mds.core.api_primitives cimport *
 
+from mds.typing import MDSTypes, TypeInfo
+
+initialize_base_task()
+
 # =========================================================================
 #  Errors & Exceptions
 # =========================================================================
@@ -759,15 +763,27 @@ cdef class DoubleArray(MDSFloatArrayBase):
 
 cpdef RecordMemberBase record_member_factory(record, klass, make_const, initial_value):
     # TODO: Wrap the specializations
-    return RecordMemberBase(record, klass, make_const, initial_value)
+    classname = "Const" if make_const else ""
+    
+    if isinstance(klass, str):
+        klass = MDSTypes[klass]
+    
+    if isinstance(klass, TypeInfo):
+        classname += klass.title
+    else:
+        raise TypeError("Can't resolve type `{}` as MDS type identifier".format(id(klass)))
+
+    assert classname in globals()
+    cls = globals()[classname]
+    assert issubclass(cls, RecordMemberBase)
+
+    return cls(record, klass, make_const, initial_value)
 
 # =========================================================================
 #  Base
 # =========================================================================
 
 cdef class MDSObject(object):
-
-    cdef bint _const
 
     def _throw_const_error(self):
         raise ConstError("Can't assign value to const field.")
