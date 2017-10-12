@@ -82,8 +82,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
 # START INJECTION | tmpl_record_field_wrapper
 
-    # BEGIN bool
-
     cdef cppclass h_rfield_bool_t "mds::api::record_field_handle<mds::api::kind::BOOL>":
         h_rfield_bool_t()
         h_rfield_bool_t(h_rfield_bool_t&)
@@ -97,8 +95,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    # BEGIN bool
-
     cdef cppclass h_const_rfield_bool_t "mds::api::const_record_field_handle<mds::api::kind::BOOL>":
         h_const_rfield_bool_t()
         h_const_rfield_bool_t(h_const_rfield_bool_t&)
@@ -111,8 +107,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
-
-    # BEGIN byte
 
     cdef cppclass h_rfield_byte_t "mds::api::record_field_handle<mds::api::kind::BYTE>":
         h_rfield_byte_t()
@@ -132,8 +126,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    # BEGIN byte
-
     cdef cppclass h_const_rfield_byte_t "mds::api::const_record_field_handle<mds::api::kind::BYTE>":
         h_const_rfield_byte_t()
         h_const_rfield_byte_t(h_const_rfield_byte_t&)
@@ -151,8 +143,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
-
-    # BEGIN ubyte
 
     cdef cppclass h_rfield_ubyte_t "mds::api::record_field_handle<mds::api::kind::UBYTE>":
         h_rfield_ubyte_t()
@@ -172,8 +162,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    # BEGIN ubyte
-
     cdef cppclass h_const_rfield_ubyte_t "mds::api::const_record_field_handle<mds::api::kind::UBYTE>":
         h_const_rfield_ubyte_t()
         h_const_rfield_ubyte_t(h_const_rfield_ubyte_t&)
@@ -191,8 +179,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
-
-    # BEGIN short
 
     cdef cppclass h_rfield_short_t "mds::api::record_field_handle<mds::api::kind::SHORT>":
         h_rfield_short_t()
@@ -212,8 +198,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    # BEGIN short
-
     cdef cppclass h_const_rfield_short_t "mds::api::const_record_field_handle<mds::api::kind::SHORT>":
         h_const_rfield_short_t()
         h_const_rfield_short_t(h_const_rfield_short_t&)
@@ -231,8 +215,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
-
-    # BEGIN ushort
 
     cdef cppclass h_rfield_ushort_t "mds::api::record_field_handle<mds::api::kind::USHORT>":
         h_rfield_ushort_t()
@@ -252,8 +234,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    # BEGIN ushort
-
     cdef cppclass h_const_rfield_ushort_t "mds::api::const_record_field_handle<mds::api::kind::USHORT>":
         h_const_rfield_ushort_t()
         h_const_rfield_ushort_t(h_const_rfield_ushort_t&)
@@ -271,8 +251,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
-
-    # BEGIN int
 
     cdef cppclass h_rfield_int_t "mds::api::record_field_handle<mds::api::kind::INT>":
         h_rfield_int_t()
@@ -292,8 +270,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    # BEGIN int
-
     cdef cppclass h_const_rfield_int_t "mds::api::const_record_field_handle<mds::api::kind::INT>":
         h_const_rfield_int_t()
         h_const_rfield_int_t(h_const_rfield_int_t&)
@@ -311,8 +287,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
-
-    # BEGIN uint
 
     cdef cppclass h_rfield_uint_t "mds::api::record_field_handle<mds::api::kind::UINT>":
         h_rfield_uint_t()
@@ -332,8 +306,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    # BEGIN uint
-
     cdef cppclass h_const_rfield_uint_t "mds::api::const_record_field_handle<mds::api::kind::UINT>":
         h_const_rfield_uint_t()
         h_const_rfield_uint_t(h_const_rfield_uint_t&)
@@ -351,8 +323,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
-
-    # BEGIN long
 
     cdef cppclass h_rfield_long_t "mds::api::record_field_handle<mds::api::kind::LONG>":
         h_rfield_long_t()
@@ -372,8 +342,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    # BEGIN long
-
     cdef cppclass h_const_rfield_long_t "mds::api::const_record_field_handle<mds::api::kind::LONG>":
         h_const_rfield_long_t()
         h_const_rfield_long_t(h_const_rfield_long_t&)
@@ -391,8 +359,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
-
-    # BEGIN ulong
 
     cdef cppclass h_rfield_ulong_t "mds::api::record_field_handle<mds::api::kind::ULONG>":
         h_rfield_ulong_t()
@@ -412,8 +378,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    # BEGIN ulong
-
     cdef cppclass h_const_rfield_ulong_t "mds::api::const_record_field_handle<mds::api::kind::ULONG>":
         h_const_rfield_ulong_t()
         h_const_rfield_ulong_t(h_const_rfield_ulong_t&)
@@ -431,8 +395,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
-
-    # BEGIN float
 
     cdef cppclass h_rfield_float_t "mds::api::record_field_handle<mds::api::kind::FLOAT>":
         h_rfield_float_t()
@@ -452,8 +414,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    # BEGIN float
-
     cdef cppclass h_const_rfield_float_t "mds::api::const_record_field_handle<mds::api::kind::FLOAT>":
         h_const_rfield_float_t()
         h_const_rfield_float_t(h_const_rfield_float_t&)
@@ -472,8 +432,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    # BEGIN double
-
     cdef cppclass h_rfield_double_t "mds::api::record_field_handle<mds::api::kind::DOUBLE>":
         h_rfield_double_t()
         h_rfield_double_t(h_rfield_double_t&)
@@ -491,8 +449,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
-
-    # BEGIN double
 
     cdef cppclass h_const_rfield_double_t "mds::api::const_record_field_handle<mds::api::kind::DOUBLE>":
         h_const_rfield_double_t()

@@ -25,22 +25,19 @@ provided you also meet the terms and conditions of the Application license.
 
 import unittest
 
-from mds.namespace import Namespace
-
+from mds.managed import Namespace, String
 
 class TestNamespaces(unittest.TestCase):
 
     def setUp(self):
         self.root = Namespace.get_global()
-        self.k_str = "test_py_k_str"
+        self.k_str = "test_py_k_fstr"
         self.v = 6
-
-    def test_can_bind(self):
-        retval = self.root[self.k_str] = self.v
-        self.assertTrue(retval)
+        self.str = String(self.k_str)
+        self.root[self.k_str] = self.v
 
     def test_can_retrieve(self):
-        retval = self.root[self.k_str] = self.v
+        retval = self.root[self.k_str]
         self.assertTrue(retval)
         self.assertEqual(self.root[self.k_str], self.v)
 

@@ -23,15 +23,11 @@ Application during this compilation process under terms of your choice,
 provided you also meet the terms and conditions of the Application license.
 """
 
-from collections import namedtuple
 import sys
 import unittest
 
 from mds.containers import *
 from mds.managed import *
-
-IcConfig = namedtuple("IcConfig", ["kind", "snapshot", "children"])
-
 
 class TestTask(unittest.TestCase):
 
@@ -117,75 +113,5 @@ class TestTask(unittest.TestCase):
         self.assertTrue(l[1])
         self.assertFalse(l[2])
 
-
-class TestIsolationContexts(unittest.TestCase):
-
-    KINDS = ["live", "read_only", "detached"]
-
-    def setUp(self):
-        self.base = IsolationContext.get_global()
-        self.seen_hashes = set()
-
-    def test_get_global(self):
-        self.assertTrue(hasattr(IsolationContext, "get_global"))
-        ctxt = IsolationContext.get_global()
-        self.assertFalse(ctxt is None)
-
-    def _generate_tree(self, level=1, max_level=5):
-        for kind in self.KINDS:
-            for snapshot in (True, False):
-                if level == max_level:
-                    yield IcConfig(kind, snapshot, None)
-                else:
-                    children = self._generate_tree(level + 1, max_level)
-                    yield IcConfig(kind, snapshot, children)
-
-    def _test_tree(self, tree, parent, level=0, verbose=False):
-        for config in tree:
-            if verbose:
-                print("{}{} {} {}".format(
-                    "  " * level,
-                    "`-" if level > 0 else "",
-                    config.kind,
-                    "[SNAPSHOT]" if config.snapshot else ""
-                ))
-            try:
-                ctxt = parent.create_child(config.kind, config.snapshot)
-                hash_val = hash(ctxt)
-
-                self.assertTrue(hash_val not in self.seen_hashes)
-                self.seen_hashes.add(hash_val)
-
-                if config.kind == "read_only":
-                    self.assertTrue(ctxt.is_read_only)
-                    self.assertFalse(ctxt.is_publishable)
-                elif config.kind == "detached":
-                    self.assertFalse(ctxt.is_read_only)
-                    # TODO: Should this be publishable? Things publish to it...
-                else:  # live
-                    pass # TODO: What to test?
-
-                # TODO: self.assertTrue(config.snapshot and ctxt.is_snapshot)
-
-                if config.children is not None:
-                    self._test_tree(config.children, ctxt, level + 1, verbose)
-            except Exception as e:
-                if verbose:
-                    print("{}`=> Exception: {}".format("  " * (level + 1), e))
-
-    def test_create_children(self):
-        self._test_tree(self._generate_tree(max_level=5), self.base)
-
-    def test_can_call_function(self):
-        pass
-
-    def test_can_call_functor(self):
-        pass
-
-    def test_can_call_lambda(self):
-        pass
-
-
 if __name__ == '__main__':
     unittest.main()
-

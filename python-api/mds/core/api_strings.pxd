@@ -63,7 +63,7 @@ cdef inline interned_string_handle convert_py_to_ish(value):
         msg = value.encode("utf-8")
     else:
         raise TypeError(
-            "Base string must be in instance of `str` or `bytes`"
+            "Base string must be in instance of `str` or `bytes`, got {}".format(type(value))
         )
 
     return intern(msg)

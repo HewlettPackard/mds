@@ -41,7 +41,7 @@ except ImportError:
 # TODO: Test Python version
 
 DEBUG = True
-RUN_TESTS = True
+RUN_TESTS = False
 DIR_REPO = '/home/pughma/repo/'
 HEADER_DIRS = [
     DIR_REPO + 'public/install/include',

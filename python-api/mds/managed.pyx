@@ -35,7 +35,7 @@ from mds.core.api_helpers cimport initialize_base_task
 from mds.core.api_namespaces cimport *
 from mds.core.api_primitives cimport *
 
-from mds.typing import MDSTypes, TypeInfo
+from mds.typing import Types, TypeInfo
 
 initialize_base_task()
 
@@ -86,7 +86,7 @@ cdef class Record(MDSObject):
         except:
             super().__setattr__(key, value)
 
-    def _register_field(self, klass, label, make_const=False, initial_value=None):
+    def _register_field(self, klass, str label, bint make_const=False, initial_value=None):
         self.__field_decls[label] = record_member_factory(self, klass, make_const, initial_value)
 
 # mds_record(const rc_token &tok, handle_type &&h)
@@ -190,16 +190,12 @@ cdef class BoolArray(MDSArrayBase):
         self._handle.write(index, mv_bool(value))
     
     def copy(self):
-        # cdef:
-        #     size_t i = 0
-        #     size_t l = len(self)
-        #     h_marray_bool_t h = create_bool_marray(l)
+        retval = BoolArray(len(self))
 
-        # for i in range(l):
-        #     h.write(i, mv_bool(<bool> self[i]))
+        for i in range(len(self)):
+            retval[i] = self[i]
 
-        # return BoolArray_Init(h)
-        pass
+        return retval
 
     property dtype:
         def __get__(self):
@@ -251,16 +247,12 @@ cdef class ByteArray(MDSIntArrayBase):
         self._handle.write(index, mv_byte(value))
     
     def copy(self):
-        # cdef:
-        #     size_t i = 0
-        #     size_t l = len(self)
-        #     h_marray_byte_t h = create_byte_marray(l)
+        retval = ByteArray(len(self))
 
-        # for i in range(l):
-        #     h.write(i, mv_byte(<int8_t> self[i]))
+        for i in range(len(self)):
+            retval[i] = self[i]
 
-        # return ByteArray_Init(h)
-        pass
+        return retval
 
 cdef class UByte(MDSIntPrimitiveBase):
 
@@ -308,16 +300,12 @@ cdef class UByteArray(MDSIntArrayBase):
         self._handle.write(index, mv_ubyte(value))
     
     def copy(self):
-        # cdef:
-        #     size_t i = 0
-        #     size_t l = len(self)
-        #     h_marray_ubyte_t h = create_ubyte_marray(l)
+        retval = UByteArray(len(self))
 
-        # for i in range(l):
-        #     h.write(i, mv_ubyte(<uint8_t> self[i]))
+        for i in range(len(self)):
+            retval[i] = self[i]
 
-        # return UByteArray_Init(h)
-        pass
+        return retval
 
 cdef class Short(MDSIntPrimitiveBase):
 
@@ -365,16 +353,12 @@ cdef class ShortArray(MDSIntArrayBase):
         self._handle.write(index, mv_short(value))
     
     def copy(self):
-        # cdef:
-        #     size_t i = 0
-        #     size_t l = len(self)
-        #     h_marray_short_t h = create_short_marray(l)
+        retval = ShortArray(len(self))
 
-        # for i in range(l):
-        #     h.write(i, mv_short(<int16_t> self[i]))
+        for i in range(len(self)):
+            retval[i] = self[i]
 
-        # return ShortArray_Init(h)
-        pass
+        return retval
 
 cdef class UShort(MDSIntPrimitiveBase):
 
@@ -422,16 +406,12 @@ cdef class UShortArray(MDSIntArrayBase):
         self._handle.write(index, mv_ushort(value))
     
     def copy(self):
-        # cdef:
-        #     size_t i = 0
-        #     size_t l = len(self)
-        #     h_marray_ushort_t h = create_ushort_marray(l)
+        retval = UShortArray(len(self))
 
-        # for i in range(l):
-        #     h.write(i, mv_ushort(<uint16_t> self[i]))
+        for i in range(len(self)):
+            retval[i] = self[i]
 
-        # return UShortArray_Init(h)
-        pass
+        return retval
 
 cdef class Int(MDSIntPrimitiveBase):
 
@@ -479,16 +459,12 @@ cdef class IntArray(MDSIntArrayBase):
         self._handle.write(index, mv_int(value))
     
     def copy(self):
-        # cdef:
-        #     size_t i = 0
-        #     size_t l = len(self)
-        #     h_marray_int_t h = create_int_marray(l)
+        retval = IntArray(len(self))
 
-        # for i in range(l):
-        #     h.write(i, mv_int(<int32_t> self[i]))
+        for i in range(len(self)):
+            retval[i] = self[i]
 
-        # return IntArray_Init(h)
-        pass
+        return retval
 
 cdef class UInt(MDSIntPrimitiveBase):
 
@@ -536,16 +512,12 @@ cdef class UIntArray(MDSIntArrayBase):
         self._handle.write(index, mv_uint(value))
     
     def copy(self):
-        # cdef:
-        #     size_t i = 0
-        #     size_t l = len(self)
-        #     h_marray_uint_t h = create_uint_marray(l)
+        retval = UIntArray(len(self))
 
-        # for i in range(l):
-        #     h.write(i, mv_uint(<uint32_t> self[i]))
+        for i in range(len(self)):
+            retval[i] = self[i]
 
-        # return UIntArray_Init(h)
-        pass
+        return retval
 
 cdef class Long(MDSIntPrimitiveBase):
 
@@ -593,16 +565,12 @@ cdef class LongArray(MDSIntArrayBase):
         self._handle.write(index, mv_long(value))
     
     def copy(self):
-        # cdef:
-        #     size_t i = 0
-        #     size_t l = len(self)
-        #     h_marray_long_t h = create_long_marray(l)
+        retval = LongArray(len(self))
 
-        # for i in range(l):
-        #     h.write(i, mv_long(<int64_t> self[i]))
+        for i in range(len(self)):
+            retval[i] = self[i]
 
-        # return LongArray_Init(h)
-        pass
+        return retval
 
 cdef class ULong(MDSIntPrimitiveBase):
 
@@ -650,16 +618,12 @@ cdef class ULongArray(MDSIntArrayBase):
         self._handle.write(index, mv_ulong(value))
     
     def copy(self):
-        # cdef:
-        #     size_t i = 0
-        #     size_t l = len(self)
-        #     h_marray_ulong_t h = create_ulong_marray(l)
+        retval = ULongArray(len(self))
 
-        # for i in range(l):
-        #     h.write(i, mv_ulong(<uint64_t> self[i]))
+        for i in range(len(self)):
+            retval[i] = self[i]
 
-        # return ULongArray_Init(h)
-        pass
+        return retval
 
 cdef class Float(MDSFloatPrimitiveBase):
 
@@ -699,16 +663,12 @@ cdef class FloatArray(MDSFloatArrayBase):
         self._handle.write(index, mv_float(value))
     
     def copy(self):
-        # cdef:
-        #     size_t i = 0
-        #     size_t l = len(self)
-        #     h_marray_float_t h = create_float_marray(l)
+        retval = FloatArray(len(self))
 
-        # for i in range(l):
-        #     h.write(i, mv_float(<float> self[i]))
+        for i in range(len(self)):
+            retval[i] = self[i]
 
-        # return FloatArray_Init(h)
-        pass
+        return retval
 
 cdef class Double(MDSFloatPrimitiveBase):
 
@@ -748,36 +708,33 @@ cdef class DoubleArray(MDSFloatArrayBase):
         self._handle.write(index, mv_double(value))
     
     def copy(self):
-        # cdef:
-        #     size_t i = 0
-        #     size_t l = len(self)
-        #     h_marray_double_t h = create_double_marray(l)
+        retval = DoubleArray(len(self))
 
-        # for i in range(l):
-        #     h.write(i, mv_double(<double> self[i]))
+        for i in range(len(self)):
+            retval[i] = self[i]
 
-        # return DoubleArray_Init(h)
-        pass
+        return retval
 
 # END INJECTION
 
-cpdef RecordMemberBase record_member_factory(record, klass, make_const, initial_value):
-    # TODO: Wrap the specializations
+cpdef RecordMemberBase record_member_factory(Record record, klass, bint make_const, initial_value):
     classname = "Const" if make_const else ""
-    
+
+    # We need this to be a typing.TypeInfo to get consistent titles    
     if isinstance(klass, str):
-        klass = MDSTypes[klass]
+        klass = Types[klass]
     
     if isinstance(klass, TypeInfo):
         classname += klass.title
     else:
         raise TypeError("Can't resolve type `{}` as MDS type identifier".format(id(klass)))
 
-    assert classname in globals()
+    # Now, let's see if it's known and of the correct lineage
     cls = globals()[classname]
     assert issubclass(cls, RecordMemberBase)
 
-    return cls(record, klass, make_const, initial_value)
+    # We're all good, send it back up!
+    return cls(record, initial_value)
 
 # =========================================================================
 #  Base
@@ -788,15 +745,12 @@ cdef class MDSObject(object):
     def _throw_const_error(self):
         raise ConstError("Can't assign value to const field.")
 
+    # TODO: memoize?
     property is_const:
         def __get__(self):
             return self.__class__.__name__.startswith("Const")
 
     property is_null:
-        def __get__(self):
-            pass  # TODO
-
-    property uuid:
         def __get__(self):
             pass  # TODO
 
@@ -1845,21 +1799,24 @@ cdef class String(MDSObject):
 #  Namespace
 # =========================================================================
 
+
 cdef class Namespace(MDSObject):
 
     cdef namespace_handle _handle
 
-    def __setitem__(self, str key, value):
-        # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
-        cdef interned_string_handle ish = convert_py_to_ish(key)
+    def __setitem__(self, key, value):
+        cdef:
+            interned_string_handle ish = convert_py_to_ish(key)
+            uint16_t val = value
 
-        if not issubclass(value, MDSObject):
-            raise TypeError('Cannot commit a non-MDS type into a MDS namespace')
+        # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
+        # if not issubclass(type(value), MDSObject):
+        #     raise TypeError('Cannot commit a non-MDS type into a MDS namespace')
 
         # TODO: get the boxed item to release its wrapped value into bind...
-        self._handle.bind(ish, <uint16_t> value)
+        self._handle.bind(ish, val)
 
-    def __getitem__(self, str key):
+    def __getitem__(self, key):
         # TODO: Need some type inference here, require explicit third param?
         cdef:
             uint16_t retval
@@ -1868,7 +1825,7 @@ cdef class Namespace(MDSObject):
         retval = self._handle.lookup(ish, managed_ushort_type_handle())
         return retval
 
-    def create_child(self, str child_id, bint create_if_missing=True):
+    def create_child(self, child_id, bint create_if_missing=True):
         cdef:
             interned_string_handle ish = convert_py_to_ish(child_id)
             bool cim = <bool> create_if_missing

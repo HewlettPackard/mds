@@ -32,7 +32,7 @@ from collections import namedtuple
 
 from mds.typing import *
 
-__generate_specializations = lambda fn: [fn(t) for t in MDSTypes.values()] + ['\n']
+__generate_specializations = lambda fn: [fn(t) for t in Types.mappings] + ['\n']
 __ensure_is_list = lambda elem: [elem] if not isinstance(elem, list) else elem
 
 def find_and_inject(file_path, dry_run=True, generator_separator='|'):
@@ -110,8 +110,6 @@ def tmpl_record_field_wrapper(t):
     for prefix in ("", "const_"):
         wrapper_name = t.record_field if prefix == "" else t.const_record_field
         compiled += f"""
-    # BEGIN {t.api}
-
     cdef cppclass {wrapper_name} "mds::api::{prefix}record_field_handle<{t.kind}>":
         {wrapper_name}()
         {wrapper_name}({wrapper_name}&)
@@ -277,16 +275,12 @@ cdef class {t.title_array}({t.array_parent}):
         self._handle.write(index, {t.managed_value}(value))
     
     def copy(self):
-        # cdef:
-        #     size_t i = 0
-        #     size_t l = len(self)
-        #     {t.managed_array} h = {t.f_create_array}(l)
+        retval = {t.title_array}(len(self))
 
-        # for i in range(l):
-        #     h.write(i, {t.managed_value}(<{t.c_type}> self[i]))
+        for i in range(len(self)):
+            retval[i] = self[i]
 
-        # return {t.title_array_init}(h)
-        pass
+        return retval
 """
 
     # Sometimes we need to be creative to coerce the correct Python type

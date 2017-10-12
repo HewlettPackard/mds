@@ -31,50 +31,6 @@ from random import shuffle
 
 from mds.managed import *
 
-
-class TestMDSArrays(unittest.TestCase):
-
-    def setUp(self):
-        self.heterogeneous_list = [1, 4.3, True, None, dict()]
-        self.unsupported_list = [dict() for x in range(100)]
-
-    def test_can_create_homogeneous_list(self):
-        # TODO: Need to test all types in MDSTypes.identifiers
-        list_len = 100
-        
-        for ident in ["bool"]:
-            t = MDSArrayBase.create(ident, list_len)
-            #py_t = MDSTypes.python_equivalent(ident)
-            #self.assertTrue(t.dtype, MDSTypes[ident])
-            #self.assertEqual(len(t), list_len)
-
-            #for elem in t:
-            #    self.assertTrue(type(elem), py_t)
-
-    def test_cannot_create_heterogeneous_list(self):
-        pass
-
-    def test_cannot_mix_types_in_existing_list(self):
-        pass
-
-    def test_default_values(self):
-        """
-
-        * Python equivalency respected
-        * Bounds respected (what to do for over/underflow?)
-        """
-        pass
-
-    def test_list_bounds(self):
-        pass
-
-    def test_numeric_overflow_behavior(self):
-        pass
-
-    def test_numeric_underflow_behavior(self):
-        pass
-
-
 class TestString(unittest.TestCase):
 
     def setUp(self):
@@ -347,7 +303,5 @@ class TestString(unittest.TestCase):
         self.assertIsInstance(s, String)
         self.assertEqual(self.unicode + "foo", s.foo)
 
-
 if __name__ == '__main__':
     unittest.main()
-

@@ -69,6 +69,9 @@ class TypeInfo():
 
     MDS_INTEGRAL_BOUNDS = dict()
 
+    def __repr__(self):
+        return f'<MDS TypeInfo: {self.title} ({self.kind})>'
+
     def __init__(self, api, c_type, taxonomy, python_type=None):
         self.api = api
         self.title = api.title()
@@ -116,19 +119,47 @@ class TypeInfo():
 
 
 # These types are the ones that this script will generate wrappers for
-MDSTypes = {
-    "bool": TypeInfo("bool", "bool", TypeInfo.MDS_BASE, "True"),
-    "byte": TypeInfo("byte", "int8_t", TypeInfo.MDS_INTEGRAL),
-    "ubyte": TypeInfo("ubyte", "uint8_t", TypeInfo.MDS_INTEGRAL),
-    "short": TypeInfo("short", "int16_t", TypeInfo.MDS_INTEGRAL),
-    "ushort": TypeInfo("ushort", "uint16_t", TypeInfo.MDS_INTEGRAL),
-    "int": TypeInfo("int", "int32_t", TypeInfo.MDS_INTEGRAL),
-    "uint": TypeInfo("uint", "uint32_t", TypeInfo.MDS_INTEGRAL),
-    "long": TypeInfo("long", "int64_t", TypeInfo.MDS_INTEGRAL),
-    "ulong": TypeInfo("ulong", "uint64_t", TypeInfo.MDS_INTEGRAL),
-    "float": TypeInfo("float", "float", TypeInfo.MDS_FLOATING),
-    "double": TypeInfo("double", "double", TypeInfo.MDS_FLOATING)
-}
+# TODO Move to mds.__init__ ?
+
+class __MDSTypes(object):
+    
+    def __init__(self, *args, **kwargs):
+        self.__repr = {
+            "bool": TypeInfo("bool", "bool", TypeInfo.MDS_BASE, "True"),
+            "byte": TypeInfo("byte", "int8_t", TypeInfo.MDS_INTEGRAL),
+            "ubyte": TypeInfo("ubyte", "uint8_t", TypeInfo.MDS_INTEGRAL),
+            "short": TypeInfo("short", "int16_t", TypeInfo.MDS_INTEGRAL),
+            "ushort": TypeInfo("ushort", "uint16_t", TypeInfo.MDS_INTEGRAL),
+            "int": TypeInfo("int", "int32_t", TypeInfo.MDS_INTEGRAL),
+            "uint": TypeInfo("uint", "uint32_t", TypeInfo.MDS_INTEGRAL),
+            "long": TypeInfo("long", "int64_t", TypeInfo.MDS_INTEGRAL),
+            "ulong": TypeInfo("ulong", "uint64_t", TypeInfo.MDS_INTEGRAL),
+            "float": TypeInfo("float", "float", TypeInfo.MDS_FLOATING),
+            "double": TypeInfo("double", "double", TypeInfo.MDS_FLOATING)
+        }
+        self.__available = set(self.__repr.keys())
+        super().__init__(*args, **kwargs)
+
+    def __getattr__(self, key):
+        if key in self.__repr:
+            return self.__repr[key]
+
+        raise AttributeError(f'Unknown type `{key}`')
+
+    def __getitem__(self, key):
+        return self.__repr[key]
+
+    @property
+    def available(self):
+        return self.__available
+
+    @property
+    def mappings(self):
+        return self.__repr.values()
+
+Types = __MDSTypes()
+
+# TODO: Not sure that the developer needs to see all the wrapper gen'd stuff in TypeInfo
 
 #TODO: Need record_fields for these:
 #      STRING,
