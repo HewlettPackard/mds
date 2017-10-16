@@ -25,54 +25,71 @@ provided you also meet the terms and conditions of the Application license.
 
 import unittest
 
+import mds
 from mds.managed import Record
-from mds.typing import Types
 
 class SimpleRecord(Record):
 
     _ident = "schema_SimpleRecord"
 
     def __init__(self):
-        self._register_field(Types.bool, "is_active", True)
-
         super().__init__()
+        self._register_field(mds.typing.bool, "is_active", True)
+        self._create()
 
 class LessSimpleRecord(Record):
 
-    _ident = "schema_SimpleRecord"
+    _ident = "schema_LessSimpleRecord"
 
     def __init__(self):
-        self._register_field(Types.bool, "is_active", True)
-        self._register_field(Types.bool, "is_active", True)
-
         super().__init__()
+        self._register_field(mds.typing.bool, "is_active", True)
+        self._register_field(mds.typing.float, "numerator")
+        self._register_field(mds.typing.double, "denominator")
+        self._create()
+
+class ComplexRecord(Record):
+
+    _ident = "schema_ComplexRecord"
+
+    def __init__(self):
+        super().__init__()
+        self._register_field(mds.typing.bool, "is_active", True)
+        self._register_field(mds.typing.float, "numerator")
+        self._register_field(mds.typing.double, "denominator")
+        self._create()
 
 class NoIdentRecord(Record):
 
-    _ident = "schema_SimpleRecord"
-
     def __init__(self):
-        self._register_field(Types.bool, "is_active", True)
-
         super().__init__()
+        self._register_field(mds.typing.bool, "is_active", True)
+        self._create()
 
+class TestRecords(unittest.TestCase):
 
-class TestRecordsCreation(unittest.TestCase):
+    RECORDS = [SimpleRecord, LessSimpleRecord, ComplexRecord]
+
+    def test_cannot_make_without_ident(self):
+        self.assertRaises(TypeError, lambda: NoIdentRecord())
+
+    def __create_and_test(self, cls):
+        record = cls()
+        self.assertIs(type(record), cls)
+        self.assertIsInstance(record, Record)
+        self.assertEqual(cls._ident, record.ident)
+        return record
 
     def test_can_make_simple(self):
-        
+        self.__create_and_test(SimpleRecord)
 
+    @unittest.skip("Debugging")
+    def test_can_make_less_simple(self):
+        self.__create_and_test(LessSimpleRecord)
+
+    @unittest.skip("Debugging")
     def test_can_make_complex(self):
-        # TODO Deal with all RecordMemebers
-        pass
-
-
-class TestRecordNamespaceIntegration(unittest.TestCase):
-    # TODO: The order in this one is important
-
-    def setUp(self):
-        # TODO Setup a record to use here
-        pass
+        self.__create_and_test(ComplexRecord)
 
     def test_can_bind_to_namespace(self):
         pass

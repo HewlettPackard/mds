@@ -24,6 +24,7 @@ provided you also meet the terms and conditions of the Application license.
 """
 
 from itertools import chain
+from collections import namedtuple
 
 from libcpp cimport bool
 from libcpp.string cimport string
@@ -35,9 +36,27 @@ from mds.core.api_helpers cimport initialize_base_task
 from mds.core.api_namespaces cimport *
 from mds.core.api_primitives cimport *
 
-from mds.typing import Types, TypeInfo
+from mds import typing, TypeInfo
 
 initialize_base_task()
+
+# =========================================================================
+#  Base
+# =========================================================================
+
+cdef class MDSObject(object):
+
+    def _throw_const_error(self):
+        raise ConstError("Can't assign value to const field.")
+
+    # TODO: memoize?
+    property is_const:
+        def __get__(self):
+            return self.__class__.__name__.startswith("Const")
+
+    property is_null:
+        def __get__(self):
+            pass  # TODO
 
 # =========================================================================
 #  Errors & Exceptions
@@ -50,105 +69,8 @@ cdef class ConstError(Exception):
     pass
 
 # =========================================================================
-#  Records
+#  Primitives
 # =========================================================================
-
-cdef class Record(MDSObject):
-    """
-
-    Development Notes:
-    * skipped force -- not sure when this would be needed
-    * not implemented token yet -- unsure why this is needed, for forward()? Check JAPI
-    """
-
-    cdef:
-        RecordTypeDeclaration __type_decl
-        RecordToken __tok
-        managed_record_handle _handle
-        dict __field_decls
-
-    def __init__(self):
-        if not hasattr(self, '_ident'):
-            raise TypeError('Record subclasses must have a static `_ident` type name')
-
-        # Working on the assumption this is called at the end:
-        self.__type_decl = RecordTypeDeclaration(self.ident, self, self.__field_decls)
-
-    def __getattr__(self, key):
-        try:
-            return getattr(self.__type_decl, key).read()
-        except:
-            return super().__getattr__(key)
-
-    def __setattr__(self, key, value):
-        try:
-            getattr(self.__type_decl, key).write(value)
-        except:
-            super().__setattr__(key, value)
-
-    def _register_field(self, klass, str label, bint make_const=False, initial_value=None):
-        self.__field_decls[label] = record_member_factory(self, klass, make_const, initial_value)
-
-# mds_record(const rc_token &tok, handle_type &&h)
-#     : _handle { std::move(h) } {
-#   tok.cache_shared(this);
-# }
-#
-# explicit mds_record(const rc_token &tok)
-#     : _handle(tok.create()) {
-#   /*
-#    * By creating and caching a shared ptr, we make it possible
-#    * for user ctors to call this_as_mds_ptr(), which requires
-#    * shared_from_this(), which requires there to be an active
-#    * shared pointer.
-#    */
-#   tok.cache_shared(this);
-# }
-
-    # NOTE Disabled until Cython 0.27
-    # def __eq__(self, other):
-    #     return self._handle == other._handle
-
-    def bind_to_namespace(self, ns, *args):
-        #template<typename First, typename ...Cpts>
-        #void bind_in(const mds_ptr<mds_namespace> &ns, First &&first,
-        #            Cpts &&...cpts) const {
-        # ns->at(std::forward<First>(first), std::forward<Cpts>(cpts)...)
-        #     .template as<mds_record>().bind(THIS_RECORD);
-
-        pass
-
-    @classmethod
-    def lookup_in(cls, ns, *args):
-        if not len(args):
-            raise KeyError('Need at least one path for the namespace')
-    
-        root = ns
-
-        if len(args) > 1:
-            for arg in args[:-1]:
-                try:
-                    root = ns[arg]
-                except:
-                    raise KeyError(f'Couldn\'t find key {arg}')
-
-        retval = cls()
-        # Now we know that root[args[-1]] will be the record val
-        # TODO: update retval's fields accordingly
-
-        return retval
-   
-    @classmethod
-    def lookup_name(cls, *args):
-        return cls.lookup_in(Namespace.get_current(), *args)
-
-    property ident:
-        def __get__(self):
-            return self._ident
-    
-    property type_decl:
-        def __get__(self):
-            return self.__type_decl
 
 # START INJECTION | tmpl_concrete_array
 
@@ -722,12 +644,14 @@ cpdef RecordMemberBase record_member_factory(Record record, klass, bint make_con
 
     # We need this to be a typing.TypeInfo to get consistent titles    
     if isinstance(klass, str):
-        klass = Types[klass]
+        klass = typing[klass]
     
     if isinstance(klass, TypeInfo):
         classname += klass.title
     else:
         raise TypeError("Can't resolve type `{}` as MDS type identifier".format(id(klass)))
+
+    classname += "RecordMember"
 
     # Now, let's see if it's known and of the correct lineage
     cls = globals()[classname]
@@ -735,24 +659,6 @@ cpdef RecordMemberBase record_member_factory(Record record, klass, bint make_con
 
     # We're all good, send it back up!
     return cls(record, initial_value)
-
-# =========================================================================
-#  Base
-# =========================================================================
-
-cdef class MDSObject(object):
-
-    def _throw_const_error(self):
-        raise ConstError("Can't assign value to const field.")
-
-    # TODO: memoize?
-    property is_const:
-        def __get__(self):
-            return self.__class__.__name__.startswith("Const")
-
-    property is_null:
-        def __get__(self):
-            pass  # TODO
 
 # =========================================================================
 #  Managed Values
@@ -913,12 +819,272 @@ cdef class MDSFloatArrayBase(MDSArrayBase):
 #  Records
 # =========================================================================
 
+MDSFieldDesc = namedtuple("MDSFieldDesc", ["klass", "make_const", "initial_value"])
+
+cdef class Record(MDSObject):
+    """
+    Development Notes:
+    * skipped force -- not sure when this would be needed
+    * not implemented token yet -- unsure why this is needed, for forward()? Check JAPI
+    """
+
+    cdef:
+        RecordTypeDeclaration __type_decl
+        # RecordToken __tok
+        managed_record_handle _handle
+        dict __field_decls
+
+    def __cinit__(self):
+        self.__field_decls = dict()
+
+    def _create(self):
+        """
+        This method should be called explicitly at the end of the subclass constructor
+        """
+        try:
+            self._ident
+        except AttributeError:
+            raise TypeError(f'Record subclass `{self.__class__.__name__}` must have a static `_ident` type name')
+
+        for label, decl in self.__field_decls.items():
+            self.__field_decls[label] = record_member_factory(
+                self, decl.klass, decl.make_const, decl.initial_value
+            )
+
+        self.__type_decl = RecordTypeDeclaration(self, self.__field_decls)
+
+    def _register_field(self, klass, label, initial_value=None, make_const=False):
+        """
+        The type declaration cannot be made until we have all the fields, so use a
+        placeholder tuple here to store the parameters of the field
+        """
+        if label in self.__field_decls:
+            raise AttributeError(f"Cannot redefine a previously declared Record field `{label}`")
+
+        self.__field_decls[label] = MDSFieldDesc(klass, make_const, initial_value)
+
+    def __getitem__(self, item):
+        return self.__type_decl[item]
+
+    def __setitem__(self, key, value):
+        self.__type_decl[key] = value
+
+# mds_record(const rc_token &tok, handle_type &&h)
+#     : _handle { std::move(h) } {
+#   tok.cache_shared(this);
+# }
+#
+# explicit mds_record(const rc_token &tok)
+#     : _handle(tok.create()) {
+#   /*
+#    * By creating and caching a shared ptr, we make it possible
+#    * for user ctors to call this_as_mds_ptr(), which requires
+#    * shared_from_this(), which requires there to be an active
+#    * shared pointer.
+#    */
+#   tok.cache_shared(this);
+# }
+    def bind_to_namespace(self, ns, *args):
+        #template<typename First, typename ...Cpts>
+        #void bind_in(const mds_ptr<mds_namespace> &ns, First &&first,
+        #            Cpts &&...cpts) const {
+        # ns->at(std::forward<First>(first), std::forward<Cpts>(cpts)...)
+        #     .template as<mds_record>().bind(THIS_RECORD);
+        # TODO: Is this one necessary? Can't they just do the below themselves?
+        ns[args] = self
+
+    @classmethod
+    def lookup_in_namespace(cls, ns, *args):
+        if not len(args):
+            raise KeyError('Need at least one path for the namespace')
+    
+        record = ns[args]
+        retval = cls()
+        # Now we know that root[args[-1]] will be the record val
+        # TODO: update retval's fields accordingly
+
+        return retval
+   
+    # @classmethod
+    # def lookup_name(cls, *args):
+    #     return cls.lookup_in(Namespace.get_current(), *args)
+
+    property ident:
+        def __get__(self):
+            return self._ident
+    
+    property type_decl:
+        def __get__(self):
+            return self.__type_decl
+
+
+cdef class RecordTypeDeclaration(MDSObject):
+
+    cdef:
+        managed_record_handle _handle
+        record_type_handle _declared_type
+        const_record_type_handle _created_type
+        Record _parent
+        dict _field_decls
+
+    def __cinit__(self, object parent, dict fields):
+        self._field_decls = fields
+        self._parent = parent
+        self._declared_type = record_type_handle.declare(convert_py_to_ish(parent.ident))
+
+#  api::record_type_handle declare(const mds_string &name,
+#                                  managed_type<mds_record>) {
+#    return api::record_type_handle::declare(name.handle());
+#  }
+#
+#  template<typename S>
+#  api::record_type_handle declare(const mds_string &name, managed_type<S> s) {
+#    static_assert(is_record_type<S>::value, "Super type not a record type");
+#    auto sp = s.ensure_created();
+#    return api::record_type_handle::declare(name.handle(), sp);
+#  }    
+# NOTE: Not sure where this is called, delegated to _decalre_record_type(ident)
+    # def __declare(self, ident):
+    #     return record_type_handle.declare(convert_py_to_ish(ident))
+
+    def __contains__(self, item):
+        return item in self._field_decls
+
+    def __getitem__(self, item):
+        return self._field_decls[item].read()
+
+    def __setitem__(self, key, value):
+        self._field_decls[key].write(value)
+
+    def items(self):
+        return self._field_decls.items()
+
+    def fields(self):
+        return self._field_decls.keys()
+
+    def __declare_fields(self): # TODO: This is probably wrong, no binding to rm (placeholder only) -- check
+        map(lambda rm: _declare_record_member(rm, self.parent.ident, self._declared_type), 
+            self.__field_decls.values())
+
+    def __ensure_field_types(self):
+        map(lambda rm: rm.ensure_type(), self.__field_decls.values())
+
+    def __ensure_created(self):
+        if self._created_type.is_null():
+            # This needs to work in two phases.  In the first, we declare
+            # the fields, and we have to be sure that this can't result
+            # in a recursive call to __ensure_created() or we will have a
+            # deadlock.  But we have to make sure that any referenced
+            # types (including this one) are created, so we have a second
+            # pass that loops through the fields and does this.  But we
+            # go through the second pass after setting __created_type, and
+            # we use a check on _created_type to avoid locking.
+            #
+            # There is a failure window in between the internal call to
+            # __ensure_created() and the end of this function.  If we die
+            # there, we will have a created record type that may have
+            # fields whose types are uncreated record types.  We will
+            # not, however, have actually created any instances of this
+            # record type (since we died).  This will result in an
+            # incompatible type exception, since the types won't be the
+            # same nor will one forward to the other.
+            #
+            # TODO (upstream): Make it possible for the next process to finish the
+            # job by overwriting the field type with its own.
+            
+            # TODO call_once semantics -- std::call_once(_created
+            self.__delcare_fields()
+            self._created_type = self._declared_type.ensure_created()
+            _register_type(self._created_type)
+            self.__ensure_field_types()
+
+        # TODO does this need to return the c++ type, or will a bint suffice?
+        # TODO return self._created_type
+        return True
+
+# cdef class RecordToken(MDSObject):
+
+# # struct rc_token {
+# #  protected:
+# #   friend class mds_record;
+# #   mutable std::shared_ptr<mds_record> _shared_ptr;
+# #
+# #   virtual ~rc_token() {
+# #     recent_stack().pop();
+# #   }
+# #
+# #   virtual handle_type create() const = 0;
+# #   /*
+# #    * If we create the initial shared ptr as a
+# #    * shared_ptr<mds_record>, then when the last shared_ptr
+# #    * goes away and the mds_record is destroyed, if there were
+# #    * virtual functions added below, the wrong pointer to the
+# #    * memory will be wrong.  So we indirect through the rc_token,
+# #    * which knows the type to create the pointer to cache.
+# #    */
+# #   virtual void cache_shared(mds_record *) const = 0;
+# #
+# #   rc_token() {
+# #     recent_stack().push(nullptr);
+# #   }
+# #
+# #   static std::stack<mds_record *> &recent_stack() {
+# #     static thread_local std::stack<mds_record *> s;
+# #     return s;
+# #   }
+# # };
+
+# # template<typename R, typename = enable_if_record<R>>
+# # struct typed_rc_token : mds_record::rc_token {
+# #   mds_record::handle_type create() const override {
+# #     ensure_thread_initialized();
+# #     return managed_type<R>().ensure_created().create_record();
+# #   }
+
+# #   std::shared_ptr<R> cached_shared_ptr() const {
+# #     return std::static_pointer_cast<R>(_shared_ptr);
+# #   }
+
+# #   void cache_shared(mds_record *r) const override {
+# #     /*
+# #      * This is called from mds_record's ctor, so the actual
+# #      * concrete class hasn't been constructed yet.  I'm assuming
+# #      * that creating a shared_ptr to it won't involve anythnig more
+# #      * than doing some adjustment to the this pointer.
+# #      */
+# #     R *dc_rec = static_cast<R *>(r);
+# #     _shared_ptr = std::shared_ptr<R>(dc_rec);
+# #     recent_stack().top() = r;
+# #   }
+
+# #   static R *being_constructed() {
+# #     auto &recent = recent_stack();
+# #     R *as_record = static_cast<R*>(recent.top());
+# #     assert(recent.top() != nullptr);
+# #     return as_record;
+# #   }
+# # };
+#     pass
+
+"""
+TODO:
+    * Implement comparisons
+    * Test the heck out of unicode encoding / decoding
+    * Have __repr__ give a streaming view of the string in the MDS heap
+    * Deal with the '\n' ending char
+    * Define str-like operations in this file, not delegating to str (invokes copy)
+"""
+
 cdef _grab_record_handle(Record record, RecordMemberBase member):
     member._mr_handle = record._handle
 
 cdef class RecordMemberBase(MDSObject):
 
-    cdef managed_record_handle _mr_handle
+    cdef:
+        managed_record_handle _mr_handle
+        Record _parent
+        str _type_ident
+        object _initial_value
 
 #   using handle_type = typename managed_type<T>::field_handle_type;
 #   static value_type from_core(const core_api_type &val) {
@@ -1384,158 +1550,6 @@ cdef class ConstDoubleRecordMember(ConstRecordMemberBase):
 #        pass
 
 # END INJECTION
-
-cdef class RecordTypeDeclaration(MDSObject):
-
-    cdef:
-        managed_record_handle _handle
-        record_type_handle _declared_type
-        const_record_type_handle _created_type
-
-    def __cinit__(self, str ident, object parent, dict fields):
-        self._field_decls = fields
-        self._ident = ident
-        self._declared_type = record_type_handle.declare(convert_py_to_ish(ident))
-
-#  api::record_type_handle declare(const mds_string &name,
-#                                  managed_type<mds_record>) {
-#    return api::record_type_handle::declare(name.handle());
-#  }
-#
-#  template<typename S>
-#  api::record_type_handle declare(const mds_string &name, managed_type<S> s) {
-#    static_assert(is_record_type<S>::value, "Super type not a record type");
-#    auto sp = s.ensure_created();
-#    return api::record_type_handle::declare(name.handle(), sp);
-#  }    
-# NOTE: Not sure where this is called, delegated to _decalre_record_type(ident)
-    # def __declare(self, ident):
-    #     return record_type_handle.declare(convert_py_to_ish(ident))
-
-    def __getattr__(self, key):
-        if key not in self._field_decls:
-            return super().__getattr__(key)
-
-        return self._field_decls[key].read()
-
-    def __setattr__(self, key, value):
-        if key not in self._field_decls:
-            super().__setattr__(key, value)
-        else:
-            self._field_decls[key].write(value)
-
-    def __declare_fields(self): # TODO: This is probably wrong, no binding to rm (placeholder only) -- check
-        map(lambda rm: _declare_record_member(rm, self._ident, self._declared_type), 
-            self.__field_decls.values())
-
-    def __ensure_field_types(self):
-        map(lambda rm: rm.ensure_type(), self.__field_decls.values())
-
-    def __ensure_created(self):
-        if self._created_type.is_null():
-            # This needs to work in two phases.  In the first, we declare
-            # the fields, and we have to be sure that this can't result
-            # in a recursive call to __ensure_created() or we will have a
-            # deadlock.  But we have to make sure that any referenced
-            # types (including this one) are created, so we have a second
-            # pass that loops through the fields and does this.  But we
-            # go through the second pass after setting __created_type, and
-            # we use a check on _created_type to avoid locking.
-            #
-            # There is a failure window in between the internal call to
-            # __ensure_created() and the end of this function.  If we die
-            # there, we will have a created record type that may have
-            # fields whose types are uncreated record types.  We will
-            # not, however, have actually created any instances of this
-            # record type (since we died).  This will result in an
-            # incompatible type exception, since the types won't be the
-            # same nor will one forward to the other.
-            #
-            # TODO (upstream): Make it possible for the next process to finish the
-            # job by overwriting the field type with its own.
-            
-            # TODO call_once semantics -- std::call_once(_created
-            self.__delcare_fields()
-            self._created_type = self._declared_type.ensure_created()
-            _register_type(self._created_type)
-            self.__ensure_field_types()
-
-        # TODO does this need to return the c++ type, or will a bint suffice?
-        # TODO return self._created_type
-        return True
-
-cdef class RecordToken(MDSObject):
-
-# struct rc_token {
-#  protected:
-#   friend class mds_record;
-#   mutable std::shared_ptr<mds_record> _shared_ptr;
-#
-#   virtual ~rc_token() {
-#     recent_stack().pop();
-#   }
-#
-#   virtual handle_type create() const = 0;
-#   /*
-#    * If we create the initial shared ptr as a
-#    * shared_ptr<mds_record>, then when the last shared_ptr
-#    * goes away and the mds_record is destroyed, if there were
-#    * virtual functions added below, the wrong pointer to the
-#    * memory will be wrong.  So we indirect through the rc_token,
-#    * which knows the type to create the pointer to cache.
-#    */
-#   virtual void cache_shared(mds_record *) const = 0;
-#
-#   rc_token() {
-#     recent_stack().push(nullptr);
-#   }
-#
-#   static std::stack<mds_record *> &recent_stack() {
-#     static thread_local std::stack<mds_record *> s;
-#     return s;
-#   }
-# };
-
-# template<typename R, typename = enable_if_record<R>>
-# struct typed_rc_token : mds_record::rc_token {
-#   mds_record::handle_type create() const override {
-#     ensure_thread_initialized();
-#     return managed_type<R>().ensure_created().create_record();
-#   }
-
-#   std::shared_ptr<R> cached_shared_ptr() const {
-#     return std::static_pointer_cast<R>(_shared_ptr);
-#   }
-
-#   void cache_shared(mds_record *r) const override {
-#     /*
-#      * This is called from mds_record's ctor, so the actual
-#      * concrete class hasn't been constructed yet.  I'm assuming
-#      * that creating a shared_ptr to it won't involve anythnig more
-#      * than doing some adjustment to the this pointer.
-#      */
-#     R *dc_rec = static_cast<R *>(r);
-#     _shared_ptr = std::shared_ptr<R>(dc_rec);
-#     recent_stack().top() = r;
-#   }
-
-#   static R *being_constructed() {
-#     auto &recent = recent_stack();
-#     R *as_record = static_cast<R*>(recent.top());
-#     assert(recent.top() != nullptr);
-#     return as_record;
-#   }
-# };
-    pass
-
-"""
-TODO:
-    * Implement comparisons
-    * Test the heck out of unicode encoding / decoding
-    * Have __repr__ give a streaming view of the string in the MDS heap
-    * Deal with the '\n' ending char
-    * Define str-like operations in this file, not delegating to str (invokes copy)
-"""
 
 cdef class String(MDSObject):
     """

@@ -29,8 +29,8 @@ import unittest
 from functools import reduce
 from random import shuffle
 
+import mds
 from mds.managed import *
-from mds.typing import Types
 
 class TestMDSArrays(unittest.TestCase):
 
@@ -42,7 +42,7 @@ class TestMDSArrays(unittest.TestCase):
         # TODO: Need to test all types in MDSTypes.identifiers
         list_len = 100
         
-        for t in Types.mappings:
+        for t in mds.typing.mappings:
             x = globals()[t.title_array](list_len)
             #py_t = MDSTypes.python_equivalent(ident)
             #self.assertTrue(t.dtype, MDSTypes[ident])

@@ -88,6 +88,7 @@ setup(
     ext_modules=cythonize(
         extensions,
         language_level=3,
+        gdb_debug=DEBUG
     )
 )
 

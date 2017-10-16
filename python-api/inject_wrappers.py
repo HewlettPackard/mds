@@ -30,9 +30,10 @@ import sys
 
 from collections import namedtuple
 
-from mds.typing import *
+import mds
+from mds import TypeInfo
 
-__generate_specializations = lambda fn: [fn(t) for t in Types.mappings] + ['\n']
+__generate_specializations = lambda fn: [fn(t) for t in mds.typing.mappings] + ['\n']
 __ensure_is_list = lambda elem: [elem] if not isinstance(elem, list) else elem
 
 def find_and_inject(file_path, dry_run=True, generator_separator='|'):
