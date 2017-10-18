@@ -30,7 +30,7 @@ from mds.managed import Record
 
 class SimpleRecord(Record):
 
-    _ident = "schema_SimpleRecord"
+    _ident = "schema_SimpleRecords"
 
     def __init__(self):
         super().__init__()
@@ -81,7 +81,11 @@ class TestRecords(unittest.TestCase):
         return record
 
     def test_can_make_simple(self):
-        self.__create_and_test(SimpleRecord)
+        record = self.__create_and_test(SimpleRecord)
+        field = "is_active"
+
+        self.assertIn(field, record.type_declaration.fields())
+        self.assertEqual(record[field], True)
 
     @unittest.skip("Debugging")
     def test_can_make_less_simple(self):

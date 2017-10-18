@@ -24,7 +24,6 @@ provided you also meet the terms and conditions of the Application license.
 """
 
 from itertools import chain
-from collections import namedtuple
 
 from libcpp cimport bool
 from libcpp.string cimport string
@@ -37,6 +36,11 @@ from mds.core.api_namespaces cimport *
 from mds.core.api_primitives cimport *
 
 from mds import typing, TypeInfo
+
+import threading
+
+__LOCAL = threading.local()
+__LOCAL.token_stack = []
 
 initialize_base_task()
 
@@ -67,6 +71,1079 @@ cdef class UnderflowError(Exception):
 
 cdef class ConstError(Exception):
     pass
+
+# =========================================================================
+#  Managed Values
+# =========================================================================
+
+cdef class MDSPrimitiveBase(MDSObject):
+    # TODO: Use the API's math operation to ensure atomicity
+
+    def __int__(self):
+        pass
+
+    def __long__(self):
+        pass
+
+    def __float__(self):
+        pass
+
+    def _sanitize(self, value):
+        return value
+
+    def _to_python(self):
+        raise NotImplementedError("Specialization required.")
+
+    def _to_mds(self):
+        raise NotImplementedError("Specialization required.")
+
+    property python_copy:
+        def __get__(self):
+            raise NotImplementedError("Specialization required.")
+
+
+cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
+
+    def _sanitize(self, value):
+        if isinstance(value, float):
+            value = int(value)
+        elif not isinstance(value, int):
+            t = type(value)
+            raise TypeError('Unable to parse value of type `{t}`')
+
+        if value < self.MIN:
+            raise UnderflowError(f"Can't fit {value} in container {self.dtype}")
+        elif value > self.MAX:
+            raise OverflowError(f"Can't fit {value} in container {self.dtype}")
+
+        return value
+
+    property MIN:
+        def __get__(self):
+            raise NotImplementedError("Integer specialization required.")
+
+    property MAX:
+        def __get__(self):
+            raise NotImplementedError("Integer specialization required.")
+
+
+cdef class MDSFloatPrimitiveBase(MDSPrimitiveBase):
+    pass
+
+# =========================================================================
+#  Arrays
+# =========================================================================
+
+cdef class MDSArrayBase(MDSObject):
+    
+    def _index_bounds_check(self, index):
+         # TODO: Need to handle slices. Should this be a new array?
+        cdef long l = <long> len(self)
+
+        if index >= l or index < -l:
+            raise IndexError('list index out of range')
+
+        if index < 0:
+            index += l
+
+        return index
+
+    def _to_python(self, index):
+        raise NotImplementedError('Specialization of MDSList required') 
+
+    def _to_mds(self, index, value):
+        raise NotImplementedError('Specialization of MDSList required') 
+
+    def __getitem__(self, index):
+        index = self._index_bounds_check(index)
+        return self._to_python(index)
+
+    def __setitem__(self, index, value):
+        index = self._index_bounds_check(index)
+        self._to_mds(index, value)
+
+    def __iter__(self):
+        return NotImplemented # TODO Implement this
+
+    def __next__(self):
+        return NotImplemented # TODO Implement this
+
+    def __len__(self):
+        raise NotImplementedError('Specialization of MDSArrayBase required') 
+
+    def index(self, start=None, end=None):
+        return NotImplemented # TODO Implement this
+
+    def count(self, value):
+        # TODO: Handle len 0, should this even be instantiable?
+        # TODO: Bool still a str-literal here
+        if not isinstance(value, type(self[0])):
+            raise TypeError("value to be searched for must match list-type `bool`")
+
+        cdef:
+            size_t i = 0, l = len(self), c = 0
+
+        for i in range(l):
+            if self[i] == value:
+                c += 1
+
+        return c
+
+    def sort(self):
+        return NotImplemented # TODO Implement this
+
+    def reverse(self):
+        return NotImplemented # TODO Implement this
+
+    def copy(self):
+        raise NotImplementedError('Specialization of MDSArrayBase required')
+ 
+    property dtype:
+        def __get__(self):
+            raise NotImplementedError('Specialization of MDSArrayBase required')
+
+
+cdef class MDSIntArrayBase(MDSArrayBase):
+
+    def _numeric_bounds_check(self, value):
+        """
+        TODO: This needs to check the bounds of the different int sizes in MDS.
+        """
+        raise NotImplementedError('Requires a type-specific instantiation')
+
+    def __setitem__(self, index, value):
+        index = self._index_bounds_check(index)
+        value = self._numeric_bounds_check(value)
+        self._to_mds(index, value)
+
+    property dtype:
+        def __get__(self):
+            return type(1)
+
+
+cdef class MDSFloatArrayBase(MDSArrayBase):
+
+    property dtype:
+        def __get__(self):
+            return type(1.0)
+
+# =========================================================================
+#  Records
+# =========================================================================
+
+cdef class Record(MDSObject):
+    cdef:
+        managed_record_handle _handle
+        RecordTypeDeclaration _type_decl
+
+    def __cinit__(self, MDSRecordCreatorToken token):
+        self._handle = managed_record_handle(token.create())
+        token.cache_shared(self)
+
+        self._type_decl = self.type_declaration()
+
+    @classmethod
+    def lookup_in_namespace(cls, ns, *args):
+        if not isinstance(ns, Namespace):
+            raise TypeError('Need a `Namespace` object as first argument')
+
+        if not len(args):
+            raise KeyError('Need at least one path for the namespace')
+    
+        record = ns[args]
+        retval = cls()
+        # Now we know that root[args[-1]] will be the record val
+        # TODO: update retval's fields accordingly
+
+        return retval
+
+    @classmethod
+    def force(cls):
+        MDSManagedType.ensure_complete(cls)
+
+    @classmethod
+    def type_declaration(cls):
+        raise TypeError("Derived `Record`s should return a RecordTypeDeclaration here.")
+
+    @classmethod
+    def ident(cls):
+        raise TypeError("Derived `Record`s should return a `str` identifier here.")
+
+
+cdef class ExampleRecord(Record):  # => Test
+
+    @classmethod
+    def type_declaration(cls):
+        fields = {
+            "is_active": make_field(mds.typing.bool, make_const=True),
+            "number_of_players": make_field(mds.typing.ushort, initial_value=0)
+        }
+
+        return RecordTypeDeclaration(cls.ident(), fields, Record)
+
+    @classmethod
+    def ident(cls):
+        return "PythonTest::ExampleRecord"
+
+############################################################# RECORD CREATOR TOKENS
+
+cdef class MDSRecordCreatorToken(MDSObject):
+    # If we create the initial shared ptr as a
+    # shared_ptr<mds_record>, then when the last shared_ptr
+    # goes away and the mds_record is destroyed, if there were
+    # virtual functions added below, the wrong pointer to the
+    # memory will be wrong.  So we indirect through the rc_token,
+    # which knows the type to create the pointer to cache.
+    cdef:
+        Record _shared_ptr
+
+    def __cinit__(self):
+        self.recent_stack = MDSTokenStack.recent_stack
+        self.recent_stack.push(None)
+
+    def __dealloc__(self):
+        self.recent_stack.pop()
+
+    def create(self):
+        pass
+
+    def cache_shared(self, Record record):
+        pass
+
+
+cdef class MDSTypedRecordCreatorToken(MDSRecordCreatorToken):
+
+    def create(self):
+        # TODO: ensure_thread_initialized()
+        # TODO: return MDSManagedRecordType.ensure_complete(cls).create_record()
+        pass
+
+    def cached_shared_ptr(self):
+        return self._shared_ptr
+
+    def cache_shared(self, Record r):
+        # This is called from mds_record's ctor, so the actual
+        # concrete class hasn't been constructed yet.  I'm assuming
+        # that creating a shared_ptr to it won't involve anythnig more
+        # than doing some adjustment to the this pointer.
+        self._shared_ptr = r
+        self.recent_stack.append(r)
+
+    @staticmethod
+    def being_constructed():
+        recent = MDSTokenStack.recent_stack
+        assert len(recent) and recent[-1] is not None
+        return recent[-1]
+
+
+cpdef new_record(type cls, *args, **kwargs):
+    token = MDSTypedRecordCreatorToken(cls)
+    obj = cls(token, *args, **kwargs)
+    return obj
+
+
+# TODO: Leave these until RecordTypeDeclaration is looking OK
+# __GLOBAL_CREATOR_MAP = dict()
+
+# class MDSCreatorCache():
+    
+#     @staticmethod
+#     def register_type(RecordTypeDeclaration rtd, klass):
+#         """
+#         Thanks to the GIL, we don't need to worry about races / mutexes
+#         NOTE name came from const api::const_record_type_handle &type_handle(.name())
+
+#         This function is called from RecordTypeDeclaration.ensure_created(),
+#         so let's have that as the first input and pull out the exact value
+#         """
+
+#         # 
+#         __GLOBAL_CREATOR_MAP[name] = klass
+
+
+#     @staticmethod
+#     def create()
+
+# class MDSRecordCreator():
+#     pass
+
+
+cdef class MDSManagedRecordType(MDSObject):
+    cdef:
+        Record _parent
+
+    def __cinit__(self, Record parent)
+        self._parent = parent
+
+    def ensure_created(self):
+        return self._parent.type_declaration().ensure_created()
+
+    @staticmethod
+    def ensure_complete(cls):
+        return cls.type_declaration().ensure_created()
+
+    @staticmethod
+    def from_handle(self):
+  # static mds_ptr<R> from_handle(const Record::handle_t &h) {
+  #   if (!std::is_abstract<R>::value) {
+  #     /*
+  #      * If there are no virtual functions we might as well just create
+  #      * a new proxy object.  We could cache them, but this is probably
+  #      * at least as efficient.
+  #      */
+  #     return RecordCreator<R>::create_from_handle(h);
+  #   } else {
+  #     /*
+  #      * If there are virtual functions, we need to find the actual type
+  #      * for the record.
+  #      */
+  #     const_handle_t th = h.type();
+  #     /*
+  #      * If it's ours, we can just create it here.
+  #      */
+  #     if (th == ManagedType().handle()) {
+  #       return RecordCreator<R>::create_from_handle(h);
+  #     }
+  #     mds_ptr<Record> r = CreatorCache::create(th, h);
+  #     /*
+  #      * We should be guaranteed of at least finding *this* class.
+  #      */
+  #     assert(r != nullptr);
+  #     return r.static_pointer_cast<R>();
+  #   }
+  # }
+
+        pass
+
+    def from_core(self):
+  # mds_ptr<R> from_core(const Record::handle_t &val) const {
+  #   if (val == nullptr) {
+  #     return nullptr;
+  #   }
+  #   return from_handle(val);
+  # }
+        pass
+
+    def to_core(self):
+  # core_api_type to_core(const mds_ptr<R> &val) const {
+  #   core_api_type tcv = val == nullptr ? core_api_type { } : val->_handle;
+  #   return tcv;
+  # }
+
+  # core_api_type to_core(const mds_ptr<const R> &val) const {
+  #   return val == nullptr ? core_api_type { } : val->_handle;
+  # }
+        pass
+
+############################################################# RECORD FIELDS
+
+cdef class MDSRecordFieldBase(MDSObject):
+
+    def __getitem__(self, item):
+  # reference operator[](const mds_ptr<R> &r) const {
+  #   R::type_decl().ensure_created();
+  #   return reference(*this, *r);
+  # }
+
+  # reference operator[](R *r) const {
+  #   R::type_decl().ensure_created();
+  #   return reference(*this, *r);
+  # }
+
+  # const_reference operator[](const mds_ptr<const R> &r) const {
+  #   R::type_decl().ensure_created();
+  #   return const_reference(*this, *r);
+  # }
+
+  # const_reference operator[](const R *r) const {
+  #   R::type_decl().ensure_created();
+  #   return const_reference(*this, *r);
+  # }
+        pass
+
+    def ensure_type(self):
+        pass
+
+    def declare(self, String name, Record record):
+        pass
+
+    # These two, either use them in generated RecordFields and then Members, or
+    # use overloaded calls in Members directly, then delete these.
+    @classmethod
+    def from_core(cls, val):
+        pass
+
+    @classmethod
+    def to_core(cls, val):
+        pass
+
+# No const RecordField, const-ness is handled by RecordMembers
+
+cdef class UShortRecordField(MDSRecordFieldBase):  # => Generator
+    cdef:
+        h_rfield_ushort_t _handle
+        h_mushort_t mtype
+  # using handle_type = typename managed_type<T>::field_handle_type;
+  # handle_type _handle;
+    # using mtype = managed_type<T>;
+    # using value_type = typename mtype::mds_type;
+    # using core_api_type = typename mtype::core_api_type;  
+
+
+    def ensure_type(self):
+    # managed_type<T>::ensure_complete(); // h_mushort_t?
+        pass
+
+    def declare(self, String name, Record record):
+        assert self._handle.is_null()
+        self._handle = h_mushort_t().field_in(record._handle, name._handle, True)
+
+
+# TODO: Work through some Const*RecordField examples
+
+######################################################################### REFERENCES
+
+cdef class MDSConstRecordFieldReferenceBase(MDSObject):
+    cdef:
+        managed_record_handle _record_handle
+
+    def read(self):
+        pass
+
+    def peek(self):
+        pass
+
+    def write(self, value):
+        self._throw_const_error()
+
+
+cdef class MDSRecordFieldReferenceBase(MDSConstRecordFieldReferenceBase):
+
+    def write(self, value):
+        pass
+
+  # static value_type from_core(const core_api_type &val) {
+  #   return mtype().from_core(val);
+  # }
+
+  # /*
+  #  * When we're and array field, the API read methods only get it as the base
+  #  * array pointer, so we need to downcast.  This should be safe
+  #  */
+  # template<typename U = T, typename = std::enable_if_t<is_mds_array<U>::value>>
+  # static value_type from_core(const api::managed_array_base_handle &handle) {
+  #   using elt_type = typename mtype::elt_type;
+  #   core_api_type h(handle.pointer()->template downcast<elt_type::kind>(),
+  #                   handle.view());
+  #   return from_core(h);
+  # }
+
+  # static core_api_type to_core(const value_type &val) {
+  #   return mtype().to_core(val);
+  # }
+
+cdef class ConstBoolRecordFieldReference(MDSConstRecordFieldReferenceBase):   # => Generator
+    cdef:
+        h_const_rfield_bool_t _field_handle
+        Record _record
+
+    def __cinit__(self, MDSRecordFieldBase field, Record record):
+        self._record = record
+        self._field_handle = h_const_rfield_bool_t(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef bool retval = self._field_handle.frozen_read(self._record_handle)
+        return from_core_bool(retval)
+
+    def peek(self):
+        cdef bool retval = self._field_handle.free_read(self._record_handle)
+        return from_core_bool(retval)
+
+
+cdef class BoolRecordFieldReference(ConstBoolRecordFieldReference):  # => Generator
+    
+    def write(self, bint value):
+        self._field_handle.write(self._record_handle, to_core_bool(value));
+
+
+cdef class ConstUShortRecordFieldReference(MDSConstRecordFieldReferenceBase):  # => Generator
+    cdef:
+        h_const_rfield_ushort_t _field_handle
+        Record _record
+
+    def __cinit__(self, MDSRecordFieldBase field, Record record):
+        self._record = record
+        self._field_handle = h_const_rfield_ushort_t(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef uint16_t retval = self._field_handle.frozen_read(self._record_handle)
+        return from_core_uint16_t(retval)
+
+    def peek(self):
+        cdef uint16_t retval = self._field_handle.free_read(self._record_handle)
+        return from_core_uint16_t(retval)
+
+
+cdef class UShortRecordFieldReference(ConstUShortRecordFieldReference):  # => Generator
+    
+    def write(self, uint16_t value):
+        self._field_handle.write(self._record_handle, to_core_uint16_t(value));
+
+    def __iadd__(self, other):
+        self._field_handle.add(self._record_handle, to_core_uint16_t(other))
+
+    def __isub__(self, other):
+        self._field_handle.sub(self._record_handle, to_core_uint16_t(other))
+
+    def __imul__(self, other):
+        self._field_handle.mul(self._record_handle, to_core_uint16_t(other))
+
+    def __idiv__(self, other):
+        self._field_handle.div(self._record_handle, to_core_uint16_t(other))
+
+
+############################################################# RECORD MEMBERS
+
+cdef class MDSRecordMemberBase(MDSObject):
+    cdef:
+        Record _enclosing
+
+    # using value_type = typename record_field<R,T>::value_type;
+
+    def __cinit__(self, other=None):
+  # record_member()
+  #     : _enclosing(*typed_rc_token<R>::being_constructed()) {
+  #   assert(&_enclosing != nullptr);
+  # }
+
+        # Delegate this checking to the write() method
+  # explicit record_member(const value_type &v)
+  #     : record_member() {
+  #   write(v);
+  # }
+
+  # explicit record_member(const record_member &other)
+  #     : record_member() {
+  #   write(other);
+  # }
+        if other is not None:
+            self.write(other)
+
+    def _field_ref(self):
+        return MDSRecordFieldBase()[self]
+
+    def read(self):
+        pass
+
+    def peek(self):
+        pass
+
+    def write(self, value):
+        pass
+
+
+cdef class UShortRecordMember(MDSRecordMemberBase):  # => Generator
+
+    def read(self):
+        return self._field_ref().read()
+
+    def peek(self):
+        return self._field_ref().peek()
+
+    def write(self, uint16_t value):
+        self._field_ref().write(value);
+
+    def __iadd__(self, other):
+        self._field_ref() += other
+
+    def __isub__(self, other):
+        self._field_ref() -= other
+
+    def __imul__(self, other):
+        self._field_ref() *= other
+
+    def __idiv__(self, other):
+        self._field_ref() /= other
+
+
+cdef class MDSConstRecordMemberBase(MDSObject):
+    cdef:
+        Record _enclosing
+        bint _is_cached
+ # public:
+ #  using value_type = typename record_field<R,T>::value_type;
+ # private:
+ #  R &_enclosing;
+ #  mutable value_type _cached_val;
+ #  mutable bool _is_cached;
+
+    def _field_ref(self):
+        return MDSRecordFieldBase()[self]
+
+    def __cinit__(self, other):
+  # record_const_member()
+  #     : _enclosing(*typed_rc_token<R>::being_constructed()),
+  #       _is_cached { false } {
+  #   assert(&_enclosing != nullptr);
+  # }
+
+  # explicit record_const_member(const value_type &v)
+  #     : _enclosing(*typed_rc_token<R>::being_constructed()),
+  #       _cached_val(_field_ref().write(v)),
+  #       _is_cached { true } {
+  # }
+
+  # explicit record_const_member(const record_const_member &other)
+  #     : record_const_member(other.read()) {
+  # }
+        if other is not None:
+            pass
+
+    def write(self, value):
+        self._throw_const_error()
+
+
+cdef class ConstUShortRecordMember(MDSConstRecordMemberBase):  # => Generator
+    cdef:
+        uint16_t _cached_val
+
+    def read(self):
+        if not self._is_cached:
+            self._cached_val = self._field_ref.read()
+            self._is_cached = True
+
+        return self._cached_val
+
+    def peek(self):
+        return self.read()
+
+
+######################################################### RECORD TYPE DECLARATIONS
+
+cdef class RecordTypeDeclarionNoFields(object):  # TODO: Delete?
+    pass
+
+
+cdef class RecordFieldDeclaration(object):
+    cdef:
+        String name
+        MDSRecordFieldBase field
+
+    def __cinit__(self, String name, MDSRecordFieldBase field):
+        self.name = name
+        self.field = field
+
+
+__RECORD_DECLARATION_MUTEX = threading.Lock()
+
+cdef class RecordTypeDeclaration(object):
+    cdef:
+        list _field_decls
+        const record_type_handle _declared_type
+        const_record_type_handle _created_type
+        bint _created
+
+    def __cinit__(self, String name, list fields, type parent):
+        self._declared_type = self.declare(name, parent)
+        self.note_fields(fields)
+
+ #  api::const_record_type_handle handle() const {
+ #    return _created_type.is_null() ? _declared_type : _created_type;
+ #  }
+
+ #  template<typename S>
+ #  api::record_type_handle declare(const mds_string &name, managed_type<S> s) {
+ #    static_assert(is_record_type<S>::value, "Super type not a record type");
+ #    auto sp = s.ensure_created();
+ #    return api::record_type_handle::declare(name.handle(), sp);
+ #  }
+
+    def declare(self, String name, type s=None):
+        if s is None:
+            return record_type_handle.declare(name._handle)
+
+        assert issubclass(s, Record), "Super type not a record type"
+        sp = s.ensure_created()
+        return record_type_handle.declare(name._handle, sp)
+
+    def note_fields(self, list fields):
+        for field, label in fields:
+            self._field_decls.append(RecordFieldDeclaration(label, field))
+
+    def declare_fields(self):
+        for fd in self._field_decls:
+            fd.field.declare(fd.name, self._declared_type)
+
+    def ensure_field_types(self):
+        for fd in self._field_decls:
+            fd.field.ensure_type()
+
+    def ensure_created(self):
+        if not self._created:
+            __RECORD_DECLARATION_MUTEX.acquire()
+
+            # Ensure no one else has beat us to the punch
+            if not self._created:
+                # Call once semantics, -> threading.Condition
+                self.declare_fields()
+                self._created_type = self._declared_type.ensure_created()
+                # We want to keep a copy of this alive so we don't have to
+                # rebuild it
+                MDSRecordCreator.register_type(self)
+                self.ensure_field_types()
+                self._created = True
+
+            __RECORD_DECLARATION_MUTEX.release()
+
+        return self._created_type  # TODO: Wrap
+
+# =========================================================================
+#  Strings
+# =========================================================================
+
+
+cdef class String(MDSObject):
+    """
+    This class provides the functionality expected from the native str type,
+    but backed by MDS. As with str, Strings are immutable.
+    """
+
+    cdef:
+        managed_string_handle _handle
+        int __iter_idx
+
+    def __cinit__(self, value=None):
+        cdef interned_string_handle handle = convert_py_to_ish(value) 
+        self._handle = managed_string_handle(handle)
+        self.__iter_idx = 0
+
+    def __len__(self):
+        return self._handle.length()
+
+    def __hash__(self):
+        return self._handle.hash1()
+
+    def __iter__(self):
+        self.__iter_idx = 0
+        return self
+
+    def __next__(self):
+        if self.__iter_idx < len(self):
+            retval = self[self.__iter_idx]
+            self.__iter_idx += 1
+            return retval
+        else:
+            raise StopIteration
+
+    def __str__(self):
+        return <str> self._handle.utf8().decode("utf-8")
+
+    def __repr__(self):
+        return "'{}'".format(str(self))
+
+    def __getitem__(self, item):
+        cdef:
+            string s
+            int i
+            char_type c
+
+        if isinstance(item, int):
+            c = self._handle.at(item)
+            u = chr(c)
+            return u
+        elif isinstance(item, slice):
+            # TODO: Check this
+            s.reserve((item.stop - item.start) // item.step)
+
+            for i in range(start=item.start, stop=item.stop, step=item.step):
+                s.push_back(self._handle.at(i))
+
+            return String(s)
+
+        raise TypeError(
+            "list indices must be integers or slices, not {}".format(
+                type(item)
+            )
+        )
+
+    def __add__(self, other):
+        """
+        Concatenates this string with another, returns this as a new String
+        """
+        # TODO: Could probably open this to [str, bytes] too.
+        cdef:
+            string s
+            str c
+
+        if isinstance(other, String):       
+            s.reserve(<size_t> (len(self) + len(other)))
+
+            # Chain the iterators to avoid any string copying
+            for c in chain(iter(self), iter(other)):
+                s.push_back(ord(c))  # Need as an int for char
+
+            return String(s)
+
+        raise TypeError("must be String")
+
+    def __mul__(self, other):
+        """
+        Internal method to perform String multiplication without overhead
+        """
+        cdef:
+            string s
+            str c
+            int it, l = len(self)
+
+        if isinstance(other, int):
+            s.reserve(l * other)
+
+            for it in range(other):
+                for c in self:
+                    s.push_back(ord(c))
+
+            return String(<unicode> s.decode("utf-8"))
+
+        raise TypeError(
+            "can't multiply sequence by non-int of type 'String'"
+        )
+
+    def __rmul__(self, other):
+        pass
+
+    def __mod__(self, other):
+        pass
+
+    def __rmod__(self, other):
+        pass
+
+    def __richcmp__(a, b, op):
+        if op == 0:    # <
+            return a._handle < b._handle
+        elif op == 1:  # <=
+            return a._handle <= b._handle
+        elif op == 2:  # ==
+            return a._handle == b._handle
+        elif op == 3:  # !=
+            return a._handle != b._handle
+        elif op == 4:  # >
+            return a._handle > b._handle
+        elif op == 5:  # >=
+            return a._handle >= b._handle
+
+    def __sizeof__(self):
+        return self._handle.size()
+
+    # TODO: Write equivalents that use the MDS-stored data
+
+    def capitalize(self):
+        return String(str(self).capitalize())
+
+    def casefold(self):
+        return String(str(self).casefold())
+
+    def center(self, *args, **kwargs):
+        return String(str(self).center(*args, **kwargs))
+
+    # TODO: encode(encoding="utf-8", errors="strict")
+
+    def endswith(self, *args, **kwargs):
+        return str(self).endswith(*args, **kwargs)
+
+    def expandtabs(self, *args, **kwargs):
+        return String(str(self).expandtabs(*args, **kwargs))
+
+    def find(self, *args, **kwargs):
+        return str(self).find(*args, **kwargs)
+
+    def format(self, *args, **kwargs):
+        return String(str(self).format(*args, **kwargs))
+
+    def format_map(self, *args, **kwargs):
+        return String(str(self).format_map(*args, **kwargs))
+
+    def index(self, *args, **kwargs):
+        return str(self).index(*args, **kwargs)
+
+    def isalnum(self, *args, **kwargs):
+        return str(self).isalnum(*args, **kwargs)
+
+    def isalpha(self, *args, **kwargs):
+        return str(self).isalpha(*args, **kwargs)
+
+    def isdecimal(self, *args, **kwargs):
+        return str(self).isdecimal(*args, **kwargs)
+
+    def isdigit(self, *args, **kwargs):
+        return str(self).isdigit(*args, **kwargs)
+    
+    def isidentifier(self, *args, **kwargs):
+        return str(self).isidentifier(*args, **kwargs)
+    
+    def islower(self, *args, **kwargs):
+        return str(self).islower(*args, **kwargs)
+
+    def isnumeric(self, *args, **kwargs):
+        return str(self).isnumeric(*args, **kwargs)
+
+    def isprintable(self, *args, **kwargs):
+        return str(self).isprintable(*args, **kwargs)
+
+    def isspace(self, *args, **kwargs):
+        return str(self).isspace(*args, **kwargs)
+
+    def istitle(self, *args, **kwargs):
+        return str(self).istitle(*args, **kwargs)
+
+    def isupper(self, *args, **kwargs):
+        return str(self).isupper(*args, **kwargs)
+
+    def join(self, *args, **kwargs):
+        return String(str(self).join(*args, **kwargs))
+
+    def ljust(self, *args, **kwargs):
+        return String(str(self).ljust(*args, **kwargs))
+
+    def lower(self, *args, **kwargs):
+        return String(str(self).lower(*args, **kwargs))
+
+    def lstrip(self, *args, **kwargs):
+        return String(str(self).lstrip(*args, **kwargs))
+
+    def partition(self, *args, **kwargs):
+        return tuple([String(x) for x in str(self).partition(*args, **kwargs)])
+
+    def replace(self, *args, **kwargs):
+        return String(str(self).replace(*args, **kwargs))
+
+    def rfind(self, *args, **kwargs):
+        return str(self).rfind(*args, **kwargs)
+
+    def rindex(self, *args, **kwargs):
+        return str(self).rindex(*args, **kwargs)
+
+    def rjust(self, *args, **kwargs):
+        return String(str(self).rjust(*args, **kwargs))
+
+    def rpartition(self, *args, **kwargs):
+        return tuple([String(x) for x in str(self).rpartition(*args, **kwargs)])
+
+    def rsplit(self, *args, **kwargs):
+        return [String(x) for x in str(self).rsplit(*args, **kwargs)]
+
+    def rstrip(self, *args, **kwargs):
+        return String(str(self).rstrip(*args, **kwargs))
+
+    def split(self, *args, **kwargs):
+        return [String(x) for x in str(self).split(*args, **kwargs)]
+
+    def splitlines(self, *args, **kwargs):
+        return [String(x) for x in str(self).split(*args, **kwargs)]
+
+    def startswith(self, *args, **kwargs):
+        return str(self).startswith(*args, **kwargs)
+
+    def strip(self, *args, **kwargs):
+        return String(str(self).strip(*args, **kwargs))
+    
+    def swapcase(self, *args, **kwargs):
+        return String(str(self).swapcase(*args, **kwargs))
+
+    def title(self, *args, **kwargs):
+        return String(str(self).title(*args, **kwargs))
+
+    # TODO: translate
+
+    def upper(self, *args, **kwargs):
+        return String(str(self).upper(*args, **kwargs))
+
+    def zfill(self, *args, **kwargs):
+        return String(str(self).zfill(*args, **kwargs))
+
+# =========================================================================
+#  Namespace
+# =========================================================================
+
+
+cdef class Namespace(MDSObject):
+
+    cdef namespace_handle _handle
+
+    def __setitem__(self, key, value):
+        cdef:
+            interned_string_handle ish = convert_py_to_ish(key)
+            uint16_t val = value
+
+        # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
+        # if not issubclass(type(value), MDSObject):
+        #     raise TypeError('Cannot commit a non-MDS type into a MDS namespace')
+
+        # TODO: get the boxed item to release its wrapped value into bind...
+        self._handle.bind(ish, val)
+
+    def __getitem__(self, key):
+        # TODO: Need some type inference here, require explicit third param?
+        cdef:
+            uint16_t retval
+            interned_string_handle ish = convert_py_to_ish(key)
+
+        retval = self._handle.lookup(ish, managed_ushort_type_handle())
+        return retval
+
+    def create_child(self, child_id, bint create_if_missing=True):
+        cdef:
+            interned_string_handle ish = convert_py_to_ish(child_id)
+            bool cim = <bool> create_if_missing
+        
+        return Namespace_Init(self._handle.child_namespace(ish, cim))
+
+    @staticmethod
+    def from_path(path):
+        pass
+
+    @staticmethod
+    def get_current():
+        pass  # TODO: mds_namespace::current()
+
+    @staticmethod
+    def get_global():
+        return Namespace_Init(handle=namespace_handle._global())
+
+    property is_root:
+        def __get__(self):
+            # TODO: Implement this
+            pass
+
+    property parent:
+        def __get__(self):
+            # TODO: Implement this
+            pass
+
+
+cdef inline Namespace_Init(namespace_handle handle):
+    initialize_base_task()
+    result = Namespace()
+    result._handle = handle
+    return result
+
+# =========================================================================
+#  Helpers
+# =========================================================================
+
+cpdef inline is_record_type(obj):
+    return issubclass(obj, Record)
+
+# TODO: These record_creator methods
+cdef inline _register_type(const_record_type_handle crht):
+    pass
+
+cdef inline _create_from_handle(managed_record_handle mrh):
+    pass
+
+cdef inline record_type_handle _declare_record_type(str ident):
+    return record_type_handle.declare(convert_py_to_ish(ident))
 
 # =========================================================================
 #  Primitives
@@ -639,496 +1716,6 @@ cdef class DoubleArray(MDSFloatArrayBase):
 
 # END INJECTION
 
-cpdef RecordMemberBase record_member_factory(Record record, klass, bint make_const, initial_value):
-    classname = "Const" if make_const else ""
-
-    # We need this to be a typing.TypeInfo to get consistent titles    
-    if isinstance(klass, str):
-        klass = typing[klass]
-    
-    if isinstance(klass, TypeInfo):
-        classname += klass.title
-    else:
-        raise TypeError("Can't resolve type `{}` as MDS type identifier".format(id(klass)))
-
-    classname += "RecordMember"
-
-    # Now, let's see if it's known and of the correct lineage
-    cls = globals()[classname]
-    assert issubclass(cls, RecordMemberBase)
-
-    # We're all good, send it back up!
-    return cls(record, initial_value)
-
-# =========================================================================
-#  Managed Values
-# =========================================================================
-
-cdef class MDSPrimitiveBase(MDSObject):
-    # TODO: Use the API's math operation to ensure atomicity
-
-    def __int__(self):
-        pass
-
-    def __long__(self):
-        pass
-
-    def __float__(self):
-        pass
-
-    def _sanitize(self, value):
-        return value
-
-    def _to_python(self):
-        raise NotImplementedError("Specialization required.")
-
-    def _to_mds(self):
-        raise NotImplementedError("Specialization required.")
-
-    property python_copy:
-        def __get__(self):
-            raise NotImplementedError("Specialization required.")
-
-
-cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
-
-    def _sanitize(self, value):
-        if isinstance(value, float):
-            value = int(value)
-        elif not isinstance(value, int):
-            t = type(value)
-            raise TypeError('Unable to parse value of type `{t}`')
-
-        if value < self.MIN:
-            raise UnderflowError(f"Can't fit {value} in container {self.dtype}")
-        elif value > self.MAX:
-            raise OverflowError(f"Can't fit {value} in container {self.dtype}")
-
-        return value
-
-    property MIN:
-        def __get__(self):
-            raise NotImplementedError("Integer specialization required.")
-
-    property MAX:
-        def __get__(self):
-            raise NotImplementedError("Integer specialization required.")
-
-
-cdef class MDSFloatPrimitiveBase(MDSPrimitiveBase):
-    pass
-
-# =========================================================================
-#  Arrays
-# =========================================================================
-
-cdef class MDSArrayBase(MDSObject):
-    
-    def _index_bounds_check(self, index):
-         # TODO: Need to handle slices. Should this be a new array?
-        cdef long l = <long> len(self)
-
-        if index >= l or index < -l:
-            raise IndexError('list index out of range')
-
-        if index < 0:
-            index += l
-
-        return index
-
-    def _to_python(self, index):
-        raise NotImplementedError('Specialization of MDSList required') 
-
-    def _to_mds(self, index, value):
-        raise NotImplementedError('Specialization of MDSList required') 
-
-    def __getitem__(self, index):
-        index = self._index_bounds_check(index)
-        return self._to_python(index)
-
-    def __setitem__(self, index, value):
-        index = self._index_bounds_check(index)
-        self._to_mds(index, value)
-
-    def __iter__(self):
-        return NotImplemented # TODO Implement this
-
-    def __next__(self):
-        return NotImplemented # TODO Implement this
-
-    def __len__(self):
-        raise NotImplementedError('Specialization of MDSArrayBase required') 
-
-    def index(self, start=None, end=None):
-        return NotImplemented # TODO Implement this
-
-    def count(self, value):
-        # TODO: Handle len 0, should this even be instantiable?
-        # TODO: Bool still a str-literal here
-        if not isinstance(value, type(self[0])):
-            raise TypeError("value to be searched for must match list-type `bool`")
-
-        cdef:
-            size_t i = 0, l = len(self), c = 0
-
-        for i in range(l):
-            if self[i] == value:
-                c += 1
-
-        return c
-
-    def sort(self):
-        return NotImplemented # TODO Implement this
-
-    def reverse(self):
-        return NotImplemented # TODO Implement this
-
-    def copy(self):
-        raise NotImplementedError('Specialization of MDSArrayBase required')
- 
-    property dtype:
-        def __get__(self):
-            raise NotImplementedError('Specialization of MDSArrayBase required')
-
-
-cdef class MDSIntArrayBase(MDSArrayBase):
-
-    def _numeric_bounds_check(self, value):
-        """
-        TODO: This needs to check the bounds of the different int sizes in MDS.
-        """
-        raise NotImplementedError('Requires a type-specific instantiation')
-
-    def __setitem__(self, index, value):
-        index = self._index_bounds_check(index)
-        value = self._numeric_bounds_check(value)
-        self._to_mds(index, value)
-
-    property dtype:
-        def __get__(self):
-            return type(1)
-
-
-cdef class MDSFloatArrayBase(MDSArrayBase):
-
-    property dtype:
-        def __get__(self):
-            return type(1.0)
-
-# =========================================================================
-#  Records
-# =========================================================================
-
-MDSFieldDesc = namedtuple("MDSFieldDesc", ["klass", "make_const", "initial_value"])
-
-cdef class Record(MDSObject):
-    """
-    Development Notes:
-    * skipped force -- not sure when this would be needed
-    * not implemented token yet -- unsure why this is needed, for forward()? Check JAPI
-    """
-
-    cdef:
-        RecordTypeDeclaration __type_decl
-        # RecordToken __tok
-        managed_record_handle _handle
-        dict __field_decls
-
-    def __cinit__(self):
-        self.__field_decls = dict()
-
-    def _create(self):
-        """
-        This method should be called explicitly at the end of the subclass constructor
-        """
-        try:
-            self._ident
-        except AttributeError:
-            raise TypeError(f'Record subclass `{self.__class__.__name__}` must have a static `_ident` type name')
-
-        for label, decl in self.__field_decls.items():
-            self.__field_decls[label] = record_member_factory(
-                self, decl.klass, decl.make_const, decl.initial_value
-            )
-
-        self.__type_decl = RecordTypeDeclaration(self, self.__field_decls)
-
-    def _register_field(self, klass, label, initial_value=None, make_const=False):
-        """
-        The type declaration cannot be made until we have all the fields, so use a
-        placeholder tuple here to store the parameters of the field
-        """
-        if label in self.__field_decls:
-            raise AttributeError(f"Cannot redefine a previously declared Record field `{label}`")
-
-        self.__field_decls[label] = MDSFieldDesc(klass, make_const, initial_value)
-
-    def __getitem__(self, item):
-        return self.__type_decl[item]
-
-    def __setitem__(self, key, value):
-        self.__type_decl[key] = value
-
-# mds_record(const rc_token &tok, handle_type &&h)
-#     : _handle { std::move(h) } {
-#   tok.cache_shared(this);
-# }
-#
-# explicit mds_record(const rc_token &tok)
-#     : _handle(tok.create()) {
-#   /*
-#    * By creating and caching a shared ptr, we make it possible
-#    * for user ctors to call this_as_mds_ptr(), which requires
-#    * shared_from_this(), which requires there to be an active
-#    * shared pointer.
-#    */
-#   tok.cache_shared(this);
-# }
-    def bind_to_namespace(self, ns, *args):
-        #template<typename First, typename ...Cpts>
-        #void bind_in(const mds_ptr<mds_namespace> &ns, First &&first,
-        #            Cpts &&...cpts) const {
-        # ns->at(std::forward<First>(first), std::forward<Cpts>(cpts)...)
-        #     .template as<mds_record>().bind(THIS_RECORD);
-        # TODO: Is this one necessary? Can't they just do the below themselves?
-        ns[args] = self
-
-    @classmethod
-    def lookup_in_namespace(cls, ns, *args):
-        if not len(args):
-            raise KeyError('Need at least one path for the namespace')
-    
-        record = ns[args]
-        retval = cls()
-        # Now we know that root[args[-1]] will be the record val
-        # TODO: update retval's fields accordingly
-
-        return retval
-   
-    # @classmethod
-    # def lookup_name(cls, *args):
-    #     return cls.lookup_in(Namespace.get_current(), *args)
-
-    property ident:
-        def __get__(self):
-            return self._ident
-    
-    property type_decl:
-        def __get__(self):
-            return self.__type_decl
-
-
-cdef class RecordTypeDeclaration(MDSObject):
-
-    cdef:
-        managed_record_handle _handle
-        record_type_handle _declared_type
-        const_record_type_handle _created_type
-        Record _parent
-        dict _field_decls
-
-    def __cinit__(self, object parent, dict fields):
-        self._field_decls = fields
-        self._parent = parent
-        self._declared_type = record_type_handle.declare(convert_py_to_ish(parent.ident))
-
-#  api::record_type_handle declare(const mds_string &name,
-#                                  managed_type<mds_record>) {
-#    return api::record_type_handle::declare(name.handle());
-#  }
-#
-#  template<typename S>
-#  api::record_type_handle declare(const mds_string &name, managed_type<S> s) {
-#    static_assert(is_record_type<S>::value, "Super type not a record type");
-#    auto sp = s.ensure_created();
-#    return api::record_type_handle::declare(name.handle(), sp);
-#  }    
-# NOTE: Not sure where this is called, delegated to _decalre_record_type(ident)
-    # def __declare(self, ident):
-    #     return record_type_handle.declare(convert_py_to_ish(ident))
-
-    def __contains__(self, item):
-        return item in self._field_decls
-
-    def __getitem__(self, item):
-        return self._field_decls[item].read()
-
-    def __setitem__(self, key, value):
-        self._field_decls[key].write(value)
-
-    def items(self):
-        return self._field_decls.items()
-
-    def fields(self):
-        return self._field_decls.keys()
-
-    def __declare_fields(self): # TODO: This is probably wrong, no binding to rm (placeholder only) -- check
-        map(lambda rm: _declare_record_member(rm, self.parent.ident, self._declared_type), 
-            self.__field_decls.values())
-
-    def __ensure_field_types(self):
-        map(lambda rm: rm.ensure_type(), self.__field_decls.values())
-
-    def __ensure_created(self):
-        if self._created_type.is_null():
-            # This needs to work in two phases.  In the first, we declare
-            # the fields, and we have to be sure that this can't result
-            # in a recursive call to __ensure_created() or we will have a
-            # deadlock.  But we have to make sure that any referenced
-            # types (including this one) are created, so we have a second
-            # pass that loops through the fields and does this.  But we
-            # go through the second pass after setting __created_type, and
-            # we use a check on _created_type to avoid locking.
-            #
-            # There is a failure window in between the internal call to
-            # __ensure_created() and the end of this function.  If we die
-            # there, we will have a created record type that may have
-            # fields whose types are uncreated record types.  We will
-            # not, however, have actually created any instances of this
-            # record type (since we died).  This will result in an
-            # incompatible type exception, since the types won't be the
-            # same nor will one forward to the other.
-            #
-            # TODO (upstream): Make it possible for the next process to finish the
-            # job by overwriting the field type with its own.
-            
-            # TODO call_once semantics -- std::call_once(_created
-            self.__delcare_fields()
-            self._created_type = self._declared_type.ensure_created()
-            _register_type(self._created_type)
-            self.__ensure_field_types()
-
-        # TODO does this need to return the c++ type, or will a bint suffice?
-        # TODO return self._created_type
-        return True
-
-# cdef class RecordToken(MDSObject):
-
-# # struct rc_token {
-# #  protected:
-# #   friend class mds_record;
-# #   mutable std::shared_ptr<mds_record> _shared_ptr;
-# #
-# #   virtual ~rc_token() {
-# #     recent_stack().pop();
-# #   }
-# #
-# #   virtual handle_type create() const = 0;
-# #   /*
-# #    * If we create the initial shared ptr as a
-# #    * shared_ptr<mds_record>, then when the last shared_ptr
-# #    * goes away and the mds_record is destroyed, if there were
-# #    * virtual functions added below, the wrong pointer to the
-# #    * memory will be wrong.  So we indirect through the rc_token,
-# #    * which knows the type to create the pointer to cache.
-# #    */
-# #   virtual void cache_shared(mds_record *) const = 0;
-# #
-# #   rc_token() {
-# #     recent_stack().push(nullptr);
-# #   }
-# #
-# #   static std::stack<mds_record *> &recent_stack() {
-# #     static thread_local std::stack<mds_record *> s;
-# #     return s;
-# #   }
-# # };
-
-# # template<typename R, typename = enable_if_record<R>>
-# # struct typed_rc_token : mds_record::rc_token {
-# #   mds_record::handle_type create() const override {
-# #     ensure_thread_initialized();
-# #     return managed_type<R>().ensure_created().create_record();
-# #   }
-
-# #   std::shared_ptr<R> cached_shared_ptr() const {
-# #     return std::static_pointer_cast<R>(_shared_ptr);
-# #   }
-
-# #   void cache_shared(mds_record *r) const override {
-# #     /*
-# #      * This is called from mds_record's ctor, so the actual
-# #      * concrete class hasn't been constructed yet.  I'm assuming
-# #      * that creating a shared_ptr to it won't involve anythnig more
-# #      * than doing some adjustment to the this pointer.
-# #      */
-# #     R *dc_rec = static_cast<R *>(r);
-# #     _shared_ptr = std::shared_ptr<R>(dc_rec);
-# #     recent_stack().top() = r;
-# #   }
-
-# #   static R *being_constructed() {
-# #     auto &recent = recent_stack();
-# #     R *as_record = static_cast<R*>(recent.top());
-# #     assert(recent.top() != nullptr);
-# #     return as_record;
-# #   }
-# # };
-#     pass
-
-"""
-TODO:
-    * Implement comparisons
-    * Test the heck out of unicode encoding / decoding
-    * Have __repr__ give a streaming view of the string in the MDS heap
-    * Deal with the '\n' ending char
-    * Define str-like operations in this file, not delegating to str (invokes copy)
-"""
-
-cdef _grab_record_handle(Record record, RecordMemberBase member):
-    member._mr_handle = record._handle
-
-cdef class RecordMemberBase(MDSObject):
-
-    cdef:
-        managed_record_handle _mr_handle
-        Record _parent
-        str _type_ident
-        object _initial_value
-
-#   using handle_type = typename managed_type<T>::field_handle_type;
-#   static value_type from_core(const core_api_type &val) {
-#     return mtype().from_core(val);
-#   }
-
-#   /*
-#    * When we're and array field, the API read methods only get it as the base
-#    * array pointer, so we need to downcast.  This should be safe
-#    */
-#   template<typename U = T, typename = std::enable_if_t<is_mds_array<U>::value>>
-#   static value_type from_core(const api::managed_array_base_handle &handle) {
-#     using elt_type = typename mtype::elt_type;
-#     core_api_type h(handle.pointer()->template downcast<elt_type::kind>(),
-#                     handle.view());
-#     return from_core(h);
-#   }
-
-#   static core_api_type to_core(const value_type &val) {
-#     return mtype().to_core(val);
-#   }
-# Confusion between record_field, record_member, managed_value, managed_type?
-
-    def __cinit__(self, record, initial_value):
-        self._parent = record
-        _grab_record_handle(record, self)
-        self._type_ident = record.ident
-        self._initial_value = initial_value
-
-    def read(self):
-        raise NotImplementedError('Specialization Required')
-
-    def write(self, value):
-        raise NotImplementedError('Specialization Required')
-
-    # cpdef ensure_type(self):
-    #     raise NotImplementedError('Specialization Required')
-
-
-cdef class ConstRecordMemberBase(RecordMemberBase):
-
-    def write(self, value):
-        self._throw_const_error()
-
 # START INJECTION | tmpl_record_member
 
 cdef class BoolRecordMember(RecordMemberBase):
@@ -1141,15 +1728,14 @@ cdef class BoolRecordMember(RecordMemberBase):
     def write(self, value):
         self._handle.write(self._mr_handle, value)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_bool_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
+    def declare(self):
+        self._handle = h_mbool_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: self._handle.write_initial(self._initial_value)
 
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+   # def ensure_type(self):
+   #     # TODO: For Const* too
+   #     # managed_type<T>::ensure_complete()
+   #     pass
 
 
 cdef class ConstBoolRecordMember(ConstRecordMemberBase):
@@ -1159,15 +1745,9 @@ cdef class ConstBoolRecordMember(ConstRecordMemberBase):
     def read(self):
         return self._handle.frozen_read(self._mr_handle)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_bool_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
-
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+    def declare(self):
+        self._handle = h_const_mbool_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: write_initial?
 
 cdef class ByteRecordMember(RecordMemberBase):
 
@@ -1179,15 +1759,14 @@ cdef class ByteRecordMember(RecordMemberBase):
     def write(self, value):
         self._handle.write(self._mr_handle, value)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_byte_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
+    def declare(self):
+        self._handle = h_mbyte_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: self._handle.write_initial(self._initial_value)
 
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+   # def ensure_type(self):
+   #     # TODO: For Const* too
+   #     # managed_type<T>::ensure_complete()
+   #     pass
 
 
 cdef class ConstByteRecordMember(ConstRecordMemberBase):
@@ -1197,15 +1776,9 @@ cdef class ConstByteRecordMember(ConstRecordMemberBase):
     def read(self):
         return self._handle.frozen_read(self._mr_handle)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_byte_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
-
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+    def declare(self):
+        self._handle = h_const_mbyte_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: write_initial?
 
 cdef class UByteRecordMember(RecordMemberBase):
 
@@ -1217,15 +1790,14 @@ cdef class UByteRecordMember(RecordMemberBase):
     def write(self, value):
         self._handle.write(self._mr_handle, value)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_ubyte_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
+    def declare(self):
+        self._handle = h_mubyte_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: self._handle.write_initial(self._initial_value)
 
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+   # def ensure_type(self):
+   #     # TODO: For Const* too
+   #     # managed_type<T>::ensure_complete()
+   #     pass
 
 
 cdef class ConstUByteRecordMember(ConstRecordMemberBase):
@@ -1235,15 +1807,9 @@ cdef class ConstUByteRecordMember(ConstRecordMemberBase):
     def read(self):
         return self._handle.frozen_read(self._mr_handle)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_ubyte_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
-
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+    def declare(self):
+        self._handle = h_const_mubyte_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: write_initial?
 
 cdef class ShortRecordMember(RecordMemberBase):
 
@@ -1255,15 +1821,14 @@ cdef class ShortRecordMember(RecordMemberBase):
     def write(self, value):
         self._handle.write(self._mr_handle, value)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_short_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
+    def declare(self):
+        self._handle = h_mshort_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: self._handle.write_initial(self._initial_value)
 
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+   # def ensure_type(self):
+   #     # TODO: For Const* too
+   #     # managed_type<T>::ensure_complete()
+   #     pass
 
 
 cdef class ConstShortRecordMember(ConstRecordMemberBase):
@@ -1273,15 +1838,9 @@ cdef class ConstShortRecordMember(ConstRecordMemberBase):
     def read(self):
         return self._handle.frozen_read(self._mr_handle)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_short_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
-
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+    def declare(self):
+        self._handle = h_const_mshort_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: write_initial?
 
 cdef class UShortRecordMember(RecordMemberBase):
 
@@ -1293,15 +1852,14 @@ cdef class UShortRecordMember(RecordMemberBase):
     def write(self, value):
         self._handle.write(self._mr_handle, value)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_ushort_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
+    def declare(self):
+        self._handle = h_mushort_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: self._handle.write_initial(self._initial_value)
 
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+   # def ensure_type(self):
+   #     # TODO: For Const* too
+   #     # managed_type<T>::ensure_complete()
+   #     pass
 
 
 cdef class ConstUShortRecordMember(ConstRecordMemberBase):
@@ -1311,15 +1869,9 @@ cdef class ConstUShortRecordMember(ConstRecordMemberBase):
     def read(self):
         return self._handle.frozen_read(self._mr_handle)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_ushort_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
-
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+    def declare(self):
+        self._handle = h_const_mushort_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: write_initial?
 
 cdef class IntRecordMember(RecordMemberBase):
 
@@ -1331,15 +1883,14 @@ cdef class IntRecordMember(RecordMemberBase):
     def write(self, value):
         self._handle.write(self._mr_handle, value)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_int_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
+    def declare(self):
+        self._handle = h_mint_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: self._handle.write_initial(self._initial_value)
 
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+   # def ensure_type(self):
+   #     # TODO: For Const* too
+   #     # managed_type<T>::ensure_complete()
+   #     pass
 
 
 cdef class ConstIntRecordMember(ConstRecordMemberBase):
@@ -1349,15 +1900,9 @@ cdef class ConstIntRecordMember(ConstRecordMemberBase):
     def read(self):
         return self._handle.frozen_read(self._mr_handle)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_int_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
-
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+    def declare(self):
+        self._handle = h_const_mint_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: write_initial?
 
 cdef class UIntRecordMember(RecordMemberBase):
 
@@ -1369,15 +1914,14 @@ cdef class UIntRecordMember(RecordMemberBase):
     def write(self, value):
         self._handle.write(self._mr_handle, value)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_uint_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
+    def declare(self):
+        self._handle = h_muint_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: self._handle.write_initial(self._initial_value)
 
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+   # def ensure_type(self):
+   #     # TODO: For Const* too
+   #     # managed_type<T>::ensure_complete()
+   #     pass
 
 
 cdef class ConstUIntRecordMember(ConstRecordMemberBase):
@@ -1387,15 +1931,9 @@ cdef class ConstUIntRecordMember(ConstRecordMemberBase):
     def read(self):
         return self._handle.frozen_read(self._mr_handle)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_uint_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
-
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+    def declare(self):
+        self._handle = h_const_muint_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: write_initial?
 
 cdef class LongRecordMember(RecordMemberBase):
 
@@ -1407,15 +1945,14 @@ cdef class LongRecordMember(RecordMemberBase):
     def write(self, value):
         self._handle.write(self._mr_handle, value)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_long_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
+    def declare(self):
+        self._handle = h_mlong_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: self._handle.write_initial(self._initial_value)
 
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+   # def ensure_type(self):
+   #     # TODO: For Const* too
+   #     # managed_type<T>::ensure_complete()
+   #     pass
 
 
 cdef class ConstLongRecordMember(ConstRecordMemberBase):
@@ -1425,15 +1962,9 @@ cdef class ConstLongRecordMember(ConstRecordMemberBase):
     def read(self):
         return self._handle.frozen_read(self._mr_handle)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_long_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
-
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+    def declare(self):
+        self._handle = h_const_mlong_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: write_initial?
 
 cdef class ULongRecordMember(RecordMemberBase):
 
@@ -1445,15 +1976,14 @@ cdef class ULongRecordMember(RecordMemberBase):
     def write(self, value):
         self._handle.write(self._mr_handle, value)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_ulong_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
+    def declare(self):
+        self._handle = h_mulong_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: self._handle.write_initial(self._initial_value)
 
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+   # def ensure_type(self):
+   #     # TODO: For Const* too
+   #     # managed_type<T>::ensure_complete()
+   #     pass
 
 
 cdef class ConstULongRecordMember(ConstRecordMemberBase):
@@ -1463,15 +1993,9 @@ cdef class ConstULongRecordMember(ConstRecordMemberBase):
     def read(self):
         return self._handle.frozen_read(self._mr_handle)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_ulong_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
-
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+    def declare(self):
+        self._handle = h_const_mulong_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: write_initial?
 
 cdef class FloatRecordMember(RecordMemberBase):
 
@@ -1483,15 +2007,14 @@ cdef class FloatRecordMember(RecordMemberBase):
     def write(self, value):
         self._handle.write(self._mr_handle, value)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_float_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
+    def declare(self):
+        self._handle = h_mfloat_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: self._handle.write_initial(self._initial_value)
 
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+   # def ensure_type(self):
+   #     # TODO: For Const* too
+   #     # managed_type<T>::ensure_complete()
+   #     pass
 
 
 cdef class ConstFloatRecordMember(ConstRecordMemberBase):
@@ -1501,15 +2024,9 @@ cdef class ConstFloatRecordMember(ConstRecordMemberBase):
     def read(self):
         return self._handle.frozen_read(self._mr_handle)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_float_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
-
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+    def declare(self):
+        self._handle = h_const_mfloat_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: write_initial?
 
 cdef class DoubleRecordMember(RecordMemberBase):
 
@@ -1521,15 +2038,14 @@ cdef class DoubleRecordMember(RecordMemberBase):
     def write(self, value):
         self._handle.write(self._mr_handle, value)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_double_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
+    def declare(self):
+        self._handle = h_mdouble_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: self._handle.write_initial(self._initial_value)
 
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+   # def ensure_type(self):
+   #     # TODO: For Const* too
+   #     # managed_type<T>::ensure_complete()
+   #     pass
 
 
 cdef class ConstDoubleRecordMember(ConstRecordMemberBase):
@@ -1539,358 +2055,8 @@ cdef class ConstDoubleRecordMember(ConstRecordMemberBase):
     def read(self):
         return self._handle.frozen_read(self._mr_handle)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = managed_double_type_handle().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
-
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+    def declare(self):
+        self._handle = h_const_mdouble_t().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: write_initial?
 
 # END INJECTION
-
-cdef class String(MDSObject):
-    """
-    This class provides the functionality expected from the native str type,
-    but backed by MDS. As with str, Strings are immutable.
-    """
-
-    cdef:
-        managed_string_handle _handle
-        int __iter_idx
-
-    def __cinit__(self, value=None):
-        cdef interned_string_handle handle = convert_py_to_ish(value) 
-        self._handle = managed_string_handle(handle)
-        self.__iter_idx = 0
-
-    def __len__(self):
-        return self._handle.length()
-
-    def __hash__(self):
-        return self._handle.hash1()
-
-    def __iter__(self):
-        self.__iter_idx = 0
-        return self
-
-    def __next__(self):
-        if self.__iter_idx < len(self):
-            retval = self[self.__iter_idx]
-            self.__iter_idx += 1
-            return retval
-        else:
-            raise StopIteration
-
-    def __str__(self):
-        return <str> self._handle.utf8().decode("utf-8")
-
-    def __repr__(self):
-        return "'{}'".format(str(self))
-
-    def __getitem__(self, item):
-        cdef:
-            string s
-            int i
-            char_type c
-
-        if isinstance(item, int):
-            c = self._handle.at(item)
-            u = chr(c)
-            return u
-        elif isinstance(item, slice):
-            # TODO: Check this
-            s.reserve((item.stop - item.start) // item.step)
-
-            for i in range(start=item.start, stop=item.stop, step=item.step):
-                s.push_back(self._handle.at(i))
-
-            return String(s)
-
-        raise TypeError(
-            "list indices must be integers or slices, not {}".format(
-                type(item)
-            )
-        )
-
-    def __add__(self, other):
-        """
-        Concatenates this string with another, returns this as a new String
-        """
-        # TODO: Could probably open this to [str, bytes] too.
-        cdef:
-            string s
-            str c
-
-        if isinstance(other, String):       
-            s.reserve(<size_t> (len(self) + len(other)))
-
-            # Chain the iterators to avoid any string copying
-            for c in chain(iter(self), iter(other)):
-                s.push_back(ord(c))  # Need as an int for char
-
-            return String(s)
-
-        raise TypeError("must be String")
-
-    def __mul__(self, other):
-        """
-        Internal method to perform String multiplication without overhead
-        """
-        cdef:
-            string s
-            str c
-            int it, l = len(self)
-
-        if isinstance(other, int):
-            s.reserve(l * other)
-
-            for it in range(other):
-                for c in self:
-                    s.push_back(ord(c))
-
-            return String(<unicode> s.decode("utf-8"))
-
-        raise TypeError(
-            "can't multiply sequence by non-int of type 'String'"
-        )
-
-    def __rmul__(self, other):
-        pass
-
-    def __mod__(self, other):
-        pass
-
-    def __rmod__(self, other):
-        pass
-
-    def __richcmp__(a, b, op):
-        if op == 0:    # <
-            return a._handle < b._handle
-        elif op == 1:  # <=
-            return a._handle <= b._handle
-        elif op == 2:  # ==
-            return a._handle == b._handle
-        elif op == 3:  # !=
-            return a._handle != b._handle
-        elif op == 4:  # >
-            return a._handle > b._handle
-        elif op == 5:  # >=
-            return a._handle >= b._handle
-
-    def __sizeof__(self):
-        return self._handle.size()
-
-    # TODO: Write equivalents that use the MDS-stored data
-
-    def capitalize(self):
-        return String(str(self).capitalize())
-
-    def casefold(self):
-        return String(str(self).casefold())
-
-    def center(self, *args, **kwargs):
-        return String(str(self).center(*args, **kwargs))
-
-    # TODO: encode(encoding="utf-8", errors="strict")
-
-    def endswith(self, *args, **kwargs):
-        return str(self).endswith(*args, **kwargs)
-
-    def expandtabs(self, *args, **kwargs):
-        return String(str(self).expandtabs(*args, **kwargs))
-
-    def find(self, *args, **kwargs):
-        return str(self).find(*args, **kwargs)
-
-    def format(self, *args, **kwargs):
-        return String(str(self).format(*args, **kwargs))
-
-    def format_map(self, *args, **kwargs):
-        return String(str(self).format_map(*args, **kwargs))
-
-    def index(self, *args, **kwargs):
-        return str(self).index(*args, **kwargs)
-
-    def isalnum(self, *args, **kwargs):
-        return str(self).isalnum(*args, **kwargs)
-
-    def isalpha(self, *args, **kwargs):
-        return str(self).isalpha(*args, **kwargs)
-
-    def isdecimal(self, *args, **kwargs):
-        return str(self).isdecimal(*args, **kwargs)
-
-    def isdigit(self, *args, **kwargs):
-        return str(self).isdigit(*args, **kwargs)
-    
-    def isidentifier(self, *args, **kwargs):
-        return str(self).isidentifier(*args, **kwargs)
-    
-    def islower(self, *args, **kwargs):
-        return str(self).islower(*args, **kwargs)
-
-    def isnumeric(self, *args, **kwargs):
-        return str(self).isnumeric(*args, **kwargs)
-
-    def isprintable(self, *args, **kwargs):
-        return str(self).isprintable(*args, **kwargs)
-
-    def isspace(self, *args, **kwargs):
-        return str(self).isspace(*args, **kwargs)
-
-    def istitle(self, *args, **kwargs):
-        return str(self).istitle(*args, **kwargs)
-
-    def isupper(self, *args, **kwargs):
-        return str(self).isupper(*args, **kwargs)
-
-    def join(self, *args, **kwargs):
-        return String(str(self).join(*args, **kwargs))
-
-    def ljust(self, *args, **kwargs):
-        return String(str(self).ljust(*args, **kwargs))
-
-    def lower(self, *args, **kwargs):
-        return String(str(self).lower(*args, **kwargs))
-
-    def lstrip(self, *args, **kwargs):
-        return String(str(self).lstrip(*args, **kwargs))
-
-    def partition(self, *args, **kwargs):
-        return tuple([String(x) for x in str(self).partition(*args, **kwargs)])
-
-    def replace(self, *args, **kwargs):
-        return String(str(self).replace(*args, **kwargs))
-
-    def rfind(self, *args, **kwargs):
-        return str(self).rfind(*args, **kwargs)
-
-    def rindex(self, *args, **kwargs):
-        return str(self).rindex(*args, **kwargs)
-
-    def rjust(self, *args, **kwargs):
-        return String(str(self).rjust(*args, **kwargs))
-
-    def rpartition(self, *args, **kwargs):
-        return tuple([String(x) for x in str(self).rpartition(*args, **kwargs)])
-
-    def rsplit(self, *args, **kwargs):
-        return [String(x) for x in str(self).rsplit(*args, **kwargs)]
-
-    def rstrip(self, *args, **kwargs):
-        return String(str(self).rstrip(*args, **kwargs))
-
-    def split(self, *args, **kwargs):
-        return [String(x) for x in str(self).split(*args, **kwargs)]
-
-    def splitlines(self, *args, **kwargs):
-        return [String(x) for x in str(self).split(*args, **kwargs)]
-
-    def startswith(self, *args, **kwargs):
-        return str(self).startswith(*args, **kwargs)
-
-    def strip(self, *args, **kwargs):
-        return String(str(self).strip(*args, **kwargs))
-    
-    def swapcase(self, *args, **kwargs):
-        return String(str(self).swapcase(*args, **kwargs))
-
-    def title(self, *args, **kwargs):
-        return String(str(self).title(*args, **kwargs))
-
-    # TODO: translate
-
-    def upper(self, *args, **kwargs):
-        return String(str(self).upper(*args, **kwargs))
-
-    def zfill(self, *args, **kwargs):
-        return String(str(self).zfill(*args, **kwargs))
-
-# =========================================================================
-#  Namespace
-# =========================================================================
-
-
-cdef class Namespace(MDSObject):
-
-    cdef namespace_handle _handle
-
-    def __setitem__(self, key, value):
-        cdef:
-            interned_string_handle ish = convert_py_to_ish(key)
-            uint16_t val = value
-
-        # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
-        # if not issubclass(type(value), MDSObject):
-        #     raise TypeError('Cannot commit a non-MDS type into a MDS namespace')
-
-        # TODO: get the boxed item to release its wrapped value into bind...
-        self._handle.bind(ish, val)
-
-    def __getitem__(self, key):
-        # TODO: Need some type inference here, require explicit third param?
-        cdef:
-            uint16_t retval
-            interned_string_handle ish = convert_py_to_ish(key)
-
-        retval = self._handle.lookup(ish, managed_ushort_type_handle())
-        return retval
-
-    def create_child(self, child_id, bint create_if_missing=True):
-        cdef:
-            interned_string_handle ish = convert_py_to_ish(child_id)
-            bool cim = <bool> create_if_missing
-        
-        return Namespace_Init(self._handle.child_namespace(ish, cim))
-
-    @staticmethod
-    def from_path(path):
-        pass
-
-    @staticmethod
-    def get_current():
-        pass  # TODO: mds_namespace::current()
-
-    @staticmethod
-    def get_global():
-        return Namespace_Init(handle=namespace_handle._global())
-
-    property is_root:
-        def __get__(self):
-            # TODO: Implement this
-            pass
-
-    property parent:
-        def __get__(self):
-            # TODO: Implement this
-            pass
-
-
-cdef inline Namespace_Init(namespace_handle handle):
-    initialize_base_task()
-    result = Namespace()
-    result._handle = handle
-    return result
-
-# =========================================================================
-#  Helpers
-# =========================================================================
-
-cpdef inline is_record_type(obj):
-    return issubclass(obj, Record)
-
-cdef inline _declare_record_member(RecordMemberBase rm, str ident, record_type_handle rt):
-    pass
-
-# TODO: These record_creator methods
-cdef inline _register_type(const_record_type_handle crht):
-    pass
-
-cdef inline _create_from_handle(managed_record_handle mrh):
-    pass
-
-cdef inline record_type_handle _declare_record_type(str ident):
-    return record_type_handle.declare(convert_py_to_ish(ident))

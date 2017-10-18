@@ -165,8 +165,10 @@ namespace mds
         namespace types
         {
             #define _TYPE_WRAPPER_(K, name) \
-            using h_marray_##name##_t = mds::api::managed_array_handle<K>; \
-            using h_m##name##_t = mds::api::managed_type_handle_cp<K, true>; \
+            using h_const_marray_##name##_t = mds::api::managed_array_handle_cp<K, true>; \
+            using h_marray_##name##_t = mds::api::managed_array_handle_cp<K, false>; \
+            using h_const_m##name##_t = mds::api::managed_type_handle_cp<K, true>; \
+            using h_m##name##_t = mds::api::managed_type_handle_cp<K, false>; \
             static inline h_marray_##name##_t create_##name##_marray(size_t n) \
             { \
                 tasks::initialize_base_task(); \

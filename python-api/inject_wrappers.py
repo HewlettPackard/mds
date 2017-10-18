@@ -135,14 +135,25 @@ def tmpl_primitive_wrapper(t):
         {t.managed_value}({t.c_type})
 
     cdef cppclass {t.primitive} "mds::api::managed_type_handle<{t.kind}>":
+        {t.primitive}()
         # TODO:
         # Throws incompatible_type_ex if the field exists but is of the wrong type
         # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
         # is true, and the record type is fully created.
         {t.record_field} field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef {t.c_type} to_core_val "mds::api::to_core_val<{t.kind}>" (const {t.managed_value}&)
     cdef {t.primitive} {t.managed_type_handle} "mds::api::managed_type_handle<{t.kind}>"()
+
+    cdef cppclass {t.const_primitive} "mds::api::const_managed_type_handle<{t.kind}>":
+        {t.const_primitive}()
+        # TODO:
+        # Throws incompatible_type_ex if the field exists but is of the wrong type
+        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+        # is true, and the record type is fully created.
+        {t.const_record_field} field_in(record_type_handle&, interned_string_handle&, bool) except+
+
+    cdef {t.const_primitive} {t.const_managed_type_handle} "mds::api::managed_type_handle<{t.kind}>"()
+    cdef {t.c_type} to_core_val "mds::api::to_core_val<{t.kind}>" (const {t.managed_value}&)
 """
 
 def tmpl_namespace_wrapper(t):
@@ -190,9 +201,9 @@ def tmpl_int_primitive_bounds(t):
             return {t.bounds.max} 
 """
 
-def tmpl_record_member(t):
+def tmpl_record_field(t):
     return f"""
-cdef class {t.title_record_member}(RecordMemberBase):
+cdef class {t.title_record_field}(RecordMemberBase):
 
     cdef {t.record_field} _handle
 
@@ -202,34 +213,28 @@ cdef class {t.title_record_member}(RecordMemberBase):
     def write(self, value):
         self._handle.write(self._mr_handle, value)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = {t.managed_type_handle}().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
+    def declare(self):
+        self._handle = {t.primitive}().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: self._handle.write_initial(self._initial_value)
 
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+   # def ensure_type(self):
+   #     # TODO: For Const* too
+   #     # managed_type<T>::ensure_complete()
+   #     pass
 
 
-cdef class {t.title_const_record_member}(ConstRecordMemberBase):
+cdef class {t.title_const_record_field}(ConstRecordMemberBase):
 
     cdef {t.const_record_field} _handle
 
     def read(self):
         return self._handle.frozen_read(self._mr_handle)
 
-# TODO: This stuff may need to be duplicated for the const-versions
-#    cpdef declare(self, str ident, record_type_handle rt):
-#        assert(self._handle.is_null())
-#        self._handle = {t.managed_type_handle}().field_in(rt, ident, True)
-#        self.write_initial(self._initial_value)
-
-#    cpdef ensure_type(self):
-#        # managed_type<T>::ensure_complete()
-#        pass
+    def declare(self):
+        self._handle = {t.const_primitive}().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
+        # TODO: write_initial?
 """
+
 
 def tmpl_concrete_array(t):
     primitive_extra = ""
@@ -298,7 +303,7 @@ TARGETS = {
     'tmpl_array_wrapper': tmpl_array_wrapper,
     'tmpl_namespace_wrapper': tmpl_namespace_wrapper,
     'tmpl_record_field_wrapper': tmpl_record_field_wrapper,
-    'tmpl_record_member': tmpl_record_member,
+    'tmpl_record_field': tmpl_record_field,
     'tmpl_concrete_array': tmpl_concrete_array
 }
 

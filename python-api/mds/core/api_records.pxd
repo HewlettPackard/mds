@@ -29,9 +29,19 @@ from libcpp cimport bool
 from mds.core.api_strings cimport interned_string_handle
 
 cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
+    cdef cppclass managed_record_handle:
+        managed_record_handle()
+        managed_record_handle(managed_record_handle&)
+
+    cdef cppclass const_managed_record_handle:
+        const_managed_record_handle()
+        const_managed_record_handle(const_managed_record_handle&)
+
     cdef cppclass record_type_handle:
         record_type_handle()
         record_type_handle(record_type_handle &)
+        record_type_handle(managed_record_handle&)
+        record_type_handle(const_managed_record_handle&)
 
         managed_record_handle create_record()
         interned_string_handle name()
@@ -54,6 +64,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass const_record_type_handle:
         const_record_type_handle()
         const_record_type_handle(const_record_type_handle &)
+        const_record_type_handle(managed_record_handle&)
+        const_record_type_handle(const_managed_record_handle&)
 
         managed_record_handle create_record()
         interned_string_handle name()
@@ -73,12 +85,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle declare(const interned_string_handle&)
         # NOTE Ignoring 2nd def. param const const_const_record_type_handle &super = const_const_record_type_handle{}
 
-
-    cdef cppclass managed_record_handle:
-        managed_record_handle()
-        managed_record_handle(managed_record_handle&)
-
-        # TODO uniform_key uuid()
 
 # START INJECTION | tmpl_record_field_wrapper
 

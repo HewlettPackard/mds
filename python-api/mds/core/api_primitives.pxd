@@ -50,14 +50,25 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         mv_bool(bool)
 
     cdef cppclass h_mbool_t "mds::api::managed_type_handle<mds::api::kind::BOOL>":
+        h_mbool_t()
         # TODO:
         # Throws incompatible_type_ex if the field exists but is of the wrong type
         # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
         # is true, and the record type is fully created.
         h_rfield_bool_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef bool to_core_val "mds::api::to_core_val<mds::api::kind::BOOL>" (const mv_bool&)
     cdef h_mbool_t managed_bool_type_handle "mds::api::managed_type_handle<mds::api::kind::BOOL>"()
+
+    cdef cppclass h_const_mbool_t "mds::api::const_managed_type_handle<mds::api::kind::BOOL>":
+        h_const_mbool_t()
+        # TODO:
+        # Throws incompatible_type_ex if the field exists but is of the wrong type
+        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+        # is true, and the record type is fully created.
+        h_const_rfield_bool_t field_in(record_type_handle&, interned_string_handle&, bool) except+
+
+    cdef h_const_mbool_t const_managed_bool_type_handle "mds::api::managed_type_handle<mds::api::kind::BOOL>"()
+    cdef bool to_core_val "mds::api::to_core_val<mds::api::kind::BOOL>" (const mv_bool&)
 
     # BEGIN byte
 
@@ -66,14 +77,25 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         mv_byte(int8_t)
 
     cdef cppclass h_mbyte_t "mds::api::managed_type_handle<mds::api::kind::BYTE>":
+        h_mbyte_t()
         # TODO:
         # Throws incompatible_type_ex if the field exists but is of the wrong type
         # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
         # is true, and the record type is fully created.
         h_rfield_byte_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef int8_t to_core_val "mds::api::to_core_val<mds::api::kind::BYTE>" (const mv_byte&)
     cdef h_mbyte_t managed_byte_type_handle "mds::api::managed_type_handle<mds::api::kind::BYTE>"()
+
+    cdef cppclass h_const_mbyte_t "mds::api::const_managed_type_handle<mds::api::kind::BYTE>":
+        h_const_mbyte_t()
+        # TODO:
+        # Throws incompatible_type_ex if the field exists but is of the wrong type
+        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+        # is true, and the record type is fully created.
+        h_const_rfield_byte_t field_in(record_type_handle&, interned_string_handle&, bool) except+
+
+    cdef h_const_mbyte_t const_managed_byte_type_handle "mds::api::managed_type_handle<mds::api::kind::BYTE>"()
+    cdef int8_t to_core_val "mds::api::to_core_val<mds::api::kind::BYTE>" (const mv_byte&)
 
     # BEGIN ubyte
 
@@ -82,14 +104,25 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         mv_ubyte(uint8_t)
 
     cdef cppclass h_mubyte_t "mds::api::managed_type_handle<mds::api::kind::UBYTE>":
+        h_mubyte_t()
         # TODO:
         # Throws incompatible_type_ex if the field exists but is of the wrong type
         # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
         # is true, and the record type is fully created.
         h_rfield_ubyte_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef uint8_t to_core_val "mds::api::to_core_val<mds::api::kind::UBYTE>" (const mv_ubyte&)
     cdef h_mubyte_t managed_ubyte_type_handle "mds::api::managed_type_handle<mds::api::kind::UBYTE>"()
+
+    cdef cppclass h_const_mubyte_t "mds::api::const_managed_type_handle<mds::api::kind::UBYTE>":
+        h_const_mubyte_t()
+        # TODO:
+        # Throws incompatible_type_ex if the field exists but is of the wrong type
+        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+        # is true, and the record type is fully created.
+        h_const_rfield_ubyte_t field_in(record_type_handle&, interned_string_handle&, bool) except+
+
+    cdef h_const_mubyte_t const_managed_ubyte_type_handle "mds::api::managed_type_handle<mds::api::kind::UBYTE>"()
+    cdef uint8_t to_core_val "mds::api::to_core_val<mds::api::kind::UBYTE>" (const mv_ubyte&)
 
     # BEGIN short
 
@@ -98,14 +131,25 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         mv_short(int16_t)
 
     cdef cppclass h_mshort_t "mds::api::managed_type_handle<mds::api::kind::SHORT>":
+        h_mshort_t()
         # TODO:
         # Throws incompatible_type_ex if the field exists but is of the wrong type
         # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
         # is true, and the record type is fully created.
         h_rfield_short_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef int16_t to_core_val "mds::api::to_core_val<mds::api::kind::SHORT>" (const mv_short&)
     cdef h_mshort_t managed_short_type_handle "mds::api::managed_type_handle<mds::api::kind::SHORT>"()
+
+    cdef cppclass h_const_mshort_t "mds::api::const_managed_type_handle<mds::api::kind::SHORT>":
+        h_const_mshort_t()
+        # TODO:
+        # Throws incompatible_type_ex if the field exists but is of the wrong type
+        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+        # is true, and the record type is fully created.
+        h_const_rfield_short_t field_in(record_type_handle&, interned_string_handle&, bool) except+
+
+    cdef h_const_mshort_t const_managed_short_type_handle "mds::api::managed_type_handle<mds::api::kind::SHORT>"()
+    cdef int16_t to_core_val "mds::api::to_core_val<mds::api::kind::SHORT>" (const mv_short&)
 
     # BEGIN ushort
 
@@ -114,14 +158,25 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         mv_ushort(uint16_t)
 
     cdef cppclass h_mushort_t "mds::api::managed_type_handle<mds::api::kind::USHORT>":
+        h_mushort_t()
         # TODO:
         # Throws incompatible_type_ex if the field exists but is of the wrong type
         # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
         # is true, and the record type is fully created.
         h_rfield_ushort_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef uint16_t to_core_val "mds::api::to_core_val<mds::api::kind::USHORT>" (const mv_ushort&)
     cdef h_mushort_t managed_ushort_type_handle "mds::api::managed_type_handle<mds::api::kind::USHORT>"()
+
+    cdef cppclass h_const_mushort_t "mds::api::const_managed_type_handle<mds::api::kind::USHORT>":
+        h_const_mushort_t()
+        # TODO:
+        # Throws incompatible_type_ex if the field exists but is of the wrong type
+        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+        # is true, and the record type is fully created.
+        h_const_rfield_ushort_t field_in(record_type_handle&, interned_string_handle&, bool) except+
+
+    cdef h_const_mushort_t const_managed_ushort_type_handle "mds::api::managed_type_handle<mds::api::kind::USHORT>"()
+    cdef uint16_t to_core_val "mds::api::to_core_val<mds::api::kind::USHORT>" (const mv_ushort&)
 
     # BEGIN int
 
@@ -130,14 +185,25 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         mv_int(int32_t)
 
     cdef cppclass h_mint_t "mds::api::managed_type_handle<mds::api::kind::INT>":
+        h_mint_t()
         # TODO:
         # Throws incompatible_type_ex if the field exists but is of the wrong type
         # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
         # is true, and the record type is fully created.
         h_rfield_int_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef int32_t to_core_val "mds::api::to_core_val<mds::api::kind::INT>" (const mv_int&)
     cdef h_mint_t managed_int_type_handle "mds::api::managed_type_handle<mds::api::kind::INT>"()
+
+    cdef cppclass h_const_mint_t "mds::api::const_managed_type_handle<mds::api::kind::INT>":
+        h_const_mint_t()
+        # TODO:
+        # Throws incompatible_type_ex if the field exists but is of the wrong type
+        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+        # is true, and the record type is fully created.
+        h_const_rfield_int_t field_in(record_type_handle&, interned_string_handle&, bool) except+
+
+    cdef h_const_mint_t const_managed_int_type_handle "mds::api::managed_type_handle<mds::api::kind::INT>"()
+    cdef int32_t to_core_val "mds::api::to_core_val<mds::api::kind::INT>" (const mv_int&)
 
     # BEGIN uint
 
@@ -146,14 +212,25 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         mv_uint(uint32_t)
 
     cdef cppclass h_muint_t "mds::api::managed_type_handle<mds::api::kind::UINT>":
+        h_muint_t()
         # TODO:
         # Throws incompatible_type_ex if the field exists but is of the wrong type
         # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
         # is true, and the record type is fully created.
         h_rfield_uint_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef uint32_t to_core_val "mds::api::to_core_val<mds::api::kind::UINT>" (const mv_uint&)
     cdef h_muint_t managed_uint_type_handle "mds::api::managed_type_handle<mds::api::kind::UINT>"()
+
+    cdef cppclass h_const_muint_t "mds::api::const_managed_type_handle<mds::api::kind::UINT>":
+        h_const_muint_t()
+        # TODO:
+        # Throws incompatible_type_ex if the field exists but is of the wrong type
+        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+        # is true, and the record type is fully created.
+        h_const_rfield_uint_t field_in(record_type_handle&, interned_string_handle&, bool) except+
+
+    cdef h_const_muint_t const_managed_uint_type_handle "mds::api::managed_type_handle<mds::api::kind::UINT>"()
+    cdef uint32_t to_core_val "mds::api::to_core_val<mds::api::kind::UINT>" (const mv_uint&)
 
     # BEGIN long
 
@@ -162,14 +239,25 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         mv_long(int64_t)
 
     cdef cppclass h_mlong_t "mds::api::managed_type_handle<mds::api::kind::LONG>":
+        h_mlong_t()
         # TODO:
         # Throws incompatible_type_ex if the field exists but is of the wrong type
         # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
         # is true, and the record type is fully created.
         h_rfield_long_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef int64_t to_core_val "mds::api::to_core_val<mds::api::kind::LONG>" (const mv_long&)
     cdef h_mlong_t managed_long_type_handle "mds::api::managed_type_handle<mds::api::kind::LONG>"()
+
+    cdef cppclass h_const_mlong_t "mds::api::const_managed_type_handle<mds::api::kind::LONG>":
+        h_const_mlong_t()
+        # TODO:
+        # Throws incompatible_type_ex if the field exists but is of the wrong type
+        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+        # is true, and the record type is fully created.
+        h_const_rfield_long_t field_in(record_type_handle&, interned_string_handle&, bool) except+
+
+    cdef h_const_mlong_t const_managed_long_type_handle "mds::api::managed_type_handle<mds::api::kind::LONG>"()
+    cdef int64_t to_core_val "mds::api::to_core_val<mds::api::kind::LONG>" (const mv_long&)
 
     # BEGIN ulong
 
@@ -178,14 +266,25 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         mv_ulong(uint64_t)
 
     cdef cppclass h_mulong_t "mds::api::managed_type_handle<mds::api::kind::ULONG>":
+        h_mulong_t()
         # TODO:
         # Throws incompatible_type_ex if the field exists but is of the wrong type
         # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
         # is true, and the record type is fully created.
         h_rfield_ulong_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef uint64_t to_core_val "mds::api::to_core_val<mds::api::kind::ULONG>" (const mv_ulong&)
     cdef h_mulong_t managed_ulong_type_handle "mds::api::managed_type_handle<mds::api::kind::ULONG>"()
+
+    cdef cppclass h_const_mulong_t "mds::api::const_managed_type_handle<mds::api::kind::ULONG>":
+        h_const_mulong_t()
+        # TODO:
+        # Throws incompatible_type_ex if the field exists but is of the wrong type
+        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+        # is true, and the record type is fully created.
+        h_const_rfield_ulong_t field_in(record_type_handle&, interned_string_handle&, bool) except+
+
+    cdef h_const_mulong_t const_managed_ulong_type_handle "mds::api::managed_type_handle<mds::api::kind::ULONG>"()
+    cdef uint64_t to_core_val "mds::api::to_core_val<mds::api::kind::ULONG>" (const mv_ulong&)
 
     # BEGIN float
 
@@ -194,14 +293,25 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         mv_float(float)
 
     cdef cppclass h_mfloat_t "mds::api::managed_type_handle<mds::api::kind::FLOAT>":
+        h_mfloat_t()
         # TODO:
         # Throws incompatible_type_ex if the field exists but is of the wrong type
         # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
         # is true, and the record type is fully created.
         h_rfield_float_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef float to_core_val "mds::api::to_core_val<mds::api::kind::FLOAT>" (const mv_float&)
     cdef h_mfloat_t managed_float_type_handle "mds::api::managed_type_handle<mds::api::kind::FLOAT>"()
+
+    cdef cppclass h_const_mfloat_t "mds::api::const_managed_type_handle<mds::api::kind::FLOAT>":
+        h_const_mfloat_t()
+        # TODO:
+        # Throws incompatible_type_ex if the field exists but is of the wrong type
+        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+        # is true, and the record type is fully created.
+        h_const_rfield_float_t field_in(record_type_handle&, interned_string_handle&, bool) except+
+
+    cdef h_const_mfloat_t const_managed_float_type_handle "mds::api::managed_type_handle<mds::api::kind::FLOAT>"()
+    cdef float to_core_val "mds::api::to_core_val<mds::api::kind::FLOAT>" (const mv_float&)
 
     # BEGIN double
 
@@ -210,14 +320,25 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         mv_double(double)
 
     cdef cppclass h_mdouble_t "mds::api::managed_type_handle<mds::api::kind::DOUBLE>":
+        h_mdouble_t()
         # TODO:
         # Throws incompatible_type_ex if the field exists but is of the wrong type
         # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
         # is true, and the record type is fully created.
         h_rfield_double_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef double to_core_val "mds::api::to_core_val<mds::api::kind::DOUBLE>" (const mv_double&)
     cdef h_mdouble_t managed_double_type_handle "mds::api::managed_type_handle<mds::api::kind::DOUBLE>"()
+
+    cdef cppclass h_const_mdouble_t "mds::api::const_managed_type_handle<mds::api::kind::DOUBLE>":
+        h_const_mdouble_t()
+        # TODO:
+        # Throws incompatible_type_ex if the field exists but is of the wrong type
+        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+        # is true, and the record type is fully created.
+        h_const_rfield_double_t field_in(record_type_handle&, interned_string_handle&, bool) except+
+
+    cdef h_const_mdouble_t const_managed_double_type_handle "mds::api::managed_type_handle<mds::api::kind::DOUBLE>"()
+    cdef double to_core_val "mds::api::to_core_val<mds::api::kind::DOUBLE>" (const mv_double&)
 
 # END INJECTION
 
