@@ -231,16 +231,59 @@ cdef class MDSFloatArrayBase(MDSArrayBase):
 #  Records
 # =========================================================================
 
+cdef class MDSRecordFieldMemberPair(object):
+    cdef:
+        MDSRecordFieldBase field
+        type member
+
+    def __init__(self, field, member):
+        self.field = field  # derived <- MDSRecordFieldBase
+        self.member = member  # type: derived <- MDSRecordMemberBase
+
+
 cdef class Record(MDSObject):
     cdef:
         managed_record_handle _handle
-        RecordTypeDeclaration _type_decl
+        # RecordTypeDeclaration _type_decl
 
     def __cinit__(self, MDSRecordCreatorToken token):
         self._handle = managed_record_handle(token.create())
         token.cache_shared(self)
 
-        self._type_decl = self.type_declaration()
+        # self._type_decl = self.type_declaration()
+
+    def __init_subclass__(cls, ident, **kwargs):
+        """
+        This is called whenever a subclass of Record comes into scope, this
+        provides a couple of nice opportunities:
+
+        1) Ensure the type is properly declared in MDS before an instance
+           is called, and bind the type declaration as a static member in
+           Python-land
+        2) TODO: See if any ambiguous proxies from Namespace are awaiting this
+           specific implementation, and deal with that accordingly.
+        """
+        super().__init_subclass__(**kwargs)
+        cls.ident = ident
+
+        # This is the same as rt_decl ... type_decl() in that it instantiates
+        # the RecordTypeDeclarion (rt_decl)
+        # TODO: Do I need to cache/store this somewhere to avoid multiple attempts?
+        cls.type_decl = cls.type_declaration()
+
+    def _register_fields(self):
+        """
+        When this subclass was declared, with automagically registered the Record type
+        with MDS; in so doing we stored single-instances of the RecordFields we required,
+        but type references to the members, as they must be instance-bound.
+
+        This method iterates through that container and updates the object's dict
+        to enable dot notation access to the associated MemberRecords
+        """
+        # Stll need to make the RecordMembers and bind them to this instance
+        for label, field_member_pair in cls.type_decl.get_field_member_pairs().items():
+            field, member_t = field_member_pair.field, field_member_pair.member
+            self.__dict__[label] = member_t(self)
 
     @classmethod
     def lookup_in_namespace(cls, ns, *args):
@@ -252,7 +295,6 @@ cdef class Record(MDSObject):
     
         record = ns[args]
         retval = cls()
-        # Now we know that root[args[-1]] will be the record val
         # TODO: update retval's fields accordingly
 
         return retval
@@ -265,25 +307,71 @@ cdef class Record(MDSObject):
     def type_declaration(cls):
         raise TypeError("Derived `Record`s should return a RecordTypeDeclaration here.")
 
-    @classmethod
-    def ident(cls):
-        raise TypeError("Derived `Record`s should return a `str` identifier here.")
+    @staticmethod
+    def declare_const_field(klass):
+        """
+        Delegates to Record.declare_field; could be deleted, but here to map 1:1 to CAPI.
+        """
+        return Record.declare_field(klass, make_const=True)
 
+    @staticmethod
+    def declare_field(klass, make_const=False):  # const is broken here, not at field level, should be member
+        """
+        This returns the derived RecordField for the combination of the arguments.
 
-cdef class ExampleRecord(Record):  # => Test
+        TODO: This only works for primitives, will need adaptation for {String, Array, Record}
+        TODO: String-based hacking isn't neat, should make a dict using the generator,
+        but this works for now.
+
+        Args:
+            klass:  TypeInfo, obtained from `mds.typing`
+            make_const: Bool, whether to make the associated RecordMember const or not
+        """
+        if not isinstance(klass, TypeInfo):
+            raise TypeError("First parameter needs to be a type from `mds.typing`")
+
+        associated_member = "{constness}{title}RecordMember".format(
+            constness="Const" if make_const else "",
+            title=klass.title
+        )
+
+        # Now, let's see if it's known and of the correct lineage
+        cls = globals()[klass.title]
+        assert issubclass(cls, MDSRecordFieldBase)
+
+        member = globals()[associated_member]
+        assert issubclass(member, MDSRecordMemberBase) or isinstance(member, MDSConstRecordMemberBase)
+
+        # DEBUG
+        print(f"?> Making pair {cls.__name__}, {member.__name__}")
+
+        # Unlike the CAPI we return both the instantiated field and a type for the member
+        return MDSRecordFieldMemberPair(field=cls(), member=member)
+
+cdef class ExampleRecord(Record, ident="PythonTest::ExampleRecord"):  # => Test
+    """
+    Descendents of Record should explictly declare an `ident` key/value pair in the
+    class descriptor as above; this is how the type will be known to MDS.
+    """
 
     @classmethod
     def type_declaration(cls):
+        """
+        This method *must* be overridden in Record-derived classes, and follow the
+        following syntax for declaring the record schema.
+
+        Once the class `cls` has come into scope, an instantaited copy of this object
+        will be available via cls.type_decl
+
+        TODO: Could this just return fields? Deal with cls etc. in __init_subclass__?
+        """
         fields = {
-            "is_active": make_field(mds.typing.bool, make_const=True),
-            "number_of_players": make_field(mds.typing.ushort, initial_value=0)
+            "is_active": Record.declare_const_field(mds.typing.bool),
+            "number_of_players": Record.declare_field(mds.typing.ushort)
         }
 
-        return RecordTypeDeclaration(cls.ident(), fields, Record)
-
-    @classmethod
-    def ident(cls):
-        return "PythonTest::ExampleRecord"
+        # return RecordTypeDeclaration(cls.ident(), fields, Record)
+        return RecordTypeDeclaration(cls, fields)
 
 ############################################################# RECORD CREATOR TOKENS
 
@@ -612,11 +700,12 @@ cdef class MDSRecordMemberBase(MDSObject):
 
     # using value_type = typename record_field<R,T>::value_type;
 
-    def __cinit__(self, other=None):
+    def __cinit__(self, Record record, other=None):
   # record_member()
   #     : _enclosing(*typed_rc_token<R>::being_constructed()) {
   #   assert(&_enclosing != nullptr);
   # }
+        self._enclosing = record
 
         # Delegate this checking to the write() method
   # explicit record_member(const value_type &v)
@@ -628,6 +717,8 @@ cdef class MDSRecordMemberBase(MDSObject):
   #     : record_member() {
   #   write(other);
   # }
+
+
         if other is not None:
             self.write(other)
 
@@ -722,10 +813,6 @@ cdef class ConstUShortRecordMember(MDSConstRecordMemberBase):  # => Generator
 
 ######################################################### RECORD TYPE DECLARATIONS
 
-cdef class RecordTypeDeclarionNoFields(object):  # TODO: Delete?
-    pass
-
-
 cdef class RecordFieldDeclaration(object):
     cdef:
         String name
@@ -741,12 +828,18 @@ __RECORD_DECLARATION_MUTEX = threading.Lock()
 cdef class RecordTypeDeclaration(object):
     cdef:
         list _field_decls
+        list _field_member_pairs
         const record_type_handle _declared_type
         const_record_type_handle _created_type
         bint _created
 
-    def __cinit__(self, String name, list fields, type parent):
-        self._declared_type = self.declare(name, parent)
+    # def __cinit__(self, String name, list fields, type parent):
+    #     self._declared_type = self.declare(name, parent)
+    #     self.note_fields(fields)
+
+    def __cinit__(self, type cls, dict fields):
+        self._declared_type = self.declare(cls.ident, parent)
+        self._field_member_pairs = fields
         self.note_fields(fields)
 
  #  api::const_record_type_handle handle() const {
@@ -765,12 +858,16 @@ cdef class RecordTypeDeclaration(object):
             return record_type_handle.declare(name._handle)
 
         assert issubclass(s, Record), "Super type not a record type"
-        sp = s.ensure_created()
+        sp = s.ensure_created()  # This is returning a const_record_handle_type
         return record_type_handle.declare(name._handle, sp)
 
-    def note_fields(self, list fields):
-        for field, label in fields:
-            self._field_decls.append(RecordFieldDeclaration(label, field))
+    # def note_fields(self, list fields):
+    #     for field, label in fields:
+    #         self._field_decls.append(RecordFieldDeclaration(label, field))
+
+    def note_fields(self, dict fields):
+        for label, field_member_pair in fields.items():
+            self._field_decls.append(RecordFieldDeclaration(label, field_member_pair.field))
 
     def declare_fields(self):
         for fd in self._field_decls:
@@ -798,6 +895,9 @@ cdef class RecordTypeDeclaration(object):
             __RECORD_DECLARATION_MUTEX.release()
 
         return self._created_type  # TODO: Wrap
+
+    def get_field_member_pairs(self):
+        return self._field_member_pairs
 
 # =========================================================================
 #  Strings

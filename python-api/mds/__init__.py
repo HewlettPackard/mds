@@ -32,9 +32,7 @@ class TypeInfo():
     MDS_INTEGRAL_PRIMITIVE = "MDSIntPrimitiveBase"
     MDS_FLOATING_PRIMITIVE = "MDSFloatPrimitiveBase"
 
-    MDS_BASE = 1
-    MDS_INTEGRAL = 2
-    MDS_FLOATING = 3
+    MDS_BASE, MDS_INTEGRAL, MDS_FLOATING = range(3)
 
     MDS_TAXONOMY = {
         MDS_BASE: Taxonomy(MDS_BASE_PRIMITIVE, MDS_BASE_ARRAY),
@@ -54,30 +52,39 @@ class TypeInfo():
         if self.title.startswith('U'):
             self.title = api[:2].upper() + api[2:]
 
+        # Python object names
         self.title_array = f"{self.title}Array"
         self.title_array_init = f"{self.title_array}_Init"
         self.title_array_cinit = f"{self.title_array}_Inplace"
+
         self.title_record_field = f"{self.title}RecordField"
+        self.title_record_member = f"{self.title}RecordMember"
         self.title_const_record_field = f"Const{self.title_record_field}"
+        self.title_const_record_member = f"Const{self.title_record_member}"
+        
         self.c_type = c_type
         self.taxonomy = taxonomy
         self.python_type = python_type
 
+        # MDS core aliases (masking templated types)
         self.primitive = f"h_m{api}_t"
-        self.const_primitive = f"h_const_m{api}_t"
-        
         self.array = f"h_array_{api}_t"
         self.managed_value = f"mv_{api}"
         self.managed_array = f"h_marray_{api}_t"
-
         self.managed_type_handle = f"managed_{api}_type_handle"
-        self.const_managed_type_handle = f"const_managed_{api}_type_handle"
-        
         self.record_field = f"h_rfield_{api}_t"
+
+        # MDS core aliases (masking const templated types)
+        self.const_primitive = f"h_const_m{api}_t"
+        self.const_array = f"h_const_array_{api}_t"
+        self.const_managed_value = f"mv_const_{api}"
+        self.const_managed_array = f"h_const_marray_{api}_t"
+        self.const_managed_type_handle = f"const_managed_{api}_type_handle"
         self.const_record_field = f"h_const_rfield_{api}_t"
 
         self.kind = "mds::api::kind::{}".format(api.upper())
         self.f_create_array = f"create_{api}_marray"
+        self.f_create_const_array = f"create_const_{api}_marray"
         self.f_bind = f"bind_{api}"
 
         self.primitive_parent = self.MDS_TAXONOMY[taxonomy].primitive

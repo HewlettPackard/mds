@@ -64,7 +64,12 @@ def find_and_inject(file_path, dry_run=True, generator_separator='|'):
 
     for target in targets:
         chunks.extend(lines[start:target.start])
-        chunks.extend(__generate_specializations(TARGETS[target.fn_name]))
+
+        try:
+            chunks.extend(__generate_specializations(TARGETS[target.fn_name]))
+        except KeyError:
+            print(f"The template function `{target.fn_name}` wasn't found.")
+
         start = target.end
 
     chunks.extend(lines[start:])
