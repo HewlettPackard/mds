@@ -28,6 +28,27 @@ import unittest
 import mds
 from mds.managed import Record
 
+class ExampleRecord(Record, ident="PythonTest::ExampleRecord"):  # TODO => Test
+    """
+    Descendents of Record should explictly declare an `ident` key/value pair in the
+    class descriptor as above; this is how the type will be known to MDS.
+    """
+
+    @staticmethod
+    def schema():
+        """
+        This method *must* be overridden in Record-derived classes, and follow the
+        following syntax for declaring the record schema.
+
+        Once the class `cls` has come into scope, an instantiated copy of this object
+        will be available via cls.type_decl
+        """
+        return {
+            "is_active": Record.declare_const_field(mds.typing.bool),
+            "number_of_players": Record.declare_field(mds.typing.ushort)
+        }
+
+
 class SimpleRecord(Record, ident="schema_SimpleRecords"):
 
     @staticmethod

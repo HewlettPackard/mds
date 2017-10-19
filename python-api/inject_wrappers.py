@@ -212,6 +212,10 @@ cdef class {t.title_record_field}(MDSRecordFieldBase):
 """
 
 def tmpl_record_field_reference(t: TypeInfo) -> str:
+    """
+    TODO:
+        1. Change to python 3 annotation when upgrade to Cython 0.28
+    """
     retval = f"""
 cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBase):
     cdef:

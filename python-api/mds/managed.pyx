@@ -291,7 +291,9 @@ cdef class Record(MDSObject):
         2) TODO: See if any ambiguous proxies from Namespace are awaiting this
            specific implementation, and deal with that accordingly.
         """
+
         super().__init_subclass__(**kwargs)
+        print(f"Called for {cls.__name__}")
         cls.ident = ident
 
         # This is the same as rt_decl ... type_decl() in that it instantiates
@@ -379,27 +381,6 @@ cdef class Record(MDSObject):
 
         # Unlike the CAPI we return both the instantiated field and a type for the member
         return MDSRecordFieldMemberPair(field=field_t(), member=member_t)
-
-
-class ExampleRecord(Record, ident="PythonTest::ExampleRecord"):  # TODO => Test
-    """
-    Descendents of Record should explictly declare an `ident` key/value pair in the
-    class descriptor as above; this is how the type will be known to MDS.
-    """
-
-    @staticmethod
-    def schema():
-        """
-        This method *must* be overridden in Record-derived classes, and follow the
-        following syntax for declaring the record schema.
-
-        Once the class `cls` has come into scope, an instantiated copy of this object
-        will be available via cls.type_decl
-        """
-        return {
-            "is_active": Record.declare_const_field(mds.typing.bool),
-            "number_of_players": Record.declare_field(mds.typing.ushort)
-        }
 
 
 cdef class MDSManagedRecordType(MDSObject):
@@ -1600,24 +1581,35 @@ cdef emplace_handle(record_type_handle wrapped):
     wrapper._handle = wrapped
     return wrapper
 
-cdef emplace_const_handle(const_record_type_handle wrapped):
+cdef emplace_const_handle_from_decl(RecordTypeDeclaration decl):
     wrapper = MDSConstRecordHandleWrapper()
-    wrapper._handle = wrapped
+    wrapper._handle = decl._created_type
     return wrapper
 
+
+cdef MDSRecordHandleWrapper declare_mds_record(interned_string_handle ish, MDSConstRecordHandleWrapper wrapper):
+    cdef:
+        MDSRecordHandleWrapper retval = MDSRecordHandleWrapper()
+        const_record_type_handle unwrapped_handle = wrapper._handle
+        record_type_handle new_handle = record_type_handle.declare(ish, unwrapped_handle)
+
+    retval._handle = new_handle
+    return retval
 
 cdef class RecordTypeDeclaration(object):
     cdef:
         list _field_decls
         dict _field_member_pairs
-        const record_type_handle _declared_type  # Can I do const here? <- CAPI
+        record_type_handle _declared_type
         const_record_type_handle _created_type
         type _cls
 
     def __cinit__(self, cls: type, fields: dict):
         # TODO: Get rid of fields, invole cls.schema() directly and delegate here
         # TODO: This assumes singular inheritance path for Record, could probably do getmro...
-        self._declared_type = self.declare(cls.ident, cls.__bases__[0])
+        cdef MDSRecordHandleWrapper wrapper = self.declare(cls.ident, cls.__bases__[0])
+
+        self._declared_type = record_type_handle(wrapper._handle)
         self._cls = cls
         self._field_member_pairs = fields
         self.note_fields(fields)
@@ -1625,7 +1617,8 @@ cdef class RecordTypeDeclaration(object):
     def get_field_member_pairs(self) -> dict:
         return self._field_member_pairs
 
-    def declare(self, name: String, parent: type) -> MDSRecordHandleWrapper:
+    @staticmethod
+    def declare(name: String, parent: type) -> MDSRecordHandleWrapper:
         """
         The logic of this, from the CAPI, is that we want to declare a type
         of name `name`, and we check its ancestor;
@@ -1636,15 +1629,18 @@ cdef class RecordTypeDeclaration(object):
 
         TODO: s should be a parameterized managed_type<R>?
         """
+
+        cdef interned_string_handle ish = extract_ish(name)
+
         if parent is None or parent is Record:
-            return emplace_handle(record_type_handle.declare(name._ish))
+            return emplace_handle(record_type_handle.declare(ish, const_record_type_handle()))
 
         assert issubclass(parent, Record), "Super type not a record type"
 
         # As soon as `s` came into scope, it should have registered its type,
         # so this is unnecessary, but left in for posterity.
         sp = parent.type_decl.ensure_created()  # MDSConstRecordHandleWrapper
-        return emplace_handle(record_type_handle.declare(name._ish, sp._handle))
+        return declare_mds_record(ish, sp)
 
     def note_fields(self, fields: dict) -> None:
         for label, field_member_pair in fields.items():
@@ -1678,7 +1674,7 @@ cdef class RecordTypeDeclaration(object):
 
             __RECORD_DECLARATION_MUTEX.release()
 
-        return emplace_const_handle(__DECLARED_TYPES[self._cls.ident]._created_type)
+        return emplace_const_handle_from_decl(__DECLARED_TYPES[self._cls.ident])
 
 
 # =========================================================================
@@ -1945,6 +1941,11 @@ cdef class String(MDSObject):
     def zfill(self, *args, **kwargs):
         return String(str(self).zfill(*args, **kwargs))
 
+
+cdef inline interned_string_handle extract_ish(String s):
+    cdef interned_string_handle retval = s._ish
+    return retval
+
 # =========================================================================
 #  Namespace
 # =========================================================================
@@ -2017,16 +2018,6 @@ cdef inline Namespace_Init(namespace_handle handle):
 
 cpdef inline is_record_type(obj):
     return issubclass(obj, Record)
-
-# TODO: These record_creator methods
-cdef inline _register_type(const_record_type_handle crht):
-    pass
-
-cdef inline _create_from_handle(managed_record_handle mrh):
-    pass
-
-cdef inline record_type_handle _declare_record_type(str ident):
-    return record_type_handle.declare(convert_py_to_ish(ident))
 
 # =========================================================================
 #  Primitives
