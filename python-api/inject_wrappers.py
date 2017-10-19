@@ -215,12 +215,12 @@ def tmpl_record_field_reference(t: TypeInfo) -> str:
     retval = f"""
 cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBase):
     cdef:
-        {t.const_record_field} _field_handle
+        {t.record_field} _field_handle
         Record _record
 
-    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+    def __cinit__(self, {t.title_record_field} field, Record record):
         self._record = record
-        self._field_handle = {t.const_record_field}(field._handle)
+        self._field_handle = {t.record_field}(field._handle)
         self._record_handle = managed_record_handle(record._handle)
 
     def read(self):

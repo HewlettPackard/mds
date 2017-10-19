@@ -255,7 +255,8 @@ __DECLARED_TYPES = dict()
 
 
 cdef implant_record_handle(Record record, RecordTypeDeclaration decl):
-    cdef const_record_type_handle handle = decl._handle
+    # `decl` doesn't have a ._handle field...
+    cdef const_record_type_handle handle = decl._created_type
     record._handle = handle.create_record()
 
 
@@ -301,14 +302,12 @@ cdef class Record(MDSObject):
 
     def _register_fields(self) -> None:
         """
-        When this subclass was declared, with automagically registered the Record type
+        When this subclass was declared, we automatically registered the Record type
         with MDS; in so doing we stored single-instances of the RecordFields we required,
         but type references to the members, as they must be instance-bound.
 
         This method iterates through that container and updates the object's dict
         to enable dot notation access to the associated MemberRecords
-
-        TODO: When and where should this be called?
         """
         # Stll need to make the RecordMembers and bind them to this instance
         for label, field_member_pair in self.type_decl.get_field_member_pairs().items():
@@ -346,7 +345,7 @@ cdef class Record(MDSObject):
         return Record.declare_field(klass, make_const=True)
 
     @staticmethod
-    def declare_field(klass: type, make_const=False) -> MDSRecordFieldMemberPair:  # const is broken here, not at field level, should be member
+    def declare_field(klass: type, make_const=False) -> MDSRecordFieldMemberPair:
         """
         This returns the derived RecordField for the combination of the arguments.
 
@@ -668,12 +667,12 @@ cdef class MDSRecordFieldReferenceBase(MDSConstRecordFieldReferenceBase):
 
 cdef class ConstBoolRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
-        h_const_rfield_bool_t _field_handle
+        h_rfield_bool_t _field_handle
         Record _record
 
-    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+    def __cinit__(self, BoolRecordField field, Record record):
         self._record = record
-        self._field_handle = h_const_rfield_bool_t(field._handle)
+        self._field_handle = h_rfield_bool_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
 
     def read(self):
@@ -692,12 +691,12 @@ cdef class BoolRecordFieldReference(ConstBoolRecordFieldReference):
 
 cdef class ConstByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
-        h_const_rfield_byte_t _field_handle
+        h_rfield_byte_t _field_handle
         Record _record
 
-    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+    def __cinit__(self, ByteRecordField field, Record record):
         self._record = record
-        self._field_handle = h_const_rfield_byte_t(field._handle)
+        self._field_handle = h_rfield_byte_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
 
     def read(self):
@@ -728,12 +727,12 @@ cdef class ByteRecordFieldReference(ConstByteRecordFieldReference):
 
 cdef class ConstUByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
-        h_const_rfield_ubyte_t _field_handle
+        h_rfield_ubyte_t _field_handle
         Record _record
 
-    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+    def __cinit__(self, UByteRecordField field, Record record):
         self._record = record
-        self._field_handle = h_const_rfield_ubyte_t(field._handle)
+        self._field_handle = h_rfield_ubyte_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
 
     def read(self):
@@ -764,12 +763,12 @@ cdef class UByteRecordFieldReference(ConstUByteRecordFieldReference):
 
 cdef class ConstShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
-        h_const_rfield_short_t _field_handle
+        h_rfield_short_t _field_handle
         Record _record
 
-    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+    def __cinit__(self, ShortRecordField field, Record record):
         self._record = record
-        self._field_handle = h_const_rfield_short_t(field._handle)
+        self._field_handle = h_rfield_short_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
 
     def read(self):
@@ -800,12 +799,12 @@ cdef class ShortRecordFieldReference(ConstShortRecordFieldReference):
 
 cdef class ConstUShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
-        h_const_rfield_ushort_t _field_handle
+        h_rfield_ushort_t _field_handle
         Record _record
 
-    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+    def __cinit__(self, UShortRecordField field, Record record):
         self._record = record
-        self._field_handle = h_const_rfield_ushort_t(field._handle)
+        self._field_handle = h_rfield_ushort_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
 
     def read(self):
@@ -836,12 +835,12 @@ cdef class UShortRecordFieldReference(ConstUShortRecordFieldReference):
 
 cdef class ConstIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
-        h_const_rfield_int_t _field_handle
+        h_rfield_int_t _field_handle
         Record _record
 
-    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+    def __cinit__(self, IntRecordField field, Record record):
         self._record = record
-        self._field_handle = h_const_rfield_int_t(field._handle)
+        self._field_handle = h_rfield_int_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
 
     def read(self):
@@ -872,12 +871,12 @@ cdef class IntRecordFieldReference(ConstIntRecordFieldReference):
 
 cdef class ConstUIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
-        h_const_rfield_uint_t _field_handle
+        h_rfield_uint_t _field_handle
         Record _record
 
-    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+    def __cinit__(self, UIntRecordField field, Record record):
         self._record = record
-        self._field_handle = h_const_rfield_uint_t(field._handle)
+        self._field_handle = h_rfield_uint_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
 
     def read(self):
@@ -908,12 +907,12 @@ cdef class UIntRecordFieldReference(ConstUIntRecordFieldReference):
 
 cdef class ConstLongRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
-        h_const_rfield_long_t _field_handle
+        h_rfield_long_t _field_handle
         Record _record
 
-    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+    def __cinit__(self, LongRecordField field, Record record):
         self._record = record
-        self._field_handle = h_const_rfield_long_t(field._handle)
+        self._field_handle = h_rfield_long_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
 
     def read(self):
@@ -944,12 +943,12 @@ cdef class LongRecordFieldReference(ConstLongRecordFieldReference):
 
 cdef class ConstULongRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
-        h_const_rfield_ulong_t _field_handle
+        h_rfield_ulong_t _field_handle
         Record _record
 
-    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+    def __cinit__(self, ULongRecordField field, Record record):
         self._record = record
-        self._field_handle = h_const_rfield_ulong_t(field._handle)
+        self._field_handle = h_rfield_ulong_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
 
     def read(self):
@@ -980,12 +979,12 @@ cdef class ULongRecordFieldReference(ConstULongRecordFieldReference):
 
 cdef class ConstFloatRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
-        h_const_rfield_float_t _field_handle
+        h_rfield_float_t _field_handle
         Record _record
 
-    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+    def __cinit__(self, FloatRecordField field, Record record):
         self._record = record
-        self._field_handle = h_const_rfield_float_t(field._handle)
+        self._field_handle = h_rfield_float_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
 
     def read(self):
@@ -1016,12 +1015,12 @@ cdef class FloatRecordFieldReference(ConstFloatRecordFieldReference):
 
 cdef class ConstDoubleRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
-        h_const_rfield_double_t _field_handle
+        h_rfield_double_t _field_handle
         Record _record
 
-    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+    def __cinit__(self, DoubleRecordField field, Record record):
         self._record = record
-        self._field_handle = h_const_rfield_double_t(field._handle)
+        self._field_handle = h_rfield_double_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
 
     def read(self):
