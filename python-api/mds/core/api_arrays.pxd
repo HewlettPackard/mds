@@ -52,7 +52,7 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         h_marray_base_t as_base()
         
     h_marray_bool_t create_bool_marray(size_t)
-    
+
     cdef cppclass h_array_byte_t "mds::api::array_type_handle<mds::api::kind::BYTE>":
         # const_managed_type_handle<K> element_type()
         h_marray_byte_t create_array(size_t)
@@ -71,7 +71,7 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         int8_t div(const size_t&, const int8_t&)
 
     h_marray_byte_t create_byte_marray(size_t)
-    
+
     cdef cppclass h_array_ubyte_t "mds::api::array_type_handle<mds::api::kind::UBYTE>":
         # const_managed_type_handle<K> element_type()
         h_marray_ubyte_t create_array(size_t)
@@ -90,7 +90,7 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         uint8_t div(const size_t&, const uint8_t&)
 
     h_marray_ubyte_t create_ubyte_marray(size_t)
-    
+
     cdef cppclass h_array_short_t "mds::api::array_type_handle<mds::api::kind::SHORT>":
         # const_managed_type_handle<K> element_type()
         h_marray_short_t create_array(size_t)
@@ -109,7 +109,7 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         int16_t div(const size_t&, const int16_t&)
 
     h_marray_short_t create_short_marray(size_t)
-    
+
     cdef cppclass h_array_ushort_t "mds::api::array_type_handle<mds::api::kind::USHORT>":
         # const_managed_type_handle<K> element_type()
         h_marray_ushort_t create_array(size_t)
@@ -128,7 +128,7 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         uint16_t div(const size_t&, const uint16_t&)
 
     h_marray_ushort_t create_ushort_marray(size_t)
-    
+
     cdef cppclass h_array_int_t "mds::api::array_type_handle<mds::api::kind::INT>":
         # const_managed_type_handle<K> element_type()
         h_marray_int_t create_array(size_t)
@@ -147,7 +147,7 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         int32_t div(const size_t&, const int32_t&)
 
     h_marray_int_t create_int_marray(size_t)
-    
+
     cdef cppclass h_array_uint_t "mds::api::array_type_handle<mds::api::kind::UINT>":
         # const_managed_type_handle<K> element_type()
         h_marray_uint_t create_array(size_t)
@@ -166,7 +166,7 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         uint32_t div(const size_t&, const uint32_t&)
 
     h_marray_uint_t create_uint_marray(size_t)
-    
+
     cdef cppclass h_array_long_t "mds::api::array_type_handle<mds::api::kind::LONG>":
         # const_managed_type_handle<K> element_type()
         h_marray_long_t create_array(size_t)
@@ -185,7 +185,7 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         int64_t div(const size_t&, const int64_t&)
 
     h_marray_long_t create_long_marray(size_t)
-    
+
     cdef cppclass h_array_ulong_t "mds::api::array_type_handle<mds::api::kind::ULONG>":
         # const_managed_type_handle<K> element_type()
         h_marray_ulong_t create_array(size_t)
@@ -204,7 +204,7 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         uint64_t div(const size_t&, const uint64_t&)
 
     h_marray_ulong_t create_ulong_marray(size_t)
-    
+
     cdef cppclass h_array_float_t "mds::api::array_type_handle<mds::api::kind::FLOAT>":
         # const_managed_type_handle<K> element_type()
         h_marray_float_t create_array(size_t)
@@ -223,7 +223,7 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         float div(const size_t&, const float&)
 
     h_marray_float_t create_float_marray(size_t)
-    
+
     cdef cppclass h_array_double_t "mds::api::array_type_handle<mds::api::kind::DOUBLE>":
         # const_managed_type_handle<K> element_type()
         h_marray_double_t create_array(size_t)
@@ -242,5 +242,5 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         double div(const size_t&, const double&)
 
     h_marray_double_t create_double_marray(size_t)
-    
+
 # END INJECTION

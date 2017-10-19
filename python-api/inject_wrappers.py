@@ -28,6 +28,7 @@ import os
 import os.path
 import sys
 
+from typing import Iterable, List
 from collections import namedtuple
 
 import mds
@@ -36,7 +37,7 @@ from mds import TypeInfo
 __generate_specializations = lambda fn: [fn(t) for t in mds.typing.mappings] + ['\n']
 __ensure_is_list = lambda elem: [elem] if not isinstance(elem, list) else elem
 
-def find_and_inject(file_path, dry_run=True, generator_separator='|'):
+def find_and_inject(file_path: str, dry_run=True, generator_separator='|') -> None:
     with open(file_path, "r") as fp:
         lines = [l for l in fp]
 
@@ -66,7 +67,10 @@ def find_and_inject(file_path, dry_run=True, generator_separator='|'):
         chunks.extend(lines[start:target.start])
 
         try:
-            chunks.extend(__generate_specializations(TARGETS[target.fn_name]))
+            injected = __generate_specializations(globals()[target.fn_name])
+            
+            if injected is not None:
+                chunks.extend(injected)
         except KeyError:
             print(f"The template function `{target.fn_name}` wasn't found.")
 
@@ -83,10 +87,10 @@ def find_and_inject(file_path, dry_run=True, generator_separator='|'):
         with open(file_path, "w") as fp:
             fp.writelines(chunks)
 
-def generate_and_inject_all_sources(dry_run=True, root=os.getcwd(), exts=('pyx', 'pxd')):
+def generate_and_inject_all_sources(dry_run=True, root=os.getcwd(), exts=('pyx', 'pxd')) -> None:
     print(f"Injecting Cython Wrappers (simulated={dry_run})")
 
-    def get_all_cython_files(root, exts):
+    def get_all_cython_files(root: str, exts: Iterable[str]) -> List[str]:
         paths = set()
 
         for ext in exts:
@@ -106,7 +110,7 @@ def generate_and_inject_all_sources(dry_run=True, root=os.getcwd(), exts=('pyx',
 #  Primitives
 # =========================================================================
 
-def tmpl_primitive_wrapper(t):
+def tmpl_primitive_wrapper(t: TypeInfo) -> str:
     return f"""
     # BEGIN {t.api}
 
@@ -136,7 +140,7 @@ def tmpl_primitive_wrapper(t):
     cdef {t.c_type} to_core_val "mds::api::to_core_val<{t.kind}>" (const {t.managed_value}&)
 """
 
-def tmpl_int_primitive_bounds(t):
+def tmpl_int_primitive_bounds(t: TypeInfo) -> str:
     return f"""
     property MIN:
         def __get__(self):
@@ -151,7 +155,7 @@ def tmpl_int_primitive_bounds(t):
 #  Namespaces
 # =========================================================================
 
-def tmpl_namespace_wrapper(t):
+def tmpl_namespace_wrapper(t: TypeInfo) -> str:
     return f"""
         {t.c_type} lookup "lookup<{t.kind},mds::core::kind_type<{t.kind}>,false,true>"(interned_string_handle, const {t.primitive}&)
         {t.managed_array} lookup "lookup<{t.kind},false,true>"(const interned_string_handle&, const {t.array}&)
@@ -162,7 +166,7 @@ def tmpl_namespace_wrapper(t):
 #  Records
 # =========================================================================
 
-def tmpl_record_field_wrapper_math(t):
+def tmpl_record_field_wrapper_math(t: TypeInfo) -> str:
     return f"""
         {t.c_type} add(const managed_record_handle&, {t.c_type})
         {t.c_type} sub(const managed_record_handle&, {t.c_type})
@@ -170,7 +174,7 @@ def tmpl_record_field_wrapper_math(t):
         {t.c_type} div(const managed_record_handle&, {t.c_type})
 """
 
-def tmpl_record_field_wrapper(t):
+def tmpl_record_field_wrapper(t: TypeInfo) -> str:
     EXTRA = tmpl_record_field_wrapper_math(t) if t.use_atomic_math else ""
     compiled = ""
 
@@ -195,7 +199,7 @@ def tmpl_record_field_wrapper(t):
 """
     return compiled
 
-def tmpl_record_field(t):
+def tmpl_record_field(t: TypeInfo) -> str:
     return f"""
 cdef class {t.title_record_field}(MDSRecordFieldBase):
     cdef:
@@ -207,12 +211,8 @@ cdef class {t.title_record_field}(MDSRecordFieldBase):
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 """
 
-def tmpl_record_field_reference(t):
+def tmpl_record_field_reference(t: TypeInfo) -> str:
     retval = f"""
-cdef {t.c_type} to_core_{t.api}({t.c_type} value):
-    # TODO: Placeholder, fill me in from RecordField to_core
-    return value
-
 cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBase):
     cdef:
         {t.const_record_field} _field_handle
@@ -225,37 +225,37 @@ cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBa
 
     def read(self):
         cdef {t.c_type} retval = self._field_handle.frozen_read(self._record_handle)
-        return from_core_{t.api}(retval)
+        return retval
 
     def peek(self):
         cdef {t.c_type} retval = self._field_handle.free_read(self._record_handle)
-        return from_core_{t.api}(retval)
+        return retval
 
 
 cdef class {t.title_record_field_reference}({t.title_const_record_field_reference}):
     
     def write(self, value):
-        self._field_handle.write(self._record_handle, to_core_{t.api}(value))
+        self._field_handle.write(self._record_handle, <{t.c_type}> (value))
 """
     
     if t.use_atomic_math:
         retval += f"""
     def __iadd__(self, other):
-        self._field_handle.add(self._record_handle, to_core_{t.api}(other))
+        self._field_handle.add(self._record_handle, <{t.c_type}> (other))
 
     def __isub__(self, other):
-        self._field_handle.sub(self._record_handle, to_core_{t.api}(other))
+        self._field_handle.sub(self._record_handle, <{t.c_type}> (other))
 
     def __imul__(self, other):
-        self._field_handle.mul(self._record_handle, to_core_{t.api}(other))
+        self._field_handle.mul(self._record_handle, <{t.c_type}> (other))
 
     def __idiv__(self, other):
-        self._field_handle.div(self._record_handle, to_core_{t.api}(other))
+        self._field_handle.div(self._record_handle, <{t.c_type}> (other))
 """
 
     return retval
 
-def tmpl_record_member(t):
+def tmpl_record_member(t: TypeInfo) -> str:
     retval = f"""
 cdef class {t.title_const_record_member}(MDSConstRecordMemberBase):
     cdef:
@@ -301,11 +301,13 @@ cdef class {t.title_record_member}(MDSRecordMemberBase):
         ref /= other
 """
 
+    return retval
+
 # =========================================================================
 #  Arrays
 # =========================================================================
 
-def tmpl_concrete_array(t):
+def tmpl_concrete_array(t: TypeInfo) -> str:
     primitive_extra = ""
 
     if t.taxonomy == TypeInfo.MDS_INTEGRAL:
@@ -367,7 +369,7 @@ cdef class {t.title_array}({t.array_parent}):
 """
     return s
 
-def tmpl_array_wrapper_math(t):
+def tmpl_array_wrapper_math(t: TypeInfo) -> str:
     return f"""
         {t.c_type} add(const size_t&, const {t.c_type}&)
         {t.c_type} sub(const size_t&, const {t.c_type}&)
@@ -375,7 +377,7 @@ def tmpl_array_wrapper_math(t):
         {t.c_type} div(const size_t&, const {t.c_type}&)
 """
 
-def tmpl_array_wrapper(t):
+def tmpl_array_wrapper(t: TypeInfo) -> str:
     EXTRA = tmpl_array_wrapper_math(t) if t.use_atomic_math else ""
 
     return f"""
@@ -395,17 +397,8 @@ def tmpl_array_wrapper(t):
 """
 
 # =========================================================================
-#  Mappings & Run
+#  Run
 # =========================================================================
-
-TARGETS = {
-    'tmpl_primitive_wrapper': tmpl_primitive_wrapper,
-    'tmpl_array_wrapper': tmpl_array_wrapper,
-    'tmpl_namespace_wrapper': tmpl_namespace_wrapper,
-    'tmpl_record_field_wrapper': tmpl_record_field_wrapper,
-    'tmpl_record_field': tmpl_record_field,
-    'tmpl_concrete_array': tmpl_concrete_array
-}
 
 if __name__ == '__main__':
     for arg in sys.argv:

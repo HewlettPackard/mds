@@ -518,6 +518,105 @@ cdef class MDSRecordFieldBase(MDSObject):
 
 # START INJECTION | tmpl_record_field
 
+cdef class BoolRecordField(MDSRecordFieldBase):
+    cdef:
+        h_rfield_bool_t _handle
+        h_mbool_t _mtype
+
+    def declare(self, String name, RecordTypeDeclaration rt):
+        assert self._handle.is_null()
+        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+cdef class ByteRecordField(MDSRecordFieldBase):
+    cdef:
+        h_rfield_byte_t _handle
+        h_mbyte_t _mtype
+
+    def declare(self, String name, RecordTypeDeclaration rt):
+        assert self._handle.is_null()
+        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+cdef class UByteRecordField(MDSRecordFieldBase):
+    cdef:
+        h_rfield_ubyte_t _handle
+        h_mubyte_t _mtype
+
+    def declare(self, String name, RecordTypeDeclaration rt):
+        assert self._handle.is_null()
+        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+cdef class ShortRecordField(MDSRecordFieldBase):
+    cdef:
+        h_rfield_short_t _handle
+        h_mshort_t _mtype
+
+    def declare(self, String name, RecordTypeDeclaration rt):
+        assert self._handle.is_null()
+        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+cdef class UShortRecordField(MDSRecordFieldBase):
+    cdef:
+        h_rfield_ushort_t _handle
+        h_mushort_t _mtype
+
+    def declare(self, String name, RecordTypeDeclaration rt):
+        assert self._handle.is_null()
+        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+cdef class IntRecordField(MDSRecordFieldBase):
+    cdef:
+        h_rfield_int_t _handle
+        h_mint_t _mtype
+
+    def declare(self, String name, RecordTypeDeclaration rt):
+        assert self._handle.is_null()
+        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+cdef class UIntRecordField(MDSRecordFieldBase):
+    cdef:
+        h_rfield_uint_t _handle
+        h_muint_t _mtype
+
+    def declare(self, String name, RecordTypeDeclaration rt):
+        assert self._handle.is_null()
+        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+cdef class LongRecordField(MDSRecordFieldBase):
+    cdef:
+        h_rfield_long_t _handle
+        h_mlong_t _mtype
+
+    def declare(self, String name, RecordTypeDeclaration rt):
+        assert self._handle.is_null()
+        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+cdef class ULongRecordField(MDSRecordFieldBase):
+    cdef:
+        h_rfield_ulong_t _handle
+        h_mulong_t _mtype
+
+    def declare(self, String name, RecordTypeDeclaration rt):
+        assert self._handle.is_null()
+        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+cdef class FloatRecordField(MDSRecordFieldBase):
+    cdef:
+        h_rfield_float_t _handle
+        h_mfloat_t _mtype
+
+    def declare(self, String name, RecordTypeDeclaration rt):
+        assert self._handle.is_null()
+        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+cdef class DoubleRecordField(MDSRecordFieldBase):
+    cdef:
+        h_rfield_double_t _handle
+        h_mdouble_t _mtype
+
+    def declare(self, String name, RecordTypeDeclaration rt):
+        assert self._handle.is_null()
+        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
 # END INJECTION
 
 
@@ -563,6 +662,390 @@ cdef class MDSRecordFieldReferenceBase(MDSConstRecordFieldReferenceBase):
   # }
 
 # START INJECTION | tmpl_record_field_reference
+
+cdef class ConstBoolRecordFieldReference(MDSConstRecordFieldReferenceBase):
+    cdef:
+        h_const_rfield_bool_t _field_handle
+        Record _record
+
+    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+        self._record = record
+        self._field_handle = h_const_rfield_bool_t(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef bool retval = self._field_handle.frozen_read(self._record_handle)
+        return retval
+
+    def peek(self):
+        cdef bool retval = self._field_handle.free_read(self._record_handle)
+        return retval
+
+
+cdef class BoolRecordFieldReference(ConstBoolRecordFieldReference):
+    
+    def write(self, value):
+        self._field_handle.write(self._record_handle, <bool> (value))
+
+cdef class ConstByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
+    cdef:
+        h_const_rfield_byte_t _field_handle
+        Record _record
+
+    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+        self._record = record
+        self._field_handle = h_const_rfield_byte_t(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef int8_t retval = self._field_handle.frozen_read(self._record_handle)
+        return retval
+
+    def peek(self):
+        cdef int8_t retval = self._field_handle.free_read(self._record_handle)
+        return retval
+
+
+cdef class ByteRecordFieldReference(ConstByteRecordFieldReference):
+    
+    def write(self, value):
+        self._field_handle.write(self._record_handle, <int8_t> (value))
+
+    def __iadd__(self, other):
+        self._field_handle.add(self._record_handle, <int8_t> (other))
+
+    def __isub__(self, other):
+        self._field_handle.sub(self._record_handle, <int8_t> (other))
+
+    def __imul__(self, other):
+        self._field_handle.mul(self._record_handle, <int8_t> (other))
+
+    def __idiv__(self, other):
+        self._field_handle.div(self._record_handle, <int8_t> (other))
+
+cdef class ConstUByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
+    cdef:
+        h_const_rfield_ubyte_t _field_handle
+        Record _record
+
+    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+        self._record = record
+        self._field_handle = h_const_rfield_ubyte_t(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef uint8_t retval = self._field_handle.frozen_read(self._record_handle)
+        return retval
+
+    def peek(self):
+        cdef uint8_t retval = self._field_handle.free_read(self._record_handle)
+        return retval
+
+
+cdef class UByteRecordFieldReference(ConstUByteRecordFieldReference):
+    
+    def write(self, value):
+        self._field_handle.write(self._record_handle, <uint8_t> (value))
+
+    def __iadd__(self, other):
+        self._field_handle.add(self._record_handle, <uint8_t> (other))
+
+    def __isub__(self, other):
+        self._field_handle.sub(self._record_handle, <uint8_t> (other))
+
+    def __imul__(self, other):
+        self._field_handle.mul(self._record_handle, <uint8_t> (other))
+
+    def __idiv__(self, other):
+        self._field_handle.div(self._record_handle, <uint8_t> (other))
+
+cdef class ConstShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
+    cdef:
+        h_const_rfield_short_t _field_handle
+        Record _record
+
+    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+        self._record = record
+        self._field_handle = h_const_rfield_short_t(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef int16_t retval = self._field_handle.frozen_read(self._record_handle)
+        return retval
+
+    def peek(self):
+        cdef int16_t retval = self._field_handle.free_read(self._record_handle)
+        return retval
+
+
+cdef class ShortRecordFieldReference(ConstShortRecordFieldReference):
+    
+    def write(self, value):
+        self._field_handle.write(self._record_handle, <int16_t> (value))
+
+    def __iadd__(self, other):
+        self._field_handle.add(self._record_handle, <int16_t> (other))
+
+    def __isub__(self, other):
+        self._field_handle.sub(self._record_handle, <int16_t> (other))
+
+    def __imul__(self, other):
+        self._field_handle.mul(self._record_handle, <int16_t> (other))
+
+    def __idiv__(self, other):
+        self._field_handle.div(self._record_handle, <int16_t> (other))
+
+cdef class ConstUShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
+    cdef:
+        h_const_rfield_ushort_t _field_handle
+        Record _record
+
+    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+        self._record = record
+        self._field_handle = h_const_rfield_ushort_t(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef uint16_t retval = self._field_handle.frozen_read(self._record_handle)
+        return retval
+
+    def peek(self):
+        cdef uint16_t retval = self._field_handle.free_read(self._record_handle)
+        return retval
+
+
+cdef class UShortRecordFieldReference(ConstUShortRecordFieldReference):
+    
+    def write(self, value):
+        self._field_handle.write(self._record_handle, <uint16_t> (value))
+
+    def __iadd__(self, other):
+        self._field_handle.add(self._record_handle, <uint16_t> (other))
+
+    def __isub__(self, other):
+        self._field_handle.sub(self._record_handle, <uint16_t> (other))
+
+    def __imul__(self, other):
+        self._field_handle.mul(self._record_handle, <uint16_t> (other))
+
+    def __idiv__(self, other):
+        self._field_handle.div(self._record_handle, <uint16_t> (other))
+
+cdef class ConstIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
+    cdef:
+        h_const_rfield_int_t _field_handle
+        Record _record
+
+    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+        self._record = record
+        self._field_handle = h_const_rfield_int_t(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef int32_t retval = self._field_handle.frozen_read(self._record_handle)
+        return retval
+
+    def peek(self):
+        cdef int32_t retval = self._field_handle.free_read(self._record_handle)
+        return retval
+
+
+cdef class IntRecordFieldReference(ConstIntRecordFieldReference):
+    
+    def write(self, value):
+        self._field_handle.write(self._record_handle, <int32_t> (value))
+
+    def __iadd__(self, other):
+        self._field_handle.add(self._record_handle, <int32_t> (other))
+
+    def __isub__(self, other):
+        self._field_handle.sub(self._record_handle, <int32_t> (other))
+
+    def __imul__(self, other):
+        self._field_handle.mul(self._record_handle, <int32_t> (other))
+
+    def __idiv__(self, other):
+        self._field_handle.div(self._record_handle, <int32_t> (other))
+
+cdef class ConstUIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
+    cdef:
+        h_const_rfield_uint_t _field_handle
+        Record _record
+
+    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+        self._record = record
+        self._field_handle = h_const_rfield_uint_t(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef uint32_t retval = self._field_handle.frozen_read(self._record_handle)
+        return retval
+
+    def peek(self):
+        cdef uint32_t retval = self._field_handle.free_read(self._record_handle)
+        return retval
+
+
+cdef class UIntRecordFieldReference(ConstUIntRecordFieldReference):
+    
+    def write(self, value):
+        self._field_handle.write(self._record_handle, <uint32_t> (value))
+
+    def __iadd__(self, other):
+        self._field_handle.add(self._record_handle, <uint32_t> (other))
+
+    def __isub__(self, other):
+        self._field_handle.sub(self._record_handle, <uint32_t> (other))
+
+    def __imul__(self, other):
+        self._field_handle.mul(self._record_handle, <uint32_t> (other))
+
+    def __idiv__(self, other):
+        self._field_handle.div(self._record_handle, <uint32_t> (other))
+
+cdef class ConstLongRecordFieldReference(MDSConstRecordFieldReferenceBase):
+    cdef:
+        h_const_rfield_long_t _field_handle
+        Record _record
+
+    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+        self._record = record
+        self._field_handle = h_const_rfield_long_t(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef int64_t retval = self._field_handle.frozen_read(self._record_handle)
+        return retval
+
+    def peek(self):
+        cdef int64_t retval = self._field_handle.free_read(self._record_handle)
+        return retval
+
+
+cdef class LongRecordFieldReference(ConstLongRecordFieldReference):
+    
+    def write(self, value):
+        self._field_handle.write(self._record_handle, <int64_t> (value))
+
+    def __iadd__(self, other):
+        self._field_handle.add(self._record_handle, <int64_t> (other))
+
+    def __isub__(self, other):
+        self._field_handle.sub(self._record_handle, <int64_t> (other))
+
+    def __imul__(self, other):
+        self._field_handle.mul(self._record_handle, <int64_t> (other))
+
+    def __idiv__(self, other):
+        self._field_handle.div(self._record_handle, <int64_t> (other))
+
+cdef class ConstULongRecordFieldReference(MDSConstRecordFieldReferenceBase):
+    cdef:
+        h_const_rfield_ulong_t _field_handle
+        Record _record
+
+    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+        self._record = record
+        self._field_handle = h_const_rfield_ulong_t(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef uint64_t retval = self._field_handle.frozen_read(self._record_handle)
+        return retval
+
+    def peek(self):
+        cdef uint64_t retval = self._field_handle.free_read(self._record_handle)
+        return retval
+
+
+cdef class ULongRecordFieldReference(ConstULongRecordFieldReference):
+    
+    def write(self, value):
+        self._field_handle.write(self._record_handle, <uint64_t> (value))
+
+    def __iadd__(self, other):
+        self._field_handle.add(self._record_handle, <uint64_t> (other))
+
+    def __isub__(self, other):
+        self._field_handle.sub(self._record_handle, <uint64_t> (other))
+
+    def __imul__(self, other):
+        self._field_handle.mul(self._record_handle, <uint64_t> (other))
+
+    def __idiv__(self, other):
+        self._field_handle.div(self._record_handle, <uint64_t> (other))
+
+cdef class ConstFloatRecordFieldReference(MDSConstRecordFieldReferenceBase):
+    cdef:
+        h_const_rfield_float_t _field_handle
+        Record _record
+
+    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+        self._record = record
+        self._field_handle = h_const_rfield_float_t(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef float retval = self._field_handle.frozen_read(self._record_handle)
+        return retval
+
+    def peek(self):
+        cdef float retval = self._field_handle.free_read(self._record_handle)
+        return retval
+
+
+cdef class FloatRecordFieldReference(ConstFloatRecordFieldReference):
+    
+    def write(self, value):
+        self._field_handle.write(self._record_handle, <float> (value))
+
+    def __iadd__(self, other):
+        self._field_handle.add(self._record_handle, <float> (other))
+
+    def __isub__(self, other):
+        self._field_handle.sub(self._record_handle, <float> (other))
+
+    def __imul__(self, other):
+        self._field_handle.mul(self._record_handle, <float> (other))
+
+    def __idiv__(self, other):
+        self._field_handle.div(self._record_handle, <float> (other))
+
+cdef class ConstDoubleRecordFieldReference(MDSConstRecordFieldReferenceBase):
+    cdef:
+        h_const_rfield_double_t _field_handle
+        Record _record
+
+    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+        self._record = record
+        self._field_handle = h_const_rfield_double_t(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef double retval = self._field_handle.frozen_read(self._record_handle)
+        return retval
+
+    def peek(self):
+        cdef double retval = self._field_handle.free_read(self._record_handle)
+        return retval
+
+
+cdef class DoubleRecordFieldReference(ConstDoubleRecordFieldReference):
+    
+    def write(self, value):
+        self._field_handle.write(self._record_handle, <double> (value))
+
+    def __iadd__(self, other):
+        self._field_handle.add(self._record_handle, <double> (other))
+
+    def __isub__(self, other):
+        self._field_handle.sub(self._record_handle, <double> (other))
+
+    def __imul__(self, other):
+        self._field_handle.mul(self._record_handle, <double> (other))
+
+    def __idiv__(self, other):
+        self._field_handle.div(self._record_handle, <double> (other))
 
 # END INJECTION
 
@@ -647,6 +1130,441 @@ cdef class MDSConstRecordMemberBase(MDSObject):
 
 
 # START INJECTION | tmpl_record_member
+
+cdef class ConstBoolRecordMember(MDSConstRecordMemberBase):
+    cdef:
+        bool _cached_val
+
+    def read(self):
+        if not self._is_cached:
+            self._cached_val = self._field_ref.read()
+            self._is_cached = True
+
+        return self._cached_val
+
+    def peek(self):
+        return self.read()
+
+cdef class BoolRecordMember(MDSRecordMemberBase):
+
+    def read(self):
+        return self._field_ref().read()
+
+    def peek(self):
+        return self._field_ref().peek()
+
+    def write(self, value) -> None:
+        self._field_ref().write(<bool> value);
+
+cdef class ConstByteRecordMember(MDSConstRecordMemberBase):
+    cdef:
+        int8_t _cached_val
+
+    def read(self):
+        if not self._is_cached:
+            self._cached_val = self._field_ref.read()
+            self._is_cached = True
+
+        return self._cached_val
+
+    def peek(self):
+        return self.read()
+
+cdef class ByteRecordMember(MDSRecordMemberBase):
+
+    def read(self):
+        return self._field_ref().read()
+
+    def peek(self):
+        return self._field_ref().peek()
+
+    def write(self, value) -> None:
+        self._field_ref().write(<int8_t> value);
+
+    def __iadd__(self, other):
+        ref = self._field_ref()
+        ref += other
+
+    def __isub__(self, other):
+        ref = self._field_ref()
+        ref -= other
+
+    def __imul__(self, other):
+        ref = self._field_ref()
+        ref *= other
+
+    def __idiv__(self, other):
+        ref = self._field_ref()
+        ref /= other
+
+cdef class ConstUByteRecordMember(MDSConstRecordMemberBase):
+    cdef:
+        uint8_t _cached_val
+
+    def read(self):
+        if not self._is_cached:
+            self._cached_val = self._field_ref.read()
+            self._is_cached = True
+
+        return self._cached_val
+
+    def peek(self):
+        return self.read()
+
+cdef class UByteRecordMember(MDSRecordMemberBase):
+
+    def read(self):
+        return self._field_ref().read()
+
+    def peek(self):
+        return self._field_ref().peek()
+
+    def write(self, value) -> None:
+        self._field_ref().write(<uint8_t> value);
+
+    def __iadd__(self, other):
+        ref = self._field_ref()
+        ref += other
+
+    def __isub__(self, other):
+        ref = self._field_ref()
+        ref -= other
+
+    def __imul__(self, other):
+        ref = self._field_ref()
+        ref *= other
+
+    def __idiv__(self, other):
+        ref = self._field_ref()
+        ref /= other
+
+cdef class ConstShortRecordMember(MDSConstRecordMemberBase):
+    cdef:
+        int16_t _cached_val
+
+    def read(self):
+        if not self._is_cached:
+            self._cached_val = self._field_ref.read()
+            self._is_cached = True
+
+        return self._cached_val
+
+    def peek(self):
+        return self.read()
+
+cdef class ShortRecordMember(MDSRecordMemberBase):
+
+    def read(self):
+        return self._field_ref().read()
+
+    def peek(self):
+        return self._field_ref().peek()
+
+    def write(self, value) -> None:
+        self._field_ref().write(<int16_t> value);
+
+    def __iadd__(self, other):
+        ref = self._field_ref()
+        ref += other
+
+    def __isub__(self, other):
+        ref = self._field_ref()
+        ref -= other
+
+    def __imul__(self, other):
+        ref = self._field_ref()
+        ref *= other
+
+    def __idiv__(self, other):
+        ref = self._field_ref()
+        ref /= other
+
+cdef class ConstUShortRecordMember(MDSConstRecordMemberBase):
+    cdef:
+        uint16_t _cached_val
+
+    def read(self):
+        if not self._is_cached:
+            self._cached_val = self._field_ref.read()
+            self._is_cached = True
+
+        return self._cached_val
+
+    def peek(self):
+        return self.read()
+
+cdef class UShortRecordMember(MDSRecordMemberBase):
+
+    def read(self):
+        return self._field_ref().read()
+
+    def peek(self):
+        return self._field_ref().peek()
+
+    def write(self, value) -> None:
+        self._field_ref().write(<uint16_t> value);
+
+    def __iadd__(self, other):
+        ref = self._field_ref()
+        ref += other
+
+    def __isub__(self, other):
+        ref = self._field_ref()
+        ref -= other
+
+    def __imul__(self, other):
+        ref = self._field_ref()
+        ref *= other
+
+    def __idiv__(self, other):
+        ref = self._field_ref()
+        ref /= other
+
+cdef class ConstIntRecordMember(MDSConstRecordMemberBase):
+    cdef:
+        int32_t _cached_val
+
+    def read(self):
+        if not self._is_cached:
+            self._cached_val = self._field_ref.read()
+            self._is_cached = True
+
+        return self._cached_val
+
+    def peek(self):
+        return self.read()
+
+cdef class IntRecordMember(MDSRecordMemberBase):
+
+    def read(self):
+        return self._field_ref().read()
+
+    def peek(self):
+        return self._field_ref().peek()
+
+    def write(self, value) -> None:
+        self._field_ref().write(<int32_t> value);
+
+    def __iadd__(self, other):
+        ref = self._field_ref()
+        ref += other
+
+    def __isub__(self, other):
+        ref = self._field_ref()
+        ref -= other
+
+    def __imul__(self, other):
+        ref = self._field_ref()
+        ref *= other
+
+    def __idiv__(self, other):
+        ref = self._field_ref()
+        ref /= other
+
+cdef class ConstUIntRecordMember(MDSConstRecordMemberBase):
+    cdef:
+        uint32_t _cached_val
+
+    def read(self):
+        if not self._is_cached:
+            self._cached_val = self._field_ref.read()
+            self._is_cached = True
+
+        return self._cached_val
+
+    def peek(self):
+        return self.read()
+
+cdef class UIntRecordMember(MDSRecordMemberBase):
+
+    def read(self):
+        return self._field_ref().read()
+
+    def peek(self):
+        return self._field_ref().peek()
+
+    def write(self, value) -> None:
+        self._field_ref().write(<uint32_t> value);
+
+    def __iadd__(self, other):
+        ref = self._field_ref()
+        ref += other
+
+    def __isub__(self, other):
+        ref = self._field_ref()
+        ref -= other
+
+    def __imul__(self, other):
+        ref = self._field_ref()
+        ref *= other
+
+    def __idiv__(self, other):
+        ref = self._field_ref()
+        ref /= other
+
+cdef class ConstLongRecordMember(MDSConstRecordMemberBase):
+    cdef:
+        int64_t _cached_val
+
+    def read(self):
+        if not self._is_cached:
+            self._cached_val = self._field_ref.read()
+            self._is_cached = True
+
+        return self._cached_val
+
+    def peek(self):
+        return self.read()
+
+cdef class LongRecordMember(MDSRecordMemberBase):
+
+    def read(self):
+        return self._field_ref().read()
+
+    def peek(self):
+        return self._field_ref().peek()
+
+    def write(self, value) -> None:
+        self._field_ref().write(<int64_t> value);
+
+    def __iadd__(self, other):
+        ref = self._field_ref()
+        ref += other
+
+    def __isub__(self, other):
+        ref = self._field_ref()
+        ref -= other
+
+    def __imul__(self, other):
+        ref = self._field_ref()
+        ref *= other
+
+    def __idiv__(self, other):
+        ref = self._field_ref()
+        ref /= other
+
+cdef class ConstULongRecordMember(MDSConstRecordMemberBase):
+    cdef:
+        uint64_t _cached_val
+
+    def read(self):
+        if not self._is_cached:
+            self._cached_val = self._field_ref.read()
+            self._is_cached = True
+
+        return self._cached_val
+
+    def peek(self):
+        return self.read()
+
+cdef class ULongRecordMember(MDSRecordMemberBase):
+
+    def read(self):
+        return self._field_ref().read()
+
+    def peek(self):
+        return self._field_ref().peek()
+
+    def write(self, value) -> None:
+        self._field_ref().write(<uint64_t> value);
+
+    def __iadd__(self, other):
+        ref = self._field_ref()
+        ref += other
+
+    def __isub__(self, other):
+        ref = self._field_ref()
+        ref -= other
+
+    def __imul__(self, other):
+        ref = self._field_ref()
+        ref *= other
+
+    def __idiv__(self, other):
+        ref = self._field_ref()
+        ref /= other
+
+cdef class ConstFloatRecordMember(MDSConstRecordMemberBase):
+    cdef:
+        float _cached_val
+
+    def read(self):
+        if not self._is_cached:
+            self._cached_val = self._field_ref.read()
+            self._is_cached = True
+
+        return self._cached_val
+
+    def peek(self):
+        return self.read()
+
+cdef class FloatRecordMember(MDSRecordMemberBase):
+
+    def read(self):
+        return self._field_ref().read()
+
+    def peek(self):
+        return self._field_ref().peek()
+
+    def write(self, value) -> None:
+        self._field_ref().write(<float> value);
+
+    def __iadd__(self, other):
+        ref = self._field_ref()
+        ref += other
+
+    def __isub__(self, other):
+        ref = self._field_ref()
+        ref -= other
+
+    def __imul__(self, other):
+        ref = self._field_ref()
+        ref *= other
+
+    def __idiv__(self, other):
+        ref = self._field_ref()
+        ref /= other
+
+cdef class ConstDoubleRecordMember(MDSConstRecordMemberBase):
+    cdef:
+        double _cached_val
+
+    def read(self):
+        if not self._is_cached:
+            self._cached_val = self._field_ref.read()
+            self._is_cached = True
+
+        return self._cached_val
+
+    def peek(self):
+        return self.read()
+
+cdef class DoubleRecordMember(MDSRecordMemberBase):
+
+    def read(self):
+        return self._field_ref().read()
+
+    def peek(self):
+        return self._field_ref().peek()
+
+    def write(self, value) -> None:
+        self._field_ref().write(<double> value);
+
+    def __iadd__(self, other):
+        ref = self._field_ref()
+        ref += other
+
+    def __isub__(self, other):
+        ref = self._field_ref()
+        ref -= other
+
+    def __imul__(self, other):
+        ref = self._field_ref()
+        ref *= other
+
+    def __idiv__(self, other):
+        ref = self._field_ref()
+        ref /= other
 
 # END INJECTION
 
@@ -1677,7 +2595,4 @@ cdef class DoubleArray(MDSFloatArrayBase):
 
         return retval
 
-# END INJECTION
-
-# START INJECTION | tmpl_record_member
 # END INJECTION

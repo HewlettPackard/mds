@@ -92,8 +92,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_rfield_bool_t(h_rfield_bool_t&)
         bool free_read(const managed_record_handle&)
         bool frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const bool&)
+        bool is_null()
+
         bool write(const managed_record_handle&, const bool&)
         interned_string_handle name()
         
@@ -105,8 +108,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_const_rfield_bool_t(h_const_rfield_bool_t&)
         bool free_read(const managed_record_handle&)
         bool frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const bool&)
+        bool is_null()
+
         bool write(const managed_record_handle&, const bool&)
         interned_string_handle name()
         
@@ -118,8 +124,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_rfield_byte_t(h_rfield_byte_t&)
         int8_t free_read(const managed_record_handle&)
         int8_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const int8_t&)
+        bool is_null()
+
         int8_t write(const managed_record_handle&, const int8_t&)
         interned_string_handle name()
         
@@ -136,8 +145,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_const_rfield_byte_t(h_const_rfield_byte_t&)
         int8_t free_read(const managed_record_handle&)
         int8_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const int8_t&)
+        bool is_null()
+
         int8_t write(const managed_record_handle&, const int8_t&)
         interned_string_handle name()
         
@@ -154,8 +166,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_rfield_ubyte_t(h_rfield_ubyte_t&)
         uint8_t free_read(const managed_record_handle&)
         uint8_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const uint8_t&)
+        bool is_null()
+
         uint8_t write(const managed_record_handle&, const uint8_t&)
         interned_string_handle name()
         
@@ -172,8 +187,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_const_rfield_ubyte_t(h_const_rfield_ubyte_t&)
         uint8_t free_read(const managed_record_handle&)
         uint8_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const uint8_t&)
+        bool is_null()
+
         uint8_t write(const managed_record_handle&, const uint8_t&)
         interned_string_handle name()
         
@@ -190,8 +208,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_rfield_short_t(h_rfield_short_t&)
         int16_t free_read(const managed_record_handle&)
         int16_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const int16_t&)
+        bool is_null()
+
         int16_t write(const managed_record_handle&, const int16_t&)
         interned_string_handle name()
         
@@ -208,8 +229,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_const_rfield_short_t(h_const_rfield_short_t&)
         int16_t free_read(const managed_record_handle&)
         int16_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const int16_t&)
+        bool is_null()
+
         int16_t write(const managed_record_handle&, const int16_t&)
         interned_string_handle name()
         
@@ -226,8 +250,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_rfield_ushort_t(h_rfield_ushort_t&)
         uint16_t free_read(const managed_record_handle&)
         uint16_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const uint16_t&)
+        bool is_null()
+
         uint16_t write(const managed_record_handle&, const uint16_t&)
         interned_string_handle name()
         
@@ -244,8 +271,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_const_rfield_ushort_t(h_const_rfield_ushort_t&)
         uint16_t free_read(const managed_record_handle&)
         uint16_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const uint16_t&)
+        bool is_null()
+
         uint16_t write(const managed_record_handle&, const uint16_t&)
         interned_string_handle name()
         
@@ -262,8 +292,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_rfield_int_t(h_rfield_int_t&)
         int32_t free_read(const managed_record_handle&)
         int32_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const int32_t&)
+        bool is_null()
+
         int32_t write(const managed_record_handle&, const int32_t&)
         interned_string_handle name()
         
@@ -280,8 +313,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_const_rfield_int_t(h_const_rfield_int_t&)
         int32_t free_read(const managed_record_handle&)
         int32_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const int32_t&)
+        bool is_null()
+
         int32_t write(const managed_record_handle&, const int32_t&)
         interned_string_handle name()
         
@@ -298,8 +334,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_rfield_uint_t(h_rfield_uint_t&)
         uint32_t free_read(const managed_record_handle&)
         uint32_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const uint32_t&)
+        bool is_null()
+
         uint32_t write(const managed_record_handle&, const uint32_t&)
         interned_string_handle name()
         
@@ -316,8 +355,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_const_rfield_uint_t(h_const_rfield_uint_t&)
         uint32_t free_read(const managed_record_handle&)
         uint32_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const uint32_t&)
+        bool is_null()
+
         uint32_t write(const managed_record_handle&, const uint32_t&)
         interned_string_handle name()
         
@@ -334,8 +376,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_rfield_long_t(h_rfield_long_t&)
         int64_t free_read(const managed_record_handle&)
         int64_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const int64_t&)
+        bool is_null()
+
         int64_t write(const managed_record_handle&, const int64_t&)
         interned_string_handle name()
         
@@ -352,8 +397,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_const_rfield_long_t(h_const_rfield_long_t&)
         int64_t free_read(const managed_record_handle&)
         int64_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const int64_t&)
+        bool is_null()
+
         int64_t write(const managed_record_handle&, const int64_t&)
         interned_string_handle name()
         
@@ -370,8 +418,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_rfield_ulong_t(h_rfield_ulong_t&)
         uint64_t free_read(const managed_record_handle&)
         uint64_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const uint64_t&)
+        bool is_null()
+
         uint64_t write(const managed_record_handle&, const uint64_t&)
         interned_string_handle name()
         
@@ -388,8 +439,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_const_rfield_ulong_t(h_const_rfield_ulong_t&)
         uint64_t free_read(const managed_record_handle&)
         uint64_t frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const uint64_t&)
+        bool is_null()
+
         uint64_t write(const managed_record_handle&, const uint64_t&)
         interned_string_handle name()
         
@@ -406,8 +460,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_rfield_float_t(h_rfield_float_t&)
         float free_read(const managed_record_handle&)
         float frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const float&)
+        bool is_null()
+
         float write(const managed_record_handle&, const float&)
         interned_string_handle name()
         
@@ -424,8 +481,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_const_rfield_float_t(h_const_rfield_float_t&)
         float free_read(const managed_record_handle&)
         float frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const float&)
+        bool is_null()
+
         float write(const managed_record_handle&, const float&)
         interned_string_handle name()
         
@@ -442,8 +502,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_rfield_double_t(h_rfield_double_t&)
         double free_read(const managed_record_handle&)
         double frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const double&)
+        bool is_null()
+
         double write(const managed_record_handle&, const double&)
         interned_string_handle name()
         
@@ -460,8 +523,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_const_rfield_double_t(h_const_rfield_double_t&)
         double free_read(const managed_record_handle&)
         double frozen_read(const managed_record_handle&)
+
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const double&)
+        bool is_null()
+
         double write(const managed_record_handle&, const double&)
         interned_string_handle name()
         
