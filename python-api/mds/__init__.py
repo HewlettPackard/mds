@@ -58,8 +58,9 @@ class TypeInfo():
         self.title_array_cinit = f"{self.title_array}_Inplace"
 
         self.title_record_field = f"{self.title}RecordField"
+        self.title_record_field_reference = f"{self.title_record_field}Reference"
+        self.title_const_record_field_reference = f"Const{self.title_record_field}Reference"
         self.title_record_member = f"{self.title}RecordMember"
-        self.title_const_record_field = f"Const{self.title_record_field}"
         self.title_const_record_member = f"Const{self.title_record_member}"
         
         self.c_type = c_type

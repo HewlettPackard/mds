@@ -101,36 +101,11 @@ def generate_and_inject_all_sources(dry_run=True, root=os.getcwd(), exts=('pyx',
 
         find_and_inject(file_path=source, dry_run=dry_run)
 
-def tmpl_record_field_wrapper_math(t):
-    return f"""
-        {t.c_type} add(const managed_record_handle&, {t.c_type})
-        {t.c_type} sub(const managed_record_handle&, {t.c_type})
-        {t.c_type} mul(const managed_record_handle&, {t.c_type})
-        {t.c_type} div(const managed_record_handle&, {t.c_type})
-"""
 
-def tmpl_record_field_wrapper(t):
-    EXTRA = tmpl_record_field_wrapper_math(t) if t.use_atomic_math else ""
-    compiled = ""
+# =========================================================================
+#  Primitives
+# =========================================================================
 
-    for prefix in ("", "const_"):
-        wrapper_name = t.record_field if prefix == "" else t.const_record_field
-        compiled += f"""
-    cdef cppclass {wrapper_name} "mds::api::{prefix}record_field_handle<{t.kind}>":
-        {wrapper_name}()
-        {wrapper_name}({wrapper_name}&)
-        {t.c_type} free_read(const managed_record_handle&)
-        {t.c_type} frozen_read(const managed_record_handle&)
-        bool has_value(const managed_record_handle&)
-        bool write_initial(const managed_record_handle&,const {t.c_type}&)
-        {t.c_type} write(const managed_record_handle&, const {t.c_type}&)
-        interned_string_handle name()
-        {EXTRA}
-        const_record_type_handle rec_type()
-        #const_type_handle_for<K> field_type()
-"""
-    return compiled
- 
 def tmpl_primitive_wrapper(t):
     return f"""
     # BEGIN {t.api}
@@ -161,40 +136,6 @@ def tmpl_primitive_wrapper(t):
     cdef {t.c_type} to_core_val "mds::api::to_core_val<{t.kind}>" (const {t.managed_value}&)
 """
 
-def tmpl_namespace_wrapper(t):
-    return f"""
-        {t.c_type} lookup "lookup<{t.kind},mds::core::kind_type<{t.kind}>,false,true>"(interned_string_handle, const {t.primitive}&)
-        {t.managed_array} lookup "lookup<{t.kind},false,true>"(const interned_string_handle&, const {t.array}&)
-        bool bind "bind<{t.kind}>"(interned_string_handle, {t.c_type})
-    """
-
-def tmpl_array_wrapper_math(t):
-    return f"""
-        {t.c_type} add(const size_t&, const {t.c_type}&)
-        {t.c_type} sub(const size_t&, const {t.c_type}&)
-        {t.c_type} mul(const size_t&, const {t.c_type}&)
-        {t.c_type} div(const size_t&, const {t.c_type}&)
-"""
-
-def tmpl_array_wrapper(t):
-    EXTRA = tmpl_array_wrapper_math(t) if t.use_atomic_math else ""
-
-    return f"""
-    cdef cppclass {t.array} "mds::api::array_type_handle<{t.kind}>":
-        # const_managed_type_handle<K> element_type()
-        {t.managed_array} create_array(size_t)
-        bool is_same_as(const {t.array}&)
-
-    cdef cppclass {t.managed_array}:
-        {t.managed_value} frozen_read(size_t)
-        {t.managed_value} write(size_t, {t.managed_value})
-        size_t size()
-        bool has_value()
-        h_marray_base_t as_base()
-        {EXTRA}
-    {t.managed_array} {t.f_create_array}(size_t)
-    """
-
 def tmpl_int_primitive_bounds(t):
     return f"""
     property MIN:
@@ -206,40 +147,163 @@ def tmpl_int_primitive_bounds(t):
             return {t.bounds.max} 
 """
 
-def tmpl_record_field(t):
+# =========================================================================
+#  Namespaces
+# =========================================================================
+
+def tmpl_namespace_wrapper(t):
     return f"""
-cdef class {t.title_record_field}(RecordMemberBase):
+        {t.c_type} lookup "lookup<{t.kind},mds::core::kind_type<{t.kind}>,false,true>"(interned_string_handle, const {t.primitive}&)
+        {t.managed_array} lookup "lookup<{t.kind},false,true>"(const interned_string_handle&, const {t.array}&)
+        bool bind "bind<{t.kind}>"(interned_string_handle, {t.c_type})
+    """
 
-    cdef {t.record_field} _handle
+# =========================================================================
+#  Records
+# =========================================================================
 
-    def read(self):
-        return self._handle.frozen_read(self._mr_handle)
-
-    def write(self, value):
-        self._handle.write(self._mr_handle, value)
-
-    def declare(self):
-        self._handle = {t.primitive}().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
-        # TODO: self._handle.write_initial(self._initial_value)
-
-   # def ensure_type(self):
-   #     # TODO: For Const* too
-   #     # managed_type<T>::ensure_complete()
-   #     pass
-
-
-cdef class {t.title_const_record_field}(ConstRecordMemberBase):
-
-    cdef {t.const_record_field} _handle
-
-    def read(self):
-        return self._handle.frozen_read(self._mr_handle)
-
-    def declare(self):
-        self._handle = {t.const_primitive}().field_in(_get_record_type_handle(self._parent.type_declaration), self._type_ident, True)
-        # TODO: write_initial?
+def tmpl_record_field_wrapper_math(t):
+    return f"""
+        {t.c_type} add(const managed_record_handle&, {t.c_type})
+        {t.c_type} sub(const managed_record_handle&, {t.c_type})
+        {t.c_type} mul(const managed_record_handle&, {t.c_type})
+        {t.c_type} div(const managed_record_handle&, {t.c_type})
 """
 
+def tmpl_record_field_wrapper(t):
+    EXTRA = tmpl_record_field_wrapper_math(t) if t.use_atomic_math else ""
+    compiled = ""
+
+    for prefix in ("", "const_"):
+        wrapper_name = t.record_field if prefix == "" else t.const_record_field
+        compiled += f"""
+    cdef cppclass {wrapper_name} "mds::api::{prefix}record_field_handle<{t.kind}>":
+        {wrapper_name}()
+        {wrapper_name}({wrapper_name}&)
+        {t.c_type} free_read(const managed_record_handle&)
+        {t.c_type} frozen_read(const managed_record_handle&)
+
+        bool has_value(const managed_record_handle&)
+        bool write_initial(const managed_record_handle&,const {t.c_type}&)
+        bool is_null()
+
+        {t.c_type} write(const managed_record_handle&, const {t.c_type}&)
+        interned_string_handle name()
+        {EXTRA}
+        const_record_type_handle rec_type()
+        #const_type_handle_for<K> field_type()
+"""
+    return compiled
+
+def tmpl_record_field(t):
+    return f"""
+cdef class {t.title_record_field}(MDSRecordFieldBase):
+    cdef:
+        {t.record_field} _handle
+        {t.primitive} _mtype
+
+    def declare(self, String name, RecordTypeDeclaration rt):
+        assert self._handle.is_null()
+        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+"""
+
+def tmpl_record_field_reference(t):
+    retval = f"""
+cdef {t.c_type} to_core_{t.api}({t.c_type} value):
+    # TODO: Placeholder, fill me in from RecordField to_core
+    return value
+
+cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBase):
+    cdef:
+        {t.const_record_field} _field_handle
+        Record _record
+
+    def __cinit__(self, field: MDSRecordFieldBase, record: Record):
+        self._record = record
+        self._field_handle = {t.const_record_field}(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef {t.c_type} retval = self._field_handle.frozen_read(self._record_handle)
+        return from_core_{t.api}(retval)
+
+    def peek(self):
+        cdef {t.c_type} retval = self._field_handle.free_read(self._record_handle)
+        return from_core_{t.api}(retval)
+
+
+cdef class {t.title_record_field_reference}({t.title_const_record_field_reference}):
+    
+    def write(self, value):
+        self._field_handle.write(self._record_handle, to_core_{t.api}(value))
+"""
+    
+    if t.use_atomic_math:
+        retval += f"""
+    def __iadd__(self, other):
+        self._field_handle.add(self._record_handle, to_core_{t.api}(other))
+
+    def __isub__(self, other):
+        self._field_handle.sub(self._record_handle, to_core_{t.api}(other))
+
+    def __imul__(self, other):
+        self._field_handle.mul(self._record_handle, to_core_{t.api}(other))
+
+    def __idiv__(self, other):
+        self._field_handle.div(self._record_handle, to_core_{t.api}(other))
+"""
+
+    return retval
+
+def tmpl_record_member(t):
+    retval = f"""
+cdef class {t.title_const_record_member}(MDSConstRecordMemberBase):
+    cdef:
+        {t.c_type} _cached_val
+
+    def read(self):
+        if not self._is_cached:
+            self._cached_val = self._field_ref.read()
+            self._is_cached = True
+
+        return self._cached_val
+
+    def peek(self):
+        return self.read()
+
+cdef class {t.title_record_member}(MDSRecordMemberBase):
+
+    def read(self):
+        return self._field_ref().read()
+
+    def peek(self):
+        return self._field_ref().peek()
+
+    def write(self, value) -> None:
+        self._field_ref().write(<{t.c_type}> value);
+"""
+    if t.use_atomic_math:
+            retval += f"""
+    def __iadd__(self, other):
+        ref = self._field_ref()
+        ref += other
+
+    def __isub__(self, other):
+        ref = self._field_ref()
+        ref -= other
+
+    def __imul__(self, other):
+        ref = self._field_ref()
+        ref *= other
+
+    def __idiv__(self, other):
+        ref = self._field_ref()
+        ref /= other
+"""
+
+# =========================================================================
+#  Arrays
+# =========================================================================
 
 def tmpl_concrete_array(t):
     primitive_extra = ""
@@ -302,6 +366,37 @@ cdef class {t.title_array}({t.array_parent}):
             return type({t.python_type})
 """
     return s
+
+def tmpl_array_wrapper_math(t):
+    return f"""
+        {t.c_type} add(const size_t&, const {t.c_type}&)
+        {t.c_type} sub(const size_t&, const {t.c_type}&)
+        {t.c_type} mul(const size_t&, const {t.c_type}&)
+        {t.c_type} div(const size_t&, const {t.c_type}&)
+"""
+
+def tmpl_array_wrapper(t):
+    EXTRA = tmpl_array_wrapper_math(t) if t.use_atomic_math else ""
+
+    return f"""
+    cdef cppclass {t.array} "mds::api::array_type_handle<{t.kind}>":
+        # const_managed_type_handle<K> element_type()
+        {t.managed_array} create_array(size_t)
+        bool is_same_as(const {t.array}&)
+
+    cdef cppclass {t.managed_array}:
+        {t.managed_value} frozen_read(size_t)
+        {t.managed_value} write(size_t, {t.managed_value})
+        size_t size()
+        bool has_value()
+        h_marray_base_t as_base()
+        {EXTRA}
+    {t.managed_array} {t.f_create_array}(size_t)
+"""
+
+# =========================================================================
+#  Mappings & Run
+# =========================================================================
 
 TARGETS = {
     'tmpl_primitive_wrapper': tmpl_primitive_wrapper,

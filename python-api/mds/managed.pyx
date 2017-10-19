@@ -328,7 +328,7 @@ cdef class Record(MDSObject):
 
     @classmethod
     def force(cls) -> None:
-        MDSManagedRecordType.ensure_complete(cls)
+        MDSManagedRecordType.ensure_complete(klass=cls)
 
     @staticmethod
     def schema() -> dict:
@@ -391,7 +391,7 @@ class ExampleRecord(Record, ident="PythonTest::ExampleRecord"):  # TODO => Test
         This method *must* be overridden in Record-derived classes, and follow the
         following syntax for declaring the record schema.
 
-        Once the class `cls` has come into scope, an instantaited copy of this object
+        Once the class `cls` has come into scope, an instantiated copy of this object
         will be available via cls.type_decl
         """
         return {
@@ -498,6 +498,9 @@ cdef class MDSRecordFieldBase(MDSObject):
         pass
 
     def ensure_type(self):
+        """
+        TODO: This should only be overridden and utilized for Record fields
+        """
         pass
 
     def declare(self, String name, RecordTypeDeclaration rt):
@@ -505,36 +508,18 @@ cdef class MDSRecordFieldBase(MDSObject):
 
     # These two, either use them in generated RecordFields and then Members, or
     # use overloaded calls in Members directly, then delete these.
-    @classmethod
-    def from_core(cls, val):
+    @staticmethod
+    def from_core(val):
         pass
 
-    @classmethod
-    def to_core(cls, val):
+    @staticmethod
+    def to_core(val):
         pass
 
+# START INJECTION | tmpl_record_field
 
-cdef class UShortRecordField(MDSRecordFieldBase):  # => Generator
-    cdef:
-        h_rfield_ushort_t _handle
-        h_mushort_t mtype
-  # using handle_type = typename managed_type<T>::field_handle_type;
-  # handle_type _handle;
-    # using mtype = managed_type<T>;
-    # using value_type = typename mtype::mds_type;
-    # using core_api_type = typename mtype::core_api_type;  
+# END INJECTION
 
-
-    def ensure_type(self):
-    # managed_type<T>::ensure_complete(); // h_mushort_t?
-        pass
-
-    def declare(self, String name, RecordTypeDeclaration rt):
-        assert self._handle.is_null()
-        self._handle = h_mushort_t().field_in(rt._declared_type, name._ish, True)
-
-
-# TODO: Work through some Const*RecordField examples
 
 ######################################################################### REFERENCES
 
@@ -577,67 +562,9 @@ cdef class MDSRecordFieldReferenceBase(MDSConstRecordFieldReferenceBase):
   #   return mtype().to_core(val);
   # }
 
-cdef class ConstBoolRecordFieldReference(MDSConstRecordFieldReferenceBase):   # => Generator
-    cdef:
-        h_const_rfield_bool_t _field_handle
-        Record _record
+# START INJECTION | tmpl_record_field_reference
 
-    def __cinit__(self, MDSRecordFieldBase field, Record record):
-        self._record = record
-        self._field_handle = h_const_rfield_bool_t(field._handle)
-        self._record_handle = managed_record_handle(record._handle)
-
-    def read(self):
-        cdef bool retval = self._field_handle.frozen_read(self._record_handle)
-        return from_core_bool(retval)
-
-    def peek(self):
-        cdef bool retval = self._field_handle.free_read(self._record_handle)
-        return from_core_bool(retval)
-
-
-cdef class BoolRecordFieldReference(ConstBoolRecordFieldReference):  # => Generator
-    
-    def write(self, bint value):
-        self._field_handle.write(self._record_handle, to_core_bool(value));
-
-
-cdef class ConstUShortRecordFieldReference(MDSConstRecordFieldReferenceBase):  # => Generator
-    cdef:
-        h_const_rfield_ushort_t _field_handle
-        Record _record
-
-    def __cinit__(self, MDSRecordFieldBase field, Record record):
-        self._record = record
-        self._field_handle = h_const_rfield_ushort_t(field._handle)
-        self._record_handle = managed_record_handle(record._handle)
-
-    def read(self):
-        cdef uint16_t retval = self._field_handle.frozen_read(self._record_handle)
-        return from_core_uint16_t(retval)
-
-    def peek(self):
-        cdef uint16_t retval = self._field_handle.free_read(self._record_handle)
-        return from_core_uint16_t(retval)
-
-
-cdef class UShortRecordFieldReference(ConstUShortRecordFieldReference):  # => Generator
-    
-    def write(self, uint16_t value):
-        self._field_handle.write(self._record_handle, to_core_uint16_t(value));
-
-    def __iadd__(self, other):
-        self._field_handle.add(self._record_handle, to_core_uint16_t(other))
-
-    def __isub__(self, other):
-        self._field_handle.sub(self._record_handle, to_core_uint16_t(other))
-
-    def __imul__(self, other):
-        self._field_handle.mul(self._record_handle, to_core_uint16_t(other))
-
-    def __idiv__(self, other):
-        self._field_handle.div(self._record_handle, to_core_uint16_t(other))
-
+# END INJECTION
 
 ############################################################# RECORD MEMBERS
 
@@ -682,34 +609,6 @@ cdef class MDSRecordMemberBase(MDSObject):
         pass
 
 
-cdef class UShortRecordMember(MDSRecordMemberBase):  # => Generator
-
-    def read(self):
-        return self._field_ref().read()
-
-    def peek(self):
-        return self._field_ref().peek()
-
-    def write(self, uint16_t value):
-        self._field_ref().write(value);
-
-    def __iadd__(self, other):
-        ref = self._field_ref()
-        ref += other
-
-    def __isub__(self, other):
-        ref = self._field_ref()
-        ref -= other
-
-    def __imul__(self, other):
-        ref = self._field_ref()
-        ref *= other
-
-    def __idiv__(self, other):
-        ref = self._field_ref()
-        ref /= other
-
-
 cdef class MDSConstRecordMemberBase(MDSObject):
     cdef:
         Record _enclosing
@@ -747,20 +646,9 @@ cdef class MDSConstRecordMemberBase(MDSObject):
         self._throw_const_error()
 
 
-cdef class ConstUShortRecordMember(MDSConstRecordMemberBase):  # => Generator
-    cdef:
-        uint16_t _cached_val
+# START INJECTION | tmpl_record_member
 
-    def read(self):
-        if not self._is_cached:
-            self._cached_val = self._field_ref.read()
-            self._is_cached = True
-
-        return self._cached_val
-
-    def peek(self):
-        return self.read()
-
+# END INJECTION
 
 ######################################################### RECORD TYPE DECLARATIONS
 
