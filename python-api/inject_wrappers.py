@@ -206,7 +206,7 @@ cdef class {t.title_record_field}(MDSRecordFieldBase):
         {t.record_field} _handle
         {t.primitive} _mtype
 
-    def declare(self, String name, RecordTypeDeclaration rt):
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 """

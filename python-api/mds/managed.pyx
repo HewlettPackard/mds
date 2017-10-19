@@ -57,7 +57,12 @@ cdef class MDSObject(object):
     # TODO: memoize?
     property is_const:
         def __get__(self):
-            return self.__class__.__name__.startswith("Const")
+            raw_name = self.__class__.__name__
+
+            if raw_name.startswith("MDS"):
+                raw_name = raw_name[3:]
+
+            return raw_name.startswith("Const")
 
     property is_null:
         def __get__(self):
@@ -232,7 +237,7 @@ cdef class MDSFloatArrayBase(MDSArrayBase):
 #  Records
 # =========================================================================
 
-cdef class MDSRecordFieldMemberPair(object):
+class MDSRecordFieldMemberPair(object):
     """
     This is an internal class to deal with the fact that we don't have
     static variables per-se in Python, and certainly not in Cython, so
@@ -240,9 +245,6 @@ cdef class MDSRecordFieldMemberPair(object):
     RecordMember (whether const or not), to be plugged into derived
     classes
     """
-    cdef:
-        MDSRecordFieldBase field
-        type member
 
     def __init__(self, field: MDSRecordFieldBase, member: type):
         self.field = field  # derived <- MDSRecordFieldBase
@@ -250,13 +252,14 @@ cdef class MDSRecordFieldMemberPair(object):
 
 
 # This is where we keep built record types, with the associated Lock
+# TODO: Can these be cdef'd?
 __RECORD_DECLARATION_MUTEX = threading.Lock()
-__DECLARED_TYPES = dict()
+__RECORD_DECLARED_TYPES = dict()
+__RECORD_IDENTS = dict()
 
-
-cdef implant_record_handle(Record record, RecordTypeDeclaration decl):
+cdef implant_record_handle(Record record, MDSConstRecordHandleWrapper wrapper):
     # `decl` doesn't have a ._handle field...
-    cdef const_record_type_handle handle = decl._created_type
+    cdef const_record_type_handle handle = wrapper._handle
     record._handle = handle.create_record()
 
 
@@ -275,11 +278,15 @@ cdef class Record(MDSObject):
     def __cinit__(self):
         # This token.create just delegates to type_decl anywa...
         # self._handle = managed_record_handle(token.create())
+        if self.__class__ is Record:
+            raise TypeError('Cannot directly instantiate Record; a subclass is required.')
+
         implant_record_handle(self, self.type_decl.ensure_created())
 
     def __init__(self):
         self._register_fields()
 
+    @classmethod
     def __init_subclass__(cls, ident: str, **kwargs):
         """
         This is called whenever a subclass of Record comes into scope, this
@@ -293,14 +300,23 @@ cdef class Record(MDSObject):
         """
 
         super().__init_subclass__(**kwargs)
-        print(f"Called for {cls.__name__}")
-        cls.ident = ident
+        print(f"Called for {cls.__name__} with {ident}")
 
         # This is the same as rt_decl ... type_decl() in that it instantiates
         # the RecordTypeDeclarion (rt_decl)
-        cls.type_decl = RecordTypeDeclaration(cls, cls.schema())
-        # This will store a reference in __DECLARED_TYPES in a thread-safe way - CreatorCache?
-        cls.type_decl.ensure_created()
+        # This will store a reference in __RECORD_DECLARED_TYPES in a thread-safe way
+        # - CreatorCache?
+        __RECORD_IDENTS[cls.__name__] = ident
+        MDSRecordTypeDeclaration(cls, cls.schema()).ensure_created()
+        
+
+    property type_decl:
+        def __get__(self):
+            return __RECORD_DECLARED_TYPES[self.ident]
+
+    property ident:
+        def __get__(self):
+            return __RECORD_IDENTS[self.__class__.__name__]
 
     def _register_fields(self) -> None:
         """
@@ -486,7 +502,7 @@ cdef class MDSRecordFieldBase(MDSObject):
         """
         pass
 
-    def declare(self, String name, RecordTypeDeclaration rt):
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
         pass
 
     # These two, either use them in generated RecordFields and then Members, or
@@ -501,102 +517,102 @@ cdef class MDSRecordFieldBase(MDSObject):
 
 # START INJECTION | tmpl_record_field
 
-cdef class BoolRecordField(MDSRecordFieldBase):
+cdef class MDSBoolRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_bool_t _handle
         h_mbool_t _mtype
 
-    def declare(self, String name, RecordTypeDeclaration rt):
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
-cdef class ByteRecordField(MDSRecordFieldBase):
+cdef class MDSByteRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_byte_t _handle
         h_mbyte_t _mtype
 
-    def declare(self, String name, RecordTypeDeclaration rt):
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
-cdef class UByteRecordField(MDSRecordFieldBase):
+cdef class MDSUByteRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_ubyte_t _handle
         h_mubyte_t _mtype
 
-    def declare(self, String name, RecordTypeDeclaration rt):
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
-cdef class ShortRecordField(MDSRecordFieldBase):
+cdef class MDSShortRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_short_t _handle
         h_mshort_t _mtype
 
-    def declare(self, String name, RecordTypeDeclaration rt):
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
-cdef class UShortRecordField(MDSRecordFieldBase):
+cdef class MDSUShortRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_ushort_t _handle
         h_mushort_t _mtype
 
-    def declare(self, String name, RecordTypeDeclaration rt):
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
-cdef class IntRecordField(MDSRecordFieldBase):
+cdef class MDSIntRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_int_t _handle
         h_mint_t _mtype
 
-    def declare(self, String name, RecordTypeDeclaration rt):
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
-cdef class UIntRecordField(MDSRecordFieldBase):
+cdef class MDSUIntRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_uint_t _handle
         h_muint_t _mtype
 
-    def declare(self, String name, RecordTypeDeclaration rt):
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
-cdef class LongRecordField(MDSRecordFieldBase):
+cdef class MDSLongRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_long_t _handle
         h_mlong_t _mtype
 
-    def declare(self, String name, RecordTypeDeclaration rt):
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
-cdef class ULongRecordField(MDSRecordFieldBase):
+cdef class MDSULongRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_ulong_t _handle
         h_mulong_t _mtype
 
-    def declare(self, String name, RecordTypeDeclaration rt):
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
-cdef class FloatRecordField(MDSRecordFieldBase):
+cdef class MDSFloatRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_float_t _handle
         h_mfloat_t _mtype
 
-    def declare(self, String name, RecordTypeDeclaration rt):
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
-cdef class DoubleRecordField(MDSRecordFieldBase):
+cdef class MDSDoubleRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_double_t _handle
         h_mdouble_t _mtype
 
-    def declare(self, String name, RecordTypeDeclaration rt):
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
@@ -646,12 +662,12 @@ cdef class MDSRecordFieldReferenceBase(MDSConstRecordFieldReferenceBase):
 
 # START INJECTION | tmpl_record_field_reference
 
-cdef class ConstBoolRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstMDSBoolRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_bool_t _field_handle
         Record _record
 
-    def __cinit__(self, BoolRecordField field, Record record):
+    def __cinit__(self, MDSBoolRecordField field, Record record):
         self._record = record
         self._field_handle = h_rfield_bool_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
@@ -665,17 +681,17 @@ cdef class ConstBoolRecordFieldReference(MDSConstRecordFieldReferenceBase):
         return retval
 
 
-cdef class BoolRecordFieldReference(ConstBoolRecordFieldReference):
+cdef class MDSMDSBoolRecordFieldReference(MDSConstMDSBoolRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <bool> (value))
 
-cdef class ConstByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstMDSByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_byte_t _field_handle
         Record _record
 
-    def __cinit__(self, ByteRecordField field, Record record):
+    def __cinit__(self, MDSByteRecordField field, Record record):
         self._record = record
         self._field_handle = h_rfield_byte_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
@@ -689,7 +705,7 @@ cdef class ConstByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
         return retval
 
 
-cdef class ByteRecordFieldReference(ConstByteRecordFieldReference):
+cdef class MDSMDSByteRecordFieldReference(MDSConstMDSByteRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <int8_t> (value))
@@ -706,12 +722,12 @@ cdef class ByteRecordFieldReference(ConstByteRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <int8_t> (other))
 
-cdef class ConstUByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstMDSUByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_ubyte_t _field_handle
         Record _record
 
-    def __cinit__(self, UByteRecordField field, Record record):
+    def __cinit__(self, MDSUByteRecordField field, Record record):
         self._record = record
         self._field_handle = h_rfield_ubyte_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
@@ -725,7 +741,7 @@ cdef class ConstUByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
         return retval
 
 
-cdef class UByteRecordFieldReference(ConstUByteRecordFieldReference):
+cdef class MDSMDSUByteRecordFieldReference(MDSConstMDSUByteRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <uint8_t> (value))
@@ -742,12 +758,12 @@ cdef class UByteRecordFieldReference(ConstUByteRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <uint8_t> (other))
 
-cdef class ConstShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstMDSShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_short_t _field_handle
         Record _record
 
-    def __cinit__(self, ShortRecordField field, Record record):
+    def __cinit__(self, MDSShortRecordField field, Record record):
         self._record = record
         self._field_handle = h_rfield_short_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
@@ -761,7 +777,7 @@ cdef class ConstShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
         return retval
 
 
-cdef class ShortRecordFieldReference(ConstShortRecordFieldReference):
+cdef class MDSMDSShortRecordFieldReference(MDSConstMDSShortRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <int16_t> (value))
@@ -778,12 +794,12 @@ cdef class ShortRecordFieldReference(ConstShortRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <int16_t> (other))
 
-cdef class ConstUShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstMDSUShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_ushort_t _field_handle
         Record _record
 
-    def __cinit__(self, UShortRecordField field, Record record):
+    def __cinit__(self, MDSUShortRecordField field, Record record):
         self._record = record
         self._field_handle = h_rfield_ushort_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
@@ -797,7 +813,7 @@ cdef class ConstUShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
         return retval
 
 
-cdef class UShortRecordFieldReference(ConstUShortRecordFieldReference):
+cdef class MDSMDSUShortRecordFieldReference(MDSConstMDSUShortRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <uint16_t> (value))
@@ -814,12 +830,12 @@ cdef class UShortRecordFieldReference(ConstUShortRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <uint16_t> (other))
 
-cdef class ConstIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstMDSIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_int_t _field_handle
         Record _record
 
-    def __cinit__(self, IntRecordField field, Record record):
+    def __cinit__(self, MDSIntRecordField field, Record record):
         self._record = record
         self._field_handle = h_rfield_int_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
@@ -833,7 +849,7 @@ cdef class ConstIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
         return retval
 
 
-cdef class IntRecordFieldReference(ConstIntRecordFieldReference):
+cdef class MDSMDSIntRecordFieldReference(MDSConstMDSIntRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <int32_t> (value))
@@ -850,12 +866,12 @@ cdef class IntRecordFieldReference(ConstIntRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <int32_t> (other))
 
-cdef class ConstUIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstMDSUIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_uint_t _field_handle
         Record _record
 
-    def __cinit__(self, UIntRecordField field, Record record):
+    def __cinit__(self, MDSUIntRecordField field, Record record):
         self._record = record
         self._field_handle = h_rfield_uint_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
@@ -869,7 +885,7 @@ cdef class ConstUIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
         return retval
 
 
-cdef class UIntRecordFieldReference(ConstUIntRecordFieldReference):
+cdef class MDSMDSUIntRecordFieldReference(MDSConstMDSUIntRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <uint32_t> (value))
@@ -886,12 +902,12 @@ cdef class UIntRecordFieldReference(ConstUIntRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <uint32_t> (other))
 
-cdef class ConstLongRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstMDSLongRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_long_t _field_handle
         Record _record
 
-    def __cinit__(self, LongRecordField field, Record record):
+    def __cinit__(self, MDSLongRecordField field, Record record):
         self._record = record
         self._field_handle = h_rfield_long_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
@@ -905,7 +921,7 @@ cdef class ConstLongRecordFieldReference(MDSConstRecordFieldReferenceBase):
         return retval
 
 
-cdef class LongRecordFieldReference(ConstLongRecordFieldReference):
+cdef class MDSMDSLongRecordFieldReference(MDSConstMDSLongRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <int64_t> (value))
@@ -922,12 +938,12 @@ cdef class LongRecordFieldReference(ConstLongRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <int64_t> (other))
 
-cdef class ConstULongRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstMDSULongRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_ulong_t _field_handle
         Record _record
 
-    def __cinit__(self, ULongRecordField field, Record record):
+    def __cinit__(self, MDSULongRecordField field, Record record):
         self._record = record
         self._field_handle = h_rfield_ulong_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
@@ -941,7 +957,7 @@ cdef class ConstULongRecordFieldReference(MDSConstRecordFieldReferenceBase):
         return retval
 
 
-cdef class ULongRecordFieldReference(ConstULongRecordFieldReference):
+cdef class MDSMDSULongRecordFieldReference(MDSConstMDSULongRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <uint64_t> (value))
@@ -958,12 +974,12 @@ cdef class ULongRecordFieldReference(ConstULongRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <uint64_t> (other))
 
-cdef class ConstFloatRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstMDSFloatRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_float_t _field_handle
         Record _record
 
-    def __cinit__(self, FloatRecordField field, Record record):
+    def __cinit__(self, MDSFloatRecordField field, Record record):
         self._record = record
         self._field_handle = h_rfield_float_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
@@ -977,7 +993,7 @@ cdef class ConstFloatRecordFieldReference(MDSConstRecordFieldReferenceBase):
         return retval
 
 
-cdef class FloatRecordFieldReference(ConstFloatRecordFieldReference):
+cdef class MDSMDSFloatRecordFieldReference(MDSConstMDSFloatRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <float> (value))
@@ -994,12 +1010,12 @@ cdef class FloatRecordFieldReference(ConstFloatRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <float> (other))
 
-cdef class ConstDoubleRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstMDSDoubleRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_double_t _field_handle
         Record _record
 
-    def __cinit__(self, DoubleRecordField field, Record record):
+    def __cinit__(self, MDSDoubleRecordField field, Record record):
         self._record = record
         self._field_handle = h_rfield_double_t(field._handle)
         self._record_handle = managed_record_handle(record._handle)
@@ -1013,7 +1029,7 @@ cdef class ConstDoubleRecordFieldReference(MDSConstRecordFieldReferenceBase):
         return retval
 
 
-cdef class DoubleRecordFieldReference(ConstDoubleRecordFieldReference):
+cdef class MDSMDSDoubleRecordFieldReference(MDSConstMDSDoubleRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <double> (value))
@@ -1114,7 +1130,7 @@ cdef class MDSConstRecordMemberBase(MDSObject):
 
 # START INJECTION | tmpl_record_member
 
-cdef class ConstBoolRecordMember(MDSConstRecordMemberBase):
+cdef class MDSConstBoolRecordMember(MDSConstRecordMemberBase):
     cdef:
         bool _cached_val
 
@@ -1128,7 +1144,7 @@ cdef class ConstBoolRecordMember(MDSConstRecordMemberBase):
     def peek(self):
         return self.read()
 
-cdef class BoolRecordMember(MDSRecordMemberBase):
+cdef class MDSBoolRecordMember(MDSRecordMemberBase):
 
     def read(self):
         return self._field_ref().read()
@@ -1139,7 +1155,7 @@ cdef class BoolRecordMember(MDSRecordMemberBase):
     def write(self, value) -> None:
         self._field_ref().write(<bool> value);
 
-cdef class ConstByteRecordMember(MDSConstRecordMemberBase):
+cdef class MDSConstByteRecordMember(MDSConstRecordMemberBase):
     cdef:
         int8_t _cached_val
 
@@ -1153,7 +1169,7 @@ cdef class ConstByteRecordMember(MDSConstRecordMemberBase):
     def peek(self):
         return self.read()
 
-cdef class ByteRecordMember(MDSRecordMemberBase):
+cdef class MDSByteRecordMember(MDSRecordMemberBase):
 
     def read(self):
         return self._field_ref().read()
@@ -1180,7 +1196,7 @@ cdef class ByteRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref /= other
 
-cdef class ConstUByteRecordMember(MDSConstRecordMemberBase):
+cdef class MDSConstUByteRecordMember(MDSConstRecordMemberBase):
     cdef:
         uint8_t _cached_val
 
@@ -1194,7 +1210,7 @@ cdef class ConstUByteRecordMember(MDSConstRecordMemberBase):
     def peek(self):
         return self.read()
 
-cdef class UByteRecordMember(MDSRecordMemberBase):
+cdef class MDSUByteRecordMember(MDSRecordMemberBase):
 
     def read(self):
         return self._field_ref().read()
@@ -1221,7 +1237,7 @@ cdef class UByteRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref /= other
 
-cdef class ConstShortRecordMember(MDSConstRecordMemberBase):
+cdef class MDSConstShortRecordMember(MDSConstRecordMemberBase):
     cdef:
         int16_t _cached_val
 
@@ -1235,7 +1251,7 @@ cdef class ConstShortRecordMember(MDSConstRecordMemberBase):
     def peek(self):
         return self.read()
 
-cdef class ShortRecordMember(MDSRecordMemberBase):
+cdef class MDSShortRecordMember(MDSRecordMemberBase):
 
     def read(self):
         return self._field_ref().read()
@@ -1262,7 +1278,7 @@ cdef class ShortRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref /= other
 
-cdef class ConstUShortRecordMember(MDSConstRecordMemberBase):
+cdef class MDSConstUShortRecordMember(MDSConstRecordMemberBase):
     cdef:
         uint16_t _cached_val
 
@@ -1276,7 +1292,7 @@ cdef class ConstUShortRecordMember(MDSConstRecordMemberBase):
     def peek(self):
         return self.read()
 
-cdef class UShortRecordMember(MDSRecordMemberBase):
+cdef class MDSUShortRecordMember(MDSRecordMemberBase):
 
     def read(self):
         return self._field_ref().read()
@@ -1303,7 +1319,7 @@ cdef class UShortRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref /= other
 
-cdef class ConstIntRecordMember(MDSConstRecordMemberBase):
+cdef class MDSConstIntRecordMember(MDSConstRecordMemberBase):
     cdef:
         int32_t _cached_val
 
@@ -1317,7 +1333,7 @@ cdef class ConstIntRecordMember(MDSConstRecordMemberBase):
     def peek(self):
         return self.read()
 
-cdef class IntRecordMember(MDSRecordMemberBase):
+cdef class MDSIntRecordMember(MDSRecordMemberBase):
 
     def read(self):
         return self._field_ref().read()
@@ -1344,7 +1360,7 @@ cdef class IntRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref /= other
 
-cdef class ConstUIntRecordMember(MDSConstRecordMemberBase):
+cdef class MDSConstUIntRecordMember(MDSConstRecordMemberBase):
     cdef:
         uint32_t _cached_val
 
@@ -1358,7 +1374,7 @@ cdef class ConstUIntRecordMember(MDSConstRecordMemberBase):
     def peek(self):
         return self.read()
 
-cdef class UIntRecordMember(MDSRecordMemberBase):
+cdef class MDSUIntRecordMember(MDSRecordMemberBase):
 
     def read(self):
         return self._field_ref().read()
@@ -1385,7 +1401,7 @@ cdef class UIntRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref /= other
 
-cdef class ConstLongRecordMember(MDSConstRecordMemberBase):
+cdef class MDSConstLongRecordMember(MDSConstRecordMemberBase):
     cdef:
         int64_t _cached_val
 
@@ -1399,7 +1415,7 @@ cdef class ConstLongRecordMember(MDSConstRecordMemberBase):
     def peek(self):
         return self.read()
 
-cdef class LongRecordMember(MDSRecordMemberBase):
+cdef class MDSLongRecordMember(MDSRecordMemberBase):
 
     def read(self):
         return self._field_ref().read()
@@ -1426,7 +1442,7 @@ cdef class LongRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref /= other
 
-cdef class ConstULongRecordMember(MDSConstRecordMemberBase):
+cdef class MDSConstULongRecordMember(MDSConstRecordMemberBase):
     cdef:
         uint64_t _cached_val
 
@@ -1440,7 +1456,7 @@ cdef class ConstULongRecordMember(MDSConstRecordMemberBase):
     def peek(self):
         return self.read()
 
-cdef class ULongRecordMember(MDSRecordMemberBase):
+cdef class MDSULongRecordMember(MDSRecordMemberBase):
 
     def read(self):
         return self._field_ref().read()
@@ -1467,7 +1483,7 @@ cdef class ULongRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref /= other
 
-cdef class ConstFloatRecordMember(MDSConstRecordMemberBase):
+cdef class MDSConstFloatRecordMember(MDSConstRecordMemberBase):
     cdef:
         float _cached_val
 
@@ -1481,7 +1497,7 @@ cdef class ConstFloatRecordMember(MDSConstRecordMemberBase):
     def peek(self):
         return self.read()
 
-cdef class FloatRecordMember(MDSRecordMemberBase):
+cdef class MDSFloatRecordMember(MDSRecordMemberBase):
 
     def read(self):
         return self._field_ref().read()
@@ -1508,7 +1524,7 @@ cdef class FloatRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref /= other
 
-cdef class ConstDoubleRecordMember(MDSConstRecordMemberBase):
+cdef class MDSConstDoubleRecordMember(MDSConstRecordMemberBase):
     cdef:
         double _cached_val
 
@@ -1522,7 +1538,7 @@ cdef class ConstDoubleRecordMember(MDSConstRecordMemberBase):
     def peek(self):
         return self.read()
 
-cdef class DoubleRecordMember(MDSRecordMemberBase):
+cdef class MDSDoubleRecordMember(MDSRecordMemberBase):
 
     def read(self):
         return self._field_ref().read()
@@ -1553,15 +1569,12 @@ cdef class DoubleRecordMember(MDSRecordMemberBase):
 
 ######################################################### RECORD TYPE DECLARATIONS
 
-cdef class RecordFieldDeclaration(object):
+class MDSRecordFieldDeclaration(object):
     """
     This could probably be avoided, but it's copying CAPI
     """
-    cdef:
-        String name
-        MDSRecordFieldBase field
 
-    def __cinit__(self, String name, MDSRecordFieldBase field):
+    def __init__(self, name: String, field: MDSRecordFieldBase):
         self.name = name
         self.field = field
 
@@ -1581,7 +1594,7 @@ cdef emplace_handle(record_type_handle wrapped):
     wrapper._handle = wrapped
     return wrapper
 
-cdef emplace_const_handle_from_decl(RecordTypeDeclaration decl):
+cdef emplace_const_handle_from_decl(MDSRecordTypeDeclaration decl):
     wrapper = MDSConstRecordHandleWrapper()
     wrapper._handle = decl._created_type
     return wrapper
@@ -1596,7 +1609,7 @@ cdef MDSRecordHandleWrapper declare_mds_record(interned_string_handle ish, MDSCo
     retval._handle = new_handle
     return retval
 
-cdef class RecordTypeDeclaration(object):
+cdef class MDSRecordTypeDeclaration(object):
     cdef:
         list _field_decls
         dict _field_member_pairs
@@ -1607,10 +1620,14 @@ cdef class RecordTypeDeclaration(object):
     def __cinit__(self, cls: type, fields: dict):
         # TODO: Get rid of fields, invole cls.schema() directly and delegate here
         # TODO: This assumes singular inheritance path for Record, could probably do getmro...
-        cdef MDSRecordHandleWrapper wrapper = self.declare(cls.ident, cls.__bases__[0])
+        cdef MDSRecordHandleWrapper wrapper = self.declare(
+            String(__RECORD_IDENTS[cls.__name__]),
+            cls.__bases__[0]
+        )
 
         self._declared_type = record_type_handle(wrapper._handle)
         self._cls = cls
+        self._field_decls = list()
         self._field_member_pairs = fields
         self.note_fields(fields)
 
@@ -1645,7 +1662,7 @@ cdef class RecordTypeDeclaration(object):
     def note_fields(self, fields: dict) -> None:
         for label, field_member_pair in fields.items():
             self._field_decls.append(
-                RecordFieldDeclaration(
+                MDSRecordFieldDeclaration(
                     String(label),  # We want to grab the interned_string_handle later
                     field_member_pair.field
                 )
@@ -1660,21 +1677,23 @@ cdef class RecordTypeDeclaration(object):
             fd.field.ensure_type()
 
     def ensure_created(self) -> MDSConstRecordHandleWrapper:
-        if not self._cls.ident in __DECLARED_TYPES:
+        ident = __RECORD_IDENTS[self._cls.__name__]
+
+        if not ident in __RECORD_DECLARED_TYPES:
             __RECORD_DECLARATION_MUTEX.acquire()
 
             # Ensure no one else has beat us to the punch (call_once)
-            if not self._cls.ident in __DECLARED_TYPES:
+            if not ident in __RECORD_DECLARED_TYPES:
                 self.declare_fields()
                 self._created_type = const_record_type_handle(self._declared_type.ensure_created())
                 # We want to keep a copy of this alive so we don't have to rebuild it
                 # MDSRecordCreator.register_type(self)
                 self.ensure_field_types()
-                __DECLARED_TYPES[self._cls.ident] = self
+                __RECORD_DECLARED_TYPES[ident] = self
 
             __RECORD_DECLARATION_MUTEX.release()
 
-        return emplace_const_handle_from_decl(__DECLARED_TYPES[self._cls.ident])
+        return emplace_const_handle_from_decl(__RECORD_DECLARED_TYPES[ident])
 
 
 # =========================================================================

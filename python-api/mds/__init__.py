@@ -57,11 +57,11 @@ class TypeInfo():
         self.title_array_init = f"{self.title_array}_Init"
         self.title_array_cinit = f"{self.title_array}_Inplace"
 
-        self.title_record_field = f"{self.title}RecordField"
-        self.title_record_field_reference = f"{self.title_record_field}Reference"
-        self.title_const_record_field_reference = f"Const{self.title_record_field}Reference"
-        self.title_record_member = f"{self.title}RecordMember"
-        self.title_const_record_member = f"Const{self.title_record_member}"
+        self.title_record_field = f"MDS{self.title}RecordField"
+        self.title_record_field_reference = f"MDS{self.title_record_field}Reference"
+        self.title_const_record_field_reference = f"MDSConst{self.title_record_field}Reference"
+        self.title_record_member = f"MDS{self.title}RecordMember"
+        self.title_const_record_member = f"MDSConst{self.title}RecordMember"
         
         self.c_type = c_type
         self.taxonomy = taxonomy

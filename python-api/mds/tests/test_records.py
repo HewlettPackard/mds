@@ -35,7 +35,7 @@ class ExampleRecord(Record, ident="PythonTest::ExampleRecord"):  # TODO => Test
     """
 
     @staticmethod
-    def schema():
+    def schema() -> dict:
         """
         This method *must* be overridden in Record-derived classes, and follow the
         following syntax for declaring the record schema.
@@ -86,33 +86,21 @@ class ComplexRecord(Record, ident="schema_ComplexRecord"):
         }
 
 
-class NoIdentRecord(Record):
-
-    @staticmethod
-    def schema() -> dict:
-        self._register_field(mds.typing.bool, "is_active", True)
-
-
 class TestRecords(unittest.TestCase):
 
     RECORDS = [SimpleRecord, LessSimpleRecord, ComplexRecord]
-
-    def test_cannot_make_without_ident(self):
-        self.assertRaises(TypeError, lambda: NoIdentRecord())
 
     def __create_and_test(self, cls):
         record = cls()
         self.assertIs(type(record), cls)
         self.assertIsInstance(record, Record)
-        self.assertEqual(cls._ident, record.ident)
         return record
 
     def test_can_make_simple(self):
         record = self.__create_and_test(SimpleRecord)
         field = "is_active"
 
-        self.assertIn(field, record.type_declaration.fields())
-        self.assertEqual(record[field], True)
+        self.assertEqual(record.is_active, True)
 
     @unittest.skip("Debugging")
     def test_can_make_less_simple(self):
