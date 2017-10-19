@@ -276,6 +276,9 @@ cdef class Record(MDSObject):
         # self._handle = managed_record_handle(token.create())
         implant_record_handle(self, self.type_decl.ensure_created())
 
+    def __init__(self):
+        self._register_fields()
+
     def __init_subclass__(cls, ident: str, **kwargs):
         """
         This is called whenever a subclass of Record comes into scope, this

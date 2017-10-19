@@ -28,43 +28,49 @@ import unittest
 import mds
 from mds.managed import Record
 
-class SimpleRecord(Record):
+class SimpleRecord(Record, ident="schema_SimpleRecords"):
 
-    _ident = "schema_SimpleRecords"
+    @staticmethod
+    def schema() -> dict:
+        return {
+            "is_active": Record.declare_const_field(mds.typing.bool)
+        }
 
-    def __init__(self):
-        super().__init__()
-        self._register_field(mds.typing.bool, "is_active", True)
-        self._create()
 
-class LessSimpleRecord(Record):
+class LessSimpleRecord(Record, ident="schema_LessSimpleRecord"):
 
-    _ident = "schema_LessSimpleRecord"
+    @staticmethod
+    def schema() -> dict:
+        return {
+            "is_active": Record.declare_const_field(mds.typing.bool),
+            "numerator": Record.declare_field(mds.typing.float),
+            "denominator": Record.declare_field(mds.typing.double)
+        }
 
-    def __init__(self):
-        super().__init__()
-        self._register_field(mds.typing.bool, "is_active", True)
-        self._register_field(mds.typing.float, "numerator")
-        self._register_field(mds.typing.double, "denominator")
-        self._create()
 
-class ComplexRecord(Record):
-
-    _ident = "schema_ComplexRecord"
+class ComplexRecord(Record, ident="schema_ComplexRecord"):
 
     def __init__(self):
+        self.python_field = True
+
+        # Remember to call the super constructor before acccessing MDS fields
         super().__init__()
-        self._register_field(mds.typing.bool, "is_active", True)
-        self._register_field(mds.typing.float, "numerator")
-        self._register_field(mds.typing.double, "denominator")
-        self._create()
+
+    @staticmethod
+    def schema() -> dict:
+        return {
+            "is_active": Record.declare_const_field(mds.typing.bool),
+            "numerator": Record.declare_field(mds.typing.float),
+            "denominator": Record.declare_field(mds.typing.double)
+        }
+
 
 class NoIdentRecord(Record):
 
-    def __init__(self):
-        super().__init__()
+    @staticmethod
+    def schema() -> dict:
         self._register_field(mds.typing.bool, "is_active", True)
-        self._create()
+
 
 class TestRecords(unittest.TestCase):
 
