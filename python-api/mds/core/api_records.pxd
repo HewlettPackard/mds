@@ -56,10 +56,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle ensure_created()
         @staticmethod
         const_record_type_handle find(const interned_string_handle&)
-
         @staticmethod
         record_type_handle declare(const interned_string_handle&)
-        # NOTE Ignoring 2nd def. param const const_record_type_handle &super = const_record_type_handle{}
+        @staticmethod
+        record_type_handle declare(const interned_string_handle&, const_record_type_handle&)
 
     cdef cppclass const_record_type_handle:
         const_record_type_handle()
@@ -80,11 +80,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle ensure_created()
         @staticmethod
         const_record_type_handle find(const interned_string_handle&)
-
         @staticmethod
-        const_record_type_handle declare(const interned_string_handle&)
-        # NOTE Ignoring 2nd def. param const const_const_record_type_handle &super = const_const_record_type_handle{}
-
+        record_type_handle declare(const interned_string_handle&)
+        @staticmethod
+        record_type_handle declare(const interned_string_handle&, const_record_type_handle&)
 
 # START INJECTION | tmpl_record_field_wrapper
 
