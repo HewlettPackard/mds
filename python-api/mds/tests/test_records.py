@@ -28,7 +28,7 @@ import unittest
 import mds
 from mds.managed import Record
 
-class ExampleRecord(Record, ident="PythonTest::ExampleRecord"):  # TODO => Test
+class ExampleRecord(Record, ident="PythonTest::ExampleRecord"):
     """
     Descendents of Record should explictly declare an `ident` key/value pair in the
     class descriptor as above; this is how the type will be known to MDS.
@@ -44,7 +44,7 @@ class ExampleRecord(Record, ident="PythonTest::ExampleRecord"):  # TODO => Test
         will be available via cls.type_decl
         """
         return {
-            "is_active": Record.declare_const_field(mds.typing.bool),
+            "is_active": Record.declare_field(mds.typing.bool),
             "number_of_players": Record.declare_field(mds.typing.ushort)
         }
 
@@ -54,7 +54,7 @@ class SimpleRecord(Record, ident="schema_SimpleRecords"):
     @staticmethod
     def schema() -> dict:
         return {
-            "is_active": Record.declare_const_field(mds.typing.bool)
+            "is_active": Record.declare_field(mds.typing.bool)
         }
 
 
@@ -63,7 +63,7 @@ class LessSimpleRecord(Record, ident="schema_LessSimpleRecord"):
     @staticmethod
     def schema() -> dict:
         return {
-            "is_active": Record.declare_const_field(mds.typing.bool),
+            "is_active": Record.declare_field(mds.typing.bool),
             "numerator": Record.declare_field(mds.typing.float),
             "denominator": Record.declare_field(mds.typing.double)
         }
@@ -80,7 +80,7 @@ class ComplexRecord(Record, ident="schema_ComplexRecord"):
     @staticmethod
     def schema() -> dict:
         return {
-            "is_active": Record.declare_const_field(mds.typing.bool),
+            "is_active": Record.declare_field(mds.typing.bool),
             "numerator": Record.declare_field(mds.typing.float),
             "denominator": Record.declare_field(mds.typing.double)
         }

@@ -222,11 +222,11 @@ def tmpl_record_field(t: TypeInfo) -> str:
 cdef class {t.title_record_field}(MDSRecordFieldBase):
     cdef:
         {t.record_field} _handle
-        {t.primitive} _mtype
 
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
-        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+        print("?> Attempting to get a handle from {t.const_primitive}.field_in")
+        self._handle = {t.record_field}({t.const_primitive}().field_in(rt._declared_type, name._ish, True))
 
     @staticmethod
     def get_reference_type(make_const=False) -> type:

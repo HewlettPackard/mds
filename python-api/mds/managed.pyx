@@ -791,10 +791,9 @@ class MDSRecordFieldMemberPair(object):
 
 
 # This is where we keep built record types, with the associated Lock
-# TODO: Can these be cdef'd?
-__RECORD_DECLARATION_MUTEX = threading.Lock()
-__RECORD_DECLARED_TYPES = dict()
-__RECORD_IDENTS = dict()
+cdef __RECORD_DECLARATION_MUTEX = threading.Lock()
+cdef __RECORD_DECLARED_TYPES = dict()
+cdef __RECORD_IDENTS = dict()
 
 cdef implant_record_handle(Record record, MDSConstRecordHandleWrapper wrapper):
     cdef const_record_type_handle handle = wrapper._handle
@@ -822,6 +821,10 @@ cdef class Record(MDSObject):
     def __init__(self):
         self._register_fields()
 
+    # TODO Cython .27
+    # def __eq__(self):
+    #     pass
+
     @classmethod
     def __init_subclass__(cls, ident: str, **kwargs):
         """
@@ -834,6 +837,7 @@ cdef class Record(MDSObject):
         2) TODO: See if any ambiguous proxies from Namespace are awaiting this
            specific implementation, and deal with that accordingly.
         """
+        initialize_base_task()
 
         super().__init_subclass__(**kwargs)
         print(f"Called for {cls.__name__} with {ident}")
@@ -868,7 +872,8 @@ cdef class Record(MDSObject):
             self.__dict__[label] = member_t(record=self)
 
     @classmethod
-    def lookup_in_namespace(cls, ns: Namespace, *args) -> Record:
+    def from_namespace(cls, ns: Namespace, *args) -> Record:
+        # TODO: Couldn't this be in the root of all elements that can go into a namespace?
         if not isinstance(ns, Namespace):
             raise TypeError('Need a `Namespace` object as first argument')
 
@@ -1060,16 +1065,22 @@ cdef class MDSRecordFieldBase(MDSObject):
     def get_reference_type(make_const=False) -> type:
         return None
 
+# void declare(const mds_string &name, const api::record_type_handle rt) override {
+#     assert(_handle.is_null());
+#     const auto &ft = managed_type<T>().handle();
+#     _handle = ft.field_in(rt, name.handle(), true);
+#   }
+
 # START INJECTION | tmpl_record_field
 
 cdef class MDSBoolRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_bool_t _handle
-        h_mbool_t _mtype
 
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
-        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+        print("?> Attempting to get a handle from h_const_mbool_t.field_in")
+        self._handle = h_rfield_bool_t(h_const_mbool_t().field_in(rt._declared_type, name._ish, True))
 
     @staticmethod
     def get_reference_type(make_const=False) -> type:
@@ -1081,11 +1092,11 @@ cdef class MDSBoolRecordField(MDSRecordFieldBase):
 cdef class MDSByteRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_byte_t _handle
-        h_mbyte_t _mtype
 
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
-        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+        print("?> Attempting to get a handle from h_const_mbyte_t.field_in")
+        self._handle = h_rfield_byte_t(h_const_mbyte_t().field_in(rt._declared_type, name._ish, True))
 
     @staticmethod
     def get_reference_type(make_const=False) -> type:
@@ -1097,11 +1108,11 @@ cdef class MDSByteRecordField(MDSRecordFieldBase):
 cdef class MDSUByteRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_ubyte_t _handle
-        h_mubyte_t _mtype
 
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
-        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+        print("?> Attempting to get a handle from h_const_mubyte_t.field_in")
+        self._handle = h_rfield_ubyte_t(h_const_mubyte_t().field_in(rt._declared_type, name._ish, True))
 
     @staticmethod
     def get_reference_type(make_const=False) -> type:
@@ -1113,11 +1124,11 @@ cdef class MDSUByteRecordField(MDSRecordFieldBase):
 cdef class MDSShortRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_short_t _handle
-        h_mshort_t _mtype
 
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
-        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+        print("?> Attempting to get a handle from h_const_mshort_t.field_in")
+        self._handle = h_rfield_short_t(h_const_mshort_t().field_in(rt._declared_type, name._ish, True))
 
     @staticmethod
     def get_reference_type(make_const=False) -> type:
@@ -1129,11 +1140,11 @@ cdef class MDSShortRecordField(MDSRecordFieldBase):
 cdef class MDSUShortRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_ushort_t _handle
-        h_mushort_t _mtype
 
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
-        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+        print("?> Attempting to get a handle from h_const_mushort_t.field_in")
+        self._handle = h_rfield_ushort_t(h_const_mushort_t().field_in(rt._declared_type, name._ish, True))
 
     @staticmethod
     def get_reference_type(make_const=False) -> type:
@@ -1145,11 +1156,11 @@ cdef class MDSUShortRecordField(MDSRecordFieldBase):
 cdef class MDSIntRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_int_t _handle
-        h_mint_t _mtype
 
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
-        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+        print("?> Attempting to get a handle from h_const_mint_t.field_in")
+        self._handle = h_rfield_int_t(h_const_mint_t().field_in(rt._declared_type, name._ish, True))
 
     @staticmethod
     def get_reference_type(make_const=False) -> type:
@@ -1161,11 +1172,11 @@ cdef class MDSIntRecordField(MDSRecordFieldBase):
 cdef class MDSUIntRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_uint_t _handle
-        h_muint_t _mtype
 
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
-        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+        print("?> Attempting to get a handle from h_const_muint_t.field_in")
+        self._handle = h_rfield_uint_t(h_const_muint_t().field_in(rt._declared_type, name._ish, True))
 
     @staticmethod
     def get_reference_type(make_const=False) -> type:
@@ -1177,11 +1188,11 @@ cdef class MDSUIntRecordField(MDSRecordFieldBase):
 cdef class MDSLongRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_long_t _handle
-        h_mlong_t _mtype
 
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
-        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+        print("?> Attempting to get a handle from h_const_mlong_t.field_in")
+        self._handle = h_rfield_long_t(h_const_mlong_t().field_in(rt._declared_type, name._ish, True))
 
     @staticmethod
     def get_reference_type(make_const=False) -> type:
@@ -1193,11 +1204,11 @@ cdef class MDSLongRecordField(MDSRecordFieldBase):
 cdef class MDSULongRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_ulong_t _handle
-        h_mulong_t _mtype
 
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
-        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+        print("?> Attempting to get a handle from h_const_mulong_t.field_in")
+        self._handle = h_rfield_ulong_t(h_const_mulong_t().field_in(rt._declared_type, name._ish, True))
 
     @staticmethod
     def get_reference_type(make_const=False) -> type:
@@ -1209,11 +1220,11 @@ cdef class MDSULongRecordField(MDSRecordFieldBase):
 cdef class MDSFloatRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_float_t _handle
-        h_mfloat_t _mtype
 
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
-        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+        print("?> Attempting to get a handle from h_const_mfloat_t.field_in")
+        self._handle = h_rfield_float_t(h_const_mfloat_t().field_in(rt._declared_type, name._ish, True))
 
     @staticmethod
     def get_reference_type(make_const=False) -> type:
@@ -1225,11 +1236,11 @@ cdef class MDSFloatRecordField(MDSRecordFieldBase):
 cdef class MDSDoubleRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_double_t _handle
-        h_mdouble_t _mtype
 
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
-        self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+        print("?> Attempting to get a handle from h_const_mdouble_t.field_in")
+        self._handle = h_rfield_double_t(h_const_mdouble_t().field_in(rt._declared_type, name._ish, True))
 
     @staticmethod
     def get_reference_type(make_const=False) -> type:
@@ -2281,7 +2292,7 @@ cdef class MDSRecordTypeDeclaration(object):
         const_record_type_handle _created_type
         type _cls
 
-    def __cinit__(self, cls: type, fields: dict):
+    def __cinit__(self, cls: type, field_member_pairs: dict):
         # TODO: Get rid of fields, invole cls.schema() directly and delegate here
         # TODO: This assumes singular inheritance path for Record, could probably do getmro...
         cdef MDSRecordHandleWrapper wrapper = self.declare(
@@ -2292,8 +2303,8 @@ cdef class MDSRecordTypeDeclaration(object):
         self._declared_type = record_type_handle(wrapper._handle)
         self._cls = cls
         self._field_decls = list()
-        self._field_member_pairs = fields
-        self.note_fields(fields)
+        self._field_member_pairs = field_member_pairs
+        self.note_fields(field_member_pairs)
 
     def get_field_member_pairs(self) -> dict:
         return self._field_member_pairs
@@ -2310,17 +2321,18 @@ cdef class MDSRecordTypeDeclaration(object):
 
         TODO: s should be a parameterized managed_type<R>?
         """
-
+        print(f"?> Declaring {name} with parent {parent.__name__}")
         cdef interned_string_handle ish = extract_ish(name)
 
         if parent is None or parent is Record:
             return emplace_handle(record_type_handle.declare(ish, const_record_type_handle()))
 
         assert issubclass(parent, Record), "Super type not a record type"
-
+        print(f" > Passed subclass assertion")
         # As soon as `s` came into scope, it should have registered its type,
         # so this is unnecessary, but left in for posterity.
         sp = parent.type_decl.ensure_created()  # MDSConstRecordHandleWrapper
+        print(f" > Ensure created run OK on parent, returned {sp}")
         return declare_mds_record(ish, sp)
 
     def note_fields(self, fields: dict) -> None:
@@ -2344,18 +2356,15 @@ cdef class MDSRecordTypeDeclaration(object):
         ident = __RECORD_IDENTS[self._cls.__name__]
 
         if not ident in __RECORD_DECLARED_TYPES:
-            __RECORD_DECLARATION_MUTEX.acquire()
-
-            # Ensure no one else has beat us to the punch (call_once)
-            if not ident in __RECORD_DECLARED_TYPES:
-                self.declare_fields()
-                self._created_type = const_record_type_handle(self._declared_type.ensure_created())
-                # We want to keep a copy of this alive so we don't have to rebuild it
-                # MDSRecordCreator.register_type(self)
-                self.ensure_field_types()
-                __RECORD_DECLARED_TYPES[ident] = self
-
-            __RECORD_DECLARATION_MUTEX.release()
+            with __RECORD_DECLARATION_MUTEX:
+                # Ensure no one else has beat us to the punch (call_once)
+                if not ident in __RECORD_DECLARED_TYPES:
+                    self.declare_fields()
+                    self._created_type = const_record_type_handle(self._declared_type.ensure_created())
+                    # We want to keep a copy of this alive so we don't have to rebuild it
+                    # MDSRecordCreator.register_type(self)
+                    self.ensure_field_types()
+                    __RECORD_DECLARED_TYPES[ident] = self
 
         return emplace_const_handle_from_decl(__RECORD_DECLARED_TYPES[ident])
 
