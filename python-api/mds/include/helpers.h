@@ -166,6 +166,7 @@ namespace mds
         {
             #define _TYPE_WRAPPER_(K, name) \
             using h_marray_##name##_t = mds::api::managed_array_handle<K>; \
+            using h_const_marray_##name##_t = mds::api::const_managed_array_handle<K>; \
             using h_m##name##_t = mds::api::managed_type_handle_cp<K, true>; \
             static inline h_marray_##name##_t create_##name##_marray(size_t n) \
             { \

@@ -113,6 +113,10 @@ def generate_and_inject_all_sources(dry_run=True, root=os.getcwd(), exts=('pyx',
 def tmpl_api_primitives(t: TypeInfo) -> str:
     compiled = f"""
     # BEGIN {t.api}
+    # TODO: (field_in)
+    # Throws incompatible_type_ex if the field exists but is of the wrong type
+    # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+    # is true, and the record type is fully created.
 
     cdef cppclass {t.managed_value} "mds::api::api_type<{t.kind}>":
         {t.managed_value}()
@@ -120,30 +124,25 @@ def tmpl_api_primitives(t: TypeInfo) -> str:
 
     cdef cppclass {t.primitive} "mds::api::managed_type_handle<{t.kind}>":
         {t.primitive}()
-        # TODO:
-        # Throws incompatible_type_ex if the field exists but is of the wrong type
-        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-        # is true, and the record type is fully created.
         {t.record_field} field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef {t.primitive} {t.managed_type_handle} "mds::api::managed_type_handle<{t.kind}>"()
+    cdef {t.primitive} {t.f_managed_type_handle} "mds::api::managed_type_handle<{t.kind}>"()
 
     cdef cppclass {t.const_primitive} "mds::api::const_managed_type_handle<{t.kind}>":
         {t.const_primitive}()
-        # TODO:
-        # Throws incompatible_type_ex if the field exists but is of the wrong type
-        # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-        # is true, and the record type is fully created.
-        {t.const_record_field} field_in(record_type_handle&, interned_string_handle&, bool) except+
+        {t.record_field} field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef {t.const_primitive} {t.const_managed_type_handle} "mds::api::managed_type_handle<{t.kind}>"()
+    cdef {t.const_primitive} {t.f_const_managed_type_handle} "mds::api::managed_type_handle<{t.kind}>"()
     cdef {t.c_type} to_core_val "mds::api::to_core_val<{t.kind}>" (const {t.managed_value}&)
 """
     return compiled
 
 def tmpl_primitives(t: TypeInfo) -> str:
-    compiled = f"""
-cdef class {t.title}({t.primitive_parent}):
+    compiled = ""
+
+    for title, parent in [(t.title, t.primitive_parent), (t.title_const, t.const_primitive_parent)]:
+        compiled += f"""
+cdef class {title}({parent}):
 
     cdef {t.managed_value} _value
 
@@ -155,10 +154,10 @@ cdef class {t.title}({t.primitive_parent}):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
-"""
+    """
 
-    if t.taxonomy == TypeInfo.MDS_INTEGRAL:
-        compiled += f"""
+        if t.taxonomy == TypeInfo.MDS_INTEGRAL:
+            compiled += f"""
     property MIN:
         def __get__(self):
             return {t.bounds.min}
@@ -422,6 +421,11 @@ def tmpl_api_arrays(t: TypeInfo) -> str:
         {t.managed_array} create_array(size_t)
         bool is_same_as(const {t.array}&)
 
+    cdef cppclass {t.const_array} "mds::api::const_array_type_handle<{t.kind}>":
+        # const_managed_type_handle<K> element_type()
+        {t.managed_array} create_array(size_t)
+        bool is_same_as(const {t.const_array}&)
+
     cdef cppclass {t.managed_array}:
         {t.managed_value} frozen_read(size_t)
         {t.managed_value} write(size_t, {t.managed_value})
@@ -429,6 +433,7 @@ def tmpl_api_arrays(t: TypeInfo) -> str:
         bool has_value()
         h_marray_base_t as_base()
         {EXTRA}
+    # TODO: const_managed_array
     {t.managed_array} {t.f_create_array}(size_t)
 """
     return compiled

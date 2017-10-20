@@ -19,25 +19,31 @@ MDSArrayBase*
 * Should not be instantiable, contains generic methods only.
 """
 
-Taxonomy = namedtuple("Taxonomy", ["primitive", "array"])
+Taxonomy = namedtuple("Taxonomy", ["primitive", "array", "const_primitive", "const_array"])
 Bounds = namedtuple("Bounds", ["min", "max"])
 
 class TypeInfo():
     # These bases will be written manually
-    MDS_BASE_ARRAY = "MDSArrayBase"
-    MDS_INTEGRAL_ARRAY = "MDSIntArrayBase"
-    MDS_FLOATING_ARRAY = "MDSFloatArrayBase"
+    MDS_ARRAY_BASE = "MDSArrayBase"
+    MDS_ARRAY_INTEGRAL = "MDSIntArrayBase"
+    MDS_ARRAY_FLOATING = "MDSFloatArrayBase"
+    MDS_CONST_ARRAY_BASE = "MDSConstArrayBase"
+    MDS_CONST_ARRAY_INTEGRAL = "MDSConstIntArrayBase"
+    MDS_CONST_ARRAY_FLOATING = "MDSConstFloatArrayBase"
 
-    MDS_BASE_PRIMITIVE = "MDSPrimitiveBase"
-    MDS_INTEGRAL_PRIMITIVE = "MDSIntPrimitiveBase"
-    MDS_FLOATING_PRIMITIVE = "MDSFloatPrimitiveBase"
+    MDS_PRIM_BASE = "MDSPrimitiveBase"
+    MDS_PRIM_INTEGRAL = "MDSIntPrimitiveBase"
+    MDS_PRIM_FLOATING = "MDSFloatPrimitiveBase"
+    MDS_CONST_PRIM_BASE = "MDSConstPrimitiveBase"
+    MDS_CONST_PRIM_INTEGRAL = "MDSConstIntPrimitiveBase"
+    MDS_CONST_PRIM_FLOATING = "MDSConstFloatPrimitiveBase"
 
     MDS_BASE, MDS_INTEGRAL, MDS_FLOATING = range(3)
 
     MDS_TAXONOMY = {
-        MDS_BASE: Taxonomy(MDS_BASE_PRIMITIVE, MDS_BASE_ARRAY),
-        MDS_INTEGRAL: Taxonomy(MDS_INTEGRAL_PRIMITIVE, MDS_INTEGRAL_ARRAY),
-        MDS_FLOATING: Taxonomy(MDS_FLOATING_PRIMITIVE, MDS_FLOATING_ARRAY)
+        MDS_BASE: Taxonomy(MDS_PRIM_BASE, MDS_ARRAY_BASE, MDS_CONST_PRIM_BASE, MDS_CONST_ARRAY_BASE),
+        MDS_INTEGRAL: Taxonomy(MDS_PRIM_INTEGRAL, MDS_ARRAY_INTEGRAL, MDS_CONST_PRIM_INTEGRAL, MDS_CONST_ARRAY_INTEGRAL),
+        MDS_FLOATING: Taxonomy(MDS_PRIM_FLOATING, MDS_ARRAY_FLOATING, MDS_CONST_PRIM_FLOATING, MDS_CONST_ARRAY_FLOATING)
     }
 
     MDS_INTEGRAL_BOUNDS = dict()
@@ -52,6 +58,8 @@ class TypeInfo():
         if self.title.startswith('U'):
             self.title = api[:2].upper() + api[2:]
 
+        self.title_const = f"Const{self.title}"
+
         # Python object names
         self.title_array = f"{self.title}Array"
         self.title_array_init = f"{self.title_array}_Init"
@@ -59,9 +67,9 @@ class TypeInfo():
 
         self.title_record_field = f"MDS{self.title}RecordField"
         self.title_record_field_reference = f"MDS{self.title}RecordFieldReference"
-        self.title_const_record_field_reference = f"MDSConst{self.title}RecordFieldReference"
+        self.title_const_record_field_reference = f"MDS{self.title_const}RecordFieldReference"
         self.title_record_member = f"MDS{self.title}RecordMember"
-        self.title_const_record_member = f"MDSConst{self.title}RecordMember"
+        self.title_const_record_member = f"MDS{self.title_const}RecordMember"
         
         self.c_type = c_type
         self.taxonomy = taxonomy
@@ -72,7 +80,7 @@ class TypeInfo():
         self.array = f"h_array_{api}_t"
         self.managed_value = f"mv_{api}"
         self.managed_array = f"h_marray_{api}_t"
-        self.managed_type_handle = f"managed_{api}_type_handle"
+        self.f_managed_type_handle = f"managed_{api}_type_handle"
         self.record_field = f"h_rfield_{api}_t"
 
         # MDS core aliases (masking const templated types)
@@ -80,7 +88,7 @@ class TypeInfo():
         self.const_array = f"h_const_array_{api}_t"
         self.const_managed_value = f"mv_const_{api}"
         self.const_managed_array = f"h_const_marray_{api}_t"
-        self.const_managed_type_handle = f"const_managed_{api}_type_handle"
+        self.f_const_managed_type_handle = f"const_managed_{api}_type_handle"
         self.const_record_field = f"h_const_rfield_{api}_t"
 
         self.kind = "mds::api::kind::{}".format(api.upper())
@@ -90,6 +98,8 @@ class TypeInfo():
 
         self.primitive_parent = self.MDS_TAXONOMY[taxonomy].primitive
         self.array_parent = self.MDS_TAXONOMY[taxonomy].array
+        self.const_primitive_parent = self.MDS_TAXONOMY[taxonomy].const_primitive
+        self.const_array_parent = self.MDS_TAXONOMY[taxonomy].const_array
 
         if not TypeInfo.MDS_INTEGRAL_BOUNDS:
             for p in (8, 16, 32, 64):

@@ -77,7 +77,11 @@ cdef class ConstError(Exception):
 #  Managed Values
 # =========================================================================
 
-cdef class MDSPrimitiveBase(MDSObject):
+cdef class MDSConstPrimitiveBase(MDSObject):
+    pass
+
+
+cdef class MDSPrimitiveBase(MDSConstPrimitiveBase):
 
     def _sanitize(self, value):
         return value
@@ -89,7 +93,7 @@ cdef class MDSPrimitiveBase(MDSObject):
         raise NotImplementedError("Specialization required.")
 
 
-cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
+cdef class MDSConstIntPrimitiveBase(MDSPrimitiveBase):
 
     def __int__(self):
         pass
@@ -111,6 +115,17 @@ cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
 
     def __div__(self, other):
         pass
+
+    property MIN:
+        def __get__(self):
+            raise NotImplementedError("Integer specialization required.")
+
+    property MAX:
+        def __get__(self):
+            raise NotImplementedError("Integer specialization required.")
+
+
+cdef class MDSIntPrimitiveBase(MDSConstIntPrimitiveBase):
 
     def __iadd__(self, other):
         pass
@@ -138,26 +153,37 @@ cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
 
         return value
 
-    property MIN:
-        def __get__(self):
-            raise NotImplementedError("Integer specialization required.")
-
-    property MAX:
-        def __get__(self):
-            raise NotImplementedError("Integer specialization required.")
-
 
 cdef class MDSFloatPrimitiveBase(MDSPrimitiveBase):
     # TODO, Can I inherit from IntegralBase for math ops?
+    pass
+
+cdef class MDSConstFloatPrimitiveBase(MDSFloatPrimitiveBase):
     pass
 
 # =========================================================================
 #  Arrays
 # =========================================================================
 
-cdef class MDSArrayBase(MDSObject):
+cdef class MDSConstArrayBase(MDSObject):
     cdef size_t _last_index
-    
+
+    def __iter__(self):
+        return NotImplemented # TODO Implement this
+
+    def __next__(self):
+        return NotImplemented # TODO Implement this
+
+    def __len__(self):
+        raise NotImplementedError('Specialization of MDSArrayBase required')
+
+    def __getitem__(self, index):
+        index = self._index_bounds_check(index)
+
+        # We store this for in-place ops
+        self._last_index = index
+        return self._to_python(index)
+
     def _index_bounds_check(self, index):
          # TODO: Need to handle slices. Should this be a new array?
         cdef long l = <long> len(self)
@@ -175,26 +201,6 @@ cdef class MDSArrayBase(MDSObject):
 
     def _to_mds(self, index, value):
         raise NotImplementedError('Specialization of MDSList required') 
-
-    def __getitem__(self, index):
-        index = self._index_bounds_check(index)
-
-        # We store this for in-place ops
-        self._last_index = index
-        return self._to_python(index)
-
-    def __setitem__(self, index, value):
-        index = self._index_bounds_check(index)
-        self._to_mds(index, value)
-
-    def __iter__(self):
-        return NotImplemented # TODO Implement this
-
-    def __next__(self):
-        return NotImplemented # TODO Implement this
-
-    def __len__(self):
-        raise NotImplementedError('Specialization of MDSArrayBase required') 
 
     def index(self, start=None, end=None):
         return NotImplemented # TODO Implement this
@@ -220,6 +226,13 @@ cdef class MDSArrayBase(MDSObject):
     property dtype:
         def __get__(self):
             raise NotImplementedError('Specialization of MDSArrayBase required')
+
+
+cdef class MDSArrayBase(MDSConstArrayBase):
+
+    def __setitem__(self, index, value):
+        index = self._index_bounds_check(index)
+        self._to_mds(index, value)
 
 
 cdef class MDSIntArrayBase(MDSArrayBase):
@@ -1665,24 +1678,11 @@ cdef class MDSRecordMemberBase(MDSObject):
 
     # using value_type = typename record_field<R,T>::value_type;
 
-    def __cinit__(self, Record record, other=None):
-        # record_member()
-        #     : _enclosing(*typed_rc_token<R>::being_constructed()) {
-        #   assert(&_enclosing != nullptr);
-        # }
+    def __cinit__(self, Record record, initial_value=None):
         self._enclosing = record
 
-        # Delegate this checking to the write() method
-        # explicit record_member(const value_type &v)
-        #     : record_member() {
-        #   write(v);
-        # }
-        # explicit record_member(const record_member &other)
-        #     : record_member() {
-        #   write(other);
-        # }
-        if other is not None:
-            self.write(other)
+        if initial_value is not None:
+            self.write(initial_value)
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
         """
@@ -1711,31 +1711,16 @@ cdef class MDSRecordMemberBase(MDSObject):
 cdef class MDSConstRecordMemberBase(MDSRecordMemberBase):
     cdef:
         bint _is_cached
-    # public:
-    #  using value_type = typename record_field<R,T>::value_type;
-    # private:
-    #  R &_enclosing;
-    #  mutable value_type _cached_val;
-    #  mutable bool _is_cached;
 
-    def __cinit__(self, Record record, other=None):
-        # record_const_member()
-        #     : _enclosing(*typed_rc_token<R>::being_constructed()),
-        #       _is_cached { false } {
-        #   assert(&_enclosing != nullptr);
-        # }
-        # explicit record_const_member(const value_type &v)
-        #     : _enclosing(*typed_rc_token<R>::being_constructed()),
-        #       _cached_val(_field_ref().write(v)),
-        #       _is_cached { true } {
-        # }
-        # explicit record_const_member(const record_const_member &other)
-        #     : record_const_member(other.read()) {
-        # }
-        self._enclosing = record
+    def __cinit__(self, Record record, initial_value=None):
+        """
+        Delegate record upwards, but deal with `initial_value` here,
+        as we only want to write at instantiation. @TODO
+        """
+        super().__init__(record=record, initial_value=None)
 
-        if other is not None:
-            pass
+        if initial_value is not None:
+            pass # TODO: Do something
 
     def write(self, value):
         self._throw_const_error()
@@ -2653,6 +2638,12 @@ cdef class Namespace(MDSObject):
 
     cdef namespace_handle _handle
 
+    def __cinit__(self):
+        """
+        Default instantiates to the global namespace.
+        """
+        self._handle = namespace_handle._global()
+
     def __setitem__(self, key, value):
         cdef:
             interned_string_handle ish = convert_py_to_ish(key)
@@ -2674,20 +2665,15 @@ cdef class Namespace(MDSObject):
         retval = self._handle.lookup(ish, managed_ushort_type_handle())
         return retval
 
-    def create_child(self, child_id, bint create_if_missing=True):
+    def create_child(self, child_id, create_if_missing=True):
         cdef:
             interned_string_handle ish = convert_py_to_ish(child_id)
-            bool cim = <bool> create_if_missing
         
-        return Namespace_Init(self._handle.child_namespace(ish, cim))
+        return Namespace_Init(self._handle.child_namespace(ish, create_if_missing))
 
     @staticmethod
     def from_path(path):
         pass
-
-    @staticmethod
-    def get_current():
-        pass  # TODO: mds_namespace::current()
 
     @staticmethod
     def get_global():
@@ -2735,7 +2721,20 @@ cdef class Bool(MDSPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
+    
+cdef class ConstBool(MDSConstPrimitiveBase):
 
+    cdef mv_bool _value
+
+    def __cinit__(self, value):  # TODO: Set the value in _value
+        value = self._sanitize(value)
+
+    def _to_python(self):
+        return to_core_val(self._value)
+
+    def _to_mds(self):  # TODO: This needs to update _value
+        pass
+    
 cdef class Byte(MDSIntPrimitiveBase):
 
     cdef mv_byte _value
@@ -2748,7 +2747,28 @@ cdef class Byte(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
+    
+    property MIN:
+        def __get__(self):
+            return -128
 
+    property MAX:
+        def __get__(self):
+            return 127 
+
+cdef class ConstByte(MDSConstIntPrimitiveBase):
+
+    cdef mv_byte _value
+
+    def __cinit__(self, value):  # TODO: Set the value in _value
+        value = self._sanitize(value)
+
+    def _to_python(self):
+        return to_core_val(self._value)
+
+    def _to_mds(self):  # TODO: This needs to update _value
+        pass
+    
     property MIN:
         def __get__(self):
             return -128
@@ -2769,7 +2789,28 @@ cdef class UByte(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
+    
+    property MIN:
+        def __get__(self):
+            return 0
 
+    property MAX:
+        def __get__(self):
+            return 255 
+
+cdef class ConstUByte(MDSConstIntPrimitiveBase):
+
+    cdef mv_ubyte _value
+
+    def __cinit__(self, value):  # TODO: Set the value in _value
+        value = self._sanitize(value)
+
+    def _to_python(self):
+        return to_core_val(self._value)
+
+    def _to_mds(self):  # TODO: This needs to update _value
+        pass
+    
     property MIN:
         def __get__(self):
             return 0
@@ -2790,7 +2831,28 @@ cdef class Short(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
+    
+    property MIN:
+        def __get__(self):
+            return -32768
 
+    property MAX:
+        def __get__(self):
+            return 32767 
+
+cdef class ConstShort(MDSConstIntPrimitiveBase):
+
+    cdef mv_short _value
+
+    def __cinit__(self, value):  # TODO: Set the value in _value
+        value = self._sanitize(value)
+
+    def _to_python(self):
+        return to_core_val(self._value)
+
+    def _to_mds(self):  # TODO: This needs to update _value
+        pass
+    
     property MIN:
         def __get__(self):
             return -32768
@@ -2811,7 +2873,28 @@ cdef class UShort(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
+    
+    property MIN:
+        def __get__(self):
+            return 0
 
+    property MAX:
+        def __get__(self):
+            return 65535 
+
+cdef class ConstUShort(MDSConstIntPrimitiveBase):
+
+    cdef mv_ushort _value
+
+    def __cinit__(self, value):  # TODO: Set the value in _value
+        value = self._sanitize(value)
+
+    def _to_python(self):
+        return to_core_val(self._value)
+
+    def _to_mds(self):  # TODO: This needs to update _value
+        pass
+    
     property MIN:
         def __get__(self):
             return 0
@@ -2832,7 +2915,28 @@ cdef class Int(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
+    
+    property MIN:
+        def __get__(self):
+            return -2147483648
 
+    property MAX:
+        def __get__(self):
+            return 2147483647 
+
+cdef class ConstInt(MDSConstIntPrimitiveBase):
+
+    cdef mv_int _value
+
+    def __cinit__(self, value):  # TODO: Set the value in _value
+        value = self._sanitize(value)
+
+    def _to_python(self):
+        return to_core_val(self._value)
+
+    def _to_mds(self):  # TODO: This needs to update _value
+        pass
+    
     property MIN:
         def __get__(self):
             return -2147483648
@@ -2853,7 +2957,28 @@ cdef class UInt(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
+    
+    property MIN:
+        def __get__(self):
+            return 0
 
+    property MAX:
+        def __get__(self):
+            return 4294967295 
+
+cdef class ConstUInt(MDSConstIntPrimitiveBase):
+
+    cdef mv_uint _value
+
+    def __cinit__(self, value):  # TODO: Set the value in _value
+        value = self._sanitize(value)
+
+    def _to_python(self):
+        return to_core_val(self._value)
+
+    def _to_mds(self):  # TODO: This needs to update _value
+        pass
+    
     property MIN:
         def __get__(self):
             return 0
@@ -2874,7 +2999,28 @@ cdef class Long(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
+    
+    property MIN:
+        def __get__(self):
+            return -9223372036854775808
 
+    property MAX:
+        def __get__(self):
+            return 9223372036854775807 
+
+cdef class ConstLong(MDSConstIntPrimitiveBase):
+
+    cdef mv_long _value
+
+    def __cinit__(self, value):  # TODO: Set the value in _value
+        value = self._sanitize(value)
+
+    def _to_python(self):
+        return to_core_val(self._value)
+
+    def _to_mds(self):  # TODO: This needs to update _value
+        pass
+    
     property MIN:
         def __get__(self):
             return -9223372036854775808
@@ -2895,7 +3041,28 @@ cdef class ULong(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
+    
+    property MIN:
+        def __get__(self):
+            return 0
 
+    property MAX:
+        def __get__(self):
+            return 18446744073709551615 
+
+cdef class ConstULong(MDSConstIntPrimitiveBase):
+
+    cdef mv_ulong _value
+
+    def __cinit__(self, value):  # TODO: Set the value in _value
+        value = self._sanitize(value)
+
+    def _to_python(self):
+        return to_core_val(self._value)
+
+    def _to_mds(self):  # TODO: This needs to update _value
+        pass
+    
     property MIN:
         def __get__(self):
             return 0
@@ -2916,7 +3083,20 @@ cdef class Float(MDSFloatPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
+    
+cdef class ConstFloat(MDSConstFloatPrimitiveBase):
 
+    cdef mv_float _value
+
+    def __cinit__(self, value):  # TODO: Set the value in _value
+        value = self._sanitize(value)
+
+    def _to_python(self):
+        return to_core_val(self._value)
+
+    def _to_mds(self):  # TODO: This needs to update _value
+        pass
+    
 cdef class Double(MDSFloatPrimitiveBase):
 
     cdef mv_double _value
@@ -2929,5 +3109,18 @@ cdef class Double(MDSFloatPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
+    
+cdef class ConstDouble(MDSConstFloatPrimitiveBase):
 
+    cdef mv_double _value
+
+    def __cinit__(self, value):  # TODO: Set the value in _value
+        value = self._sanitize(value)
+
+    def _to_python(self):
+        return to_core_val(self._value)
+
+    def _to_mds(self):  # TODO: This needs to update _value
+        pass
+    
 # END INJECTION

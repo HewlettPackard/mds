@@ -44,6 +44,11 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         h_marray_bool_t create_array(size_t)
         bool is_same_as(const h_array_bool_t&)
 
+    cdef cppclass h_const_array_bool_t "mds::api::const_array_type_handle<mds::api::kind::BOOL>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_bool_t create_array(size_t)
+        bool is_same_as(const h_const_array_bool_t&)
+
     cdef cppclass h_marray_bool_t:
         mv_bool frozen_read(size_t)
         mv_bool write(size_t, mv_bool)
@@ -51,12 +56,18 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         bool has_value()
         h_marray_base_t as_base()
         
+    # TODO: const_managed_array
     h_marray_bool_t create_bool_marray(size_t)
 
     cdef cppclass h_array_byte_t "mds::api::array_type_handle<mds::api::kind::BYTE>":
         # const_managed_type_handle<K> element_type()
         h_marray_byte_t create_array(size_t)
         bool is_same_as(const h_array_byte_t&)
+
+    cdef cppclass h_const_array_byte_t "mds::api::const_array_type_handle<mds::api::kind::BYTE>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_byte_t create_array(size_t)
+        bool is_same_as(const h_const_array_byte_t&)
 
     cdef cppclass h_marray_byte_t:
         mv_byte frozen_read(size_t)
@@ -70,12 +81,18 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         int8_t mul(const size_t&, const int8_t&)
         int8_t div(const size_t&, const int8_t&)
 
+    # TODO: const_managed_array
     h_marray_byte_t create_byte_marray(size_t)
 
     cdef cppclass h_array_ubyte_t "mds::api::array_type_handle<mds::api::kind::UBYTE>":
         # const_managed_type_handle<K> element_type()
         h_marray_ubyte_t create_array(size_t)
         bool is_same_as(const h_array_ubyte_t&)
+
+    cdef cppclass h_const_array_ubyte_t "mds::api::const_array_type_handle<mds::api::kind::UBYTE>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_ubyte_t create_array(size_t)
+        bool is_same_as(const h_const_array_ubyte_t&)
 
     cdef cppclass h_marray_ubyte_t:
         mv_ubyte frozen_read(size_t)
@@ -89,12 +106,18 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         uint8_t mul(const size_t&, const uint8_t&)
         uint8_t div(const size_t&, const uint8_t&)
 
+    # TODO: const_managed_array
     h_marray_ubyte_t create_ubyte_marray(size_t)
 
     cdef cppclass h_array_short_t "mds::api::array_type_handle<mds::api::kind::SHORT>":
         # const_managed_type_handle<K> element_type()
         h_marray_short_t create_array(size_t)
         bool is_same_as(const h_array_short_t&)
+
+    cdef cppclass h_const_array_short_t "mds::api::const_array_type_handle<mds::api::kind::SHORT>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_short_t create_array(size_t)
+        bool is_same_as(const h_const_array_short_t&)
 
     cdef cppclass h_marray_short_t:
         mv_short frozen_read(size_t)
@@ -108,12 +131,18 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         int16_t mul(const size_t&, const int16_t&)
         int16_t div(const size_t&, const int16_t&)
 
+    # TODO: const_managed_array
     h_marray_short_t create_short_marray(size_t)
 
     cdef cppclass h_array_ushort_t "mds::api::array_type_handle<mds::api::kind::USHORT>":
         # const_managed_type_handle<K> element_type()
         h_marray_ushort_t create_array(size_t)
         bool is_same_as(const h_array_ushort_t&)
+
+    cdef cppclass h_const_array_ushort_t "mds::api::const_array_type_handle<mds::api::kind::USHORT>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_ushort_t create_array(size_t)
+        bool is_same_as(const h_const_array_ushort_t&)
 
     cdef cppclass h_marray_ushort_t:
         mv_ushort frozen_read(size_t)
@@ -127,12 +156,18 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         uint16_t mul(const size_t&, const uint16_t&)
         uint16_t div(const size_t&, const uint16_t&)
 
+    # TODO: const_managed_array
     h_marray_ushort_t create_ushort_marray(size_t)
 
     cdef cppclass h_array_int_t "mds::api::array_type_handle<mds::api::kind::INT>":
         # const_managed_type_handle<K> element_type()
         h_marray_int_t create_array(size_t)
         bool is_same_as(const h_array_int_t&)
+
+    cdef cppclass h_const_array_int_t "mds::api::const_array_type_handle<mds::api::kind::INT>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_int_t create_array(size_t)
+        bool is_same_as(const h_const_array_int_t&)
 
     cdef cppclass h_marray_int_t:
         mv_int frozen_read(size_t)
@@ -146,12 +181,18 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         int32_t mul(const size_t&, const int32_t&)
         int32_t div(const size_t&, const int32_t&)
 
+    # TODO: const_managed_array
     h_marray_int_t create_int_marray(size_t)
 
     cdef cppclass h_array_uint_t "mds::api::array_type_handle<mds::api::kind::UINT>":
         # const_managed_type_handle<K> element_type()
         h_marray_uint_t create_array(size_t)
         bool is_same_as(const h_array_uint_t&)
+
+    cdef cppclass h_const_array_uint_t "mds::api::const_array_type_handle<mds::api::kind::UINT>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_uint_t create_array(size_t)
+        bool is_same_as(const h_const_array_uint_t&)
 
     cdef cppclass h_marray_uint_t:
         mv_uint frozen_read(size_t)
@@ -165,12 +206,18 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         uint32_t mul(const size_t&, const uint32_t&)
         uint32_t div(const size_t&, const uint32_t&)
 
+    # TODO: const_managed_array
     h_marray_uint_t create_uint_marray(size_t)
 
     cdef cppclass h_array_long_t "mds::api::array_type_handle<mds::api::kind::LONG>":
         # const_managed_type_handle<K> element_type()
         h_marray_long_t create_array(size_t)
         bool is_same_as(const h_array_long_t&)
+
+    cdef cppclass h_const_array_long_t "mds::api::const_array_type_handle<mds::api::kind::LONG>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_long_t create_array(size_t)
+        bool is_same_as(const h_const_array_long_t&)
 
     cdef cppclass h_marray_long_t:
         mv_long frozen_read(size_t)
@@ -184,12 +231,18 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         int64_t mul(const size_t&, const int64_t&)
         int64_t div(const size_t&, const int64_t&)
 
+    # TODO: const_managed_array
     h_marray_long_t create_long_marray(size_t)
 
     cdef cppclass h_array_ulong_t "mds::api::array_type_handle<mds::api::kind::ULONG>":
         # const_managed_type_handle<K> element_type()
         h_marray_ulong_t create_array(size_t)
         bool is_same_as(const h_array_ulong_t&)
+
+    cdef cppclass h_const_array_ulong_t "mds::api::const_array_type_handle<mds::api::kind::ULONG>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_ulong_t create_array(size_t)
+        bool is_same_as(const h_const_array_ulong_t&)
 
     cdef cppclass h_marray_ulong_t:
         mv_ulong frozen_read(size_t)
@@ -203,12 +256,18 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         uint64_t mul(const size_t&, const uint64_t&)
         uint64_t div(const size_t&, const uint64_t&)
 
+    # TODO: const_managed_array
     h_marray_ulong_t create_ulong_marray(size_t)
 
     cdef cppclass h_array_float_t "mds::api::array_type_handle<mds::api::kind::FLOAT>":
         # const_managed_type_handle<K> element_type()
         h_marray_float_t create_array(size_t)
         bool is_same_as(const h_array_float_t&)
+
+    cdef cppclass h_const_array_float_t "mds::api::const_array_type_handle<mds::api::kind::FLOAT>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_float_t create_array(size_t)
+        bool is_same_as(const h_const_array_float_t&)
 
     cdef cppclass h_marray_float_t:
         mv_float frozen_read(size_t)
@@ -222,12 +281,18 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         float mul(const size_t&, const float&)
         float div(const size_t&, const float&)
 
+    # TODO: const_managed_array
     h_marray_float_t create_float_marray(size_t)
 
     cdef cppclass h_array_double_t "mds::api::array_type_handle<mds::api::kind::DOUBLE>":
         # const_managed_type_handle<K> element_type()
         h_marray_double_t create_array(size_t)
         bool is_same_as(const h_array_double_t&)
+
+    cdef cppclass h_const_array_double_t "mds::api::const_array_type_handle<mds::api::kind::DOUBLE>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_double_t create_array(size_t)
+        bool is_same_as(const h_const_array_double_t&)
 
     cdef cppclass h_marray_double_t:
         mv_double frozen_read(size_t)
@@ -241,6 +306,7 @@ cdef extern from "helpers.h" namespace "mds::python::types":
         double mul(const size_t&, const double&)
         double div(const size_t&, const double&)
 
+    # TODO: const_managed_array
     h_marray_double_t create_double_marray(size_t)
 
 # END INJECTION
