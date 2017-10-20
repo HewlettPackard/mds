@@ -58,8 +58,8 @@ class TypeInfo():
         self.title_array_cinit = f"{self.title_array}_Inplace"
 
         self.title_record_field = f"MDS{self.title}RecordField"
-        self.title_record_field_reference = f"MDS{self.title_record_field}Reference"
-        self.title_const_record_field_reference = f"MDSConst{self.title_record_field}Reference"
+        self.title_record_field_reference = f"MDS{self.title}RecordFieldReference"
+        self.title_const_record_field_reference = f"MDSConst{self.title}RecordFieldReference"
         self.title_record_member = f"MDS{self.title}RecordMember"
         self.title_const_record_member = f"MDSConst{self.title}RecordMember"
         

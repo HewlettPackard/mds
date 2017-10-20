@@ -37,7 +37,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         # TODO uniform_key uuid()
 
 cdef extern from "helpers.h" namespace "mds::python::types":
-# START INJECTION | tmpl_array_wrapper
+# START INJECTION | tmpl_api_arrays
 
     cdef cppclass h_array_bool_t "mds::api::array_type_handle<mds::api::kind::BOOL>":
         # const_managed_type_handle<K> element_type()

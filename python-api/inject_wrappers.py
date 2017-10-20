@@ -110,8 +110,8 @@ def generate_and_inject_all_sources(dry_run=True, root=os.getcwd(), exts=('pyx',
 #  Primitives
 # =========================================================================
 
-def tmpl_primitive_wrapper(t: TypeInfo) -> str:
-    return f"""
+def tmpl_api_primitives(t: TypeInfo) -> str:
+    compiled = f"""
     # BEGIN {t.api}
 
     cdef cppclass {t.managed_value} "mds::api::api_type<{t.kind}>":
@@ -139,9 +139,26 @@ def tmpl_primitive_wrapper(t: TypeInfo) -> str:
     cdef {t.const_primitive} {t.const_managed_type_handle} "mds::api::managed_type_handle<{t.kind}>"()
     cdef {t.c_type} to_core_val "mds::api::to_core_val<{t.kind}>" (const {t.managed_value}&)
 """
+    return compiled
 
-def tmpl_int_primitive_bounds(t: TypeInfo) -> str:
-    return f"""
+def tmpl_primitives(t: TypeInfo) -> str:
+    compiled = f"""
+cdef class {t.title}({t.primitive_parent}):
+
+    cdef {t.managed_value} _value
+
+    def __cinit__(self, value):  # TODO: Set the value in _value
+        value = self._sanitize(value)
+
+    def _to_python(self):
+        return to_core_val(self._value)
+
+    def _to_mds(self):  # TODO: This needs to update _value
+        pass
+"""
+
+    if t.taxonomy == TypeInfo.MDS_INTEGRAL:
+        compiled += f"""
     property MIN:
         def __get__(self):
             return {t.bounds.min}
@@ -150,33 +167,35 @@ def tmpl_int_primitive_bounds(t: TypeInfo) -> str:
         def __get__(self):
             return {t.bounds.max} 
 """
+    return compiled
 
 # =========================================================================
 #  Namespaces
 # =========================================================================
 
-def tmpl_namespace_wrapper(t: TypeInfo) -> str:
-    return f"""
+def tmpl_api_namespaces(t: TypeInfo) -> str:
+    compiled = f"""
         {t.c_type} lookup "lookup<{t.kind},mds::core::kind_type<{t.kind}>,false,true>"(interned_string_handle, const {t.primitive}&)
         {t.managed_array} lookup "lookup<{t.kind},false,true>"(const interned_string_handle&, const {t.array}&)
         bool bind "bind<{t.kind}>"(interned_string_handle, {t.c_type})
     """
+    return compiled
 
 # =========================================================================
 #  Records
 # =========================================================================
 
-def tmpl_record_field_wrapper_math(t: TypeInfo) -> str:
-    return f"""
+def tmpl_api_records(t: TypeInfo) -> str:
+    EXTRA = ""
+    compiled = ""
+
+    if t.use_atomic_math:
+        EXTRA = f"""
         {t.c_type} add(const managed_record_handle&, {t.c_type})
         {t.c_type} sub(const managed_record_handle&, {t.c_type})
         {t.c_type} mul(const managed_record_handle&, {t.c_type})
         {t.c_type} div(const managed_record_handle&, {t.c_type})
 """
-
-def tmpl_record_field_wrapper(t: TypeInfo) -> str:
-    EXTRA = tmpl_record_field_wrapper_math(t) if t.use_atomic_math else ""
-    compiled = ""
 
     for prefix in ("", "const_"):
         wrapper_name = t.record_field if prefix == "" else t.const_record_field
@@ -200,7 +219,7 @@ def tmpl_record_field_wrapper(t: TypeInfo) -> str:
     return compiled
 
 def tmpl_record_field(t: TypeInfo) -> str:
-    return f"""
+    compiled = f"""
 cdef class {t.title_record_field}(MDSRecordFieldBase):
     cdef:
         {t.record_field} _handle
@@ -217,13 +236,14 @@ cdef class {t.title_record_field}(MDSRecordFieldBase):
 
         return {t.title_record_field_reference}
 """
+    return compiled
 
 def tmpl_record_field_reference(t: TypeInfo) -> str:
     """
     TODO:
         1. Change to python 3 annotation when upgrade to Cython 0.28
     """
-    retval = f"""
+    compiled = f"""
 cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBase):
     cdef:
         {t.record_field} _field_handle
@@ -250,7 +270,7 @@ cdef class {t.title_record_field_reference}({t.title_const_record_field_referenc
 """
     
     if t.use_atomic_math:
-        retval += f"""
+        compiled += f"""
     def __iadd__(self, other):
         self._field_handle.add(self._record_handle, <{t.c_type}> (other))
 
@@ -264,10 +284,10 @@ cdef class {t.title_record_field_reference}({t.title_const_record_field_referenc
         self._field_handle.div(self._record_handle, <{t.c_type}> (other))
 """
 
-    return retval
+    return compiled
 
 def tmpl_record_member(t: TypeInfo) -> str:
-    retval = f"""
+    compiled = f"""
 cdef class {t.title_const_record_member}(MDSConstRecordMemberBase):
     cdef {t.c_type} _cached_val
 
@@ -300,7 +320,7 @@ cdef class {t.title_record_member}(MDSRecordMemberBase):
         self._field_ref().write(<{t.c_type}> value);
 """
     if t.use_atomic_math:
-            retval += f"""
+        compiled += f"""
     def __iadd__(self, other):
         ref = self._field_ref()
         ref += other
@@ -318,33 +338,14 @@ cdef class {t.title_record_member}(MDSRecordMemberBase):
         ref /= other
 """
 
-    return retval
+    return compiled
 
 # =========================================================================
 #  Arrays
 # =========================================================================
 
-def tmpl_concrete_array(t: TypeInfo) -> str:
-    primitive_extra = ""
-
-    if t.taxonomy == TypeInfo.MDS_INTEGRAL:
-        primitive_extra = tmpl_int_primitive_bounds(t)
-
-    s = f"""
-cdef class {t.title}({t.primitive_parent}):
-
-    cdef {t.managed_value} _value
-
-    def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
-
-    def _to_python(self):
-        return to_core_val(self._value)
-
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
-    {primitive_extra}
-
+def tmpl_array(t: TypeInfo) -> str:
+    compiled = f"""
 cdef inline {t.title_array_cinit}({t.title_array} cls, size_t length):
     cls._handle = {t.f_create_array}(length)
 
@@ -369,35 +370,53 @@ cdef class {t.title_array}({t.array_parent}):
         self._handle.write(index, {t.managed_value}(value))
     
     def copy(self):
-        retval = {t.title_array}(len(self))
+        cdef:
+            size_t i = 0
+            size_t n = len(self)
 
-        for i in range(len(self)):
+        retval = {t.title_array}(length=len(self))
+
+        for i in range(n):
             retval[i] = self[i]
 
         return retval
 """
 
+    if t.use_atomic_math:
+        compiled += f"""
+    def __iadd__(self, other):
+        return self._handle.add(self._last_index, <{t.c_type}> other)
+
+    def __isub__(self, other):
+        return self._handle.sub(self._last_index, <{t.c_type}> other)
+
+    def __imul__(self, other):
+        return self._handle.mul(self._last_index, <{t.c_type}> other)
+
+    def __idiv__(self, other):
+        return self._handle.div(self._last_index, <{t.c_type}> other)
+"""
+
     # Sometimes we need to be creative to coerce the correct Python type
     if t.python_type is not None:
-        s += f"""
+        compiled += f"""
     property dtype:
         def __get__(self):
             return type({t.python_type})
 """
-    return s
+    return compiled
 
-def tmpl_array_wrapper_math(t: TypeInfo) -> str:
-    return f"""
+def tmpl_api_arrays(t: TypeInfo) -> str:
+    EXTRA = ""
+
+    if t.use_atomic_math:
+        EXTRA = f"""
         {t.c_type} add(const size_t&, const {t.c_type}&)
         {t.c_type} sub(const size_t&, const {t.c_type}&)
         {t.c_type} mul(const size_t&, const {t.c_type}&)
         {t.c_type} div(const size_t&, const {t.c_type}&)
 """
-
-def tmpl_array_wrapper(t: TypeInfo) -> str:
-    EXTRA = tmpl_array_wrapper_math(t) if t.use_atomic_math else ""
-
-    return f"""
+    compiled = f"""
     cdef cppclass {t.array} "mds::api::array_type_handle<{t.kind}>":
         # const_managed_type_handle<K> element_type()
         {t.managed_array} create_array(size_t)
@@ -412,6 +431,7 @@ def tmpl_array_wrapper(t: TypeInfo) -> str:
         {EXTRA}
     {t.managed_array} {t.f_create_array}(size_t)
 """
+    return compiled
 
 # =========================================================================
 #  Run

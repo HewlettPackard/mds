@@ -48,7 +48,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         #@staticmethod
         #namespace_handle from_path(Iter start, Iter end)
     
-# START INJECTION | tmpl_namespace_wrapper
+# START INJECTION | tmpl_api_namespaces
 
         bool lookup "lookup<mds::api::kind::BOOL,mds::core::kind_type<mds::api::kind::BOOL>,false,true>"(interned_string_handle, const h_mbool_t&)
         h_marray_bool_t lookup "lookup<mds::api::kind::BOOL,false,true>"(const interned_string_handle&, const h_array_bool_t&)

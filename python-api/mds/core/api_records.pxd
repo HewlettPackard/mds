@@ -85,7 +85,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         @staticmethod
         record_type_handle declare(const interned_string_handle&, const_record_type_handle&)
 
-# START INJECTION | tmpl_record_field_wrapper
+# START INJECTION | tmpl_api_records
 
     cdef cppclass h_rfield_bool_t "mds::api::record_field_handle<mds::api::kind::BOOL>":
         h_rfield_bool_t()

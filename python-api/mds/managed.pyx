@@ -78,16 +78,6 @@ cdef class ConstError(Exception):
 # =========================================================================
 
 cdef class MDSPrimitiveBase(MDSObject):
-    # TODO: Use the API's math operation to ensure atomicity
-
-    def __int__(self):
-        pass
-
-    def __long__(self):
-        pass
-
-    def __float__(self):
-        pass
 
     def _sanitize(self, value):
         return value
@@ -98,12 +88,41 @@ cdef class MDSPrimitiveBase(MDSObject):
     def _to_mds(self):
         raise NotImplementedError("Specialization required.")
 
-    property python_copy:
-        def __get__(self):
-            raise NotImplementedError("Specialization required.")
-
 
 cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
+
+    def __int__(self):
+        pass
+
+    def __long__(self):
+        pass
+
+    def __float__(self):
+        pass
+
+    def __add__(self, other):
+        pass
+
+    def __sub__(self, other):
+        pass
+
+    def __mul__(self, other):
+        pass
+
+    def __div__(self, other):
+        pass
+
+    def __iadd__(self, other):
+        pass
+
+    def __isub__(self, other):
+        pass
+
+    def __imul__(self, other):
+        pass
+
+    def __idiv__(self, other):
+        pass
 
     def _sanitize(self, value):
         if isinstance(value, float):
@@ -129,6 +148,7 @@ cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
 
 
 cdef class MDSFloatPrimitiveBase(MDSPrimitiveBase):
+    # TODO, Can I inherit from IntegralBase for math ops?
     pass
 
 # =========================================================================
@@ -136,6 +156,7 @@ cdef class MDSFloatPrimitiveBase(MDSPrimitiveBase):
 # =========================================================================
 
 cdef class MDSArrayBase(MDSObject):
+    cdef size_t _last_index
     
     def _index_bounds_check(self, index):
          # TODO: Need to handle slices. Should this be a new array?
@@ -157,6 +178,9 @@ cdef class MDSArrayBase(MDSObject):
 
     def __getitem__(self, index):
         index = self._index_bounds_check(index)
+
+        # We store this for in-place ops
+        self._last_index = index
         return self._to_python(index)
 
     def __setitem__(self, index, value):
@@ -190,12 +214,6 @@ cdef class MDSArrayBase(MDSObject):
 
         return c
 
-    def sort(self):
-        return NotImplemented # TODO Implement this
-
-    def reverse(self):
-        return NotImplemented # TODO Implement this
-
     def copy(self):
         raise NotImplementedError('Specialization of MDSArrayBase required')
  
@@ -227,6 +245,519 @@ cdef class MDSFloatArrayBase(MDSArrayBase):
     property dtype:
         def __get__(self):
             return type(1.0)
+
+# START INJECTION | tmpl_array
+
+cdef inline BoolArray_Inplace(BoolArray cls, size_t length):
+    cls._handle = create_bool_marray(length)
+
+cdef class BoolArray(MDSArrayBase):
+
+    cdef h_marray_bool_t _handle
+    _primitive = Bool
+
+    def __cinit__(self, length=None):
+        if length is not None:
+            BoolArray_Inplace(self, length)
+
+    def __len__(self):
+        return self._handle.size()
+
+    def _to_python(self, index):
+        return to_core_val(self._handle.frozen_read(index))
+
+    def _to_mds(self, index, value):
+        # Delegate bounds checking etc. to the primitive wrapper
+        wrapped = self._primitive(value)
+        self._handle.write(index, mv_bool(value))
+    
+    def copy(self):
+        cdef:
+            size_t i = 0
+            size_t n = len(self)
+
+        retval = BoolArray(length=len(self))
+
+        for i in range(n):
+            retval[i] = self[i]
+
+        return retval
+
+    property dtype:
+        def __get__(self):
+            return type(True)
+
+cdef inline ByteArray_Inplace(ByteArray cls, size_t length):
+    cls._handle = create_byte_marray(length)
+
+cdef class ByteArray(MDSIntArrayBase):
+
+    cdef h_marray_byte_t _handle
+    _primitive = Byte
+
+    def __cinit__(self, length=None):
+        if length is not None:
+            ByteArray_Inplace(self, length)
+
+    def __len__(self):
+        return self._handle.size()
+
+    def _to_python(self, index):
+        return to_core_val(self._handle.frozen_read(index))
+
+    def _to_mds(self, index, value):
+        # Delegate bounds checking etc. to the primitive wrapper
+        wrapped = self._primitive(value)
+        self._handle.write(index, mv_byte(value))
+    
+    def copy(self):
+        cdef:
+            size_t i = 0
+            size_t n = len(self)
+
+        retval = ByteArray(length=len(self))
+
+        for i in range(n):
+            retval[i] = self[i]
+
+        return retval
+
+    def __iadd__(self, other):
+        return self._handle.add(self._last_index, <int8_t> other)
+
+    def __isub__(self, other):
+        return self._handle.sub(self._last_index, <int8_t> other)
+
+    def __imul__(self, other):
+        return self._handle.mul(self._last_index, <int8_t> other)
+
+    def __idiv__(self, other):
+        return self._handle.div(self._last_index, <int8_t> other)
+
+cdef inline UByteArray_Inplace(UByteArray cls, size_t length):
+    cls._handle = create_ubyte_marray(length)
+
+cdef class UByteArray(MDSIntArrayBase):
+
+    cdef h_marray_ubyte_t _handle
+    _primitive = UByte
+
+    def __cinit__(self, length=None):
+        if length is not None:
+            UByteArray_Inplace(self, length)
+
+    def __len__(self):
+        return self._handle.size()
+
+    def _to_python(self, index):
+        return to_core_val(self._handle.frozen_read(index))
+
+    def _to_mds(self, index, value):
+        # Delegate bounds checking etc. to the primitive wrapper
+        wrapped = self._primitive(value)
+        self._handle.write(index, mv_ubyte(value))
+    
+    def copy(self):
+        cdef:
+            size_t i = 0
+            size_t n = len(self)
+
+        retval = UByteArray(length=len(self))
+
+        for i in range(n):
+            retval[i] = self[i]
+
+        return retval
+
+    def __iadd__(self, other):
+        return self._handle.add(self._last_index, <uint8_t> other)
+
+    def __isub__(self, other):
+        return self._handle.sub(self._last_index, <uint8_t> other)
+
+    def __imul__(self, other):
+        return self._handle.mul(self._last_index, <uint8_t> other)
+
+    def __idiv__(self, other):
+        return self._handle.div(self._last_index, <uint8_t> other)
+
+cdef inline ShortArray_Inplace(ShortArray cls, size_t length):
+    cls._handle = create_short_marray(length)
+
+cdef class ShortArray(MDSIntArrayBase):
+
+    cdef h_marray_short_t _handle
+    _primitive = Short
+
+    def __cinit__(self, length=None):
+        if length is not None:
+            ShortArray_Inplace(self, length)
+
+    def __len__(self):
+        return self._handle.size()
+
+    def _to_python(self, index):
+        return to_core_val(self._handle.frozen_read(index))
+
+    def _to_mds(self, index, value):
+        # Delegate bounds checking etc. to the primitive wrapper
+        wrapped = self._primitive(value)
+        self._handle.write(index, mv_short(value))
+    
+    def copy(self):
+        cdef:
+            size_t i = 0
+            size_t n = len(self)
+
+        retval = ShortArray(length=len(self))
+
+        for i in range(n):
+            retval[i] = self[i]
+
+        return retval
+
+    def __iadd__(self, other):
+        return self._handle.add(self._last_index, <int16_t> other)
+
+    def __isub__(self, other):
+        return self._handle.sub(self._last_index, <int16_t> other)
+
+    def __imul__(self, other):
+        return self._handle.mul(self._last_index, <int16_t> other)
+
+    def __idiv__(self, other):
+        return self._handle.div(self._last_index, <int16_t> other)
+
+cdef inline UShortArray_Inplace(UShortArray cls, size_t length):
+    cls._handle = create_ushort_marray(length)
+
+cdef class UShortArray(MDSIntArrayBase):
+
+    cdef h_marray_ushort_t _handle
+    _primitive = UShort
+
+    def __cinit__(self, length=None):
+        if length is not None:
+            UShortArray_Inplace(self, length)
+
+    def __len__(self):
+        return self._handle.size()
+
+    def _to_python(self, index):
+        return to_core_val(self._handle.frozen_read(index))
+
+    def _to_mds(self, index, value):
+        # Delegate bounds checking etc. to the primitive wrapper
+        wrapped = self._primitive(value)
+        self._handle.write(index, mv_ushort(value))
+    
+    def copy(self):
+        cdef:
+            size_t i = 0
+            size_t n = len(self)
+
+        retval = UShortArray(length=len(self))
+
+        for i in range(n):
+            retval[i] = self[i]
+
+        return retval
+
+    def __iadd__(self, other):
+        return self._handle.add(self._last_index, <uint16_t> other)
+
+    def __isub__(self, other):
+        return self._handle.sub(self._last_index, <uint16_t> other)
+
+    def __imul__(self, other):
+        return self._handle.mul(self._last_index, <uint16_t> other)
+
+    def __idiv__(self, other):
+        return self._handle.div(self._last_index, <uint16_t> other)
+
+cdef inline IntArray_Inplace(IntArray cls, size_t length):
+    cls._handle = create_int_marray(length)
+
+cdef class IntArray(MDSIntArrayBase):
+
+    cdef h_marray_int_t _handle
+    _primitive = Int
+
+    def __cinit__(self, length=None):
+        if length is not None:
+            IntArray_Inplace(self, length)
+
+    def __len__(self):
+        return self._handle.size()
+
+    def _to_python(self, index):
+        return to_core_val(self._handle.frozen_read(index))
+
+    def _to_mds(self, index, value):
+        # Delegate bounds checking etc. to the primitive wrapper
+        wrapped = self._primitive(value)
+        self._handle.write(index, mv_int(value))
+    
+    def copy(self):
+        cdef:
+            size_t i = 0
+            size_t n = len(self)
+
+        retval = IntArray(length=len(self))
+
+        for i in range(n):
+            retval[i] = self[i]
+
+        return retval
+
+    def __iadd__(self, other):
+        return self._handle.add(self._last_index, <int32_t> other)
+
+    def __isub__(self, other):
+        return self._handle.sub(self._last_index, <int32_t> other)
+
+    def __imul__(self, other):
+        return self._handle.mul(self._last_index, <int32_t> other)
+
+    def __idiv__(self, other):
+        return self._handle.div(self._last_index, <int32_t> other)
+
+cdef inline UIntArray_Inplace(UIntArray cls, size_t length):
+    cls._handle = create_uint_marray(length)
+
+cdef class UIntArray(MDSIntArrayBase):
+
+    cdef h_marray_uint_t _handle
+    _primitive = UInt
+
+    def __cinit__(self, length=None):
+        if length is not None:
+            UIntArray_Inplace(self, length)
+
+    def __len__(self):
+        return self._handle.size()
+
+    def _to_python(self, index):
+        return to_core_val(self._handle.frozen_read(index))
+
+    def _to_mds(self, index, value):
+        # Delegate bounds checking etc. to the primitive wrapper
+        wrapped = self._primitive(value)
+        self._handle.write(index, mv_uint(value))
+    
+    def copy(self):
+        cdef:
+            size_t i = 0
+            size_t n = len(self)
+
+        retval = UIntArray(length=len(self))
+
+        for i in range(n):
+            retval[i] = self[i]
+
+        return retval
+
+    def __iadd__(self, other):
+        return self._handle.add(self._last_index, <uint32_t> other)
+
+    def __isub__(self, other):
+        return self._handle.sub(self._last_index, <uint32_t> other)
+
+    def __imul__(self, other):
+        return self._handle.mul(self._last_index, <uint32_t> other)
+
+    def __idiv__(self, other):
+        return self._handle.div(self._last_index, <uint32_t> other)
+
+cdef inline LongArray_Inplace(LongArray cls, size_t length):
+    cls._handle = create_long_marray(length)
+
+cdef class LongArray(MDSIntArrayBase):
+
+    cdef h_marray_long_t _handle
+    _primitive = Long
+
+    def __cinit__(self, length=None):
+        if length is not None:
+            LongArray_Inplace(self, length)
+
+    def __len__(self):
+        return self._handle.size()
+
+    def _to_python(self, index):
+        return to_core_val(self._handle.frozen_read(index))
+
+    def _to_mds(self, index, value):
+        # Delegate bounds checking etc. to the primitive wrapper
+        wrapped = self._primitive(value)
+        self._handle.write(index, mv_long(value))
+    
+    def copy(self):
+        cdef:
+            size_t i = 0
+            size_t n = len(self)
+
+        retval = LongArray(length=len(self))
+
+        for i in range(n):
+            retval[i] = self[i]
+
+        return retval
+
+    def __iadd__(self, other):
+        return self._handle.add(self._last_index, <int64_t> other)
+
+    def __isub__(self, other):
+        return self._handle.sub(self._last_index, <int64_t> other)
+
+    def __imul__(self, other):
+        return self._handle.mul(self._last_index, <int64_t> other)
+
+    def __idiv__(self, other):
+        return self._handle.div(self._last_index, <int64_t> other)
+
+cdef inline ULongArray_Inplace(ULongArray cls, size_t length):
+    cls._handle = create_ulong_marray(length)
+
+cdef class ULongArray(MDSIntArrayBase):
+
+    cdef h_marray_ulong_t _handle
+    _primitive = ULong
+
+    def __cinit__(self, length=None):
+        if length is not None:
+            ULongArray_Inplace(self, length)
+
+    def __len__(self):
+        return self._handle.size()
+
+    def _to_python(self, index):
+        return to_core_val(self._handle.frozen_read(index))
+
+    def _to_mds(self, index, value):
+        # Delegate bounds checking etc. to the primitive wrapper
+        wrapped = self._primitive(value)
+        self._handle.write(index, mv_ulong(value))
+    
+    def copy(self):
+        cdef:
+            size_t i = 0
+            size_t n = len(self)
+
+        retval = ULongArray(length=len(self))
+
+        for i in range(n):
+            retval[i] = self[i]
+
+        return retval
+
+    def __iadd__(self, other):
+        return self._handle.add(self._last_index, <uint64_t> other)
+
+    def __isub__(self, other):
+        return self._handle.sub(self._last_index, <uint64_t> other)
+
+    def __imul__(self, other):
+        return self._handle.mul(self._last_index, <uint64_t> other)
+
+    def __idiv__(self, other):
+        return self._handle.div(self._last_index, <uint64_t> other)
+
+cdef inline FloatArray_Inplace(FloatArray cls, size_t length):
+    cls._handle = create_float_marray(length)
+
+cdef class FloatArray(MDSFloatArrayBase):
+
+    cdef h_marray_float_t _handle
+    _primitive = Float
+
+    def __cinit__(self, length=None):
+        if length is not None:
+            FloatArray_Inplace(self, length)
+
+    def __len__(self):
+        return self._handle.size()
+
+    def _to_python(self, index):
+        return to_core_val(self._handle.frozen_read(index))
+
+    def _to_mds(self, index, value):
+        # Delegate bounds checking etc. to the primitive wrapper
+        wrapped = self._primitive(value)
+        self._handle.write(index, mv_float(value))
+    
+    def copy(self):
+        cdef:
+            size_t i = 0
+            size_t n = len(self)
+
+        retval = FloatArray(length=len(self))
+
+        for i in range(n):
+            retval[i] = self[i]
+
+        return retval
+
+    def __iadd__(self, other):
+        return self._handle.add(self._last_index, <float> other)
+
+    def __isub__(self, other):
+        return self._handle.sub(self._last_index, <float> other)
+
+    def __imul__(self, other):
+        return self._handle.mul(self._last_index, <float> other)
+
+    def __idiv__(self, other):
+        return self._handle.div(self._last_index, <float> other)
+
+cdef inline DoubleArray_Inplace(DoubleArray cls, size_t length):
+    cls._handle = create_double_marray(length)
+
+cdef class DoubleArray(MDSFloatArrayBase):
+
+    cdef h_marray_double_t _handle
+    _primitive = Double
+
+    def __cinit__(self, length=None):
+        if length is not None:
+            DoubleArray_Inplace(self, length)
+
+    def __len__(self):
+        return self._handle.size()
+
+    def _to_python(self, index):
+        return to_core_val(self._handle.frozen_read(index))
+
+    def _to_mds(self, index, value):
+        # Delegate bounds checking etc. to the primitive wrapper
+        wrapped = self._primitive(value)
+        self._handle.write(index, mv_double(value))
+    
+    def copy(self):
+        cdef:
+            size_t i = 0
+            size_t n = len(self)
+
+        retval = DoubleArray(length=len(self))
+
+        for i in range(n):
+            retval[i] = self[i]
+
+        return retval
+
+    def __iadd__(self, other):
+        return self._handle.add(self._last_index, <double> other)
+
+    def __isub__(self, other):
+        return self._handle.sub(self._last_index, <double> other)
+
+    def __imul__(self, other):
+        return self._handle.mul(self._last_index, <double> other)
+
+    def __idiv__(self, other):
+        return self._handle.div(self._last_index, <double> other)
+
+# END INJECTION
 
 # =========================================================================
 #  Records
@@ -530,9 +1061,9 @@ cdef class MDSBoolRecordField(MDSRecordFieldBase):
     @staticmethod
     def get_reference_type(make_const=False) -> type:
         if make_const:
-            return MDSConstMDSBoolRecordFieldReference
+            return MDSConstBoolRecordFieldReference
 
-        return MDSMDSBoolRecordFieldReference
+        return MDSBoolRecordFieldReference
 
 cdef class MDSByteRecordField(MDSRecordFieldBase):
     cdef:
@@ -546,9 +1077,9 @@ cdef class MDSByteRecordField(MDSRecordFieldBase):
     @staticmethod
     def get_reference_type(make_const=False) -> type:
         if make_const:
-            return MDSConstMDSByteRecordFieldReference
+            return MDSConstByteRecordFieldReference
 
-        return MDSMDSByteRecordFieldReference
+        return MDSByteRecordFieldReference
 
 cdef class MDSUByteRecordField(MDSRecordFieldBase):
     cdef:
@@ -562,9 +1093,9 @@ cdef class MDSUByteRecordField(MDSRecordFieldBase):
     @staticmethod
     def get_reference_type(make_const=False) -> type:
         if make_const:
-            return MDSConstMDSUByteRecordFieldReference
+            return MDSConstUByteRecordFieldReference
 
-        return MDSMDSUByteRecordFieldReference
+        return MDSUByteRecordFieldReference
 
 cdef class MDSShortRecordField(MDSRecordFieldBase):
     cdef:
@@ -578,9 +1109,9 @@ cdef class MDSShortRecordField(MDSRecordFieldBase):
     @staticmethod
     def get_reference_type(make_const=False) -> type:
         if make_const:
-            return MDSConstMDSShortRecordFieldReference
+            return MDSConstShortRecordFieldReference
 
-        return MDSMDSShortRecordFieldReference
+        return MDSShortRecordFieldReference
 
 cdef class MDSUShortRecordField(MDSRecordFieldBase):
     cdef:
@@ -594,9 +1125,9 @@ cdef class MDSUShortRecordField(MDSRecordFieldBase):
     @staticmethod
     def get_reference_type(make_const=False) -> type:
         if make_const:
-            return MDSConstMDSUShortRecordFieldReference
+            return MDSConstUShortRecordFieldReference
 
-        return MDSMDSUShortRecordFieldReference
+        return MDSUShortRecordFieldReference
 
 cdef class MDSIntRecordField(MDSRecordFieldBase):
     cdef:
@@ -610,9 +1141,9 @@ cdef class MDSIntRecordField(MDSRecordFieldBase):
     @staticmethod
     def get_reference_type(make_const=False) -> type:
         if make_const:
-            return MDSConstMDSIntRecordFieldReference
+            return MDSConstIntRecordFieldReference
 
-        return MDSMDSIntRecordFieldReference
+        return MDSIntRecordFieldReference
 
 cdef class MDSUIntRecordField(MDSRecordFieldBase):
     cdef:
@@ -626,9 +1157,9 @@ cdef class MDSUIntRecordField(MDSRecordFieldBase):
     @staticmethod
     def get_reference_type(make_const=False) -> type:
         if make_const:
-            return MDSConstMDSUIntRecordFieldReference
+            return MDSConstUIntRecordFieldReference
 
-        return MDSMDSUIntRecordFieldReference
+        return MDSUIntRecordFieldReference
 
 cdef class MDSLongRecordField(MDSRecordFieldBase):
     cdef:
@@ -642,9 +1173,9 @@ cdef class MDSLongRecordField(MDSRecordFieldBase):
     @staticmethod
     def get_reference_type(make_const=False) -> type:
         if make_const:
-            return MDSConstMDSLongRecordFieldReference
+            return MDSConstLongRecordFieldReference
 
-        return MDSMDSLongRecordFieldReference
+        return MDSLongRecordFieldReference
 
 cdef class MDSULongRecordField(MDSRecordFieldBase):
     cdef:
@@ -658,9 +1189,9 @@ cdef class MDSULongRecordField(MDSRecordFieldBase):
     @staticmethod
     def get_reference_type(make_const=False) -> type:
         if make_const:
-            return MDSConstMDSULongRecordFieldReference
+            return MDSConstULongRecordFieldReference
 
-        return MDSMDSULongRecordFieldReference
+        return MDSULongRecordFieldReference
 
 cdef class MDSFloatRecordField(MDSRecordFieldBase):
     cdef:
@@ -674,9 +1205,9 @@ cdef class MDSFloatRecordField(MDSRecordFieldBase):
     @staticmethod
     def get_reference_type(make_const=False) -> type:
         if make_const:
-            return MDSConstMDSFloatRecordFieldReference
+            return MDSConstFloatRecordFieldReference
 
-        return MDSMDSFloatRecordFieldReference
+        return MDSFloatRecordFieldReference
 
 cdef class MDSDoubleRecordField(MDSRecordFieldBase):
     cdef:
@@ -690,9 +1221,9 @@ cdef class MDSDoubleRecordField(MDSRecordFieldBase):
     @staticmethod
     def get_reference_type(make_const=False) -> type:
         if make_const:
-            return MDSConstMDSDoubleRecordFieldReference
+            return MDSConstDoubleRecordFieldReference
 
-        return MDSMDSDoubleRecordFieldReference
+        return MDSDoubleRecordFieldReference
 
 # END INJECTION
 
@@ -740,7 +1271,7 @@ cdef class MDSRecordFieldReferenceBase(MDSConstRecordFieldReferenceBase):
 
 # START INJECTION | tmpl_record_field_reference
 
-cdef class MDSConstMDSBoolRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstBoolRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_bool_t _field_handle
         Record _record
@@ -759,12 +1290,12 @@ cdef class MDSConstMDSBoolRecordFieldReference(MDSConstRecordFieldReferenceBase)
         return retval
 
 
-cdef class MDSMDSBoolRecordFieldReference(MDSConstMDSBoolRecordFieldReference):
+cdef class MDSBoolRecordFieldReference(MDSConstBoolRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <bool> (value))
 
-cdef class MDSConstMDSByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_byte_t _field_handle
         Record _record
@@ -783,7 +1314,7 @@ cdef class MDSConstMDSByteRecordFieldReference(MDSConstRecordFieldReferenceBase)
         return retval
 
 
-cdef class MDSMDSByteRecordFieldReference(MDSConstMDSByteRecordFieldReference):
+cdef class MDSByteRecordFieldReference(MDSConstByteRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <int8_t> (value))
@@ -800,7 +1331,7 @@ cdef class MDSMDSByteRecordFieldReference(MDSConstMDSByteRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <int8_t> (other))
 
-cdef class MDSConstMDSUByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstUByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_ubyte_t _field_handle
         Record _record
@@ -819,7 +1350,7 @@ cdef class MDSConstMDSUByteRecordFieldReference(MDSConstRecordFieldReferenceBase
         return retval
 
 
-cdef class MDSMDSUByteRecordFieldReference(MDSConstMDSUByteRecordFieldReference):
+cdef class MDSUByteRecordFieldReference(MDSConstUByteRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <uint8_t> (value))
@@ -836,7 +1367,7 @@ cdef class MDSMDSUByteRecordFieldReference(MDSConstMDSUByteRecordFieldReference)
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <uint8_t> (other))
 
-cdef class MDSConstMDSShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_short_t _field_handle
         Record _record
@@ -855,7 +1386,7 @@ cdef class MDSConstMDSShortRecordFieldReference(MDSConstRecordFieldReferenceBase
         return retval
 
 
-cdef class MDSMDSShortRecordFieldReference(MDSConstMDSShortRecordFieldReference):
+cdef class MDSShortRecordFieldReference(MDSConstShortRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <int16_t> (value))
@@ -872,7 +1403,7 @@ cdef class MDSMDSShortRecordFieldReference(MDSConstMDSShortRecordFieldReference)
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <int16_t> (other))
 
-cdef class MDSConstMDSUShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstUShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_ushort_t _field_handle
         Record _record
@@ -891,7 +1422,7 @@ cdef class MDSConstMDSUShortRecordFieldReference(MDSConstRecordFieldReferenceBas
         return retval
 
 
-cdef class MDSMDSUShortRecordFieldReference(MDSConstMDSUShortRecordFieldReference):
+cdef class MDSUShortRecordFieldReference(MDSConstUShortRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <uint16_t> (value))
@@ -908,7 +1439,7 @@ cdef class MDSMDSUShortRecordFieldReference(MDSConstMDSUShortRecordFieldReferenc
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <uint16_t> (other))
 
-cdef class MDSConstMDSIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_int_t _field_handle
         Record _record
@@ -927,7 +1458,7 @@ cdef class MDSConstMDSIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
         return retval
 
 
-cdef class MDSMDSIntRecordFieldReference(MDSConstMDSIntRecordFieldReference):
+cdef class MDSIntRecordFieldReference(MDSConstIntRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <int32_t> (value))
@@ -944,7 +1475,7 @@ cdef class MDSMDSIntRecordFieldReference(MDSConstMDSIntRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <int32_t> (other))
 
-cdef class MDSConstMDSUIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstUIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_uint_t _field_handle
         Record _record
@@ -963,7 +1494,7 @@ cdef class MDSConstMDSUIntRecordFieldReference(MDSConstRecordFieldReferenceBase)
         return retval
 
 
-cdef class MDSMDSUIntRecordFieldReference(MDSConstMDSUIntRecordFieldReference):
+cdef class MDSUIntRecordFieldReference(MDSConstUIntRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <uint32_t> (value))
@@ -980,7 +1511,7 @@ cdef class MDSMDSUIntRecordFieldReference(MDSConstMDSUIntRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <uint32_t> (other))
 
-cdef class MDSConstMDSLongRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstLongRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_long_t _field_handle
         Record _record
@@ -999,7 +1530,7 @@ cdef class MDSConstMDSLongRecordFieldReference(MDSConstRecordFieldReferenceBase)
         return retval
 
 
-cdef class MDSMDSLongRecordFieldReference(MDSConstMDSLongRecordFieldReference):
+cdef class MDSLongRecordFieldReference(MDSConstLongRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <int64_t> (value))
@@ -1016,7 +1547,7 @@ cdef class MDSMDSLongRecordFieldReference(MDSConstMDSLongRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <int64_t> (other))
 
-cdef class MDSConstMDSULongRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstULongRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_ulong_t _field_handle
         Record _record
@@ -1035,7 +1566,7 @@ cdef class MDSConstMDSULongRecordFieldReference(MDSConstRecordFieldReferenceBase
         return retval
 
 
-cdef class MDSMDSULongRecordFieldReference(MDSConstMDSULongRecordFieldReference):
+cdef class MDSULongRecordFieldReference(MDSConstULongRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <uint64_t> (value))
@@ -1052,7 +1583,7 @@ cdef class MDSMDSULongRecordFieldReference(MDSConstMDSULongRecordFieldReference)
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <uint64_t> (other))
 
-cdef class MDSConstMDSFloatRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstFloatRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_float_t _field_handle
         Record _record
@@ -1071,7 +1602,7 @@ cdef class MDSConstMDSFloatRecordFieldReference(MDSConstRecordFieldReferenceBase
         return retval
 
 
-cdef class MDSMDSFloatRecordFieldReference(MDSConstMDSFloatRecordFieldReference):
+cdef class MDSFloatRecordFieldReference(MDSConstFloatRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <float> (value))
@@ -1088,7 +1619,7 @@ cdef class MDSMDSFloatRecordFieldReference(MDSConstMDSFloatRecordFieldReference)
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <float> (other))
 
-cdef class MDSConstMDSDoubleRecordFieldReference(MDSConstRecordFieldReferenceBase):
+cdef class MDSConstDoubleRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_double_t _field_handle
         Record _record
@@ -1107,7 +1638,7 @@ cdef class MDSConstMDSDoubleRecordFieldReference(MDSConstRecordFieldReferenceBas
         return retval
 
 
-cdef class MDSMDSDoubleRecordFieldReference(MDSConstMDSDoubleRecordFieldReference):
+cdef class MDSDoubleRecordFieldReference(MDSConstDoubleRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <double> (value))
@@ -2190,7 +2721,7 @@ cpdef inline is_record_type(obj):
 #  Primitives
 # =========================================================================
 
-# START INJECTION | tmpl_concrete_array
+# START INJECTION | tmpl_primitives
 
 cdef class Bool(MDSPrimitiveBase):
 
@@ -2204,42 +2735,6 @@ cdef class Bool(MDSPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
-    
-
-cdef inline BoolArray_Inplace(BoolArray cls, size_t length):
-    cls._handle = create_bool_marray(length)
-
-cdef class BoolArray(MDSArrayBase):
-
-    cdef h_marray_bool_t _handle
-    _primitive = Bool
-
-    def __cinit__(self, length=None):
-        if length is not None:
-            BoolArray_Inplace(self, length)
-
-    def __len__(self):
-        return self._handle.size()
-
-    def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
-
-    def _to_mds(self, index, value):
-        # Delegate bounds checking etc. to the primitive wrapper
-        wrapped = self._primitive(value)
-        self._handle.write(index, mv_bool(value))
-    
-    def copy(self):
-        retval = BoolArray(len(self))
-
-        for i in range(len(self)):
-            retval[i] = self[i]
-
-        return retval
-
-    property dtype:
-        def __get__(self):
-            return type(True)
 
 cdef class Byte(MDSIntPrimitiveBase):
 
@@ -2253,7 +2748,7 @@ cdef class Byte(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
-    
+
     property MIN:
         def __get__(self):
             return -128
@@ -2261,38 +2756,6 @@ cdef class Byte(MDSIntPrimitiveBase):
     property MAX:
         def __get__(self):
             return 127 
-
-
-cdef inline ByteArray_Inplace(ByteArray cls, size_t length):
-    cls._handle = create_byte_marray(length)
-
-cdef class ByteArray(MDSIntArrayBase):
-
-    cdef h_marray_byte_t _handle
-    _primitive = Byte
-
-    def __cinit__(self, length=None):
-        if length is not None:
-            ByteArray_Inplace(self, length)
-
-    def __len__(self):
-        return self._handle.size()
-
-    def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
-
-    def _to_mds(self, index, value):
-        # Delegate bounds checking etc. to the primitive wrapper
-        wrapped = self._primitive(value)
-        self._handle.write(index, mv_byte(value))
-    
-    def copy(self):
-        retval = ByteArray(len(self))
-
-        for i in range(len(self)):
-            retval[i] = self[i]
-
-        return retval
 
 cdef class UByte(MDSIntPrimitiveBase):
 
@@ -2306,7 +2769,7 @@ cdef class UByte(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
-    
+
     property MIN:
         def __get__(self):
             return 0
@@ -2314,38 +2777,6 @@ cdef class UByte(MDSIntPrimitiveBase):
     property MAX:
         def __get__(self):
             return 255 
-
-
-cdef inline UByteArray_Inplace(UByteArray cls, size_t length):
-    cls._handle = create_ubyte_marray(length)
-
-cdef class UByteArray(MDSIntArrayBase):
-
-    cdef h_marray_ubyte_t _handle
-    _primitive = UByte
-
-    def __cinit__(self, length=None):
-        if length is not None:
-            UByteArray_Inplace(self, length)
-
-    def __len__(self):
-        return self._handle.size()
-
-    def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
-
-    def _to_mds(self, index, value):
-        # Delegate bounds checking etc. to the primitive wrapper
-        wrapped = self._primitive(value)
-        self._handle.write(index, mv_ubyte(value))
-    
-    def copy(self):
-        retval = UByteArray(len(self))
-
-        for i in range(len(self)):
-            retval[i] = self[i]
-
-        return retval
 
 cdef class Short(MDSIntPrimitiveBase):
 
@@ -2359,7 +2790,7 @@ cdef class Short(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
-    
+
     property MIN:
         def __get__(self):
             return -32768
@@ -2367,38 +2798,6 @@ cdef class Short(MDSIntPrimitiveBase):
     property MAX:
         def __get__(self):
             return 32767 
-
-
-cdef inline ShortArray_Inplace(ShortArray cls, size_t length):
-    cls._handle = create_short_marray(length)
-
-cdef class ShortArray(MDSIntArrayBase):
-
-    cdef h_marray_short_t _handle
-    _primitive = Short
-
-    def __cinit__(self, length=None):
-        if length is not None:
-            ShortArray_Inplace(self, length)
-
-    def __len__(self):
-        return self._handle.size()
-
-    def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
-
-    def _to_mds(self, index, value):
-        # Delegate bounds checking etc. to the primitive wrapper
-        wrapped = self._primitive(value)
-        self._handle.write(index, mv_short(value))
-    
-    def copy(self):
-        retval = ShortArray(len(self))
-
-        for i in range(len(self)):
-            retval[i] = self[i]
-
-        return retval
 
 cdef class UShort(MDSIntPrimitiveBase):
 
@@ -2412,7 +2811,7 @@ cdef class UShort(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
-    
+
     property MIN:
         def __get__(self):
             return 0
@@ -2420,38 +2819,6 @@ cdef class UShort(MDSIntPrimitiveBase):
     property MAX:
         def __get__(self):
             return 65535 
-
-
-cdef inline UShortArray_Inplace(UShortArray cls, size_t length):
-    cls._handle = create_ushort_marray(length)
-
-cdef class UShortArray(MDSIntArrayBase):
-
-    cdef h_marray_ushort_t _handle
-    _primitive = UShort
-
-    def __cinit__(self, length=None):
-        if length is not None:
-            UShortArray_Inplace(self, length)
-
-    def __len__(self):
-        return self._handle.size()
-
-    def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
-
-    def _to_mds(self, index, value):
-        # Delegate bounds checking etc. to the primitive wrapper
-        wrapped = self._primitive(value)
-        self._handle.write(index, mv_ushort(value))
-    
-    def copy(self):
-        retval = UShortArray(len(self))
-
-        for i in range(len(self)):
-            retval[i] = self[i]
-
-        return retval
 
 cdef class Int(MDSIntPrimitiveBase):
 
@@ -2465,7 +2832,7 @@ cdef class Int(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
-    
+
     property MIN:
         def __get__(self):
             return -2147483648
@@ -2473,38 +2840,6 @@ cdef class Int(MDSIntPrimitiveBase):
     property MAX:
         def __get__(self):
             return 2147483647 
-
-
-cdef inline IntArray_Inplace(IntArray cls, size_t length):
-    cls._handle = create_int_marray(length)
-
-cdef class IntArray(MDSIntArrayBase):
-
-    cdef h_marray_int_t _handle
-    _primitive = Int
-
-    def __cinit__(self, length=None):
-        if length is not None:
-            IntArray_Inplace(self, length)
-
-    def __len__(self):
-        return self._handle.size()
-
-    def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
-
-    def _to_mds(self, index, value):
-        # Delegate bounds checking etc. to the primitive wrapper
-        wrapped = self._primitive(value)
-        self._handle.write(index, mv_int(value))
-    
-    def copy(self):
-        retval = IntArray(len(self))
-
-        for i in range(len(self)):
-            retval[i] = self[i]
-
-        return retval
 
 cdef class UInt(MDSIntPrimitiveBase):
 
@@ -2518,7 +2853,7 @@ cdef class UInt(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
-    
+
     property MIN:
         def __get__(self):
             return 0
@@ -2526,38 +2861,6 @@ cdef class UInt(MDSIntPrimitiveBase):
     property MAX:
         def __get__(self):
             return 4294967295 
-
-
-cdef inline UIntArray_Inplace(UIntArray cls, size_t length):
-    cls._handle = create_uint_marray(length)
-
-cdef class UIntArray(MDSIntArrayBase):
-
-    cdef h_marray_uint_t _handle
-    _primitive = UInt
-
-    def __cinit__(self, length=None):
-        if length is not None:
-            UIntArray_Inplace(self, length)
-
-    def __len__(self):
-        return self._handle.size()
-
-    def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
-
-    def _to_mds(self, index, value):
-        # Delegate bounds checking etc. to the primitive wrapper
-        wrapped = self._primitive(value)
-        self._handle.write(index, mv_uint(value))
-    
-    def copy(self):
-        retval = UIntArray(len(self))
-
-        for i in range(len(self)):
-            retval[i] = self[i]
-
-        return retval
 
 cdef class Long(MDSIntPrimitiveBase):
 
@@ -2571,7 +2874,7 @@ cdef class Long(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
-    
+
     property MIN:
         def __get__(self):
             return -9223372036854775808
@@ -2579,38 +2882,6 @@ cdef class Long(MDSIntPrimitiveBase):
     property MAX:
         def __get__(self):
             return 9223372036854775807 
-
-
-cdef inline LongArray_Inplace(LongArray cls, size_t length):
-    cls._handle = create_long_marray(length)
-
-cdef class LongArray(MDSIntArrayBase):
-
-    cdef h_marray_long_t _handle
-    _primitive = Long
-
-    def __cinit__(self, length=None):
-        if length is not None:
-            LongArray_Inplace(self, length)
-
-    def __len__(self):
-        return self._handle.size()
-
-    def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
-
-    def _to_mds(self, index, value):
-        # Delegate bounds checking etc. to the primitive wrapper
-        wrapped = self._primitive(value)
-        self._handle.write(index, mv_long(value))
-    
-    def copy(self):
-        retval = LongArray(len(self))
-
-        for i in range(len(self)):
-            retval[i] = self[i]
-
-        return retval
 
 cdef class ULong(MDSIntPrimitiveBase):
 
@@ -2624,7 +2895,7 @@ cdef class ULong(MDSIntPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
-    
+
     property MIN:
         def __get__(self):
             return 0
@@ -2632,38 +2903,6 @@ cdef class ULong(MDSIntPrimitiveBase):
     property MAX:
         def __get__(self):
             return 18446744073709551615 
-
-
-cdef inline ULongArray_Inplace(ULongArray cls, size_t length):
-    cls._handle = create_ulong_marray(length)
-
-cdef class ULongArray(MDSIntArrayBase):
-
-    cdef h_marray_ulong_t _handle
-    _primitive = ULong
-
-    def __cinit__(self, length=None):
-        if length is not None:
-            ULongArray_Inplace(self, length)
-
-    def __len__(self):
-        return self._handle.size()
-
-    def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
-
-    def _to_mds(self, index, value):
-        # Delegate bounds checking etc. to the primitive wrapper
-        wrapped = self._primitive(value)
-        self._handle.write(index, mv_ulong(value))
-    
-    def copy(self):
-        retval = ULongArray(len(self))
-
-        for i in range(len(self)):
-            retval[i] = self[i]
-
-        return retval
 
 cdef class Float(MDSFloatPrimitiveBase):
 
@@ -2677,38 +2916,6 @@ cdef class Float(MDSFloatPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
-    
-
-cdef inline FloatArray_Inplace(FloatArray cls, size_t length):
-    cls._handle = create_float_marray(length)
-
-cdef class FloatArray(MDSFloatArrayBase):
-
-    cdef h_marray_float_t _handle
-    _primitive = Float
-
-    def __cinit__(self, length=None):
-        if length is not None:
-            FloatArray_Inplace(self, length)
-
-    def __len__(self):
-        return self._handle.size()
-
-    def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
-
-    def _to_mds(self, index, value):
-        # Delegate bounds checking etc. to the primitive wrapper
-        wrapped = self._primitive(value)
-        self._handle.write(index, mv_float(value))
-    
-    def copy(self):
-        retval = FloatArray(len(self))
-
-        for i in range(len(self)):
-            retval[i] = self[i]
-
-        return retval
 
 cdef class Double(MDSFloatPrimitiveBase):
 
@@ -2722,37 +2929,5 @@ cdef class Double(MDSFloatPrimitiveBase):
 
     def _to_mds(self):  # TODO: This needs to update _value
         pass
-    
-
-cdef inline DoubleArray_Inplace(DoubleArray cls, size_t length):
-    cls._handle = create_double_marray(length)
-
-cdef class DoubleArray(MDSFloatArrayBase):
-
-    cdef h_marray_double_t _handle
-    _primitive = Double
-
-    def __cinit__(self, length=None):
-        if length is not None:
-            DoubleArray_Inplace(self, length)
-
-    def __len__(self):
-        return self._handle.size()
-
-    def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
-
-    def _to_mds(self, index, value):
-        # Delegate bounds checking etc. to the primitive wrapper
-        wrapped = self._primitive(value)
-        self._handle.write(index, mv_double(value))
-    
-    def copy(self):
-        retval = DoubleArray(len(self))
-
-        for i in range(len(self)):
-            retval[i] = self[i]
-
-        return retval
 
 # END INJECTION
