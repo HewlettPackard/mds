@@ -209,6 +209,13 @@ cdef class {t.title_record_field}(MDSRecordFieldBase):
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        if make_const:
+            return {t.title_const_record_field_reference}
+
+        return {t.title_record_field_reference}
 """
 
 def tmpl_record_field_reference(t: TypeInfo) -> str:
@@ -262,12 +269,15 @@ cdef class {t.title_record_field_reference}({t.title_const_record_field_referenc
 def tmpl_record_member(t: TypeInfo) -> str:
     retval = f"""
 cdef class {t.title_const_record_member}(MDSConstRecordMemberBase):
-    cdef:
-        {t.c_type} _cached_val
+    cdef {t.c_type} _cached_val
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return {t.title_record_field}()[self]
 
     def read(self):
         if not self._is_cached:
-            self._cached_val = self._field_ref.read()
+            field_ref = self._field_ref()
+            self._cached_val = field_ref.read()
             self._is_cached = True
 
         return self._cached_val
@@ -276,6 +286,9 @@ cdef class {t.title_const_record_member}(MDSConstRecordMemberBase):
         return self.read()
 
 cdef class {t.title_record_member}(MDSRecordMemberBase):
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return {t.title_record_field}()[self]
 
     def read(self):
         return self._field_ref().read()

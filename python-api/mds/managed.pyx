@@ -54,7 +54,6 @@ cdef class MDSObject(object):
     def _throw_const_error(self):
         raise ConstError("Can't assign value to const field.")
 
-    # TODO: memoize?
     property is_const:
         def __get__(self):
             raw_name = self.__class__.__name__
@@ -63,10 +62,6 @@ cdef class MDSObject(object):
                 raw_name = raw_name[3:]
 
             return raw_name.startswith("Const")
-
-    property is_null:
-        def __get__(self):
-            pass  # TODO
 
 # =========================================================================
 #  Errors & Exceptions
@@ -258,7 +253,6 @@ __RECORD_DECLARED_TYPES = dict()
 __RECORD_IDENTS = dict()
 
 cdef implant_record_handle(Record record, MDSConstRecordHandleWrapper wrapper):
-    # `decl` doesn't have a ._handle field...
     cdef const_record_type_handle handle = wrapper._handle
     record._handle = handle.create_record()
 
@@ -276,8 +270,6 @@ cdef class Record(MDSObject):
     cdef managed_record_handle _handle
 
     def __cinit__(self):
-        # This token.create just delegates to type_decl anywa...
-        # self._handle = managed_record_handle(token.create())
         if self.__class__ is Record:
             raise TypeError('Cannot directly instantiate Record; a subclass is required.')
 
@@ -305,7 +297,6 @@ cdef class Record(MDSObject):
         # This is the same as rt_decl ... type_decl() in that it instantiates
         # the RecordTypeDeclarion (rt_decl)
         # This will store a reference in __RECORD_DECLARED_TYPES in a thread-safe way
-        # - CreatorCache?
         __RECORD_IDENTS[cls.__name__] = ident
         MDSRecordTypeDeclaration(cls, cls.schema()).ensure_created()
         
@@ -330,7 +321,7 @@ cdef class Record(MDSObject):
         # Stll need to make the RecordMembers and bind them to this instance
         for label, field_member_pair in self.type_decl.get_field_member_pairs().items():
             field, member_t = field_member_pair.field, field_member_pair.member
-            self.__dict__[label] = member_t(self)
+            self.__dict__[label] = member_t(record=self)
 
     @classmethod
     def lookup_in_namespace(cls, ns: Namespace, *args) -> Record:
@@ -474,27 +465,33 @@ cdef class MDSRecordFieldBase(MDSObject):
     There are no const RecordField, const-ness is handled by RecordMembers
     """
 
-    def __getitem__(self, item):
-  # reference operator[](const mds_ptr<R> &r) const {
-  #   R::type_decl().ensure_created();
-  #   return reference(*this, *r);
-  # }
+    def __getitem__(self, MDSRecordMemberBase member):
+        # reference operator[](const mds_ptr<R> &r) const {
+        #   R::type_decl().ensure_created();
+        #   return reference(*this, *r);
+        # }
 
-  # reference operator[](R *r) const {
-  #   R::type_decl().ensure_created();
-  #   return reference(*this, *r);
-  # }
+        # reference operator[](R *r) const {
+        #   R::type_decl().ensure_created();
+        #   return reference(*this, *r);
+        # }
 
-  # const_reference operator[](const mds_ptr<const R> &r) const {
-  #   R::type_decl().ensure_created();
-  #   return const_reference(*this, *r);
-  # }
+        # const_reference operator[](const mds_ptr<const R> &r) const {
+        #   R::type_decl().ensure_created();
+        #   return const_reference(*this, *r);
+        # }
 
-  # const_reference operator[](const R *r) const {
-  #   R::type_decl().ensure_created();
-  #   return const_reference(*this, *r);
-  # }
-        pass
+        # const_reference operator[](const R *r) const {
+        #   R::type_decl().ensure_created();
+        #   return const_reference(*this, *r);
+        # }
+        member.record.type_decl.ensure_created()
+
+        # So whether the reference is const or not, surely that'd be on the member's
+        # constness, how to pass this through?
+        # TODO: Double check this on the CAPI, seems to make sense on a per-meber
+        #       granularity, though the CAPI looks like it's at Record
+        return self.get_reference_type(make_const=member.is_const)(self, member.record)
 
     def ensure_type(self):
         """
@@ -515,6 +512,10 @@ cdef class MDSRecordFieldBase(MDSObject):
     def to_core(val):
         pass
 
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        return None
+
 # START INJECTION | tmpl_record_field
 
 cdef class MDSBoolRecordField(MDSRecordFieldBase):
@@ -526,6 +527,13 @@ cdef class MDSBoolRecordField(MDSRecordFieldBase):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        if make_const:
+            return MDSConstMDSBoolRecordFieldReference
+
+        return MDSMDSBoolRecordFieldReference
+
 cdef class MDSByteRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_byte_t _handle
@@ -534,6 +542,13 @@ cdef class MDSByteRecordField(MDSRecordFieldBase):
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        if make_const:
+            return MDSConstMDSByteRecordFieldReference
+
+        return MDSMDSByteRecordFieldReference
 
 cdef class MDSUByteRecordField(MDSRecordFieldBase):
     cdef:
@@ -544,6 +559,13 @@ cdef class MDSUByteRecordField(MDSRecordFieldBase):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        if make_const:
+            return MDSConstMDSUByteRecordFieldReference
+
+        return MDSMDSUByteRecordFieldReference
+
 cdef class MDSShortRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_short_t _handle
@@ -552,6 +574,13 @@ cdef class MDSShortRecordField(MDSRecordFieldBase):
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        if make_const:
+            return MDSConstMDSShortRecordFieldReference
+
+        return MDSMDSShortRecordFieldReference
 
 cdef class MDSUShortRecordField(MDSRecordFieldBase):
     cdef:
@@ -562,6 +591,13 @@ cdef class MDSUShortRecordField(MDSRecordFieldBase):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        if make_const:
+            return MDSConstMDSUShortRecordFieldReference
+
+        return MDSMDSUShortRecordFieldReference
+
 cdef class MDSIntRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_int_t _handle
@@ -570,6 +606,13 @@ cdef class MDSIntRecordField(MDSRecordFieldBase):
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        if make_const:
+            return MDSConstMDSIntRecordFieldReference
+
+        return MDSMDSIntRecordFieldReference
 
 cdef class MDSUIntRecordField(MDSRecordFieldBase):
     cdef:
@@ -580,6 +623,13 @@ cdef class MDSUIntRecordField(MDSRecordFieldBase):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        if make_const:
+            return MDSConstMDSUIntRecordFieldReference
+
+        return MDSMDSUIntRecordFieldReference
+
 cdef class MDSLongRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_long_t _handle
@@ -588,6 +638,13 @@ cdef class MDSLongRecordField(MDSRecordFieldBase):
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        if make_const:
+            return MDSConstMDSLongRecordFieldReference
+
+        return MDSMDSLongRecordFieldReference
 
 cdef class MDSULongRecordField(MDSRecordFieldBase):
     cdef:
@@ -598,6 +655,13 @@ cdef class MDSULongRecordField(MDSRecordFieldBase):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        if make_const:
+            return MDSConstMDSULongRecordFieldReference
+
+        return MDSMDSULongRecordFieldReference
+
 cdef class MDSFloatRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_float_t _handle
@@ -607,6 +671,13 @@ cdef class MDSFloatRecordField(MDSRecordFieldBase):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
 
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        if make_const:
+            return MDSConstMDSFloatRecordFieldReference
+
+        return MDSMDSFloatRecordFieldReference
+
 cdef class MDSDoubleRecordField(MDSRecordFieldBase):
     cdef:
         h_rfield_double_t _handle
@@ -615,6 +686,13 @@ cdef class MDSDoubleRecordField(MDSRecordFieldBase):
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
         self._handle = self._mtype.field_in(rt._declared_type, name._ish, True)
+
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        if make_const:
+            return MDSConstMDSDoubleRecordFieldReference
+
+        return MDSMDSDoubleRecordFieldReference
 
 # END INJECTION
 
@@ -1057,29 +1135,33 @@ cdef class MDSRecordMemberBase(MDSObject):
     # using value_type = typename record_field<R,T>::value_type;
 
     def __cinit__(self, Record record, other=None):
-  # record_member()
-  #     : _enclosing(*typed_rc_token<R>::being_constructed()) {
-  #   assert(&_enclosing != nullptr);
-  # }
+        # record_member()
+        #     : _enclosing(*typed_rc_token<R>::being_constructed()) {
+        #   assert(&_enclosing != nullptr);
+        # }
         self._enclosing = record
 
         # Delegate this checking to the write() method
-  # explicit record_member(const value_type &v)
-  #     : record_member() {
-  #   write(v);
-  # }
-
-  # explicit record_member(const record_member &other)
-  #     : record_member() {
-  #   write(other);
-  # }
-
-
+        # explicit record_member(const value_type &v)
+        #     : record_member() {
+        #   write(v);
+        # }
+        # explicit record_member(const record_member &other)
+        #     : record_member() {
+        #   write(other);
+        # }
         if other is not None:
             self.write(other)
 
-    def _field_ref(self):
-        return MDSRecordFieldBase()[self]
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        """
+        Confusingly, in the MDS hierarchy, const_reference is the parent of
+        reference, so the return type of this function may look to restrictive.
+        It isn't.
+
+        This is the actual RecordField, not Base... Need to think about this
+        """
+        pass
 
     def read(self):
         pass
@@ -1090,37 +1172,37 @@ cdef class MDSRecordMemberBase(MDSObject):
     def write(self, value):
         pass
 
+    property record:
+        def __get__(self):
+            return self._enclosing
 
-cdef class MDSConstRecordMemberBase(MDSObject):
+
+cdef class MDSConstRecordMemberBase(MDSRecordMemberBase):
     cdef:
-        Record _enclosing
         bint _is_cached
- # public:
- #  using value_type = typename record_field<R,T>::value_type;
- # private:
- #  R &_enclosing;
- #  mutable value_type _cached_val;
- #  mutable bool _is_cached;
+    # public:
+    #  using value_type = typename record_field<R,T>::value_type;
+    # private:
+    #  R &_enclosing;
+    #  mutable value_type _cached_val;
+    #  mutable bool _is_cached;
 
-    def _field_ref(self):
-        return MDSRecordFieldBase()[self]
+    def __cinit__(self, Record record, other=None):
+        # record_const_member()
+        #     : _enclosing(*typed_rc_token<R>::being_constructed()),
+        #       _is_cached { false } {
+        #   assert(&_enclosing != nullptr);
+        # }
+        # explicit record_const_member(const value_type &v)
+        #     : _enclosing(*typed_rc_token<R>::being_constructed()),
+        #       _cached_val(_field_ref().write(v)),
+        #       _is_cached { true } {
+        # }
+        # explicit record_const_member(const record_const_member &other)
+        #     : record_const_member(other.read()) {
+        # }
+        self._enclosing = record
 
-    def __cinit__(self, other):
-  # record_const_member()
-  #     : _enclosing(*typed_rc_token<R>::being_constructed()),
-  #       _is_cached { false } {
-  #   assert(&_enclosing != nullptr);
-  # }
-
-  # explicit record_const_member(const value_type &v)
-  #     : _enclosing(*typed_rc_token<R>::being_constructed()),
-  #       _cached_val(_field_ref().write(v)),
-  #       _is_cached { true } {
-  # }
-
-  # explicit record_const_member(const record_const_member &other)
-  #     : record_const_member(other.read()) {
-  # }
         if other is not None:
             pass
 
@@ -1131,12 +1213,15 @@ cdef class MDSConstRecordMemberBase(MDSObject):
 # START INJECTION | tmpl_record_member
 
 cdef class MDSConstBoolRecordMember(MDSConstRecordMemberBase):
-    cdef:
-        bool _cached_val
+    cdef bool _cached_val
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSBoolRecordField()[self]
 
     def read(self):
         if not self._is_cached:
-            self._cached_val = self._field_ref.read()
+            field_ref = self._field_ref()
+            self._cached_val = field_ref.read()
             self._is_cached = True
 
         return self._cached_val
@@ -1145,6 +1230,9 @@ cdef class MDSConstBoolRecordMember(MDSConstRecordMemberBase):
         return self.read()
 
 cdef class MDSBoolRecordMember(MDSRecordMemberBase):
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSBoolRecordField()[self]
 
     def read(self):
         return self._field_ref().read()
@@ -1156,12 +1244,15 @@ cdef class MDSBoolRecordMember(MDSRecordMemberBase):
         self._field_ref().write(<bool> value);
 
 cdef class MDSConstByteRecordMember(MDSConstRecordMemberBase):
-    cdef:
-        int8_t _cached_val
+    cdef int8_t _cached_val
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSByteRecordField()[self]
 
     def read(self):
         if not self._is_cached:
-            self._cached_val = self._field_ref.read()
+            field_ref = self._field_ref()
+            self._cached_val = field_ref.read()
             self._is_cached = True
 
         return self._cached_val
@@ -1170,6 +1261,9 @@ cdef class MDSConstByteRecordMember(MDSConstRecordMemberBase):
         return self.read()
 
 cdef class MDSByteRecordMember(MDSRecordMemberBase):
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSByteRecordField()[self]
 
     def read(self):
         return self._field_ref().read()
@@ -1197,12 +1291,15 @@ cdef class MDSByteRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstUByteRecordMember(MDSConstRecordMemberBase):
-    cdef:
-        uint8_t _cached_val
+    cdef uint8_t _cached_val
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSUByteRecordField()[self]
 
     def read(self):
         if not self._is_cached:
-            self._cached_val = self._field_ref.read()
+            field_ref = self._field_ref()
+            self._cached_val = field_ref.read()
             self._is_cached = True
 
         return self._cached_val
@@ -1211,6 +1308,9 @@ cdef class MDSConstUByteRecordMember(MDSConstRecordMemberBase):
         return self.read()
 
 cdef class MDSUByteRecordMember(MDSRecordMemberBase):
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSUByteRecordField()[self]
 
     def read(self):
         return self._field_ref().read()
@@ -1238,12 +1338,15 @@ cdef class MDSUByteRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstShortRecordMember(MDSConstRecordMemberBase):
-    cdef:
-        int16_t _cached_val
+    cdef int16_t _cached_val
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSShortRecordField()[self]
 
     def read(self):
         if not self._is_cached:
-            self._cached_val = self._field_ref.read()
+            field_ref = self._field_ref()
+            self._cached_val = field_ref.read()
             self._is_cached = True
 
         return self._cached_val
@@ -1252,6 +1355,9 @@ cdef class MDSConstShortRecordMember(MDSConstRecordMemberBase):
         return self.read()
 
 cdef class MDSShortRecordMember(MDSRecordMemberBase):
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSShortRecordField()[self]
 
     def read(self):
         return self._field_ref().read()
@@ -1279,12 +1385,15 @@ cdef class MDSShortRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstUShortRecordMember(MDSConstRecordMemberBase):
-    cdef:
-        uint16_t _cached_val
+    cdef uint16_t _cached_val
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSUShortRecordField()[self]
 
     def read(self):
         if not self._is_cached:
-            self._cached_val = self._field_ref.read()
+            field_ref = self._field_ref()
+            self._cached_val = field_ref.read()
             self._is_cached = True
 
         return self._cached_val
@@ -1293,6 +1402,9 @@ cdef class MDSConstUShortRecordMember(MDSConstRecordMemberBase):
         return self.read()
 
 cdef class MDSUShortRecordMember(MDSRecordMemberBase):
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSUShortRecordField()[self]
 
     def read(self):
         return self._field_ref().read()
@@ -1320,12 +1432,15 @@ cdef class MDSUShortRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstIntRecordMember(MDSConstRecordMemberBase):
-    cdef:
-        int32_t _cached_val
+    cdef int32_t _cached_val
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSIntRecordField()[self]
 
     def read(self):
         if not self._is_cached:
-            self._cached_val = self._field_ref.read()
+            field_ref = self._field_ref()
+            self._cached_val = field_ref.read()
             self._is_cached = True
 
         return self._cached_val
@@ -1334,6 +1449,9 @@ cdef class MDSConstIntRecordMember(MDSConstRecordMemberBase):
         return self.read()
 
 cdef class MDSIntRecordMember(MDSRecordMemberBase):
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSIntRecordField()[self]
 
     def read(self):
         return self._field_ref().read()
@@ -1361,12 +1479,15 @@ cdef class MDSIntRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstUIntRecordMember(MDSConstRecordMemberBase):
-    cdef:
-        uint32_t _cached_val
+    cdef uint32_t _cached_val
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSUIntRecordField()[self]
 
     def read(self):
         if not self._is_cached:
-            self._cached_val = self._field_ref.read()
+            field_ref = self._field_ref()
+            self._cached_val = field_ref.read()
             self._is_cached = True
 
         return self._cached_val
@@ -1375,6 +1496,9 @@ cdef class MDSConstUIntRecordMember(MDSConstRecordMemberBase):
         return self.read()
 
 cdef class MDSUIntRecordMember(MDSRecordMemberBase):
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSUIntRecordField()[self]
 
     def read(self):
         return self._field_ref().read()
@@ -1402,12 +1526,15 @@ cdef class MDSUIntRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstLongRecordMember(MDSConstRecordMemberBase):
-    cdef:
-        int64_t _cached_val
+    cdef int64_t _cached_val
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSLongRecordField()[self]
 
     def read(self):
         if not self._is_cached:
-            self._cached_val = self._field_ref.read()
+            field_ref = self._field_ref()
+            self._cached_val = field_ref.read()
             self._is_cached = True
 
         return self._cached_val
@@ -1416,6 +1543,9 @@ cdef class MDSConstLongRecordMember(MDSConstRecordMemberBase):
         return self.read()
 
 cdef class MDSLongRecordMember(MDSRecordMemberBase):
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSLongRecordField()[self]
 
     def read(self):
         return self._field_ref().read()
@@ -1443,12 +1573,15 @@ cdef class MDSLongRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstULongRecordMember(MDSConstRecordMemberBase):
-    cdef:
-        uint64_t _cached_val
+    cdef uint64_t _cached_val
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSULongRecordField()[self]
 
     def read(self):
         if not self._is_cached:
-            self._cached_val = self._field_ref.read()
+            field_ref = self._field_ref()
+            self._cached_val = field_ref.read()
             self._is_cached = True
 
         return self._cached_val
@@ -1457,6 +1590,9 @@ cdef class MDSConstULongRecordMember(MDSConstRecordMemberBase):
         return self.read()
 
 cdef class MDSULongRecordMember(MDSRecordMemberBase):
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSULongRecordField()[self]
 
     def read(self):
         return self._field_ref().read()
@@ -1484,12 +1620,15 @@ cdef class MDSULongRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstFloatRecordMember(MDSConstRecordMemberBase):
-    cdef:
-        float _cached_val
+    cdef float _cached_val
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSFloatRecordField()[self]
 
     def read(self):
         if not self._is_cached:
-            self._cached_val = self._field_ref.read()
+            field_ref = self._field_ref()
+            self._cached_val = field_ref.read()
             self._is_cached = True
 
         return self._cached_val
@@ -1498,6 +1637,9 @@ cdef class MDSConstFloatRecordMember(MDSConstRecordMemberBase):
         return self.read()
 
 cdef class MDSFloatRecordMember(MDSRecordMemberBase):
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSFloatRecordField()[self]
 
     def read(self):
         return self._field_ref().read()
@@ -1525,12 +1667,15 @@ cdef class MDSFloatRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstDoubleRecordMember(MDSConstRecordMemberBase):
-    cdef:
-        double _cached_val
+    cdef double _cached_val
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSDoubleRecordField()[self]
 
     def read(self):
         if not self._is_cached:
-            self._cached_val = self._field_ref.read()
+            field_ref = self._field_ref()
+            self._cached_val = field_ref.read()
             self._is_cached = True
 
         return self._cached_val
@@ -1539,6 +1684,9 @@ cdef class MDSConstDoubleRecordMember(MDSConstRecordMemberBase):
         return self.read()
 
 cdef class MDSDoubleRecordMember(MDSRecordMemberBase):
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return MDSDoubleRecordField()[self]
 
     def read(self):
         return self._field_ref().read()
