@@ -2794,23 +2794,38 @@ cdef class Impl(object):
             for name in parts:
                 self.append(name)
 
+ctypedef fused strings:
+    str
+    String
+
+cdef __cast_to_mds_string(strings possible_str):
+    if type(possible_str) == str:
+        return String(possible_str)
+
+    return possible_str
+
+cdef __NAMESPACE_ROOT = None
+
+cdef bint __namespaces_equal(Namespace a, Namespace b):
+    return a._handle == b._handle
+
 
 cdef class Namespace(MDSObject):
+    cdef:
+        namespace_handle _handle
+        Namespace _parent
+        String _name
 
-    cdef namespace_handle _handle
-
-    def __cinit__(self):
-        """
-        Default instantiates to the global namespace.
-        """
-        self._handle = namespace_handle._global()
+    def __cinit__(self, Namespace parent, name):
+        self._parent = parent
+        self._name = __cast_to_mds_string(name)
 
     def __setitem__(self, key: PathTypes, value):
         cdef:
             interned_string_handle ish
             String definite
         
-        definite = self.__cast_to_mds_string(key)
+        definite = __cast_to_mds_string(key)
         ish = definite._ish
 
         # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
@@ -2830,47 +2845,82 @@ cdef class Namespace(MDSObject):
         else:
             return Namespace.from_path(path[:-1])[path[-1]]
 
-    def __cast_to_mds_string(self, possible_str: PathTypes) -> String:
-        if type(possible_str) == str:
-            return String(possible_str)
+    def resolve(self, p: Path, include_last=True) -> Namespace:
+        pass
 
-        return possible_str
-
-    def create_child(self, child_id: PathTypes, create_if_missing=True) -> Optional[Namespace]:
-        cdef:
-            interned_string_handle ish
-            namespace_handle handle
-            String definite
-
-        definite = self.__cast_to_mds_string(child_id)
-        ish = definite._ish
-        handle = self._handle.child_namespace(ish, <bint> create_if_missing)
-
-        if handle.is_null():
-            return None
-
-        return Namespace_Init(handle=handle)
-
-    @staticmethod
-    def get_global() -> Namespace:
-        return Namespace_Init(handle=namespace_handle._global())
-
-    @staticmethod
-    def from_path(path) -> Namespace:
-        # path = _split_path(path)
-        # path.reverse()
-        # ns = Namespace.get_global()
-
-        # while len(path):
-        #     ns = ns[path.pop()]
-
-        # return ns
+    def resolve_to_binding(self, p: Path) -> NameBinding:
         pass
 
     @staticmethod
-    def get_current():
-        # TODO: When is this set? Check the CAPI / JAPI
-        return Namespace_Init(handle=current_namespace())
+    def make(parent: Namespace, name: PathTypes):
+        initialize_base_task()  # Orig: ensure_thread_initialized()
+        return Namespace(parent=parent, name=name)
+
+    @staticmethod
+    def root():
+        global __NAMESPACE_ROOT
+
+        if __NAMESPACE_ROOT is None:
+            __NAMESPACE_ROOT = Namespace_Init(namespace_handle._global(), None, String())
+
+        return __NAMESPACE_ROOT
+
+    @staticmethod
+    def current():
+        # TODO: This originally passes back a reference, so it can be updated. See
+        #       Where and how this is used.
+        return Namespace.root()
+
+    def parent(self) -> Namespace:
+        # TODO: Const namespace?
+        if self.is_root():
+            return Namespace.root()
+
+        return self._parent
+
+    def name(self) -> String:
+        return self._name
+
+    def is_root(self):
+        return __namespaces_equal(self, Namespace.root()) # TODO Cython 0.27
+
+    @staticmethod
+    def from_path(path: PathTypes) -> Namespace:
+        p = Path.of(path)
+        base = Namespace.root() if p.is_absolute() else Namespace.current()
+        return base.resolve(p)
+
+    @staticmethod
+    def from_absolute_path(path: PathTypes) -> Namespace:
+        p = Path.of(path)
+        return Namespace.root().resolve(p)
+
+    # def create_child(self, child_id: PathTypes, create_if_missing=True) -> Optional[Namespace]:
+    #     cdef:
+    #         interned_string_handle ish
+    #         namespace_handle handle
+    #         String definite
+
+    #     definite = __cast_to_mds_string(child_id)
+    #     ish = definite._ish
+    #     handle = self._handle.child_namespace(ish, <bint> create_if_missing)
+
+    #     if handle.is_null():
+    #         return None
+
+    #     return Namespace_Init(handle=handle)
+
+
+    # @staticmethod
+    # def get_global() -> Namespace:
+    #     return Namespace_Init(handle=namespace_handle._global())
+
+
+
+    # @staticmethod
+    # def get_current():
+    #     # TODO: When is this set? Check the CAPI / JAPI
+    #     return Namespace_Init(handle=current_namespace())
 
     # property is_root:
     #     def __get__(self):
@@ -2887,11 +2937,20 @@ cdef class Namespace(MDSObject):
             return NamespaceSeparator
 
 
-cdef inline Namespace_Init(namespace_handle handle):
+cdef inline Namespace_Init(namespace_handle handle, Namespace parent, String name):
     initialize_base_task()
-    result = Namespace()
+    result = Namespace(parent=parent, name=name)
     result._handle = handle
     return result
+
+
+cdef class NameBinding(object):
+    pass
+
+
+cdef class TypedNameBinding(object):
+    pass
+
 
 # =========================================================================
 #  Helpers

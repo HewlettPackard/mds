@@ -39,6 +39,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         namespace_handle(const namespace_handle&)
         namespace_handle(namespace_handle&)
 
+        bool operator==(const namespace_handle)
+
         bool is_bound(const interned_string_handle&)
         bool is_null()
         namespace_handle child_namespace(const interned_string_handle&, bool)
