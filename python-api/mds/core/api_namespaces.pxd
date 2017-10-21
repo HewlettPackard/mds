@@ -30,6 +30,9 @@ from mds.core.api_primitives cimport *
 from mds.core.api_records cimport managed_record_handle
 from mds.core.api_strings cimport interned_string_handle, intern
 
+cdef extern from "helpers.h" namespace "mds::python::namespaces" nogil:
+    namespace_handle &current_namespace()
+
 cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass namespace_handle:
         namespace_handle()
@@ -37,6 +40,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         namespace_handle(namespace_handle&)
 
         bool is_bound(const interned_string_handle&)
+        bool is_null()
         namespace_handle child_namespace(const interned_string_handle&, bool)
 
         @staticmethod

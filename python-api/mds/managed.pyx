@@ -27,6 +27,9 @@ from itertools import chain
 
 from libcpp cimport bool
 from libcpp.string cimport string
+from libcpp.vector cimport vector
+
+from typing import Union, List, Optional
 
 from mds.core.api_strings cimport *
 from mds.core.api_arrays cimport *
@@ -2642,6 +2645,155 @@ cdef inline interned_string_handle extract_ish(String s):
 #  Namespace
 # =========================================================================
 
+PathTypes = Union[str, String]
+cdef NamespaceSeparator = "/"
+
+# cdef inline _split_path(path_t path):
+#     return path.split(Namespace.SEPARATOR) if isinstance(path, str) else path
+
+class IllegalPathException(Exception):
+    
+    def __init__(self, path: Path, *args, **kwargs):
+        self._path = path
+        super().__init__(*args, **kwargs)
+
+
+cdef class Path(object):
+    cdef:
+        Impl _ptr
+
+    def __cinit__(self, impl=None):
+        if isinstance(impl, Impl):
+            self._ptr = impl
+        else:
+            self._ptr = Impl()
+
+    @staticmethod
+    def of(cpts: List[Path]) -> Path:
+        return Path(impl=Impl(cpts))
+
+    def is_absolute(self):
+        return self._ptr.is_absolute()
+
+    def resolve(self, cpts: List[Path]) -> Path:
+        return Path(impl=self._ptr.resolve(cpts))
+
+    def __str__(self):
+        return str(self._ptr)
+
+
+cdef class Impl(object):
+    cdef:
+        bool absolutep
+        size_t initial_ups
+        list names
+
+    def __cinit__(self, cpts: List[Path]):
+        self.absolutep = False
+        self.initial_ups = 0
+        self.names = list()
+
+        self.extend(cpts)
+
+    def __str__(self):
+        printsep = self.absolutep
+        buff = ""
+
+        for i in range(self.initial_ups):
+            if printsep:
+                buff += NamespaceSeparator
+
+            buff += ".."
+            printsep = True
+
+        for s in self.names:
+            if printsep:
+                buf += NamespaceSeparator
+
+            buf += str(s)
+            printsep = True
+
+        return buff
+
+    def up_levels(self, size_t levels) -> None:
+        current = len(self.names)
+
+        if not self.absolutep and (levels > current):
+            self.initial_ups += levels - current
+
+    def reset_to_root(self) -> None:
+        self.names = list()
+        self.initial_ups = 0
+        self.absolutep = True
+
+    @staticmethod
+    def self_cpt() -> String:
+        return String(".")
+
+    @staticmethod
+    def up_cpt() -> String:
+        return String("..")
+
+    def append(self, cpt: String) -> None:
+        if cpt == self.self_cpt():
+            return
+        elif cpt == self.up_cpt():
+            self.up_levels(1)
+        else:
+            self.names.append(cpt)
+
+    def is_absolute(self):
+        return <bint> self.absolutep
+
+    def extend(self, cpts: List[Path], absolute=False) -> None:
+        if absolute:
+            self.reset_to_root()
+
+        for cpt in cpts:
+            self.append_cpt(cpt)
+
+    def resolve(self, cpts: List[Path]) -> Impl:
+        impl = Impl()
+        impl.names = self.names.copy()
+        impl.initial_ups = self.initial_ups
+        impl.absolutep = self.absolutep
+        impl.extend(cpts)
+
+        return impl
+
+    def append_cpt(self, cpt: Union[Path, String]) -> None:
+        cdef:
+            Impl impl
+            size_t ups
+
+        if isinstance(cpt, Path):
+            impl = cpt._ptr
+
+            if impl.absolutep:
+                self.reset_to_root()
+            else:
+                ups = impl.initial_ups
+
+                if ups:
+                    self.up_levels(ups)
+
+            self.names.extend(impl.names.copy())
+        else:  # TODO: Change this when String supports .split() and __contains__
+            delim = NamespaceSeparator
+            s = str(cpt)
+
+            if delim in s:
+                self.append(cpt)
+                return
+
+            if s.startswith(delim):
+                self.reset_to_root()
+
+            parts = [String(x) for x in s.split(delim)]
+
+            for name in parts:
+                self.append(name)
+
 
 cdef class Namespace(MDSObject):
 
@@ -2653,50 +2805,86 @@ cdef class Namespace(MDSObject):
         """
         self._handle = namespace_handle._global()
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: PathTypes, value):
         cdef:
-            interned_string_handle ish = convert_py_to_ish(key)
-            uint16_t val = value
+            interned_string_handle ish
+            String definite
+        
+        definite = self.__cast_to_mds_string(key)
+        ish = definite._ish
 
         # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
         # if not issubclass(type(value), MDSObject):
         #     raise TypeError('Cannot commit a non-MDS type into a MDS namespace')
 
         # TODO: get the boxed item to release its wrapped value into bind...
-        self._handle.bind(ish, val)
+        # self._handle.bind(ish, value)
 
-    def __getitem__(self, key):
-        # TODO: Need some type inference here, require explicit third param?
+    def __getitem__(self, path):
+        cdef interned_string_handle ish
+
+
+        if len(path) == 1:
+            retval = self._handle.lookup(ish, managed_ushort_type_handle())
+            return retval
+        else:
+            return Namespace.from_path(path[:-1])[path[-1]]
+
+    def __cast_to_mds_string(self, possible_str: PathTypes) -> String:
+        if type(possible_str) == str:
+            return String(possible_str)
+
+        return possible_str
+
+    def create_child(self, child_id: PathTypes, create_if_missing=True) -> Optional[Namespace]:
         cdef:
-            uint16_t retval
-            interned_string_handle ish = convert_py_to_ish(key)
+            interned_string_handle ish
+            namespace_handle handle
+            String definite
 
-        retval = self._handle.lookup(ish, managed_ushort_type_handle())
-        return retval
+        definite = self.__cast_to_mds_string(child_id)
+        ish = definite._ish
+        handle = self._handle.child_namespace(ish, <bint> create_if_missing)
 
-    def create_child(self, child_id, create_if_missing=True):
-        cdef:
-            interned_string_handle ish = convert_py_to_ish(child_id)
-        
-        return Namespace_Init(self._handle.child_namespace(ish, create_if_missing))
+        if handle.is_null():
+            return None
+
+        return Namespace_Init(handle=handle)
 
     @staticmethod
-    def from_path(path):
+    def get_global() -> Namespace:
+        return Namespace_Init(handle=namespace_handle._global())
+
+    @staticmethod
+    def from_path(path) -> Namespace:
+        # path = _split_path(path)
+        # path.reverse()
+        # ns = Namespace.get_global()
+
+        # while len(path):
+        #     ns = ns[path.pop()]
+
+        # return ns
         pass
 
     @staticmethod
-    def get_global():
-        return Namespace_Init(handle=namespace_handle._global())
+    def get_current():
+        # TODO: When is this set? Check the CAPI / JAPI
+        return Namespace_Init(handle=current_namespace())
 
-    property is_root:
-        def __get__(self):
-            # TODO: Implement this
-            pass
+    # property is_root:
+    #     def __get__(self):
+    #         # TODO: Implement this
+    #         pass
 
-    property parent:
+    # property parent:
+    #     def __get__(self):
+    #         # TODO: Implement this
+    #         pass
+
+    property SEPARATOR:
         def __get__(self):
-            # TODO: Implement this
-            pass
+            return NamespaceSeparator
 
 
 cdef inline Namespace_Init(namespace_handle handle):

@@ -51,6 +51,7 @@
 
 using h_isoctxt_t = ::mds::api::iso_context_handle;
 using h_task_t = ::mds::api::task_handle;
+using h_namespace_t = ::mds::api::namespace_handle;
 using ::mds::api::kind;
 
 namespace mds
@@ -187,6 +188,14 @@ namespace mds
             _TYPE_WRAPPER_(kind::FLOAT, float)
             _TYPE_WRAPPER_(kind::DOUBLE, double)
         } // End mds::python::types
+        namespace namespaces
+        {
+            static h_namespace_t &current_namespace()
+            {
+                static thread_local h_namespace_t ns = h_namespace_t::global();
+                return ns;
+            }
+        } // End mds::python::namespaces
     } // End mds::python
 } // End mds
 
