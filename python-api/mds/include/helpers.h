@@ -187,6 +187,11 @@ namespace mds
             _TYPE_WRAPPER_(kind::ULONG, ulong)
             _TYPE_WRAPPER_(kind::FLOAT, float)
             _TYPE_WRAPPER_(kind::DOUBLE, double)
+            _TYPE_WRAPPER_(kind::RECORD, record)
+            _TYPE_WRAPPER_(kind::STRING, string)
+
+            // _TYPE_WRAPPER_(kind::ARRAY, array)
+            // _TYPE_WRAPPER_(kind::NAMESPACE, namespace)
         } // End mds::python::types
         namespace namespaces
         {

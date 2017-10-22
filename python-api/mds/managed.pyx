@@ -86,22 +86,25 @@ cdef class MDSConstPrimitiveBase(MDSObject):
 
 cdef class MDSPrimitiveBase(MDSConstPrimitiveBase):
 
-    def _sanitize(self, value):
+    def _sanitize(self, value, existing):
+        if type(value) != type(existing):
+            raise TypeError("Need the same types, got `{}` and `{}`.".format(
+                    type(value), type(existing)
+                )
+            )
+
         return value
 
     def _to_python(self):
-        raise NotImplementedError("Specialization required.")
+        return NotImplemented
 
-    def _to_mds(self):
-        raise NotImplementedError("Specialization required.")
+    def update_value(self, value) -> None
+        return NotImplemented
 
 
 cdef class MDSConstIntPrimitiveBase(MDSPrimitiveBase):
 
     def __int__(self):
-        pass
-
-    def __long__(self):
         pass
 
     def __float__(self):
@@ -142,7 +145,7 @@ cdef class MDSIntPrimitiveBase(MDSConstIntPrimitiveBase):
     def __idiv__(self, other):
         pass
 
-    def _sanitize(self, value):
+    def _sanitize(self, value, existing):
         if isinstance(value, float):
             value = int(value)
         elif not isinstance(value, int):
@@ -2388,7 +2391,7 @@ cdef class String(MDSObject):
         interned_string_handle _ish
         int __iter_idx
 
-    def __cinit__(self, value=None):
+    def __cinit__(self, value=""):
         self._ish = convert_py_to_ish(value) 
         self._handle = managed_string_handle(self._ish)
         self.__iter_idx = 0
@@ -2645,11 +2648,8 @@ cdef inline interned_string_handle extract_ish(String s):
 #  Namespace
 # =========================================================================
 
-PathTypes = Union[str, String]
-cdef NamespaceSeparator = "/"
-
-# cdef inline _split_path(path_t path):
-#     return path.split(Namespace.SEPARATOR) if isinstance(path, str) else path
+PathTypes = Union[str, String, Path]
+cdef NAMESPACE_SEPARATOR = "/"
 
 class IllegalPathException(Exception):
     
@@ -2682,33 +2682,41 @@ cdef class Path(object):
         return str(self._ptr)
 
 
+cdef Impl __copy_Impl(Impl origin):
+    cdef impl = Impl()
+    impl._names = origin.names.copy()
+    impl._initial_ups = origin.initial_ups
+    impl._absolutep = origin.absolutep
+    return impl
+
+
 cdef class Impl(object):
     cdef:
-        bool absolutep
-        size_t initial_ups
-        list names
+        bool _absolutep
+        size_t _initial_ups
+        list _names
 
     def __cinit__(self, cpts: List[Path]):
-        self.absolutep = False
-        self.initial_ups = 0
-        self.names = list()
+        self._absolutep = False
+        self._initial_ups = 0
+        self._names = list()
 
         self.extend(cpts)
 
     def __str__(self):
-        printsep = self.absolutep
+        printsep = self._absolutep
         buff = ""
 
-        for i in range(self.initial_ups):
+        for i in range(self._initial_ups):
             if printsep:
-                buff += NamespaceSeparator
+                buff += NAMESPACE_SEPARATOR
 
             buff += ".."
             printsep = True
 
-        for s in self.names:
+        for s in self._names:
             if printsep:
-                buf += NamespaceSeparator
+                buf += NAMESPACE_SEPARATOR
 
             buf += str(s)
             printsep = True
@@ -2716,15 +2724,15 @@ cdef class Impl(object):
         return buff
 
     def up_levels(self, size_t levels) -> None:
-        current = len(self.names)
+        current = len(self._names)
 
-        if not self.absolutep and (levels > current):
-            self.initial_ups += levels - current
+        if not self._absolutep and (levels > current):
+            self._initial_ups += levels - current
 
     def reset_to_root(self) -> None:
-        self.names = list()
-        self.initial_ups = 0
-        self.absolutep = True
+        self._names = list()
+        self._initial_ups = 0
+        self._absolutep = True
 
     @staticmethod
     def self_cpt() -> String:
@@ -2740,10 +2748,10 @@ cdef class Impl(object):
         elif cpt == self.up_cpt():
             self.up_levels(1)
         else:
-            self.names.append(cpt)
+            self._names.append(cpt)
 
     def is_absolute(self):
-        return <bint> self.absolutep
+        return <bint> self._absolutep
 
     def extend(self, cpts: List[Path], absolute=False) -> None:
         if absolute:
@@ -2752,11 +2760,11 @@ cdef class Impl(object):
         for cpt in cpts:
             self.append_cpt(cpt)
 
+    def copy(self) -> Impl:
+        return __copy_Impl(self)
+
     def resolve(self, cpts: List[Path]) -> Impl:
-        impl = Impl()
-        impl.names = self.names.copy()
-        impl.initial_ups = self.initial_ups
-        impl.absolutep = self.absolutep
+        impl = self.copy()
         impl.extend(cpts)
 
         return impl
@@ -2769,17 +2777,17 @@ cdef class Impl(object):
         if isinstance(cpt, Path):
             impl = cpt._ptr
 
-            if impl.absolutep:
+            if impl._absolutep:
                 self.reset_to_root()
             else:
-                ups = impl.initial_ups
+                ups = impl._initial_ups
 
                 if ups:
                     self.up_levels(ups)
 
-            self.names.extend(impl.names.copy())
+            self._names.extend(impl._names.copy())
         else:  # TODO: Change this when String supports .split() and __contains__
-            delim = NamespaceSeparator
+            delim = NAMESPACE_SEPARATOR
             s = str(cpt)
 
             if delim in s:
@@ -2794,11 +2802,24 @@ cdef class Impl(object):
             for name in parts:
                 self.append(name)
 
+    property absolutep:
+        def __get__(self):
+            return self._absolutep
+
+    property names:
+        def __get__(self) -> List[String]:
+            return self._names
+
+    property initial_ups:
+        def __get__(self) -> int:
+            return self._initial_ups
+
+
 ctypedef fused strings:
     str
     String
 
-cdef __cast_to_mds_string(strings possible_str):
+cdef String __cast_to_mds_string(strings possible_str):
     if type(possible_str) == str:
         return String(possible_str)
 
@@ -2820,36 +2841,66 @@ cdef class Namespace(MDSObject):
         self._parent = parent
         self._name = __cast_to_mds_string(name)
 
-    def __setitem__(self, key: PathTypes, value):
-        cdef:
-            interned_string_handle ish
-            String definite
-        
-        definite = __cast_to_mds_string(key)
-        ish = definite._ish
+    def __setitem__(self, path: PathTypes, value: MDSObject):
+        binding = self[path]
+        binding.bind(value)
 
-        # TODO: Restrict value to MDSObject, or just do smallest-fitting-elem?
-        # if not issubclass(type(value), MDSObject):
-        #     raise TypeError('Cannot commit a non-MDS type into a MDS namespace')
+    def __getitem__(self, path: PathTypes) -> NameBinding:
+        """
+        So this is basically an amalgamation of at() and _at() in the CAPI
+        """
 
-        # TODO: get the boxed item to release its wrapped value into bind...
-        # self._handle.bind(ish, value)
+        if isinstance(path, str) or isinstance(path, String):
+            path = Path.of(path)
 
-    def __getitem__(self, path):
-        cdef interned_string_handle ish
+        if path.is_absolute():
+            raise IllegalPathException(path)
 
-
-        if len(path) == 1:
-            retval = self._handle.lookup(ish, managed_ushort_type_handle())
-            return retval
-        else:
-            return Namespace.from_path(path[:-1])[path[-1]]
+        return self.resolve_to_binding(path)
 
     def resolve(self, p: Path, include_last=True) -> Namespace:
-        pass
+        cdef:
+            Impl pi = p._ptr
+            Namespace iptr = self
+
+        if p.is_absolute():
+            iptr = Namespace.root()
+
+        for i in range pi.initial_ups:
+            if iptr.is_root():
+                raise IllegalPathException(p)
+
+            iptr = iptr.parent()
+
+        names = pi.names
+
+        if not names:
+            if include_last:
+                return iptr
+            if iptr.is_root():
+                raise IllegalPathException(p)
+
+            return iptr
+
+        n = len(names)
+
+        if not include_last:
+            n -= 1
+
+        for i in range(n):
+            nb = NameBinding(iptr, names[i])
+            iptr = nb.as_namespace()
+
+        return iptr
 
     def resolve_to_binding(self, p: Path) -> NameBinding:
-        pass
+        cdef:
+            Namespace ip = self.resolve(p=p, include_last=False)
+            Impl pi = p._ptr
+            list names = pi.names
+            String name = String() if len(names) == 0 else names[-1]
+
+        return NameBinding(ip, name)
 
     @staticmethod
     def make(parent: Namespace, name: PathTypes):
@@ -2915,26 +2966,14 @@ cdef class Namespace(MDSObject):
     # def get_global() -> Namespace:
     #     return Namespace_Init(handle=namespace_handle._global())
 
-
-
     # @staticmethod
     # def get_current():
     #     # TODO: When is this set? Check the CAPI / JAPI
     #     return Namespace_Init(handle=current_namespace())
 
-    # property is_root:
-    #     def __get__(self):
-    #         # TODO: Implement this
-    #         pass
-
-    # property parent:
-    #     def __get__(self):
-    #         # TODO: Implement this
-    #         pass
-
     property SEPARATOR:
         def __get__(self):
-            return NamespaceSeparator
+            return NAMESPACE_SEPARATOR
 
 
 cdef inline Namespace_Init(namespace_handle handle, Namespace parent, String name):
@@ -2944,13 +2983,99 @@ cdef inline Namespace_Init(namespace_handle handle, Namespace parent, String nam
     return result
 
 
-cdef class NameBinding(object):
-    pass
+cdef class NameBindingBase(object):
+    cdef:
+        Namespace _namespace
+        String _name
+
+    def __cinit__(self, Namespace ns, String n):
+        self._namespace = ns
+        self._name = n
+
+    def is_bound(self):
+        return self._namespace._handle.is_bound(self._name._handle)
+
+    def bind(self, *args, **kwargs):
+        pass
 
 
-cdef class TypedNameBinding(object):
-    pass
+cdef class NameBinding(NameBindingBase):
+    cdef:
+        bint _root_binding
 
+    def __cinit__(self, Namespace ns, String n):
+        super().__init__(ns, n)
+        self._root_binding = False
+
+        if not len(n):
+            if ns.is_root():
+                self._root_binding = True
+                self._namespace = None
+            else:
+                self._name = ns.name()
+                self._namespace = ns.parent()
+
+    def as_type(self, t: TypeInfo) -> TypedNameBinding:
+        # TODO: This doesn't take a third param, plus are Primitives the same as ManagedTypes?
+        mappings = {
+            # START INJECTION | tmpl_namespace_mapping
+            mds.typing.bool: BoolNameBinding,
+            # END INJECTION
+        }
+
+        if t not in mappings:
+            raise TypeError(f"No way to cast to type `t`")
+
+        return mappings[t](self._namespace, self._name)
+
+    def as_array(self, array_type: TypeInfo, make_const=False) -> MDSArrayBase:
+        # TODO: Const isn't set here
+        classname = array_type.title_const_array if make_const else array_type.title_array
+        klass = globals()[classname]
+        return self.as_type(klass)
+
+    def as_namespace(self) -> Namespace:
+        cdef:
+            managed_string_handle nhandle = self._name._handle
+            namespace_handle h = self._namespace._handle
+            namespace_handle ch
+
+        if self._root_binding:
+            return Namespace.root()
+
+        ch = h.child_namespace(nhandle, True)
+        return Namespace_Init(handle=ch, namespace=self._namespace, name=self._name)
+
+    def bind(self, value: MDSPrimitiveBase):
+        # cdef:
+        #     managed_string_handle nhandle = self._name._handle
+        #     namespace_handle h = self._namespace._handle
+        if not isinstance(value, MDSPrimitiveBase):
+            raise TypeError("Can't bind a non `MDSObject`")
+        # I can either do an if/elif for every possible wrapper, or just
+        # delegate to it. I'll do the latter.
+        # h.bind<managed_type<T>::kind>(nhandle, std::forward<T>(val));
+        # h.bind(nhandle, value)
+        value.bind_to_namespace(namespace=self._namespace, name=self._name)
+        
+
+cdef class TypedNameBinding(NameBindingBase):
+
+    def __cinit__(self, Namespace ns, String n):
+        super().__init__(ns, n)
+
+    def get(self):
+        pass
+
+    def bind(self, val):
+        pass
+
+    def check(self, allow_unbound=True):
+        pass
+
+# START INJECTION | tmpl_namespace_typed_bindings
+
+# END INJECTION
 
 # =========================================================================
 #  Helpers

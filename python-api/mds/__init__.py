@@ -51,7 +51,7 @@ class TypeInfo():
     def __repr__(self):
         return f'<MDS TypeInfo: {self.title} ({self.kind})>'
 
-    def __init__(self, api, c_type, taxonomy, python_type=None):
+    def __init__(self, apt: str, c_type: str, taxonomy: Taxonomy, py_type: type, dtype_extra=None):
         self.api = api
         self.title = api.title()
 
@@ -65,6 +65,9 @@ class TypeInfo():
         self.title_array_init = f"{self.title_array}_Init"
         self.title_array_cinit = f"{self.title_array}_Inplace"
 
+        self.title_name_binding = f"{self.title}NameBinding"
+        self.f_bind = f"bind_{api}"
+
         self.title_record_field = f"MDS{self.title}RecordField"
         self.title_record_field_reference = f"MDS{self.title}RecordFieldReference"
         self.title_const_record_field_reference = f"MDS{self.title_const}RecordFieldReference"
@@ -72,8 +75,10 @@ class TypeInfo():
         self.title_const_record_member = f"MDS{self.title_const}RecordMember"
         
         self.c_type = c_type
+        self.py_type_t = py_type
+        self.py_type = py_type.__name__
         self.taxonomy = taxonomy
-        self.python_type = python_type
+        self.dtype_extra = dtype_extra
 
         # MDS core aliases (masking templated types)
         self.primitive = f"h_m{api}_t"
@@ -125,17 +130,17 @@ class __MDSTypes(object):
     
     def __init__(self, *args, **kwargs):
         self.__repr = {
-            "bool": TypeInfo("bool", "bool", TypeInfo.MDS_BASE, "True"),
-            "byte": TypeInfo("byte", "int8_t", TypeInfo.MDS_INTEGRAL),
-            "ubyte": TypeInfo("ubyte", "uint8_t", TypeInfo.MDS_INTEGRAL),
-            "short": TypeInfo("short", "int16_t", TypeInfo.MDS_INTEGRAL),
-            "ushort": TypeInfo("ushort", "uint16_t", TypeInfo.MDS_INTEGRAL),
-            "int": TypeInfo("int", "int32_t", TypeInfo.MDS_INTEGRAL),
-            "uint": TypeInfo("uint", "uint32_t", TypeInfo.MDS_INTEGRAL),
-            "long": TypeInfo("long", "int64_t", TypeInfo.MDS_INTEGRAL),
-            "ulong": TypeInfo("ulong", "uint64_t", TypeInfo.MDS_INTEGRAL),
-            "float": TypeInfo("float", "float", TypeInfo.MDS_FLOATING),
-            "double": TypeInfo("double", "double", TypeInfo.MDS_FLOATING)
+            "bool": TypeInfo("bool", "bool", TypeInfo.MDS_BASE, bool, "True"),
+            "byte": TypeInfo("byte", "int8_t", TypeInfo.MDS_INTEGRAL, int),
+            "ubyte": TypeInfo("ubyte", "uint8_t", TypeInfo.MDS_INTEGRAL, int),
+            "short": TypeInfo("short", "int16_t", TypeInfo.MDS_INTEGRAL, int),
+            "ushort": TypeInfo("ushort", "uint16_t", TypeInfo.MDS_INTEGRAL, int),
+            "int": TypeInfo("int", "int32_t", TypeInfo.MDS_INTEGRAL, int),
+            "uint": TypeInfo("uint", "uint32_t", TypeInfo.MDS_INTEGRAL, int),
+            "long": TypeInfo("long", "int64_t", TypeInfo.MDS_INTEGRAL, int),
+            "ulong": TypeInfo("ulong", "uint64_t", TypeInfo.MDS_INTEGRAL, int),
+            "float": TypeInfo("float", "float", TypeInfo.MDS_FLOATING, float),
+            "double": TypeInfo("double", "double", TypeInfo.MDS_FLOATING, float)
         }
         self.__available = set(self.__repr.keys())
         super().__init__(*args, **kwargs)

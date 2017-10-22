@@ -140,24 +140,38 @@ def tmpl_api_primitives(t: TypeInfo) -> str:
 def tmpl_primitives(t: TypeInfo) -> str:
     compiled = ""
 
-    for title, parent in [(t.title, t.primitive_parent), (t.title_const, t.const_primitive_parent)]:
+    for title, parent in [(t.title, t.primitive_parent)]#, (t.title_const, t.const_primitive_parent)]:
         compiled += f"""
 cdef class {title}({parent}):
 
-    cdef {t.managed_value} _value
+    cdef:
+        {t.managed_value} _type
+        {t.py_type} _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
+        self._value = self._sanitize(value, self._value)
 
     def _to_python(self):
         return to_core_val(self._value)
 
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
+    def update_value(self, value) -> None:
+        self._value = self._sanitize(value, self._value)
+
+    def bind_to_namespace(self, namespace: Namespace, name: String) -> None:
+        cdef:
+            managed_string_handle nhandle = name._handle
+            namespace_handle h = namespace._handle
+
+            h.{f_bind}(nhandle, <{t.c_type}> self._value)
     """
 
         if t.taxonomy == TypeInfo.MDS_INTEGRAL:
             compiled += f"""
+    def __int__(self):
+        return self._value
+
+    # TODO: Arithmetic ops
+
     property MIN:
         def __get__(self):
             return {t.bounds.min}
@@ -176,8 +190,52 @@ def tmpl_api_namespaces(t: TypeInfo) -> str:
     compiled = f"""
         {t.c_type} lookup "lookup<{t.kind},mds::core::kind_type<{t.kind}>,false,true>"(interned_string_handle, const {t.primitive}&)
         {t.managed_array} lookup "lookup<{t.kind},false,true>"(const interned_string_handle&, const {t.array}&)
-        bool bind "bind<{t.kind}>"(interned_string_handle, {t.c_type})
+        bool bind_{t.api} "bind<{t.kind}>"(interned_string_handle, {t.c_type})
     """
+    return compiled
+
+def tmpl_namespace_mapping(t: TypeInfo) -> str:
+    compiled = f"            mds.typing.{t.api}: {t.title_name_binding},"
+    return compiled
+
+def tmpl_namespace_typed_bindings(t: TypeInfo) -> str:
+    compiled = f"""
+cdef class {t.title_name_binding}(TypedNameBinding):
+    cdef:
+        {t.const_primitive} _type
+
+    def get(self) -> Optional[object]:
+        cdef:
+            managed_string_handle nhandle = self._name._handle
+            {t.const_primitive} thandle = self._type
+            namespace_handle h = self._namespace._handle
+        try:
+            return <{t.c_type}> h.lookup(nhandle, thandle)) # this was from_core
+        except:  # unbound_name_ex
+            return None
+
+    def bind(self, {t.c_type} val) -> None:
+        cdef:
+            managed_string_handle nhandle = self._name._handle
+            namespace_handle h = self._namespace._handle
+
+        h.{t.f_bind}(nhandle, <{t.c_type}> val)
+
+    def check(self):
+        # Removed `allow_unbound` param as differentiating between the core
+        # exceptions isn't trivial in Cython, also has the benefit of meaning
+        # the return value of the function is consistent with its name.
+        cdef:
+            managed_string_handle nhandle = self._name._handle
+            {t.const_primitive} thandle = self._type
+            namespace_handle h = self._namespace._handle
+
+        try:
+            h.lookup(nhandle, thandle)
+            return True
+        except:
+            return False
+"""
     return compiled
 
 # =========================================================================
@@ -397,11 +455,11 @@ cdef class {t.title_array}({t.array_parent}):
 """
 
     # Sometimes we need to be creative to coerce the correct Python type
-    if t.python_type is not None:
+    if t.dtype_extra is not None:
         compiled += f"""
     property dtype:
         def __get__(self):
-            return type({t.python_type})
+            return type({t.dtype_extra})
 """
     return compiled
 
