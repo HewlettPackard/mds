@@ -53,6 +53,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         #namespace_handle from_existing_path(Iter start, Iter end)
         #@staticmethod
         #namespace_handle from_path(Iter start, Iter end)
+
+        uint64_t hash1()
     
 # START INJECTION | tmpl_api_namespaces
 
@@ -103,4 +105,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 # END INJECTION
 
         managed_record_handle lookup(interned_string_handle, record_type_handle)
-
+        # int8_t lookup_byte "lookup<mds::api::kind::BYTE,mds::core::kind_type<mds::api::kind::BYTE>,false,true>"(interned_string_handle, const h_mbyte_t&)
+        # h_marray_byte_t lookup_byte_array "lookup<mds::api::kind::BYTE,false,true>"(const interned_string_handle&, const h_array_byte_t&)
+        # bool bind_byte "bind<mds::api::kind::BYTE>"(interned_string_handle, int8_t)

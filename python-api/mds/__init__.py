@@ -65,7 +65,7 @@ class TypeInfo():
         self.title_array_init = f"{self.title_array}_Init"
         self.title_array_cinit = f"{self.title_array}_Inplace"
 
-        self.title_name_binding = f"{self.title}NameBinding"
+        self.title_name_binding = f"MDS{self.title}NameBinding"
         self.f_bind = f"bind_{api}"
 
         self.title_record_field = f"MDS{self.title}RecordField"

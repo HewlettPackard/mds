@@ -40,8 +40,6 @@ cdef extern from "helpers.h" namespace "mds::python::tasks":
         @staticmethod
         task_handle current()
 
-    cdef size_t hash_task(task_handle &)
-
 cdef extern from "helpers.h" namespace "mds::python::tasks::TaskWrapper" nogil:
     cdef cppclass Establish:
         Establish(const task_handle&) except +

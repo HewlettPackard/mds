@@ -33,9 +33,13 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         managed_record_handle()
         managed_record_handle(managed_record_handle&)
 
+        uint64_t hash1()
+
     cdef cppclass const_managed_record_handle:
         const_managed_record_handle()
         const_managed_record_handle(const_managed_record_handle&)
+
+        uint64_t hash1()
 
     cdef cppclass record_type_handle:
         record_type_handle()
@@ -61,6 +65,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         @staticmethod
         record_type_handle declare(const interned_string_handle&, const_record_type_handle&)
 
+        uint64_t hash1()
+
     cdef cppclass const_record_type_handle:
         const_record_type_handle()
         const_record_type_handle(const_record_type_handle &)
@@ -84,6 +90,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         record_type_handle declare(const interned_string_handle&)
         @staticmethod
         record_type_handle declare(const interned_string_handle&, const_record_type_handle&)
+
+        uint64_t hash1()
 
 # START INJECTION | tmpl_api_records
 

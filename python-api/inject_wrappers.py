@@ -121,14 +121,17 @@ def tmpl_api_primitives(t: TypeInfo) -> str:
     cdef cppclass {t.managed_value} "mds::api::api_type<{t.kind}>":
         {t.managed_value}()
         {t.managed_value}({t.c_type})
+        uint64_t hash1()
 
     cdef cppclass {t.primitive} "mds::api::managed_type_handle<{t.kind}>":
         {t.primitive}()
         {t.record_field} field_in(record_type_handle&, interned_string_handle&, bool) except+
+        uint64_t hash1()
 
     cdef cppclass {t.const_primitive} "mds::api::const_managed_type_handle<{t.kind}>":
         {t.const_primitive}()
         {t.record_field} field_in(record_type_handle&, interned_string_handle&, bool) except+
+        uint64_t hash1()
 
     cdef {t.primitive} {t.f_managed_type_handle} "mds::api::managed_type_handle<{t.kind}>"()
     cdef {t.const_primitive} {t.f_const_managed_type_handle} "mds::api::managed_type_handle<{t.kind}>"()
@@ -151,6 +154,9 @@ cdef class {title}({parent}):
     def __cinit__(self, value):  # TODO: Set the value in _value
         self._value = self._sanitize(value, self._value)
         self._type = {t.managed_value}(self._value)
+
+    def __hash__(self):
+        return self._type.hash1()
 
     def _to_python(self):
         return {t.f_to_core_val}(self._type)
@@ -202,7 +208,7 @@ def tmpl_namespace_mapping(t: TypeInfo) -> str:
 
 def tmpl_namespace_typed_bindings(t: TypeInfo) -> str:
     compiled = f"""
-cdef class {t.title_name_binding}(TypedNameBinding):
+cdef class {t.title_name_binding}(MDSTypedNameBinding):
     cdef:
         {t.primitive} _type
 
@@ -300,6 +306,7 @@ def tmpl_record_field_reference(t: TypeInfo) -> str:
         1. Change to python 3 annotation when upgrade to Cython 0.28
     """
     compiled = f"""
+
 cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBase):
     cdef:
         {t.record_field} _field_handle
@@ -417,6 +424,9 @@ cdef class {t.title_array}({t.array_parent}):
     def __len__(self):
         return self._handle.size()
 
+    def __hash__(self):
+        return self._handle.hash1()
+
     def _to_python(self, index):
         return {t.f_to_core_val}(self._handle.frozen_read(index))
 
@@ -477,11 +487,13 @@ def tmpl_api_arrays(t: TypeInfo) -> str:
         # const_managed_type_handle<K> element_type()
         {t.managed_array} create_array(size_t)
         bool is_same_as(const {t.array}&)
+        uint64_t hash1()
 
     cdef cppclass {t.const_array} "mds::api::const_array_type_handle<{t.kind}>":
         # const_managed_type_handle<K> element_type()
         {t.managed_array} create_array(size_t)
         bool is_same_as(const {t.const_array}&)
+        uint64_t hash1()
 
     cdef cppclass {t.managed_array}:
         {t.managed_value} frozen_read(size_t)
@@ -489,6 +501,7 @@ def tmpl_api_arrays(t: TypeInfo) -> str:
         size_t size()
         bool has_value()
         h_marray_base_t as_base()
+        uint64_t hash1()
         {EXTRA}
     # TODO: const_managed_array
     {t.managed_array} {t.f_create_array}(size_t)

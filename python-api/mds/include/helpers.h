@@ -81,11 +81,6 @@ namespace mds
                 }
             }
 
-            size_t hash_task(const h_task_t &handle)
-            {
-                return static_cast<size_t>(std::hash<h_task_t>()(handle));
-            }
-
             class TaskWrapper
             {
                 private:
@@ -156,11 +151,6 @@ namespace mds
                 // TODO: This is clearly all wrong, but just making the compiler happy for now
                 return std::forward<decltype(fn)>(fn)(arg);
             };
-            
-            size_t hash_isoctxt(const h_isoctxt_t &handle)
-            {
-                return static_cast<size_t>(std::hash<h_isoctxt_t>()(handle));
-            }
         } // End mds::python::isoctxt
 
         namespace types

@@ -37,8 +37,6 @@ cdef extern from "helpers.h" namespace "mds::python::isoctxts":
         _py_callable_wrapper
     ) except+ 
 
-    cdef size_t hash_isoctxt(iso_context_handle &)
-
 # enum classes not (yet) supported, workaround, first declare classes:
 cdef extern from "core/core_fwd.h" namespace "mds::core" nogil:
     cdef cppclass view_type:
@@ -69,6 +67,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         long n_to_redo()
         bool prepare_for_redo()
         bool succeeded()
+
+        uint64_t hash1()
 
     cdef cppclass iso_context_handle:
         iso_context_handle()
@@ -102,4 +102,6 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         task_handle creation_task()
         
         bool has_conflicts()
+
+        uint64_t hash1()
 

@@ -10,7 +10,7 @@ This MDS Python API (PAPI) extension provides the necessary bindings for to deve
   * Records
 * Type Constraints:
   *  `const`-ness where appropriate
-  * Numeric bounds and sanitization, using NumPy's design as a template.
+  *  Numeric bounds and sanitization, using NumPy's design as a template.
 * Containers:
   * Isolation Contexts
   * Tasks
@@ -53,14 +53,65 @@ Interactions with MDS are handled through the `mds` module, which has three subm
    2. `[Const]<T>Array`
    3. `String` is an immutable string which is instantiated from Python's `str` type.
    4. `Record` is a proxy to a collection of fields on the MDS heap. The PAPI exposes these fields as if they were regular members of the class in question, with some caveats noted below.
-   5. `Namespace` provides a hierarchical key-value store to persist MDS objects between processes.
+   5. `Namespace` provides a hierarchical key-value store to persist MDS objects between processes. You can think of this as a `dict`, where paths can either be a `str` delimited by "/", or the path can be split into components and treated as nested `dict`s. Any object that can be placed into, or retrieved from, a `Namespace`provides two methods, which should be the main way to interface with `Namespace`, as the required type explicitly provided:
+      1. `bind_to_namespace(namespace: Namespace, path: PathTypes)`
+      2. `from_namespace(namespace: Namespace, path: PathTypes)`, this is a `classmethod`
 3. `mds.internal` at present only contains `MemoryStats`, which provides you with a Python interface to the MPCG heap statistics, and is not required for using the `mds` module.
+
+Dealing with types is a really import part of programming with MDS effectively. The underline core, CAPI, and JAPI are all strongly-typed and `const`-aware. The PAPI enforces these constraints, although the ideas behind them are not particularly Pythonic. The reason for is simply that, as data can be shared between processes, there is no guarantee that the recipient, nor originiator of the data fields being used are or were not strongly typed. Due to this, there are a few notes you should be aware of when using the `mds` package.
+
+#### Primitives
+
+The PAPI provides you with the `mds.typing` object, which maps types in a simple way to `TypeInfo` objects used throughout the extension. You should be using this system to define your types. An example of how this is used is provided in **Use a Managed Record** below.
+
+#### Numeric Bounds & Signed Integers
+
+* `OverflowException`
+* `UnderflowException`
+
+#### Const Values
+
+
+
+`ConstException`
 
 ### Create a Managed Data Structure
 
 ### Use a Managed Data Structure
 
 ### Use a Managed Record
+
+Declaring a `Record` **R** in the PAPI is simple, you need to provide two expected components, and the rest is pure Python logic:
+
+1. A `str` ident **I** declaring the name of the type for MDS (_note_: if the intent is to share **R** amongst the PAPI, CAPI, and JAPI, then the value **I** must be the same across all implementations accessing the same heap.)
+2. A static method in your class called `schema` that returns a `dict` mapping field names (as `str`) to field declarations
+   1. `Record.declare_field(klass: TypeInfo)`
+   2. `Record.declare_const_field(klass: TypeInfo)`
+
+~~~python
+import mds
+from mds.managed import Record, String, StringArray
+
+class Inventory(Record, ident="InventoryDemo"):
+
+  @staticmethod
+  def schema():
+    return {
+      "is_active": Record.declare_field(mds.typing.bool),
+      "dept_name": Record.declare_const_field(String, initial_value="Returns Dept."),
+      "product_names": Record.declare_field(StringArray, initial_value=["Laptop", "Phone"]),
+      "paid_out": Record.declare_field(mds.typing.float),
+      "paid_in": Record.declare_field(mds.typing.double)
+    }
+
+# Fields are accessed as you would expect
+inv = Inventory()
+
+for product in inv.product_names:
+  print(product)
+~~~
+
+
 
 ### Share a Managed Data Structure Safely
 

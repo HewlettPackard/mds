@@ -43,8 +43,7 @@ from mds import TypeInfo
 
 import threading
 
-__LOCAL = threading.local()
-__LOCAL.token_stack = []
+cdef __LOCAL = threading.local()
 
 initialize_base_task()
 
@@ -56,6 +55,13 @@ cdef class MDSObject(object):
 
     def _throw_const_error(self):
         raise ConstError("Can't assign value to const field.")
+
+    @classmethod
+    def from_namespace(cls, namespace: Namespace, path: PathTypes) -> cls:
+        return NotImplemented
+
+    def bind_to_namespace(self, namespace: Namespace, path: PathTypes) -> None:
+        return NotImplemented
 
     property is_const:
         def __get__(self):
@@ -80,11 +86,86 @@ cdef class ConstError(Exception):
 #  Managed Values
 # =========================================================================
 
-cdef class MDSConstPrimitiveBase(MDSObject):
-    pass
+cdef class MDSPrimitiveBase(MDSObject):
 
+    def __add__(self, other):
+        this = self._to_python()
 
-cdef class MDSPrimitiveBase(MDSConstPrimitiveBase):
+        if isinstance(other, MDSPrimitiveBase):
+            unpacked = other._to_python()
+        
+        return self.__class__(this + unpacked)
+
+    def __sub__(self, other):
+        this = self._to_python()
+
+        if isinstance(other, MDSPrimitiveBase):
+            unpacked = other._to_python()
+        
+        return self.__class__(this - unpacked)
+
+    def __mul__(self, other):
+        this = self._to_python()
+
+        if isinstance(other, MDSPrimitiveBase):
+            unpacked = other._to_python()
+        
+        return self.__class__(this * unpacked)
+
+    def __div__(self, other):
+        this = self._to_python()
+
+        if isinstance(other, MDSPrimitiveBase):
+            unpacked = other._to_python()
+        
+        return self.__class__(this / unpacked)
+
+    def __iadd__(self, other):
+        this = self._to_python()
+
+        if isinstance(other, MDSPrimitiveBase):
+            unpacked = other._to_python()
+        else:
+            unpacked = other
+
+        result = self._sanitize(this + unpacked, self._to_python())
+        self.update_value(result)
+
+    def __isub__(self, other):
+        this = self._to_python()
+
+        if isinstance(other, MDSPrimitiveBase):
+            unpacked = other._to_python()
+        else:
+            unpacked = other
+
+        result = self._sanitize(this - unpacked, self._to_python())
+        self.update_value(result)
+
+    def __imul__(self, other):
+        this = self._to_python()
+
+        if isinstance(other, MDSPrimitiveBase):
+            unpacked = other._to_python()
+        else:
+            unpacked = other
+
+        result = self._sanitize(this * unpacked, self._to_python())
+        self.update_value(result)
+
+    def __idiv__(self, other):
+        this = self._to_python()
+
+        if isinstance(other, MDSPrimitiveBase):
+            unpacked = other._to_python()
+        else:
+            unpacked = other
+
+        result = self._sanitize(this / unpacked, self._to_python())
+        self.update_value(result)
+
+    def _to_python(self):
+        return NotImplemented
 
     def _sanitize(self, value, existing):
         if type(value) != type(existing):
@@ -95,57 +176,23 @@ cdef class MDSPrimitiveBase(MDSConstPrimitiveBase):
 
         return value
 
-    def _to_python(self):
-        return NotImplemented
-
     def update_value(self, value) -> None:
         return NotImplemented
 
+    property python_value:
+        def __get__(self):
+            return self._to_python()
 
-cdef class MDSConstIntPrimitiveBase(MDSPrimitiveBase):
+
+cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
 
     def __int__(self):
-        pass
+        return self._to_python()
 
     def __float__(self):
-        pass
+        return float(self._to_python())
 
-    def __add__(self, other):
-        pass
-
-    def __sub__(self, other):
-        pass
-
-    def __mul__(self, other):
-        pass
-
-    def __div__(self, other):
-        pass
-
-    property MIN:
-        def __get__(self):
-            raise NotImplementedError("Integer specialization required.")
-
-    property MAX:
-        def __get__(self):
-            raise NotImplementedError("Integer specialization required.")
-
-
-cdef class MDSIntPrimitiveBase(MDSConstIntPrimitiveBase):
-
-    def __iadd__(self, other):
-        pass
-
-    def __isub__(self, other):
-        pass
-
-    def __imul__(self, other):
-        pass
-
-    def __idiv__(self, other):
-        pass
-
-    def _sanitize(self, value, existing):
+    def _sanitize(self, value, existing) -> int:
         if isinstance(value, float):
             value = int(value)
         elif not isinstance(value, int):
@@ -159,38 +206,53 @@ cdef class MDSIntPrimitiveBase(MDSConstIntPrimitiveBase):
 
         return value
 
+    property MIN:
+        def __get__(self):
+            raise NotImplementedError("Integer specialization required.")
+
+    property MAX:
+        def __get__(self):
+            raise NotImplementedError("Integer specialization required.")
+
 
 cdef class MDSFloatPrimitiveBase(MDSPrimitiveBase):
-    # TODO, Can I inherit from IntegralBase for math ops?
-    pass
 
-cdef class MDSConstFloatPrimitiveBase(MDSFloatPrimitiveBase):
-    pass
+    def __int__(self):
+        return int(self._to_python())
+
+    def __float__(self):
+        return self._to_python()
 
 # =========================================================================
 #  Arrays
 # =========================================================================
 
-cdef class MDSConstArrayBase(MDSObject):
-    cdef size_t _last_index
+cdef class MDSIndexedObject(MDSObject):
+    cdef:
+        int __iter_idx
+
+    def __getitem__(self, item):
+        return NotImplemented
+
+    def __setitem__(self, item, value):
+        return NotImplemented
 
     def __iter__(self):
-        return NotImplemented # TODO Implement this
+        self.__iter_idx = 0
+        return self
 
     def __next__(self):
-        return NotImplemented # TODO Implement this
+        if self.__iter_idx < len(self):
+            retval = self[self.__iter_idx]
+            self.__iter_idx += 1
+            return retval
+        else:
+            raise StopIteration
 
     def __len__(self):
-        raise NotImplementedError('Specialization of MDSArrayBase required')
+        return NotImplemented
 
-    def __getitem__(self, index):
-        index = self._index_bounds_check(index)
-
-        # We store this for in-place ops
-        self._last_index = index
-        return self._to_python(index)
-
-    def _index_bounds_check(self, index):
+    def _index_bounds_check(self, index: int) -> int:
          # TODO: Need to handle slices. Should this be a new array?
         cdef long l = <long> len(self)
 
@@ -202,16 +264,10 @@ cdef class MDSConstArrayBase(MDSObject):
 
         return index
 
-    def _to_python(self, index):
-        raise NotImplementedError('Specialization of MDSList required') 
-
-    def _to_mds(self, index, value):
-        raise NotImplementedError('Specialization of MDSList required') 
-
-    def index(self, start=None, end=None):
+    def index(self, start=None, end=None) -> int:
         return NotImplemented # TODO Implement this
 
-    def count(self, value):
+    def count(self, value) -> int:
         # TODO: Handle len 0, should this even be instantiable?
         # TODO: Bool still a str-literal here
         if not isinstance(value, type(self[0])):
@@ -225,6 +281,23 @@ cdef class MDSConstArrayBase(MDSObject):
                 c += 1
 
         return c
+
+
+cdef class MDSConstArrayBase(MDSIndexedObject):
+    cdef size_t _last_index
+
+    def __getitem__(self, index):
+        index = self._index_bounds_check(index)
+
+        # We store this for in-place ops
+        self._last_index = index
+        return self._to_python(index)
+
+    def _to_python(self, index):
+        raise NotImplementedError('Specialization of MDSList required') 
+
+    def _to_mds(self, index, value):
+        raise NotImplementedError('Specialization of MDSList required') 
 
     def copy(self):
         raise NotImplementedError('Specialization of MDSArrayBase required')
@@ -256,14 +329,15 @@ cdef class MDSIntArrayBase(MDSArrayBase):
 
     property dtype:
         def __get__(self):
-            return type(1)
+            return int
 
 
 cdef class MDSFloatArrayBase(MDSArrayBase):
 
     property dtype:
         def __get__(self):
-            return type(1.0)
+            return float
+
 
 # START INJECTION | tmpl_array
 
@@ -877,14 +951,17 @@ cdef class Record(MDSObject):
             field, member_t = field_member_pair.field, field_member_pair.member
             self.__dict__[label] = member_t(record=self)
 
+    def bind_to_namespace(self, namespace: Namespace, String name) -> None:
+        cdef:
+            interned_string_handle nhandle = name._ish
+            namespace_handle h = namespace._handle
+
+        h.bind_record(nhandle, self._handle)
+
     @classmethod
-    def from_namespace(cls, ns: Namespace, *args) -> Record:
-        # TODO: Couldn't this be in the root of all elements that can go into a namespace?
+    def from_namespace(cls, ns: Namespace, path: PathTypes) -> Record:
         if not isinstance(ns, Namespace):
             raise TypeError('Need a `Namespace` object as first argument')
-
-        if not len(args):
-            raise KeyError('Need at least one path for the namespace')
     
         record = ns[args]
         retval = cls()
@@ -2281,7 +2358,7 @@ cdef emplace_const_handle_from_decl(MDSRecordTypeDeclaration decl):
     return wrapper
 
 
-cdef MDSRecordHandleWrapper declare_mds_record(interned_string_handle ish, MDSConstRecordHandleWrapper wrapper):
+cdef MDSRecordHandleWrapper __declare_mds_record(interned_string_handle ish, MDSConstRecordHandleWrapper wrapper):
     cdef:
         MDSRecordHandleWrapper retval = MDSRecordHandleWrapper()
         const_record_type_handle unwrapped_handle = wrapper._handle
@@ -2289,6 +2366,7 @@ cdef MDSRecordHandleWrapper declare_mds_record(interned_string_handle ish, MDSCo
 
     retval._handle = new_handle
     return retval
+
 
 cdef class MDSRecordTypeDeclaration(object):
     cdef:
@@ -2328,7 +2406,7 @@ cdef class MDSRecordTypeDeclaration(object):
         TODO: s should be a parameterized managed_type<R>?
         """
         print(f"?> Declaring {name} with parent {parent.__name__}")
-        cdef interned_string_handle ish = extract_ish(name)
+        cdef interned_string_handle ish = __extract_ish(name)
 
         if parent is None or parent is Record:
             return emplace_handle(record_type_handle.declare(ish, const_record_type_handle()))
@@ -2339,7 +2417,7 @@ cdef class MDSRecordTypeDeclaration(object):
         # so this is unnecessary, but left in for posterity.
         sp = parent.type_decl.ensure_created()  # MDSConstRecordHandleWrapper
         print(f" > Ensure created run OK on parent, returned {sp}")
-        return declare_mds_record(ish, sp)
+        return __declare_mds_record(ish, sp)
 
     def note_fields(self, fields: dict) -> None:
         for label, field_member_pair in fields.items():
@@ -2374,22 +2452,18 @@ cdef class MDSRecordTypeDeclaration(object):
 
         return emplace_const_handle_from_decl(__RECORD_DECLARED_TYPES[ident])
 
-
 # =========================================================================
 #  Strings
 # =========================================================================
 
-
-cdef class String(MDSObject):
+cdef class String(MDSIndexedObject):
     """
     This class provides the functionality expected from the native str type,
     but backed by MDS. As with str, Strings are immutable.
     """
-
     cdef:
         managed_string_handle _handle
         interned_string_handle _ish
-        int __iter_idx
 
     def __cinit__(self, value=""):
         self._ish = convert_py_to_ish(value) 
@@ -2401,18 +2475,6 @@ cdef class String(MDSObject):
 
     def __hash__(self):
         return self._handle.hash1()
-
-    def __iter__(self):
-        self.__iter_idx = 0
-        return self
-
-    def __next__(self):
-        if self.__iter_idx < len(self):
-            retval = self[self.__iter_idx]
-            self.__iter_idx += 1
-            return retval
-        else:
-            raise StopIteration
 
     def __str__(self):
         return <str> self._handle.utf8().decode("utf-8")
@@ -2640,16 +2702,33 @@ cdef class String(MDSObject):
         return String(str(self).zfill(*args, **kwargs))
 
 
-cdef inline interned_string_handle extract_ish(String s):
+cdef inline interned_string_handle __extract_ish(String s):
     cdef interned_string_handle retval = s._ish
     return retval
+
+cdef String __cast_to_mds_string(strings possible_str):
+    if isinstance(possible_str, str):
+        return String(possible_str)
+
+    return possible_str
 
 # =========================================================================
 #  Namespace
 # =========================================================================
 
 PathTypes = Union[str, String, Path]
-cdef NAMESPACE_SEPARATOR = "/"
+
+cdef __NAMESPACE_ROOT = None
+cdef __NAMESPACE_SEPARATOR = "/"
+
+ctypedef fused strings:
+    str
+    String
+
+
+cdef bint __namespaces_equal(Namespace a, Namespace b):
+    return a._handle == b._handle
+
 
 class IllegalPathException(Exception):
     
@@ -2682,14 +2761,6 @@ cdef class Path(object):
         return str(self._ptr)
 
 
-cdef Impl __copy_Impl(Impl origin):
-    cdef impl = Impl()
-    impl._names = origin.names.copy()
-    impl._initial_ups = origin.initial_ups
-    impl._absolutep = origin.absolutep
-    return impl
-
-
 cdef class Impl(object):
     cdef:
         bool _absolutep
@@ -2709,14 +2780,14 @@ cdef class Impl(object):
 
         for i in range(self._initial_ups):
             if printsep:
-                buff += NAMESPACE_SEPARATOR
+                buff += __NAMESPACE_SEPARATOR
 
             buff += ".."
             printsep = True
 
         for s in self._names:
             if printsep:
-                buf += NAMESPACE_SEPARATOR
+                buf += __NAMESPACE_SEPARATOR
 
             buf += str(s)
             printsep = True
@@ -2787,7 +2858,7 @@ cdef class Impl(object):
 
             self._names.extend(impl._names.copy())
         else:  # TODO: Change this when String supports .split() and __contains__
-            delim = NAMESPACE_SEPARATOR
+            delim = __NAMESPACE_SEPARATOR
             s = str(cpt)
 
             if delim in s:
@@ -2815,22 +2886,6 @@ cdef class Impl(object):
             return self._initial_ups
 
 
-ctypedef fused strings:
-    str
-    String
-
-cdef String __cast_to_mds_string(strings possible_str):
-    if isinstance(possible_str, str):
-        return String(possible_str)
-
-    return possible_str
-
-cdef __NAMESPACE_ROOT = None
-
-cdef bint __namespaces_equal(Namespace a, Namespace b):
-    return a._handle == b._handle
-
-
 cdef class Namespace(MDSObject):
     cdef:
         namespace_handle _handle
@@ -2848,7 +2903,7 @@ cdef class Namespace(MDSObject):
         binding = self[path]
         binding.bind(value)
 
-    def __getitem__(self, path: PathTypes) -> NameBinding:
+    def __getitem__(self, path: PathTypes) -> MDSNameBinding:
         """
         So this is basically an amalgamation of at() and _at() in the CAPI
         """
@@ -2891,19 +2946,19 @@ cdef class Namespace(MDSObject):
             n -= 1
 
         for i in range(n):
-            nb = NameBinding(iptr, names[i])
+            nb = MDSNameBinding(iptr, names[i])
             iptr = nb.as_namespace()
 
         return iptr
 
-    def resolve_to_binding(self, p: Path) -> NameBinding:
+    def resolve_to_binding(self, p: Path) -> MDSNameBinding:
         cdef:
             Namespace ip = self.resolve(p=p, include_last=False)
             Impl pi = p._ptr
             list names = pi.names
             String name = String() if len(names) == 0 else names[-1]
 
-        return NameBinding(ip, name)
+        return MDSNameBinding(ip, name)
 
     @staticmethod
     def make(parent: Namespace, name: PathTypes):
@@ -2976,7 +3031,7 @@ cdef class Namespace(MDSObject):
 
     property SEPARATOR:
         def __get__(self):
-            return NAMESPACE_SEPARATOR
+            return __NAMESPACE_SEPARATOR
 
 
 cdef inline Namespace_Init(namespace_handle handle, Namespace parent, String name):
@@ -2985,8 +3040,15 @@ cdef inline Namespace_Init(namespace_handle handle, Namespace parent, String nam
     result._handle = handle
     return result
 
+cdef Impl __copy_Impl(Impl origin):
+    cdef impl = Impl()
+    impl._names = origin.names.copy()
+    impl._initial_ups = origin.initial_ups
+    impl._absolutep = origin.absolutep
+    return impl
 
-cdef class NameBindingBase(object):
+
+cdef class MDSNameBindingBase(object):
     cdef:
         Namespace _namespace
         String _name
@@ -3002,7 +3064,7 @@ cdef class NameBindingBase(object):
         pass
 
 
-cdef class NameBinding(NameBindingBase):
+cdef class MDSNameBinding(MDSNameBindingBase):
     cdef:
         bint _root_binding
 
@@ -3018,21 +3080,21 @@ cdef class NameBinding(NameBindingBase):
                 self._name = ns.name()
                 self._namespace = ns.parent()
 
-    def as_type(self, t: TypeInfo) -> TypedNameBinding:
+    def as_type(self, t: TypeInfo) -> MDSTypedNameBinding:
         # TODO: This doesn't take a third param, plus are Primitives the same as ManagedTypes?
         mappings = {
             # START INJECTION | tmpl_namespace_mapping
-            mds.typing.bool: BoolNameBinding,
-            mds.typing.byte: ByteNameBinding,
-            mds.typing.ubyte: UByteNameBinding,
-            mds.typing.short: ShortNameBinding,
-            mds.typing.ushort: UShortNameBinding,
-            mds.typing.int: IntNameBinding,
-            mds.typing.uint: UIntNameBinding,
-            mds.typing.long: LongNameBinding,
-            mds.typing.ulong: ULongNameBinding,
-            mds.typing.float: FloatNameBinding,
-            mds.typing.double: DoubleNameBinding,
+            mds.typing.bool: BoolMDSNameBinding,
+            mds.typing.byte: ByteMDSNameBinding,
+            mds.typing.ubyte: UByteMDSNameBinding,
+            mds.typing.short: ShortMDSNameBinding,
+            mds.typing.ushort: UShortMDSNameBinding,
+            mds.typing.int: IntMDSNameBinding,
+            mds.typing.uint: UIntMDSNameBinding,
+            mds.typing.long: LongMDSNameBinding,
+            mds.typing.ulong: ULongMDSNameBinding,
+            mds.typing.float: FloatMDSNameBinding,
+            mds.typing.double: DoubleMDSNameBinding,
 
             # END INJECTION
         }
@@ -3073,7 +3135,7 @@ cdef class NameBinding(NameBindingBase):
         value.bind_to_namespace(namespace=self._namespace, name=self._name)
         
 
-cdef class TypedNameBinding(NameBindingBase):
+cdef class MDSTypedNameBinding(MDSNameBindingBase):
 
     def __cinit__(self, Namespace ns, String n):
         super().__init__(ns, n)
@@ -3092,7 +3154,7 @@ cdef class TypedNameBinding(NameBindingBase):
 
 # START INJECTION | tmpl_namespace_typed_bindings
 
-cdef class BoolNameBinding(TypedNameBinding):
+cdef class BoolNameBinding(MDSTypedNameBinding):
     cdef:
         h_mbool_t _type
 
@@ -3125,7 +3187,7 @@ cdef class BoolNameBinding(TypedNameBinding):
         except:
             return False
 
-cdef class ByteNameBinding(TypedNameBinding):
+cdef class ByteNameBinding(MDSTypedNameBinding):
     cdef:
         h_mbyte_t _type
 
@@ -3158,7 +3220,7 @@ cdef class ByteNameBinding(TypedNameBinding):
         except:
             return False
 
-cdef class UByteNameBinding(TypedNameBinding):
+cdef class UByteNameBinding(MDSTypedNameBinding):
     cdef:
         h_mubyte_t _type
 
@@ -3191,7 +3253,7 @@ cdef class UByteNameBinding(TypedNameBinding):
         except:
             return False
 
-cdef class ShortNameBinding(TypedNameBinding):
+cdef class ShortNameBinding(MDSTypedNameBinding):
     cdef:
         h_mshort_t _type
 
@@ -3224,7 +3286,7 @@ cdef class ShortNameBinding(TypedNameBinding):
         except:
             return False
 
-cdef class UShortNameBinding(TypedNameBinding):
+cdef class UShortNameBinding(MDSTypedNameBinding):
     cdef:
         h_mushort_t _type
 
@@ -3257,7 +3319,7 @@ cdef class UShortNameBinding(TypedNameBinding):
         except:
             return False
 
-cdef class IntNameBinding(TypedNameBinding):
+cdef class IntNameBinding(MDSTypedNameBinding):
     cdef:
         h_mint_t _type
 
@@ -3290,7 +3352,7 @@ cdef class IntNameBinding(TypedNameBinding):
         except:
             return False
 
-cdef class UIntNameBinding(TypedNameBinding):
+cdef class UIntNameBinding(MDSTypedNameBinding):
     cdef:
         h_muint_t _type
 
@@ -3323,7 +3385,7 @@ cdef class UIntNameBinding(TypedNameBinding):
         except:
             return False
 
-cdef class LongNameBinding(TypedNameBinding):
+cdef class LongNameBinding(MDSTypedNameBinding):
     cdef:
         h_mlong_t _type
 
@@ -3356,7 +3418,7 @@ cdef class LongNameBinding(TypedNameBinding):
         except:
             return False
 
-cdef class ULongNameBinding(TypedNameBinding):
+cdef class ULongNameBinding(MDSTypedNameBinding):
     cdef:
         h_mulong_t _type
 
@@ -3389,7 +3451,7 @@ cdef class ULongNameBinding(TypedNameBinding):
         except:
             return False
 
-cdef class FloatNameBinding(TypedNameBinding):
+cdef class FloatNameBinding(MDSTypedNameBinding):
     cdef:
         h_mfloat_t _type
 
@@ -3422,7 +3484,7 @@ cdef class FloatNameBinding(TypedNameBinding):
         except:
             return False
 
-cdef class DoubleNameBinding(TypedNameBinding):
+cdef class DoubleNameBinding(MDSTypedNameBinding):
     cdef:
         h_mdouble_t _type
 

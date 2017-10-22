@@ -174,6 +174,9 @@ cdef class PublicationResult(object):
 
     cdef publication_attempt_handle _handle
 
+    def __hash__(self):
+        return self._handle.hash1()
+
     def prepare_for_redo(self):
         self._handle.prepare_for_redo()
 
@@ -306,10 +309,15 @@ cdef class Use(object):
 #  Isolation Contexts
 # =========================================================================
 
+cdef __REDOABLE_TASKS = ContextTaskMapping()
+
+
 cdef class IsolationContext(object):
 
     cdef iso_context_handle _handle
-    redoable_tasks = ContextTaskMapping()
+
+    def __hash__(self):
+        return self._handle.hash1()
 
     cdef inline __create_child(self, str kind, bool snapshot):
         cdef:
@@ -341,9 +349,6 @@ cdef class IsolationContext(object):
                 handle = self._handle.new_nonsnapshot_child()
 
         return IsolationContext_Init(handle=handle)
-
-    def __hash__(self):
-        return hash_isoctxt(self._handle)
 
     def create_child(self, kind="live", snapshot=False):
         kinds = ("live", "read_only", "detached")
@@ -423,6 +428,11 @@ cdef class IsolationContext(object):
         def __get__(self):
             return self._handle.has_conflicts()
 
+    property redoable_tasks:
+        def __get__(self):
+            return __REDOABLE_TASKS
+
+
 cdef inline IsolationContext_Init(iso_context_handle handle):
     initialize_base_task()
     result = IsolationContext()
@@ -478,11 +488,7 @@ cdef class Task(object):
             self.__expired = True
 
     def __hash__(self):
-        """
-        The hash-value of a Task object comes directly from the associated
-        handle within MDS itself.
-        """
-        return hash_task(self._handle)
+        return self._handle.hash1()
 
     def add_dependent(self, other):
         if not isinstance(other, Task):
@@ -514,7 +520,7 @@ cdef class Task(object):
                 self.isolation_context, self
             )
                 
-            in_task(self._handle, self.__target, self.__args)
+            __in_task(self._handle, self.__target, self.__args)
 
     def expire(self):
         """
@@ -587,6 +593,7 @@ cdef class Task(object):
         def __get__(self):
             return self.__expired
 
+
 cdef inline Task_Init(task_handle handle):
     # TODO Remove me, DEBUG
     print("Initializing task with hash {}".format(hash_task(handle)))
@@ -611,7 +618,7 @@ cdef inline void _task_execution_wrapper(_py_callable_wrapper wrapped):
    
     fn(*args)
 
-cdef inline void in_task(task_handle th, object fn, object args):
+cdef inline void __in_task(task_handle th, object fn, object args):
     """
     Delegate the running of this tasklet through to the compiled library, need
     to wrap things up nicely for Cython to generate the appropriate code.
@@ -622,8 +629,3 @@ cdef inline void in_task(task_handle th, object fn, object args):
 cdef inline _task_add_dependent(Task first, Task second):
     first._handle.add_dependent(second._handle)
     return first
-
-# Helper functions, emulate C++/Java APIs  # TODO: Isolated?
-
-def as_task(fn, args):
-    Task.as_task(fn, args);
