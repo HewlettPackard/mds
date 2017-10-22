@@ -57,14 +57,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_mbool_t()
         h_rfield_bool_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef h_mbool_t managed_bool_type_handle "mds::api::managed_type_handle<mds::api::kind::BOOL>"()
-
     cdef cppclass h_const_mbool_t "mds::api::const_managed_type_handle<mds::api::kind::BOOL>":
         h_const_mbool_t()
         h_rfield_bool_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
+    cdef h_mbool_t managed_bool_type_handle "mds::api::managed_type_handle<mds::api::kind::BOOL>"()
     cdef h_const_mbool_t const_managed_bool_type_handle "mds::api::managed_type_handle<mds::api::kind::BOOL>"()
-    cdef bool to_core_val "mds::api::to_core_val<mds::api::kind::BOOL>" (const mv_bool&)
+    bool bool_to_core_val "mds::api::to_core_val<mds::api::kind::BOOL>" (const mv_bool&)
+
 
     # BEGIN byte
     # TODO: (field_in)
@@ -80,14 +80,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_mbyte_t()
         h_rfield_byte_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef h_mbyte_t managed_byte_type_handle "mds::api::managed_type_handle<mds::api::kind::BYTE>"()
-
     cdef cppclass h_const_mbyte_t "mds::api::const_managed_type_handle<mds::api::kind::BYTE>":
         h_const_mbyte_t()
         h_rfield_byte_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
+    cdef h_mbyte_t managed_byte_type_handle "mds::api::managed_type_handle<mds::api::kind::BYTE>"()
     cdef h_const_mbyte_t const_managed_byte_type_handle "mds::api::managed_type_handle<mds::api::kind::BYTE>"()
-    cdef int8_t to_core_val "mds::api::to_core_val<mds::api::kind::BYTE>" (const mv_byte&)
+    int8_t byte_to_core_val "mds::api::to_core_val<mds::api::kind::BYTE>" (const mv_byte&)
+
 
     # BEGIN ubyte
     # TODO: (field_in)
@@ -103,14 +103,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_mubyte_t()
         h_rfield_ubyte_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef h_mubyte_t managed_ubyte_type_handle "mds::api::managed_type_handle<mds::api::kind::UBYTE>"()
-
     cdef cppclass h_const_mubyte_t "mds::api::const_managed_type_handle<mds::api::kind::UBYTE>":
         h_const_mubyte_t()
         h_rfield_ubyte_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
+    cdef h_mubyte_t managed_ubyte_type_handle "mds::api::managed_type_handle<mds::api::kind::UBYTE>"()
     cdef h_const_mubyte_t const_managed_ubyte_type_handle "mds::api::managed_type_handle<mds::api::kind::UBYTE>"()
-    cdef uint8_t to_core_val "mds::api::to_core_val<mds::api::kind::UBYTE>" (const mv_ubyte&)
+    uint8_t ubyte_to_core_val "mds::api::to_core_val<mds::api::kind::UBYTE>" (const mv_ubyte&)
+
 
     # BEGIN short
     # TODO: (field_in)
@@ -126,14 +126,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_mshort_t()
         h_rfield_short_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef h_mshort_t managed_short_type_handle "mds::api::managed_type_handle<mds::api::kind::SHORT>"()
-
     cdef cppclass h_const_mshort_t "mds::api::const_managed_type_handle<mds::api::kind::SHORT>":
         h_const_mshort_t()
         h_rfield_short_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
+    cdef h_mshort_t managed_short_type_handle "mds::api::managed_type_handle<mds::api::kind::SHORT>"()
     cdef h_const_mshort_t const_managed_short_type_handle "mds::api::managed_type_handle<mds::api::kind::SHORT>"()
-    cdef int16_t to_core_val "mds::api::to_core_val<mds::api::kind::SHORT>" (const mv_short&)
+    int16_t short_to_core_val "mds::api::to_core_val<mds::api::kind::SHORT>" (const mv_short&)
+
 
     # BEGIN ushort
     # TODO: (field_in)
@@ -149,14 +149,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_mushort_t()
         h_rfield_ushort_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef h_mushort_t managed_ushort_type_handle "mds::api::managed_type_handle<mds::api::kind::USHORT>"()
-
     cdef cppclass h_const_mushort_t "mds::api::const_managed_type_handle<mds::api::kind::USHORT>":
         h_const_mushort_t()
         h_rfield_ushort_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
+    cdef h_mushort_t managed_ushort_type_handle "mds::api::managed_type_handle<mds::api::kind::USHORT>"()
     cdef h_const_mushort_t const_managed_ushort_type_handle "mds::api::managed_type_handle<mds::api::kind::USHORT>"()
-    cdef uint16_t to_core_val "mds::api::to_core_val<mds::api::kind::USHORT>" (const mv_ushort&)
+    uint16_t ushort_to_core_val "mds::api::to_core_val<mds::api::kind::USHORT>" (const mv_ushort&)
+
 
     # BEGIN int
     # TODO: (field_in)
@@ -172,14 +172,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_mint_t()
         h_rfield_int_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef h_mint_t managed_int_type_handle "mds::api::managed_type_handle<mds::api::kind::INT>"()
-
     cdef cppclass h_const_mint_t "mds::api::const_managed_type_handle<mds::api::kind::INT>":
         h_const_mint_t()
         h_rfield_int_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
+    cdef h_mint_t managed_int_type_handle "mds::api::managed_type_handle<mds::api::kind::INT>"()
     cdef h_const_mint_t const_managed_int_type_handle "mds::api::managed_type_handle<mds::api::kind::INT>"()
-    cdef int32_t to_core_val "mds::api::to_core_val<mds::api::kind::INT>" (const mv_int&)
+    int32_t int_to_core_val "mds::api::to_core_val<mds::api::kind::INT>" (const mv_int&)
+
 
     # BEGIN uint
     # TODO: (field_in)
@@ -195,14 +195,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_muint_t()
         h_rfield_uint_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef h_muint_t managed_uint_type_handle "mds::api::managed_type_handle<mds::api::kind::UINT>"()
-
     cdef cppclass h_const_muint_t "mds::api::const_managed_type_handle<mds::api::kind::UINT>":
         h_const_muint_t()
         h_rfield_uint_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
+    cdef h_muint_t managed_uint_type_handle "mds::api::managed_type_handle<mds::api::kind::UINT>"()
     cdef h_const_muint_t const_managed_uint_type_handle "mds::api::managed_type_handle<mds::api::kind::UINT>"()
-    cdef uint32_t to_core_val "mds::api::to_core_val<mds::api::kind::UINT>" (const mv_uint&)
+    uint32_t uint_to_core_val "mds::api::to_core_val<mds::api::kind::UINT>" (const mv_uint&)
+
 
     # BEGIN long
     # TODO: (field_in)
@@ -218,14 +218,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_mlong_t()
         h_rfield_long_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef h_mlong_t managed_long_type_handle "mds::api::managed_type_handle<mds::api::kind::LONG>"()
-
     cdef cppclass h_const_mlong_t "mds::api::const_managed_type_handle<mds::api::kind::LONG>":
         h_const_mlong_t()
         h_rfield_long_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
+    cdef h_mlong_t managed_long_type_handle "mds::api::managed_type_handle<mds::api::kind::LONG>"()
     cdef h_const_mlong_t const_managed_long_type_handle "mds::api::managed_type_handle<mds::api::kind::LONG>"()
-    cdef int64_t to_core_val "mds::api::to_core_val<mds::api::kind::LONG>" (const mv_long&)
+    int64_t long_to_core_val "mds::api::to_core_val<mds::api::kind::LONG>" (const mv_long&)
+
 
     # BEGIN ulong
     # TODO: (field_in)
@@ -241,14 +241,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_mulong_t()
         h_rfield_ulong_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef h_mulong_t managed_ulong_type_handle "mds::api::managed_type_handle<mds::api::kind::ULONG>"()
-
     cdef cppclass h_const_mulong_t "mds::api::const_managed_type_handle<mds::api::kind::ULONG>":
         h_const_mulong_t()
         h_rfield_ulong_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
+    cdef h_mulong_t managed_ulong_type_handle "mds::api::managed_type_handle<mds::api::kind::ULONG>"()
     cdef h_const_mulong_t const_managed_ulong_type_handle "mds::api::managed_type_handle<mds::api::kind::ULONG>"()
-    cdef uint64_t to_core_val "mds::api::to_core_val<mds::api::kind::ULONG>" (const mv_ulong&)
+    uint64_t ulong_to_core_val "mds::api::to_core_val<mds::api::kind::ULONG>" (const mv_ulong&)
+
 
     # BEGIN float
     # TODO: (field_in)
@@ -264,14 +264,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_mfloat_t()
         h_rfield_float_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef h_mfloat_t managed_float_type_handle "mds::api::managed_type_handle<mds::api::kind::FLOAT>"()
-
     cdef cppclass h_const_mfloat_t "mds::api::const_managed_type_handle<mds::api::kind::FLOAT>":
         h_const_mfloat_t()
         h_rfield_float_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
+    cdef h_mfloat_t managed_float_type_handle "mds::api::managed_type_handle<mds::api::kind::FLOAT>"()
     cdef h_const_mfloat_t const_managed_float_type_handle "mds::api::managed_type_handle<mds::api::kind::FLOAT>"()
-    cdef float to_core_val "mds::api::to_core_val<mds::api::kind::FLOAT>" (const mv_float&)
+    float float_to_core_val "mds::api::to_core_val<mds::api::kind::FLOAT>" (const mv_float&)
+
 
     # BEGIN double
     # TODO: (field_in)
@@ -287,14 +287,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_mdouble_t()
         h_rfield_double_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
-    cdef h_mdouble_t managed_double_type_handle "mds::api::managed_type_handle<mds::api::kind::DOUBLE>"()
-
     cdef cppclass h_const_mdouble_t "mds::api::const_managed_type_handle<mds::api::kind::DOUBLE>":
         h_const_mdouble_t()
         h_rfield_double_t field_in(record_type_handle&, interned_string_handle&, bool) except+
 
+    cdef h_mdouble_t managed_double_type_handle "mds::api::managed_type_handle<mds::api::kind::DOUBLE>"()
     cdef h_const_mdouble_t const_managed_double_type_handle "mds::api::managed_type_handle<mds::api::kind::DOUBLE>"()
-    cdef double to_core_val "mds::api::to_core_val<mds::api::kind::DOUBLE>" (const mv_double&)
+    double double_to_core_val "mds::api::to_core_val<mds::api::kind::DOUBLE>" (const mv_double&)
+
 
 # END INJECTION
 

@@ -98,7 +98,7 @@ cdef class MDSPrimitiveBase(MDSConstPrimitiveBase):
     def _to_python(self):
         return NotImplemented
 
-    def update_value(self, value) -> None
+    def update_value(self, value) -> None:
         return NotImplemented
 
 
@@ -283,7 +283,7 @@ cdef class BoolArray(MDSArrayBase):
         return self._handle.size()
 
     def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
+        return bool_to_core_val(self._handle.frozen_read(index))
 
     def _to_mds(self, index, value):
         # Delegate bounds checking etc. to the primitive wrapper
@@ -322,7 +322,7 @@ cdef class ByteArray(MDSIntArrayBase):
         return self._handle.size()
 
     def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
+        return byte_to_core_val(self._handle.frozen_read(index))
 
     def _to_mds(self, index, value):
         # Delegate bounds checking etc. to the primitive wrapper
@@ -369,7 +369,7 @@ cdef class UByteArray(MDSIntArrayBase):
         return self._handle.size()
 
     def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
+        return ubyte_to_core_val(self._handle.frozen_read(index))
 
     def _to_mds(self, index, value):
         # Delegate bounds checking etc. to the primitive wrapper
@@ -416,7 +416,7 @@ cdef class ShortArray(MDSIntArrayBase):
         return self._handle.size()
 
     def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
+        return short_to_core_val(self._handle.frozen_read(index))
 
     def _to_mds(self, index, value):
         # Delegate bounds checking etc. to the primitive wrapper
@@ -463,7 +463,7 @@ cdef class UShortArray(MDSIntArrayBase):
         return self._handle.size()
 
     def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
+        return ushort_to_core_val(self._handle.frozen_read(index))
 
     def _to_mds(self, index, value):
         # Delegate bounds checking etc. to the primitive wrapper
@@ -510,7 +510,7 @@ cdef class IntArray(MDSIntArrayBase):
         return self._handle.size()
 
     def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
+        return int_to_core_val(self._handle.frozen_read(index))
 
     def _to_mds(self, index, value):
         # Delegate bounds checking etc. to the primitive wrapper
@@ -557,7 +557,7 @@ cdef class UIntArray(MDSIntArrayBase):
         return self._handle.size()
 
     def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
+        return uint_to_core_val(self._handle.frozen_read(index))
 
     def _to_mds(self, index, value):
         # Delegate bounds checking etc. to the primitive wrapper
@@ -604,7 +604,7 @@ cdef class LongArray(MDSIntArrayBase):
         return self._handle.size()
 
     def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
+        return long_to_core_val(self._handle.frozen_read(index))
 
     def _to_mds(self, index, value):
         # Delegate bounds checking etc. to the primitive wrapper
@@ -651,7 +651,7 @@ cdef class ULongArray(MDSIntArrayBase):
         return self._handle.size()
 
     def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
+        return ulong_to_core_val(self._handle.frozen_read(index))
 
     def _to_mds(self, index, value):
         # Delegate bounds checking etc. to the primitive wrapper
@@ -698,7 +698,7 @@ cdef class FloatArray(MDSFloatArrayBase):
         return self._handle.size()
 
     def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
+        return float_to_core_val(self._handle.frozen_read(index))
 
     def _to_mds(self, index, value):
         # Delegate bounds checking etc. to the primitive wrapper
@@ -745,7 +745,7 @@ cdef class DoubleArray(MDSFloatArrayBase):
         return self._handle.size()
 
     def _to_python(self, index):
-        return to_core_val(self._handle.frozen_read(index))
+        return double_to_core_val(self._handle.frozen_read(index))
 
     def _to_mds(self, index, value):
         # Delegate bounds checking etc. to the primitive wrapper
@@ -2820,7 +2820,7 @@ ctypedef fused strings:
     String
 
 cdef String __cast_to_mds_string(strings possible_str):
-    if type(possible_str) == str:
+    if isinstance(possible_str, str):
         return String(possible_str)
 
     return possible_str
@@ -2838,8 +2838,11 @@ cdef class Namespace(MDSObject):
         String _name
 
     def __cinit__(self, Namespace parent, name):
+        cdef:
+            String definite = __cast_to_mds_string(name)
+
         self._parent = parent
-        self._name = __cast_to_mds_string(name)
+        self._name = definite
 
     def __setitem__(self, path: PathTypes, value: MDSObject):
         binding = self[path]
@@ -2866,7 +2869,7 @@ cdef class Namespace(MDSObject):
         if p.is_absolute():
             iptr = Namespace.root()
 
-        for i in range pi.initial_ups:
+        for i in range(pi.initial_ups):
             if iptr.is_root():
                 raise IllegalPathException(p)
 
@@ -2993,7 +2996,7 @@ cdef class NameBindingBase(object):
         self._name = n
 
     def is_bound(self):
-        return self._namespace._handle.is_bound(self._name._handle)
+        return self._namespace._handle.is_bound(self._name._ish)
 
     def bind(self, *args, **kwargs):
         pass
@@ -3020,11 +3023,22 @@ cdef class NameBinding(NameBindingBase):
         mappings = {
             # START INJECTION | tmpl_namespace_mapping
             mds.typing.bool: BoolNameBinding,
+            mds.typing.byte: ByteNameBinding,
+            mds.typing.ubyte: UByteNameBinding,
+            mds.typing.short: ShortNameBinding,
+            mds.typing.ushort: UShortNameBinding,
+            mds.typing.int: IntNameBinding,
+            mds.typing.uint: UIntNameBinding,
+            mds.typing.long: LongNameBinding,
+            mds.typing.ulong: ULongNameBinding,
+            mds.typing.float: FloatNameBinding,
+            mds.typing.double: DoubleNameBinding,
+
             # END INJECTION
         }
 
         if t not in mappings:
-            raise TypeError(f"No way to cast to type `t`")
+            raise TypeError(f"No way to cast to type `{t}`")
 
         return mappings[t](self._namespace, self._name)
 
@@ -3036,7 +3050,7 @@ cdef class NameBinding(NameBindingBase):
 
     def as_namespace(self) -> Namespace:
         cdef:
-            managed_string_handle nhandle = self._name._handle
+            interned_string_handle nhandle = self._name._ish
             namespace_handle h = self._namespace._handle
             namespace_handle ch
 
@@ -3044,11 +3058,11 @@ cdef class NameBinding(NameBindingBase):
             return Namespace.root()
 
         ch = h.child_namespace(nhandle, True)
-        return Namespace_Init(handle=ch, namespace=self._namespace, name=self._name)
+        return Namespace_Init(handle=ch, parent=self._namespace, name=self._name)
 
     def bind(self, value: MDSPrimitiveBase):
         # cdef:
-        #     managed_string_handle nhandle = self._name._handle
+        #     interned_string_handle nhandle = self._name._ish
         #     namespace_handle h = self._namespace._handle
         if not isinstance(value, MDSPrimitiveBase):
             raise TypeError("Can't bind a non `MDSObject`")
@@ -3070,10 +3084,376 @@ cdef class TypedNameBinding(NameBindingBase):
     def bind(self, val):
         pass
 
-    def check(self, allow_unbound=True):
+    def check(self):
+        # Removed `allow_unbound` param as differentiating between the core
+        # exceptions isn't trivial in Cython, also has the benefit of meaning
+        # the return value of the function is consistent with its name.
         pass
 
 # START INJECTION | tmpl_namespace_typed_bindings
+
+cdef class BoolNameBinding(TypedNameBinding):
+    cdef:
+        h_mbool_t _type
+
+    def get(self) -> Optional[object]:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mbool_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+        try:
+            return <bool> h.lookup_bool(nhandle, thandle) # this was from_core
+        except:  # unbound_name_ex
+            return None
+
+    def bind(self, bool val) -> None:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            namespace_handle h = self._namespace._handle
+
+        h.bind_bool(nhandle, <bool> val)
+
+    def check(self):
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mbool_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+
+        try:
+            h.lookup_bool(nhandle, thandle)
+            return True
+        except:
+            return False
+
+cdef class ByteNameBinding(TypedNameBinding):
+    cdef:
+        h_mbyte_t _type
+
+    def get(self) -> Optional[object]:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mbyte_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+        try:
+            return <int8_t> h.lookup_byte(nhandle, thandle) # this was from_core
+        except:  # unbound_name_ex
+            return None
+
+    def bind(self, int8_t val) -> None:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            namespace_handle h = self._namespace._handle
+
+        h.bind_byte(nhandle, <int8_t> val)
+
+    def check(self):
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mbyte_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+
+        try:
+            h.lookup_byte(nhandle, thandle)
+            return True
+        except:
+            return False
+
+cdef class UByteNameBinding(TypedNameBinding):
+    cdef:
+        h_mubyte_t _type
+
+    def get(self) -> Optional[object]:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mubyte_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+        try:
+            return <uint8_t> h.lookup_ubyte(nhandle, thandle) # this was from_core
+        except:  # unbound_name_ex
+            return None
+
+    def bind(self, uint8_t val) -> None:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            namespace_handle h = self._namespace._handle
+
+        h.bind_ubyte(nhandle, <uint8_t> val)
+
+    def check(self):
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mubyte_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+
+        try:
+            h.lookup_ubyte(nhandle, thandle)
+            return True
+        except:
+            return False
+
+cdef class ShortNameBinding(TypedNameBinding):
+    cdef:
+        h_mshort_t _type
+
+    def get(self) -> Optional[object]:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mshort_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+        try:
+            return <int16_t> h.lookup_short(nhandle, thandle) # this was from_core
+        except:  # unbound_name_ex
+            return None
+
+    def bind(self, int16_t val) -> None:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            namespace_handle h = self._namespace._handle
+
+        h.bind_short(nhandle, <int16_t> val)
+
+    def check(self):
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mshort_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+
+        try:
+            h.lookup_short(nhandle, thandle)
+            return True
+        except:
+            return False
+
+cdef class UShortNameBinding(TypedNameBinding):
+    cdef:
+        h_mushort_t _type
+
+    def get(self) -> Optional[object]:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mushort_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+        try:
+            return <uint16_t> h.lookup_ushort(nhandle, thandle) # this was from_core
+        except:  # unbound_name_ex
+            return None
+
+    def bind(self, uint16_t val) -> None:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            namespace_handle h = self._namespace._handle
+
+        h.bind_ushort(nhandle, <uint16_t> val)
+
+    def check(self):
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mushort_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+
+        try:
+            h.lookup_ushort(nhandle, thandle)
+            return True
+        except:
+            return False
+
+cdef class IntNameBinding(TypedNameBinding):
+    cdef:
+        h_mint_t _type
+
+    def get(self) -> Optional[object]:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mint_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+        try:
+            return <int32_t> h.lookup_int(nhandle, thandle) # this was from_core
+        except:  # unbound_name_ex
+            return None
+
+    def bind(self, int32_t val) -> None:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            namespace_handle h = self._namespace._handle
+
+        h.bind_int(nhandle, <int32_t> val)
+
+    def check(self):
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mint_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+
+        try:
+            h.lookup_int(nhandle, thandle)
+            return True
+        except:
+            return False
+
+cdef class UIntNameBinding(TypedNameBinding):
+    cdef:
+        h_muint_t _type
+
+    def get(self) -> Optional[object]:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_muint_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+        try:
+            return <uint32_t> h.lookup_uint(nhandle, thandle) # this was from_core
+        except:  # unbound_name_ex
+            return None
+
+    def bind(self, uint32_t val) -> None:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            namespace_handle h = self._namespace._handle
+
+        h.bind_uint(nhandle, <uint32_t> val)
+
+    def check(self):
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_muint_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+
+        try:
+            h.lookup_uint(nhandle, thandle)
+            return True
+        except:
+            return False
+
+cdef class LongNameBinding(TypedNameBinding):
+    cdef:
+        h_mlong_t _type
+
+    def get(self) -> Optional[object]:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mlong_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+        try:
+            return <int64_t> h.lookup_long(nhandle, thandle) # this was from_core
+        except:  # unbound_name_ex
+            return None
+
+    def bind(self, int64_t val) -> None:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            namespace_handle h = self._namespace._handle
+
+        h.bind_long(nhandle, <int64_t> val)
+
+    def check(self):
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mlong_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+
+        try:
+            h.lookup_long(nhandle, thandle)
+            return True
+        except:
+            return False
+
+cdef class ULongNameBinding(TypedNameBinding):
+    cdef:
+        h_mulong_t _type
+
+    def get(self) -> Optional[object]:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mulong_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+        try:
+            return <uint64_t> h.lookup_ulong(nhandle, thandle) # this was from_core
+        except:  # unbound_name_ex
+            return None
+
+    def bind(self, uint64_t val) -> None:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            namespace_handle h = self._namespace._handle
+
+        h.bind_ulong(nhandle, <uint64_t> val)
+
+    def check(self):
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mulong_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+
+        try:
+            h.lookup_ulong(nhandle, thandle)
+            return True
+        except:
+            return False
+
+cdef class FloatNameBinding(TypedNameBinding):
+    cdef:
+        h_mfloat_t _type
+
+    def get(self) -> Optional[object]:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mfloat_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+        try:
+            return <float> h.lookup_float(nhandle, thandle) # this was from_core
+        except:  # unbound_name_ex
+            return None
+
+    def bind(self, float val) -> None:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            namespace_handle h = self._namespace._handle
+
+        h.bind_float(nhandle, <float> val)
+
+    def check(self):
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mfloat_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+
+        try:
+            h.lookup_float(nhandle, thandle)
+            return True
+        except:
+            return False
+
+cdef class DoubleNameBinding(TypedNameBinding):
+    cdef:
+        h_mdouble_t _type
+
+    def get(self) -> Optional[object]:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mdouble_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+        try:
+            return <double> h.lookup_double(nhandle, thandle) # this was from_core
+        except:  # unbound_name_ex
+            return None
+
+    def bind(self, double val) -> None:
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            namespace_handle h = self._namespace._handle
+
+        h.bind_double(nhandle, <double> val)
+
+    def check(self):
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            h_mdouble_t thandle = self._type
+            namespace_handle h = self._namespace._handle
+
+        try:
+            h.lookup_double(nhandle, thandle)
+            return True
+        except:
+            return False
 
 # END INJECTION
 
@@ -3092,64 +3472,57 @@ cpdef inline is_record_type(obj):
 
 cdef class Bool(MDSPrimitiveBase):
 
-    cdef mv_bool _value
+    cdef:
+        mv_bool _type
+        bool _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_bool(self._value)
 
     def _to_python(self):
-        return to_core_val(self._value)
+        return bool_to_core_val(self._type)
 
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
-    
-cdef class ConstBool(MDSConstPrimitiveBase):
+    def update_value(self, value) -> None:
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_bool(self._value)
 
-    cdef mv_bool _value
+    def bind_to_namespace(self, Namespace namespace, String name) -> None:
+        cdef:
+            interned_string_handle nhandle = name._ish
+            namespace_handle h = namespace._handle
 
-    def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
-
-    def _to_python(self):
-        return to_core_val(self._value)
-
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
+        h.bind_bool(nhandle, <bool> self._value)
     
 cdef class Byte(MDSIntPrimitiveBase):
 
-    cdef mv_byte _value
+    cdef:
+        mv_byte _type
+        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_byte(self._value)
 
     def _to_python(self):
-        return to_core_val(self._value)
+        return byte_to_core_val(self._type)
 
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
+    def update_value(self, value) -> None:
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_byte(self._value)
+
+    def bind_to_namespace(self, Namespace namespace, String name) -> None:
+        cdef:
+            interned_string_handle nhandle = name._ish
+            namespace_handle h = namespace._handle
+
+        h.bind_byte(nhandle, <int8_t> self._value)
     
-    property MIN:
-        def __get__(self):
-            return -128
+    def __int__(self):
+        return self._value
 
-    property MAX:
-        def __get__(self):
-            return 127 
+    # TODO: Arithmetic ops
 
-cdef class ConstByte(MDSConstIntPrimitiveBase):
-
-    cdef mv_byte _value
-
-    def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
-
-    def _to_python(self):
-        return to_core_val(self._value)
-
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
-    
     property MIN:
         def __get__(self):
             return -128
@@ -3160,38 +3533,33 @@ cdef class ConstByte(MDSConstIntPrimitiveBase):
 
 cdef class UByte(MDSIntPrimitiveBase):
 
-    cdef mv_ubyte _value
+    cdef:
+        mv_ubyte _type
+        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_ubyte(self._value)
 
     def _to_python(self):
-        return to_core_val(self._value)
+        return ubyte_to_core_val(self._type)
 
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
+    def update_value(self, value) -> None:
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_ubyte(self._value)
+
+    def bind_to_namespace(self, Namespace namespace, String name) -> None:
+        cdef:
+            interned_string_handle nhandle = name._ish
+            namespace_handle h = namespace._handle
+
+        h.bind_ubyte(nhandle, <uint8_t> self._value)
     
-    property MIN:
-        def __get__(self):
-            return 0
+    def __int__(self):
+        return self._value
 
-    property MAX:
-        def __get__(self):
-            return 255 
+    # TODO: Arithmetic ops
 
-cdef class ConstUByte(MDSConstIntPrimitiveBase):
-
-    cdef mv_ubyte _value
-
-    def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
-
-    def _to_python(self):
-        return to_core_val(self._value)
-
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
-    
     property MIN:
         def __get__(self):
             return 0
@@ -3202,38 +3570,33 @@ cdef class ConstUByte(MDSConstIntPrimitiveBase):
 
 cdef class Short(MDSIntPrimitiveBase):
 
-    cdef mv_short _value
+    cdef:
+        mv_short _type
+        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_short(self._value)
 
     def _to_python(self):
-        return to_core_val(self._value)
+        return short_to_core_val(self._type)
 
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
+    def update_value(self, value) -> None:
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_short(self._value)
+
+    def bind_to_namespace(self, Namespace namespace, String name) -> None:
+        cdef:
+            interned_string_handle nhandle = name._ish
+            namespace_handle h = namespace._handle
+
+        h.bind_short(nhandle, <int16_t> self._value)
     
-    property MIN:
-        def __get__(self):
-            return -32768
+    def __int__(self):
+        return self._value
 
-    property MAX:
-        def __get__(self):
-            return 32767 
+    # TODO: Arithmetic ops
 
-cdef class ConstShort(MDSConstIntPrimitiveBase):
-
-    cdef mv_short _value
-
-    def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
-
-    def _to_python(self):
-        return to_core_val(self._value)
-
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
-    
     property MIN:
         def __get__(self):
             return -32768
@@ -3244,38 +3607,33 @@ cdef class ConstShort(MDSConstIntPrimitiveBase):
 
 cdef class UShort(MDSIntPrimitiveBase):
 
-    cdef mv_ushort _value
+    cdef:
+        mv_ushort _type
+        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_ushort(self._value)
 
     def _to_python(self):
-        return to_core_val(self._value)
+        return ushort_to_core_val(self._type)
 
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
+    def update_value(self, value) -> None:
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_ushort(self._value)
+
+    def bind_to_namespace(self, Namespace namespace, String name) -> None:
+        cdef:
+            interned_string_handle nhandle = name._ish
+            namespace_handle h = namespace._handle
+
+        h.bind_ushort(nhandle, <uint16_t> self._value)
     
-    property MIN:
-        def __get__(self):
-            return 0
+    def __int__(self):
+        return self._value
 
-    property MAX:
-        def __get__(self):
-            return 65535 
+    # TODO: Arithmetic ops
 
-cdef class ConstUShort(MDSConstIntPrimitiveBase):
-
-    cdef mv_ushort _value
-
-    def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
-
-    def _to_python(self):
-        return to_core_val(self._value)
-
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
-    
     property MIN:
         def __get__(self):
             return 0
@@ -3286,38 +3644,33 @@ cdef class ConstUShort(MDSConstIntPrimitiveBase):
 
 cdef class Int(MDSIntPrimitiveBase):
 
-    cdef mv_int _value
+    cdef:
+        mv_int _type
+        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_int(self._value)
 
     def _to_python(self):
-        return to_core_val(self._value)
+        return int_to_core_val(self._type)
 
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
+    def update_value(self, value) -> None:
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_int(self._value)
+
+    def bind_to_namespace(self, Namespace namespace, String name) -> None:
+        cdef:
+            interned_string_handle nhandle = name._ish
+            namespace_handle h = namespace._handle
+
+        h.bind_int(nhandle, <int32_t> self._value)
     
-    property MIN:
-        def __get__(self):
-            return -2147483648
+    def __int__(self):
+        return self._value
 
-    property MAX:
-        def __get__(self):
-            return 2147483647 
+    # TODO: Arithmetic ops
 
-cdef class ConstInt(MDSConstIntPrimitiveBase):
-
-    cdef mv_int _value
-
-    def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
-
-    def _to_python(self):
-        return to_core_val(self._value)
-
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
-    
     property MIN:
         def __get__(self):
             return -2147483648
@@ -3328,38 +3681,33 @@ cdef class ConstInt(MDSConstIntPrimitiveBase):
 
 cdef class UInt(MDSIntPrimitiveBase):
 
-    cdef mv_uint _value
+    cdef:
+        mv_uint _type
+        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_uint(self._value)
 
     def _to_python(self):
-        return to_core_val(self._value)
+        return uint_to_core_val(self._type)
 
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
+    def update_value(self, value) -> None:
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_uint(self._value)
+
+    def bind_to_namespace(self, Namespace namespace, String name) -> None:
+        cdef:
+            interned_string_handle nhandle = name._ish
+            namespace_handle h = namespace._handle
+
+        h.bind_uint(nhandle, <uint32_t> self._value)
     
-    property MIN:
-        def __get__(self):
-            return 0
+    def __int__(self):
+        return self._value
 
-    property MAX:
-        def __get__(self):
-            return 4294967295 
+    # TODO: Arithmetic ops
 
-cdef class ConstUInt(MDSConstIntPrimitiveBase):
-
-    cdef mv_uint _value
-
-    def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
-
-    def _to_python(self):
-        return to_core_val(self._value)
-
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
-    
     property MIN:
         def __get__(self):
             return 0
@@ -3370,38 +3718,33 @@ cdef class ConstUInt(MDSConstIntPrimitiveBase):
 
 cdef class Long(MDSIntPrimitiveBase):
 
-    cdef mv_long _value
+    cdef:
+        mv_long _type
+        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_long(self._value)
 
     def _to_python(self):
-        return to_core_val(self._value)
+        return long_to_core_val(self._type)
 
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
+    def update_value(self, value) -> None:
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_long(self._value)
+
+    def bind_to_namespace(self, Namespace namespace, String name) -> None:
+        cdef:
+            interned_string_handle nhandle = name._ish
+            namespace_handle h = namespace._handle
+
+        h.bind_long(nhandle, <int64_t> self._value)
     
-    property MIN:
-        def __get__(self):
-            return -9223372036854775808
+    def __int__(self):
+        return self._value
 
-    property MAX:
-        def __get__(self):
-            return 9223372036854775807 
+    # TODO: Arithmetic ops
 
-cdef class ConstLong(MDSConstIntPrimitiveBase):
-
-    cdef mv_long _value
-
-    def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
-
-    def _to_python(self):
-        return to_core_val(self._value)
-
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
-    
     property MIN:
         def __get__(self):
             return -9223372036854775808
@@ -3412,38 +3755,33 @@ cdef class ConstLong(MDSConstIntPrimitiveBase):
 
 cdef class ULong(MDSIntPrimitiveBase):
 
-    cdef mv_ulong _value
+    cdef:
+        mv_ulong _type
+        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_ulong(self._value)
 
     def _to_python(self):
-        return to_core_val(self._value)
+        return ulong_to_core_val(self._type)
 
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
+    def update_value(self, value) -> None:
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_ulong(self._value)
+
+    def bind_to_namespace(self, Namespace namespace, String name) -> None:
+        cdef:
+            interned_string_handle nhandle = name._ish
+            namespace_handle h = namespace._handle
+
+        h.bind_ulong(nhandle, <uint64_t> self._value)
     
-    property MIN:
-        def __get__(self):
-            return 0
+    def __int__(self):
+        return self._value
 
-    property MAX:
-        def __get__(self):
-            return 18446744073709551615 
+    # TODO: Arithmetic ops
 
-cdef class ConstULong(MDSConstIntPrimitiveBase):
-
-    cdef mv_ulong _value
-
-    def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
-
-    def _to_python(self):
-        return to_core_val(self._value)
-
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
-    
     property MIN:
         def __get__(self):
             return 0
@@ -3454,54 +3792,50 @@ cdef class ConstULong(MDSConstIntPrimitiveBase):
 
 cdef class Float(MDSFloatPrimitiveBase):
 
-    cdef mv_float _value
+    cdef:
+        mv_float _type
+        float _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_float(self._value)
 
     def _to_python(self):
-        return to_core_val(self._value)
+        return float_to_core_val(self._type)
 
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
-    
-cdef class ConstFloat(MDSConstFloatPrimitiveBase):
+    def update_value(self, value) -> None:
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_float(self._value)
 
-    cdef mv_float _value
+    def bind_to_namespace(self, Namespace namespace, String name) -> None:
+        cdef:
+            interned_string_handle nhandle = name._ish
+            namespace_handle h = namespace._handle
 
-    def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
-
-    def _to_python(self):
-        return to_core_val(self._value)
-
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
+        h.bind_float(nhandle, <float> self._value)
     
 cdef class Double(MDSFloatPrimitiveBase):
 
-    cdef mv_double _value
+    cdef:
+        mv_double _type
+        float _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_double(self._value)
 
     def _to_python(self):
-        return to_core_val(self._value)
+        return double_to_core_val(self._type)
 
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
-    
-cdef class ConstDouble(MDSConstFloatPrimitiveBase):
+    def update_value(self, value) -> None:
+        self._value = self._sanitize(value, self._value)
+        self._type = mv_double(self._value)
 
-    cdef mv_double _value
+    def bind_to_namespace(self, Namespace namespace, String name) -> None:
+        cdef:
+            interned_string_handle nhandle = name._ish
+            namespace_handle h = namespace._handle
 
-    def __cinit__(self, value):  # TODO: Set the value in _value
-        value = self._sanitize(value)
-
-    def _to_python(self):
-        return to_core_val(self._value)
-
-    def _to_mds(self):  # TODO: This needs to update _value
-        pass
+        h.bind_double(nhandle, <double> self._value)
     
 # END INJECTION

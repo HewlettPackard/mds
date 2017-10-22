@@ -51,7 +51,7 @@ class TypeInfo():
     def __repr__(self):
         return f'<MDS TypeInfo: {self.title} ({self.kind})>'
 
-    def __init__(self, apt: str, c_type: str, taxonomy: Taxonomy, py_type: type, dtype_extra=None):
+    def __init__(self, api: str, c_type: str, taxonomy: Taxonomy, py_type: type, dtype_extra=None):
         self.api = api
         self.title = api.title()
 
@@ -100,6 +100,10 @@ class TypeInfo():
         self.f_create_array = f"create_{api}_marray"
         self.f_create_const_array = f"create_const_{api}_marray"
         self.f_bind = f"bind_{api}"
+        self.f_bind_array = f"bind_{api}_array"
+        self.f_lookup = f"lookup_{api}"
+        self.f_lookup_array = f"lookup_{api}_array"
+        self.f_to_core_val = f"{api}_to_core_val"
 
         self.primitive_parent = self.MDS_TAXONOMY[taxonomy].primitive
         self.array_parent = self.MDS_TAXONOMY[taxonomy].array
