@@ -164,6 +164,12 @@ namespace mds
                 tasks::initialize_base_task(); \
                 static auto h = mds::api::managed_array_handle_by_kind<K>(); \
                 return h.create_array(n); \
+            } \
+            static inline h_const_marray_##name##_t create_const_##name##_marray(size_t n) \
+            { \
+                tasks::initialize_base_task(); \
+                static auto h = mds::api::managed_array_handle_by_kind<K>(); \
+                return h.create_array(n); \
             }
 
             _TYPE_WRAPPER_(kind::BOOL, bool)

@@ -495,8 +495,17 @@ def tmpl_api_arrays(t: TypeInfo) -> str:
         h_marray_base_t as_base()
         uint64_t hash1()
         {EXTRA}
-    # TODO: const_managed_array
+
+    cdef cppclass {t.const_managed_array}:
+        {t.managed_value} frozen_read(size_t)
+        {t.managed_value} write(size_t, {t.managed_value})
+        size_t size()
+        bool has_value()
+        h_marray_base_t as_base()
+        uint64_t hash1()
+
     {t.managed_array} {t.f_create_array}(size_t)
+    {t.const_managed_array} {t.f_create_const_array}(size_t)    
 """
     return compiled
 
