@@ -30,7 +30,7 @@ from libcpp.string cimport string
 from libcpp.vector cimport vector
 
 from collections import defaultdict
-from typing import Union, List, Optional
+from typing import Union, List, Optional, Iterable
 
 from mds.core.api_strings cimport *
 from mds.core.api_arrays cimport *
@@ -158,9 +158,17 @@ cdef class MDSPrimitiveBase(MDSObject):
     def update_value(self, value) -> None:
         return NotImplemented
 
+    property python_type:
+        def __get__(self):
+            return int
+
     property python_value:
         def __get__(self):
             return self._to_python()
+
+    property dtype:
+        def __get__(self):
+            return None
 
 
 cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
@@ -170,7 +178,7 @@ cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
             value = int(value)
         elif not isinstance(value, int):
             t = type(value)
-            raise TypeError('Unable to parse value of type `{t}`')
+            raise TypeError(f'Unable to parse value of type `{t}`')
 
         if value < self.MIN:
             raise UnderflowError(f"Can't fit {value} in container {self.dtype}")
@@ -178,6 +186,10 @@ cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
             raise OverflowError(f"Can't fit {value} in container {self.dtype}")
 
         return value
+
+    property python_type:
+        def __get__(self):
+            return int
 
     property MIN:
         def __get__(self):
@@ -189,7 +201,10 @@ cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
 
 
 cdef class MDSFloatPrimitiveBase(MDSPrimitiveBase):
-    pass
+
+    property python_type:
+        def __get__(self):
+            return float
 
 # =========================================================================
 #  Arrays
@@ -270,6 +285,15 @@ cdef class MDSConstArrayBase(MDSIndexedObject):
     def copy(self):
         raise NotImplementedError('Specialization of MDSArrayBase required')
  
+    @classmethod
+    def of(cls, values: Iterable):
+        retval = cls(length=len(values))
+
+        for i, elem in enumerate(values):
+            retval[i] = elem
+
+        return retval
+
     property dtype:
         def __get__(self):
             raise NotImplementedError('Specialization of MDSArrayBase required')
@@ -286,7 +310,8 @@ cdef class MDSIntArrayBase(MDSArrayBase):
 
     def _numeric_bounds_check(self, value):
         """
-        TODO: This needs to check the bounds of the different int sizes in MDS.
+        This is per-type as it delegates to the associated primitive to do the
+        bounds checking and follow Python/numpy conventions
         """
         raise NotImplementedError('Requires a type-specific instantiation')
 
@@ -295,37 +320,38 @@ cdef class MDSIntArrayBase(MDSArrayBase):
         value = self._numeric_bounds_check(value)
         self._to_mds(index, value)
 
-    property dtype:
+    property python_type:
         def __get__(self):
             return int
 
 
 cdef class MDSFloatArrayBase(MDSArrayBase):
 
-    property dtype:
+    property python_type:
         def __get__(self):
             return float
 
 
 # START INJECTION | tmpl_array
 
-cdef inline BoolArray_Inplace(BoolArray cls, size_t length):
-    cls._handle = create_bool_marray(length)
-
 cdef class BoolArray(MDSArrayBase):
 
     cdef h_marray_bool_t _handle
     _primitive = Bool
 
-    def __cinit__(self, length=None):
-        if length is not None:
-            BoolArray_Inplace(self, length)
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = create_bool_marray(<size_t> length)
 
     def __len__(self):
         return self._handle.size()
 
     def __hash__(self):
         return self._handle.hash1()
+
+    def _numeric_bounds_check(self, value):
+        prim = Bool(value)
+        return prim.python_value
 
     def _to_python(self, index):
         return bool_to_core_val(self._handle.frozen_read(index))
@@ -349,25 +375,26 @@ cdef class BoolArray(MDSArrayBase):
 
     property dtype:
         def __get__(self):
-            return type(True)
-
-cdef inline ByteArray_Inplace(ByteArray cls, size_t length):
-    cls._handle = create_byte_marray(length)
+            return mds.typing.bool
 
 cdef class ByteArray(MDSIntArrayBase):
 
     cdef h_marray_byte_t _handle
     _primitive = Byte
 
-    def __cinit__(self, length=None):
-        if length is not None:
-            ByteArray_Inplace(self, length)
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = create_byte_marray(<size_t> length)
 
     def __len__(self):
         return self._handle.size()
 
     def __hash__(self):
         return self._handle.hash1()
+
+    def _numeric_bounds_check(self, value):
+        prim = Byte(value)
+        return prim.python_value
 
     def _to_python(self, index):
         return byte_to_core_val(self._handle.frozen_read(index))
@@ -401,23 +428,28 @@ cdef class ByteArray(MDSIntArrayBase):
     def __itruediv__(self, other):
         return self._handle.div(self._last_index, <int8_t> other)
 
-cdef inline UByteArray_Inplace(UByteArray cls, size_t length):
-    cls._handle = create_ubyte_marray(length)
+    property dtype:
+        def __get__(self):
+            return mds.typing.byte
 
 cdef class UByteArray(MDSIntArrayBase):
 
     cdef h_marray_ubyte_t _handle
     _primitive = UByte
 
-    def __cinit__(self, length=None):
-        if length is not None:
-            UByteArray_Inplace(self, length)
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = create_ubyte_marray(<size_t> length)
 
     def __len__(self):
         return self._handle.size()
 
     def __hash__(self):
         return self._handle.hash1()
+
+    def _numeric_bounds_check(self, value):
+        prim = UByte(value)
+        return prim.python_value
 
     def _to_python(self, index):
         return ubyte_to_core_val(self._handle.frozen_read(index))
@@ -451,23 +483,28 @@ cdef class UByteArray(MDSIntArrayBase):
     def __itruediv__(self, other):
         return self._handle.div(self._last_index, <uint8_t> other)
 
-cdef inline ShortArray_Inplace(ShortArray cls, size_t length):
-    cls._handle = create_short_marray(length)
+    property dtype:
+        def __get__(self):
+            return mds.typing.ubyte
 
 cdef class ShortArray(MDSIntArrayBase):
 
     cdef h_marray_short_t _handle
     _primitive = Short
 
-    def __cinit__(self, length=None):
-        if length is not None:
-            ShortArray_Inplace(self, length)
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = create_short_marray(<size_t> length)
 
     def __len__(self):
         return self._handle.size()
 
     def __hash__(self):
         return self._handle.hash1()
+
+    def _numeric_bounds_check(self, value):
+        prim = Short(value)
+        return prim.python_value
 
     def _to_python(self, index):
         return short_to_core_val(self._handle.frozen_read(index))
@@ -501,23 +538,28 @@ cdef class ShortArray(MDSIntArrayBase):
     def __itruediv__(self, other):
         return self._handle.div(self._last_index, <int16_t> other)
 
-cdef inline UShortArray_Inplace(UShortArray cls, size_t length):
-    cls._handle = create_ushort_marray(length)
+    property dtype:
+        def __get__(self):
+            return mds.typing.short
 
 cdef class UShortArray(MDSIntArrayBase):
 
     cdef h_marray_ushort_t _handle
     _primitive = UShort
 
-    def __cinit__(self, length=None):
-        if length is not None:
-            UShortArray_Inplace(self, length)
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = create_ushort_marray(<size_t> length)
 
     def __len__(self):
         return self._handle.size()
 
     def __hash__(self):
         return self._handle.hash1()
+
+    def _numeric_bounds_check(self, value):
+        prim = UShort(value)
+        return prim.python_value
 
     def _to_python(self, index):
         return ushort_to_core_val(self._handle.frozen_read(index))
@@ -551,23 +593,28 @@ cdef class UShortArray(MDSIntArrayBase):
     def __itruediv__(self, other):
         return self._handle.div(self._last_index, <uint16_t> other)
 
-cdef inline IntArray_Inplace(IntArray cls, size_t length):
-    cls._handle = create_int_marray(length)
+    property dtype:
+        def __get__(self):
+            return mds.typing.ushort
 
 cdef class IntArray(MDSIntArrayBase):
 
     cdef h_marray_int_t _handle
     _primitive = Int
 
-    def __cinit__(self, length=None):
-        if length is not None:
-            IntArray_Inplace(self, length)
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = create_int_marray(<size_t> length)
 
     def __len__(self):
         return self._handle.size()
 
     def __hash__(self):
         return self._handle.hash1()
+
+    def _numeric_bounds_check(self, value):
+        prim = Int(value)
+        return prim.python_value
 
     def _to_python(self, index):
         return int_to_core_val(self._handle.frozen_read(index))
@@ -601,23 +648,28 @@ cdef class IntArray(MDSIntArrayBase):
     def __itruediv__(self, other):
         return self._handle.div(self._last_index, <int32_t> other)
 
-cdef inline UIntArray_Inplace(UIntArray cls, size_t length):
-    cls._handle = create_uint_marray(length)
+    property dtype:
+        def __get__(self):
+            return mds.typing.int
 
 cdef class UIntArray(MDSIntArrayBase):
 
     cdef h_marray_uint_t _handle
     _primitive = UInt
 
-    def __cinit__(self, length=None):
-        if length is not None:
-            UIntArray_Inplace(self, length)
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = create_uint_marray(<size_t> length)
 
     def __len__(self):
         return self._handle.size()
 
     def __hash__(self):
         return self._handle.hash1()
+
+    def _numeric_bounds_check(self, value):
+        prim = UInt(value)
+        return prim.python_value
 
     def _to_python(self, index):
         return uint_to_core_val(self._handle.frozen_read(index))
@@ -651,23 +703,28 @@ cdef class UIntArray(MDSIntArrayBase):
     def __itruediv__(self, other):
         return self._handle.div(self._last_index, <uint32_t> other)
 
-cdef inline LongArray_Inplace(LongArray cls, size_t length):
-    cls._handle = create_long_marray(length)
+    property dtype:
+        def __get__(self):
+            return mds.typing.uint
 
 cdef class LongArray(MDSIntArrayBase):
 
     cdef h_marray_long_t _handle
     _primitive = Long
 
-    def __cinit__(self, length=None):
-        if length is not None:
-            LongArray_Inplace(self, length)
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = create_long_marray(<size_t> length)
 
     def __len__(self):
         return self._handle.size()
 
     def __hash__(self):
         return self._handle.hash1()
+
+    def _numeric_bounds_check(self, value):
+        prim = Long(value)
+        return prim.python_value
 
     def _to_python(self, index):
         return long_to_core_val(self._handle.frozen_read(index))
@@ -701,23 +758,28 @@ cdef class LongArray(MDSIntArrayBase):
     def __itruediv__(self, other):
         return self._handle.div(self._last_index, <int64_t> other)
 
-cdef inline ULongArray_Inplace(ULongArray cls, size_t length):
-    cls._handle = create_ulong_marray(length)
+    property dtype:
+        def __get__(self):
+            return mds.typing.long
 
 cdef class ULongArray(MDSIntArrayBase):
 
     cdef h_marray_ulong_t _handle
     _primitive = ULong
 
-    def __cinit__(self, length=None):
-        if length is not None:
-            ULongArray_Inplace(self, length)
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = create_ulong_marray(<size_t> length)
 
     def __len__(self):
         return self._handle.size()
 
     def __hash__(self):
         return self._handle.hash1()
+
+    def _numeric_bounds_check(self, value):
+        prim = ULong(value)
+        return prim.python_value
 
     def _to_python(self, index):
         return ulong_to_core_val(self._handle.frozen_read(index))
@@ -751,23 +813,28 @@ cdef class ULongArray(MDSIntArrayBase):
     def __itruediv__(self, other):
         return self._handle.div(self._last_index, <uint64_t> other)
 
-cdef inline FloatArray_Inplace(FloatArray cls, size_t length):
-    cls._handle = create_float_marray(length)
+    property dtype:
+        def __get__(self):
+            return mds.typing.ulong
 
 cdef class FloatArray(MDSFloatArrayBase):
 
     cdef h_marray_float_t _handle
     _primitive = Float
 
-    def __cinit__(self, length=None):
-        if length is not None:
-            FloatArray_Inplace(self, length)
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = create_float_marray(<size_t> length)
 
     def __len__(self):
         return self._handle.size()
 
     def __hash__(self):
         return self._handle.hash1()
+
+    def _numeric_bounds_check(self, value):
+        prim = Float(value)
+        return prim.python_value
 
     def _to_python(self, index):
         return float_to_core_val(self._handle.frozen_read(index))
@@ -801,23 +868,28 @@ cdef class FloatArray(MDSFloatArrayBase):
     def __itruediv__(self, other):
         return self._handle.div(self._last_index, <float> other)
 
-cdef inline DoubleArray_Inplace(DoubleArray cls, size_t length):
-    cls._handle = create_double_marray(length)
+    property dtype:
+        def __get__(self):
+            return mds.typing.float
 
 cdef class DoubleArray(MDSFloatArrayBase):
 
     cdef h_marray_double_t _handle
     _primitive = Double
 
-    def __cinit__(self, length=None):
-        if length is not None:
-            DoubleArray_Inplace(self, length)
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = create_double_marray(<size_t> length)
 
     def __len__(self):
         return self._handle.size()
 
     def __hash__(self):
         return self._handle.hash1()
+
+    def _numeric_bounds_check(self, value):
+        prim = Double(value)
+        return prim.python_value
 
     def _to_python(self, index):
         return double_to_core_val(self._handle.frozen_read(index))
@@ -850,6 +922,10 @@ cdef class DoubleArray(MDSFloatArrayBase):
 
     def __itruediv__(self, other):
         return self._handle.div(self._last_index, <double> other)
+
+    property dtype:
+        def __get__(self):
+            return mds.typing.double
 
 # END INJECTION
 
@@ -976,7 +1052,7 @@ cdef class Record(MDSObject):
             interned_string_handle nhandle = name._ish
             namespace_handle h = namespace._handle
 
-        h.bind_record(nhandle, self._handle)
+        # h.bind_record(nhandle, self._handle)
 
     @classmethod
     def from_namespace(cls, ns: Namespace, path: PathTypes) -> Record:
@@ -3563,15 +3639,14 @@ cpdef inline is_record_type(obj):
 # START INJECTION | tmpl_primitives
 
 cdef class Bool(MDSPrimitiveBase):
-
     cdef:
         mv_bool _type
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self.update(value=value)
+        self.update(value)
 
     def __hash__(self):
-        return self._type.hash1()
+        return hash(self.python_value)
 
     def _to_python(self):
         return bool_to_core_val(self._type)
@@ -3586,20 +3661,19 @@ cdef class Bool(MDSPrimitiveBase):
 
         h.bind_bool(nhandle, <bool> self._value)
 
-    property python_value:
+    property dtype:
         def __get__(self):
-            return self._to_python()
+            return mds.typing.bool
     
 cdef class Byte(MDSIntPrimitiveBase):
-
     cdef:
         mv_byte _type
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self.update(value=value)
+        self.update(value)
 
     def __hash__(self):
-        return self._type.hash1()
+        return hash(self.python_value)
 
     def _to_python(self):
         return byte_to_core_val(self._type)
@@ -3614,9 +3688,9 @@ cdef class Byte(MDSIntPrimitiveBase):
 
         h.bind_byte(nhandle, <int8_t> self._value)
 
-    property python_value:
+    property dtype:
         def __get__(self):
-            return self._to_python()
+            return mds.typing.byte
     
     property MIN:
         def __get__(self):
@@ -3627,15 +3701,14 @@ cdef class Byte(MDSIntPrimitiveBase):
             return 127 
 
 cdef class UByte(MDSIntPrimitiveBase):
-
     cdef:
         mv_ubyte _type
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self.update(value=value)
+        self.update(value)
 
     def __hash__(self):
-        return self._type.hash1()
+        return hash(self.python_value)
 
     def _to_python(self):
         return ubyte_to_core_val(self._type)
@@ -3650,9 +3723,9 @@ cdef class UByte(MDSIntPrimitiveBase):
 
         h.bind_ubyte(nhandle, <uint8_t> self._value)
 
-    property python_value:
+    property dtype:
         def __get__(self):
-            return self._to_python()
+            return mds.typing.ubyte
     
     property MIN:
         def __get__(self):
@@ -3663,15 +3736,14 @@ cdef class UByte(MDSIntPrimitiveBase):
             return 255 
 
 cdef class Short(MDSIntPrimitiveBase):
-
     cdef:
         mv_short _type
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self.update(value=value)
+        self.update(value)
 
     def __hash__(self):
-        return self._type.hash1()
+        return hash(self.python_value)
 
     def _to_python(self):
         return short_to_core_val(self._type)
@@ -3686,9 +3758,9 @@ cdef class Short(MDSIntPrimitiveBase):
 
         h.bind_short(nhandle, <int16_t> self._value)
 
-    property python_value:
+    property dtype:
         def __get__(self):
-            return self._to_python()
+            return mds.typing.short
     
     property MIN:
         def __get__(self):
@@ -3699,15 +3771,14 @@ cdef class Short(MDSIntPrimitiveBase):
             return 32767 
 
 cdef class UShort(MDSIntPrimitiveBase):
-
     cdef:
         mv_ushort _type
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self.update(value=value)
+        self.update(value)
 
     def __hash__(self):
-        return self._type.hash1()
+        return hash(self.python_value)
 
     def _to_python(self):
         return ushort_to_core_val(self._type)
@@ -3722,9 +3793,9 @@ cdef class UShort(MDSIntPrimitiveBase):
 
         h.bind_ushort(nhandle, <uint16_t> self._value)
 
-    property python_value:
+    property dtype:
         def __get__(self):
-            return self._to_python()
+            return mds.typing.ushort
     
     property MIN:
         def __get__(self):
@@ -3735,15 +3806,14 @@ cdef class UShort(MDSIntPrimitiveBase):
             return 65535 
 
 cdef class Int(MDSIntPrimitiveBase):
-
     cdef:
         mv_int _type
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self.update(value=value)
+        self.update(value)
 
     def __hash__(self):
-        return self._type.hash1()
+        return hash(self.python_value)
 
     def _to_python(self):
         return int_to_core_val(self._type)
@@ -3758,9 +3828,9 @@ cdef class Int(MDSIntPrimitiveBase):
 
         h.bind_int(nhandle, <int32_t> self._value)
 
-    property python_value:
+    property dtype:
         def __get__(self):
-            return self._to_python()
+            return mds.typing.int
     
     property MIN:
         def __get__(self):
@@ -3771,15 +3841,14 @@ cdef class Int(MDSIntPrimitiveBase):
             return 2147483647 
 
 cdef class UInt(MDSIntPrimitiveBase):
-
     cdef:
         mv_uint _type
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self.update(value=value)
+        self.update(value)
 
     def __hash__(self):
-        return self._type.hash1()
+        return hash(self.python_value)
 
     def _to_python(self):
         return uint_to_core_val(self._type)
@@ -3794,9 +3863,9 @@ cdef class UInt(MDSIntPrimitiveBase):
 
         h.bind_uint(nhandle, <uint32_t> self._value)
 
-    property python_value:
+    property dtype:
         def __get__(self):
-            return self._to_python()
+            return mds.typing.uint
     
     property MIN:
         def __get__(self):
@@ -3807,15 +3876,14 @@ cdef class UInt(MDSIntPrimitiveBase):
             return 4294967295 
 
 cdef class Long(MDSIntPrimitiveBase):
-
     cdef:
         mv_long _type
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self.update(value=value)
+        self.update(value)
 
     def __hash__(self):
-        return self._type.hash1()
+        return hash(self.python_value)
 
     def _to_python(self):
         return long_to_core_val(self._type)
@@ -3830,9 +3898,9 @@ cdef class Long(MDSIntPrimitiveBase):
 
         h.bind_long(nhandle, <int64_t> self._value)
 
-    property python_value:
+    property dtype:
         def __get__(self):
-            return self._to_python()
+            return mds.typing.long
     
     property MIN:
         def __get__(self):
@@ -3843,15 +3911,14 @@ cdef class Long(MDSIntPrimitiveBase):
             return 9223372036854775807 
 
 cdef class ULong(MDSIntPrimitiveBase):
-
     cdef:
         mv_ulong _type
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self.update(value=value)
+        self.update(value)
 
     def __hash__(self):
-        return self._type.hash1()
+        return hash(self.python_value)
 
     def _to_python(self):
         return ulong_to_core_val(self._type)
@@ -3866,9 +3933,9 @@ cdef class ULong(MDSIntPrimitiveBase):
 
         h.bind_ulong(nhandle, <uint64_t> self._value)
 
-    property python_value:
+    property dtype:
         def __get__(self):
-            return self._to_python()
+            return mds.typing.ulong
     
     property MIN:
         def __get__(self):
@@ -3879,15 +3946,14 @@ cdef class ULong(MDSIntPrimitiveBase):
             return 18446744073709551615 
 
 cdef class Float(MDSFloatPrimitiveBase):
-
     cdef:
         mv_float _type
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self.update(value=value)
+        self.update(value)
 
     def __hash__(self):
-        return self._type.hash1()
+        return hash(self.python_value)
 
     def _to_python(self):
         return float_to_core_val(self._type)
@@ -3902,20 +3968,19 @@ cdef class Float(MDSFloatPrimitiveBase):
 
         h.bind_float(nhandle, <float> self._value)
 
-    property python_value:
+    property dtype:
         def __get__(self):
-            return self._to_python()
+            return mds.typing.float
     
 cdef class Double(MDSFloatPrimitiveBase):
-
     cdef:
         mv_double _type
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self.update(value=value)
+        self.update(value)
 
     def __hash__(self):
-        return self._type.hash1()
+        return hash(self.python_value)
 
     def _to_python(self):
         return double_to_core_val(self._type)
@@ -3930,8 +3995,8 @@ cdef class Double(MDSFloatPrimitiveBase):
 
         h.bind_double(nhandle, <double> self._value)
 
-    property python_value:
+    property dtype:
         def __get__(self):
-            return self._to_python()
+            return mds.typing.double
     
 # END INJECTION

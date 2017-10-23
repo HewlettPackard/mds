@@ -141,20 +141,16 @@ def tmpl_api_primitives(t: TypeInfo) -> str:
     return compiled
 
 def tmpl_primitives(t: TypeInfo) -> str:
-    compiled = ""
-
-    for title, parent in [(t.title, t.primitive_parent)]:
-        compiled += f"""
-cdef class {title}({parent}):
-
+    compiled = f"""
+cdef class {t.title}({t.primitive_parent}):
     cdef:
         {t.managed_value} _type
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self.update(value=value)
+        self.update(value)
 
     def __hash__(self):
-        return self._type.hash1()
+        return hash(self.python_value)
 
     def _to_python(self):
         return {t.f_to_core_val}(self._type)
@@ -169,13 +165,13 @@ cdef class {title}({parent}):
 
         h.{t.f_bind}(nhandle, <{t.c_type}> self._value)
 
-    property python_value:
+    property dtype:
         def __get__(self):
-            return self._to_python()
+            return mds.typing.{t.api}
     """
 
-        if t.is_integral:
-            compiled += f"""
+    if t.is_integral:
+        compiled += f"""
     property MIN:
         def __get__(self):
             return {t.bounds.min}
@@ -406,23 +402,24 @@ cdef class {t.title_record_member}(MDSRecordMemberBase):
 
 def tmpl_array(t: TypeInfo) -> str:
     compiled = f"""
-cdef inline {t.title_array_cinit}({t.title_array} cls, size_t length):
-    cls._handle = {t.f_create_array}(length)
-
 cdef class {t.title_array}({t.array_parent}):
 
     cdef {t.managed_array} _handle
     _primitive = {t.title}
 
-    def __cinit__(self, length=None):
-        if length is not None:
-            {t.title_array_cinit}(self, length)
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = {t.f_create_array}(<size_t> length)
 
     def __len__(self):
         return self._handle.size()
 
     def __hash__(self):
         return self._handle.hash1()
+
+    def _numeric_bounds_check(self, value):
+        prim = {t.title}(value)
+        return prim.python_value
 
     def _to_python(self, index):
         return {t.f_to_core_val}(self._handle.frozen_read(index))
@@ -460,12 +457,10 @@ cdef class {t.title_array}({t.array_parent}):
         return self._handle.div(self._last_index, <{t.c_type}> other)
 """
 
-    # Sometimes we need to be creative to coerce the correct Python type
-    if t.dtype_extra is not None:
-        compiled += f"""
+    compiled += f"""
     property dtype:
         def __get__(self):
-            return type({t.dtype_extra})
+            return mds.typing.{t.api}
 """
     return compiled
 

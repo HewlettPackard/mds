@@ -49,7 +49,7 @@ class TypeInfo():
     MDS_INTEGRAL_BOUNDS = dict()
 
     def __repr__(self):
-        return f'<MDS TypeInfo: {self.title} ({self.kind})>'
+        return f'<MDS Type: {self.title} ({self.kind})>'
 
     def __init__(self, api: str, c_type: str, taxonomy: Taxonomy, py_type: type, dtype_extra=None):
         self.api = api
