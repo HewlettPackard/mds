@@ -29,6 +29,7 @@ from libcpp cimport bool
 from libcpp.string cimport string
 from libcpp.vector cimport vector
 
+from collections import defaultdict
 from typing import Union, List, Optional
 
 from mds.core.api_strings cimport *
@@ -88,81 +89,59 @@ cdef class ConstError(Exception):
 
 cdef class MDSPrimitiveBase(MDSObject):
 
-    def __add__(self, other):
-        this = self._to_python()
+    def __int__(self):
+        return int(self._to_python())
 
+    def __float__(self):
+        return float(self._to_python())
+
+    def __sanitize_operand(self, other):
         if isinstance(other, MDSPrimitiveBase):
-            unpacked = other._to_python()
-        
-        return self.__class__(this + unpacked)
+            other = other.python_value
+        elif not isinstance(other, (int, float)):
+            return NotImplemented
+
+        return other
+
+    def __add__(self, other):
+        pyval = self.__sanitize_operand(other)
+        return self.python_value + pyval
 
     def __sub__(self, other):
-        this = self._to_python()
-
-        if isinstance(other, MDSPrimitiveBase):
-            unpacked = other._to_python()
-        
-        return self.__class__(this - unpacked)
+        pyval = self.__sanitize_operand(other)
+        return self.python_value - pyval
 
     def __mul__(self, other):
-        this = self._to_python()
+        pyval = self.__sanitize_operand(other)
+        return self.python_value * pyval
 
-        if isinstance(other, MDSPrimitiveBase):
-            unpacked = other._to_python()
-        
-        return self.__class__(this * unpacked)
+    def __truediv__(self, other):
+        pyval = self.__sanitize_operand(other)
+        return self.python_value / pyval
 
-    def __div__(self, other):
-        this = self._to_python()
-
-        if isinstance(other, MDSPrimitiveBase):
-            unpacked = other._to_python()
-        
-        return self.__class__(this / unpacked)
+    def __floordiv__(self, other):
+        pyval = self.__sanitize_operand(other)
+        return self.python_value // pyval
 
     def __iadd__(self, other):
-        this = self._to_python()
-
-        if isinstance(other, MDSPrimitiveBase):
-            unpacked = other._to_python()
-        else:
-            unpacked = other
-
-        result = self._sanitize(this + unpacked, self._to_python())
-        self.update_value(result)
+        other = self.__sanitize_operand(other)
+        self.update(self.python_value + other)
 
     def __isub__(self, other):
-        this = self._to_python()
-
-        if isinstance(other, MDSPrimitiveBase):
-            unpacked = other._to_python()
-        else:
-            unpacked = other
-
-        result = self._sanitize(this - unpacked, self._to_python())
-        self.update_value(result)
+        other = self.__sanitize_operand(other)
+        self.update(self.python_value - other)
 
     def __imul__(self, other):
-        this = self._to_python()
+        other = self.__sanitize_operand(other)
+        self.update(self.python_value * other)
 
-        if isinstance(other, MDSPrimitiveBase):
-            unpacked = other._to_python()
-        else:
-            unpacked = other
+    def __itruediv__(self, other):
+        other = self.__sanitize_operand(other)
+        self.update(self.python_value / other)
 
-        result = self._sanitize(this * unpacked, self._to_python())
-        self.update_value(result)
-
-    def __idiv__(self, other):
-        this = self._to_python()
-
-        if isinstance(other, MDSPrimitiveBase):
-            unpacked = other._to_python()
-        else:
-            unpacked = other
-
-        result = self._sanitize(this / unpacked, self._to_python())
-        self.update_value(result)
+    def __ifloordiv__(self, other):
+        other = self.__sanitize_operand(other)
+        self.update(self.python_value // other)
 
     def _to_python(self):
         return NotImplemented
@@ -185,12 +164,6 @@ cdef class MDSPrimitiveBase(MDSObject):
 
 
 cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
-
-    def __int__(self):
-        return self._to_python()
-
-    def __float__(self):
-        return float(self._to_python())
 
     def _sanitize(self, value, existing) -> int:
         if isinstance(value, float):
@@ -216,12 +189,7 @@ cdef class MDSIntPrimitiveBase(MDSPrimitiveBase):
 
 
 cdef class MDSFloatPrimitiveBase(MDSPrimitiveBase):
-
-    def __int__(self):
-        return int(self._to_python())
-
-    def __float__(self):
-        return self._to_python()
+    pass
 
 # =========================================================================
 #  Arrays
@@ -430,7 +398,7 @@ cdef class ByteArray(MDSIntArrayBase):
     def __imul__(self, other):
         return self._handle.mul(self._last_index, <int8_t> other)
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         return self._handle.div(self._last_index, <int8_t> other)
 
 cdef inline UByteArray_Inplace(UByteArray cls, size_t length):
@@ -480,7 +448,7 @@ cdef class UByteArray(MDSIntArrayBase):
     def __imul__(self, other):
         return self._handle.mul(self._last_index, <uint8_t> other)
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         return self._handle.div(self._last_index, <uint8_t> other)
 
 cdef inline ShortArray_Inplace(ShortArray cls, size_t length):
@@ -530,7 +498,7 @@ cdef class ShortArray(MDSIntArrayBase):
     def __imul__(self, other):
         return self._handle.mul(self._last_index, <int16_t> other)
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         return self._handle.div(self._last_index, <int16_t> other)
 
 cdef inline UShortArray_Inplace(UShortArray cls, size_t length):
@@ -580,7 +548,7 @@ cdef class UShortArray(MDSIntArrayBase):
     def __imul__(self, other):
         return self._handle.mul(self._last_index, <uint16_t> other)
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         return self._handle.div(self._last_index, <uint16_t> other)
 
 cdef inline IntArray_Inplace(IntArray cls, size_t length):
@@ -630,7 +598,7 @@ cdef class IntArray(MDSIntArrayBase):
     def __imul__(self, other):
         return self._handle.mul(self._last_index, <int32_t> other)
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         return self._handle.div(self._last_index, <int32_t> other)
 
 cdef inline UIntArray_Inplace(UIntArray cls, size_t length):
@@ -680,7 +648,7 @@ cdef class UIntArray(MDSIntArrayBase):
     def __imul__(self, other):
         return self._handle.mul(self._last_index, <uint32_t> other)
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         return self._handle.div(self._last_index, <uint32_t> other)
 
 cdef inline LongArray_Inplace(LongArray cls, size_t length):
@@ -730,7 +698,7 @@ cdef class LongArray(MDSIntArrayBase):
     def __imul__(self, other):
         return self._handle.mul(self._last_index, <int64_t> other)
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         return self._handle.div(self._last_index, <int64_t> other)
 
 cdef inline ULongArray_Inplace(ULongArray cls, size_t length):
@@ -780,7 +748,7 @@ cdef class ULongArray(MDSIntArrayBase):
     def __imul__(self, other):
         return self._handle.mul(self._last_index, <uint64_t> other)
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         return self._handle.div(self._last_index, <uint64_t> other)
 
 cdef inline FloatArray_Inplace(FloatArray cls, size_t length):
@@ -830,7 +798,7 @@ cdef class FloatArray(MDSFloatArrayBase):
     def __imul__(self, other):
         return self._handle.mul(self._last_index, <float> other)
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         return self._handle.div(self._last_index, <float> other)
 
 cdef inline DoubleArray_Inplace(DoubleArray cls, size_t length):
@@ -880,7 +848,7 @@ cdef class DoubleArray(MDSFloatArrayBase):
     def __imul__(self, other):
         return self._handle.mul(self._last_index, <double> other)
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         return self._handle.div(self._last_index, <double> other)
 
 # END INJECTION
@@ -907,10 +875,25 @@ class MDSRecordFieldMemberPair(object):
 cdef __RECORD_DECLARATION_MUTEX = threading.Lock()
 cdef __RECORD_DECLARED_TYPES = dict()
 cdef __RECORD_IDENTS = dict()
+cdef __RECORD_PROXIES = defaultdict(set)
 
 cdef implant_record_handle(Record record, MDSConstRecordHandleWrapper wrapper):
     cdef const_record_type_handle handle = wrapper._handle
     record._handle = handle.create_record()
+
+
+cdef class MDSRecordProxy(object):
+    cdef:
+        Record _wrapped
+        str _ident
+
+    def __cinit__(self, type cls, str ident):
+        self._wrapped = cls()
+        self._ident = ident
+
+    property is_complete:
+        def __get__(self):
+            return self._wrapped.ident == self._ident
 
 
 cdef class Record(MDSObject):
@@ -961,6 +944,10 @@ cdef class Record(MDSObject):
         __RECORD_IDENTS[cls.__name__] = ident
         MDSRecordTypeDeclaration(cls, cls.schema()).ensure_created()
         
+        # Now that this has come into scope, see if there are any previous proxies
+        # to this type in the process-space; if so we should update their entires
+        for proxy in __RECORD_PROXIES[ident]:
+            pass # TODO Deal with this
 
     property type_decl:
         def __get__(self):
@@ -1477,7 +1464,7 @@ cdef class MDSByteRecordFieldReference(MDSConstByteRecordFieldReference):
     def __imul__(self, other):
         self._field_handle.mul(self._record_handle, <int8_t> (other))
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         self._field_handle.div(self._record_handle, <int8_t> (other))
 
 
@@ -1514,7 +1501,7 @@ cdef class MDSUByteRecordFieldReference(MDSConstUByteRecordFieldReference):
     def __imul__(self, other):
         self._field_handle.mul(self._record_handle, <uint8_t> (other))
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         self._field_handle.div(self._record_handle, <uint8_t> (other))
 
 
@@ -1551,7 +1538,7 @@ cdef class MDSShortRecordFieldReference(MDSConstShortRecordFieldReference):
     def __imul__(self, other):
         self._field_handle.mul(self._record_handle, <int16_t> (other))
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         self._field_handle.div(self._record_handle, <int16_t> (other))
 
 
@@ -1588,7 +1575,7 @@ cdef class MDSUShortRecordFieldReference(MDSConstUShortRecordFieldReference):
     def __imul__(self, other):
         self._field_handle.mul(self._record_handle, <uint16_t> (other))
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         self._field_handle.div(self._record_handle, <uint16_t> (other))
 
 
@@ -1625,7 +1612,7 @@ cdef class MDSIntRecordFieldReference(MDSConstIntRecordFieldReference):
     def __imul__(self, other):
         self._field_handle.mul(self._record_handle, <int32_t> (other))
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         self._field_handle.div(self._record_handle, <int32_t> (other))
 
 
@@ -1662,7 +1649,7 @@ cdef class MDSUIntRecordFieldReference(MDSConstUIntRecordFieldReference):
     def __imul__(self, other):
         self._field_handle.mul(self._record_handle, <uint32_t> (other))
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         self._field_handle.div(self._record_handle, <uint32_t> (other))
 
 
@@ -1699,7 +1686,7 @@ cdef class MDSLongRecordFieldReference(MDSConstLongRecordFieldReference):
     def __imul__(self, other):
         self._field_handle.mul(self._record_handle, <int64_t> (other))
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         self._field_handle.div(self._record_handle, <int64_t> (other))
 
 
@@ -1736,7 +1723,7 @@ cdef class MDSULongRecordFieldReference(MDSConstULongRecordFieldReference):
     def __imul__(self, other):
         self._field_handle.mul(self._record_handle, <uint64_t> (other))
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         self._field_handle.div(self._record_handle, <uint64_t> (other))
 
 
@@ -1773,7 +1760,7 @@ cdef class MDSFloatRecordFieldReference(MDSConstFloatRecordFieldReference):
     def __imul__(self, other):
         self._field_handle.mul(self._record_handle, <float> (other))
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         self._field_handle.div(self._record_handle, <float> (other))
 
 
@@ -1810,7 +1797,7 @@ cdef class MDSDoubleRecordFieldReference(MDSConstDoubleRecordFieldReference):
     def __imul__(self, other):
         self._field_handle.mul(self._record_handle, <double> (other))
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         self._field_handle.div(self._record_handle, <double> (other))
 
 # END INJECTION
@@ -1947,7 +1934,7 @@ cdef class MDSByteRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref *= other
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         ref = self._field_ref()
         ref /= other
 
@@ -1994,7 +1981,7 @@ cdef class MDSUByteRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref *= other
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         ref = self._field_ref()
         ref /= other
 
@@ -2041,7 +2028,7 @@ cdef class MDSShortRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref *= other
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         ref = self._field_ref()
         ref /= other
 
@@ -2088,7 +2075,7 @@ cdef class MDSUShortRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref *= other
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         ref = self._field_ref()
         ref /= other
 
@@ -2135,7 +2122,7 @@ cdef class MDSIntRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref *= other
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         ref = self._field_ref()
         ref /= other
 
@@ -2182,7 +2169,7 @@ cdef class MDSUIntRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref *= other
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         ref = self._field_ref()
         ref /= other
 
@@ -2229,7 +2216,7 @@ cdef class MDSLongRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref *= other
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         ref = self._field_ref()
         ref /= other
 
@@ -2276,7 +2263,7 @@ cdef class MDSULongRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref *= other
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         ref = self._field_ref()
         ref /= other
 
@@ -2323,7 +2310,7 @@ cdef class MDSFloatRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref *= other
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         ref = self._field_ref()
         ref /= other
 
@@ -2370,7 +2357,7 @@ cdef class MDSDoubleRecordMember(MDSRecordMemberBase):
         ref = self._field_ref()
         ref *= other
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         ref = self._field_ref()
         ref /= other
 
@@ -3125,7 +3112,6 @@ cdef class MDSNameBinding(MDSNameBindingBase):
                 self._namespace = ns.parent()
 
     def as_type(self, t: TypeInfo) -> MDSTypedNameBinding:
-        # TODO: This doesn't take a third param, plus are Primitives the same as ManagedTypes?
         mappings = {
             # START INJECTION | tmpl_namespace_mapping
             mds.typing.bool: MDSBoolNameBinding,
@@ -3580,11 +3566,9 @@ cdef class Bool(MDSPrimitiveBase):
 
     cdef:
         mv_bool _type
-        bool _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_bool(self._value)
+        self.update(value=value)
 
     def __hash__(self):
         return self._type.hash1()
@@ -3592,9 +3576,8 @@ cdef class Bool(MDSPrimitiveBase):
     def _to_python(self):
         return bool_to_core_val(self._type)
 
-    def update_value(self, value) -> None:
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_bool(self._value)
+    def update(self, value) -> None:
+        self._type = mv_bool(self._sanitize(value, self._to_python()))
 
     def bind_to_namespace(self, Namespace namespace, String name) -> None:
         cdef:
@@ -3602,16 +3585,18 @@ cdef class Bool(MDSPrimitiveBase):
             namespace_handle h = namespace._handle
 
         h.bind_bool(nhandle, <bool> self._value)
+
+    property python_value:
+        def __get__(self):
+            return self._to_python()
     
 cdef class Byte(MDSIntPrimitiveBase):
 
     cdef:
         mv_byte _type
-        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_byte(self._value)
+        self.update(value=value)
 
     def __hash__(self):
         return self._type.hash1()
@@ -3619,9 +3604,8 @@ cdef class Byte(MDSIntPrimitiveBase):
     def _to_python(self):
         return byte_to_core_val(self._type)
 
-    def update_value(self, value) -> None:
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_byte(self._value)
+    def update(self, value) -> None:
+        self._type = mv_byte(self._sanitize(value, self._to_python()))
 
     def bind_to_namespace(self, Namespace namespace, String name) -> None:
         cdef:
@@ -3629,12 +3613,11 @@ cdef class Byte(MDSIntPrimitiveBase):
             namespace_handle h = namespace._handle
 
         h.bind_byte(nhandle, <int8_t> self._value)
+
+    property python_value:
+        def __get__(self):
+            return self._to_python()
     
-    def __int__(self):
-        return self._value
-
-    # TODO: Arithmetic ops
-
     property MIN:
         def __get__(self):
             return -128
@@ -3647,11 +3630,9 @@ cdef class UByte(MDSIntPrimitiveBase):
 
     cdef:
         mv_ubyte _type
-        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_ubyte(self._value)
+        self.update(value=value)
 
     def __hash__(self):
         return self._type.hash1()
@@ -3659,9 +3640,8 @@ cdef class UByte(MDSIntPrimitiveBase):
     def _to_python(self):
         return ubyte_to_core_val(self._type)
 
-    def update_value(self, value) -> None:
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_ubyte(self._value)
+    def update(self, value) -> None:
+        self._type = mv_ubyte(self._sanitize(value, self._to_python()))
 
     def bind_to_namespace(self, Namespace namespace, String name) -> None:
         cdef:
@@ -3669,12 +3649,11 @@ cdef class UByte(MDSIntPrimitiveBase):
             namespace_handle h = namespace._handle
 
         h.bind_ubyte(nhandle, <uint8_t> self._value)
+
+    property python_value:
+        def __get__(self):
+            return self._to_python()
     
-    def __int__(self):
-        return self._value
-
-    # TODO: Arithmetic ops
-
     property MIN:
         def __get__(self):
             return 0
@@ -3687,11 +3666,9 @@ cdef class Short(MDSIntPrimitiveBase):
 
     cdef:
         mv_short _type
-        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_short(self._value)
+        self.update(value=value)
 
     def __hash__(self):
         return self._type.hash1()
@@ -3699,9 +3676,8 @@ cdef class Short(MDSIntPrimitiveBase):
     def _to_python(self):
         return short_to_core_val(self._type)
 
-    def update_value(self, value) -> None:
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_short(self._value)
+    def update(self, value) -> None:
+        self._type = mv_short(self._sanitize(value, self._to_python()))
 
     def bind_to_namespace(self, Namespace namespace, String name) -> None:
         cdef:
@@ -3709,12 +3685,11 @@ cdef class Short(MDSIntPrimitiveBase):
             namespace_handle h = namespace._handle
 
         h.bind_short(nhandle, <int16_t> self._value)
+
+    property python_value:
+        def __get__(self):
+            return self._to_python()
     
-    def __int__(self):
-        return self._value
-
-    # TODO: Arithmetic ops
-
     property MIN:
         def __get__(self):
             return -32768
@@ -3727,11 +3702,9 @@ cdef class UShort(MDSIntPrimitiveBase):
 
     cdef:
         mv_ushort _type
-        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_ushort(self._value)
+        self.update(value=value)
 
     def __hash__(self):
         return self._type.hash1()
@@ -3739,9 +3712,8 @@ cdef class UShort(MDSIntPrimitiveBase):
     def _to_python(self):
         return ushort_to_core_val(self._type)
 
-    def update_value(self, value) -> None:
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_ushort(self._value)
+    def update(self, value) -> None:
+        self._type = mv_ushort(self._sanitize(value, self._to_python()))
 
     def bind_to_namespace(self, Namespace namespace, String name) -> None:
         cdef:
@@ -3749,12 +3721,11 @@ cdef class UShort(MDSIntPrimitiveBase):
             namespace_handle h = namespace._handle
 
         h.bind_ushort(nhandle, <uint16_t> self._value)
+
+    property python_value:
+        def __get__(self):
+            return self._to_python()
     
-    def __int__(self):
-        return self._value
-
-    # TODO: Arithmetic ops
-
     property MIN:
         def __get__(self):
             return 0
@@ -3767,11 +3738,9 @@ cdef class Int(MDSIntPrimitiveBase):
 
     cdef:
         mv_int _type
-        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_int(self._value)
+        self.update(value=value)
 
     def __hash__(self):
         return self._type.hash1()
@@ -3779,9 +3748,8 @@ cdef class Int(MDSIntPrimitiveBase):
     def _to_python(self):
         return int_to_core_val(self._type)
 
-    def update_value(self, value) -> None:
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_int(self._value)
+    def update(self, value) -> None:
+        self._type = mv_int(self._sanitize(value, self._to_python()))
 
     def bind_to_namespace(self, Namespace namespace, String name) -> None:
         cdef:
@@ -3789,12 +3757,11 @@ cdef class Int(MDSIntPrimitiveBase):
             namespace_handle h = namespace._handle
 
         h.bind_int(nhandle, <int32_t> self._value)
+
+    property python_value:
+        def __get__(self):
+            return self._to_python()
     
-    def __int__(self):
-        return self._value
-
-    # TODO: Arithmetic ops
-
     property MIN:
         def __get__(self):
             return -2147483648
@@ -3807,11 +3774,9 @@ cdef class UInt(MDSIntPrimitiveBase):
 
     cdef:
         mv_uint _type
-        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_uint(self._value)
+        self.update(value=value)
 
     def __hash__(self):
         return self._type.hash1()
@@ -3819,9 +3784,8 @@ cdef class UInt(MDSIntPrimitiveBase):
     def _to_python(self):
         return uint_to_core_val(self._type)
 
-    def update_value(self, value) -> None:
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_uint(self._value)
+    def update(self, value) -> None:
+        self._type = mv_uint(self._sanitize(value, self._to_python()))
 
     def bind_to_namespace(self, Namespace namespace, String name) -> None:
         cdef:
@@ -3829,12 +3793,11 @@ cdef class UInt(MDSIntPrimitiveBase):
             namespace_handle h = namespace._handle
 
         h.bind_uint(nhandle, <uint32_t> self._value)
+
+    property python_value:
+        def __get__(self):
+            return self._to_python()
     
-    def __int__(self):
-        return self._value
-
-    # TODO: Arithmetic ops
-
     property MIN:
         def __get__(self):
             return 0
@@ -3847,11 +3810,9 @@ cdef class Long(MDSIntPrimitiveBase):
 
     cdef:
         mv_long _type
-        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_long(self._value)
+        self.update(value=value)
 
     def __hash__(self):
         return self._type.hash1()
@@ -3859,9 +3820,8 @@ cdef class Long(MDSIntPrimitiveBase):
     def _to_python(self):
         return long_to_core_val(self._type)
 
-    def update_value(self, value) -> None:
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_long(self._value)
+    def update(self, value) -> None:
+        self._type = mv_long(self._sanitize(value, self._to_python()))
 
     def bind_to_namespace(self, Namespace namespace, String name) -> None:
         cdef:
@@ -3869,12 +3829,11 @@ cdef class Long(MDSIntPrimitiveBase):
             namespace_handle h = namespace._handle
 
         h.bind_long(nhandle, <int64_t> self._value)
+
+    property python_value:
+        def __get__(self):
+            return self._to_python()
     
-    def __int__(self):
-        return self._value
-
-    # TODO: Arithmetic ops
-
     property MIN:
         def __get__(self):
             return -9223372036854775808
@@ -3887,11 +3846,9 @@ cdef class ULong(MDSIntPrimitiveBase):
 
     cdef:
         mv_ulong _type
-        int _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_ulong(self._value)
+        self.update(value=value)
 
     def __hash__(self):
         return self._type.hash1()
@@ -3899,9 +3856,8 @@ cdef class ULong(MDSIntPrimitiveBase):
     def _to_python(self):
         return ulong_to_core_val(self._type)
 
-    def update_value(self, value) -> None:
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_ulong(self._value)
+    def update(self, value) -> None:
+        self._type = mv_ulong(self._sanitize(value, self._to_python()))
 
     def bind_to_namespace(self, Namespace namespace, String name) -> None:
         cdef:
@@ -3909,12 +3865,11 @@ cdef class ULong(MDSIntPrimitiveBase):
             namespace_handle h = namespace._handle
 
         h.bind_ulong(nhandle, <uint64_t> self._value)
+
+    property python_value:
+        def __get__(self):
+            return self._to_python()
     
-    def __int__(self):
-        return self._value
-
-    # TODO: Arithmetic ops
-
     property MIN:
         def __get__(self):
             return 0
@@ -3927,11 +3882,9 @@ cdef class Float(MDSFloatPrimitiveBase):
 
     cdef:
         mv_float _type
-        float _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_float(self._value)
+        self.update(value=value)
 
     def __hash__(self):
         return self._type.hash1()
@@ -3939,9 +3892,8 @@ cdef class Float(MDSFloatPrimitiveBase):
     def _to_python(self):
         return float_to_core_val(self._type)
 
-    def update_value(self, value) -> None:
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_float(self._value)
+    def update(self, value) -> None:
+        self._type = mv_float(self._sanitize(value, self._to_python()))
 
     def bind_to_namespace(self, Namespace namespace, String name) -> None:
         cdef:
@@ -3949,16 +3901,18 @@ cdef class Float(MDSFloatPrimitiveBase):
             namespace_handle h = namespace._handle
 
         h.bind_float(nhandle, <float> self._value)
+
+    property python_value:
+        def __get__(self):
+            return self._to_python()
     
 cdef class Double(MDSFloatPrimitiveBase):
 
     cdef:
         mv_double _type
-        float _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_double(self._value)
+        self.update(value=value)
 
     def __hash__(self):
         return self._type.hash1()
@@ -3966,9 +3920,8 @@ cdef class Double(MDSFloatPrimitiveBase):
     def _to_python(self):
         return double_to_core_val(self._type)
 
-    def update_value(self, value) -> None:
-        self._value = self._sanitize(value, self._value)
-        self._type = mv_double(self._value)
+    def update(self, value) -> None:
+        self._type = mv_double(self._sanitize(value, self._to_python()))
 
     def bind_to_namespace(self, Namespace namespace, String name) -> None:
         cdef:
@@ -3976,5 +3929,9 @@ cdef class Double(MDSFloatPrimitiveBase):
             namespace_handle h = namespace._handle
 
         h.bind_double(nhandle, <double> self._value)
+
+    property python_value:
+        def __get__(self):
+            return self._to_python()
     
 # END INJECTION

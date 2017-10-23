@@ -123,7 +123,7 @@ class TypeInfo():
         return self.taxonomy == self.MDS_INTEGRAL
 
     @property
-    def use_atomic_math(self):
+    def is_arithmetic(self):
         return self.taxonomy in [self.MDS_INTEGRAL, self.MDS_FLOATING]
 
 

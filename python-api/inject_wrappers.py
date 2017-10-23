@@ -143,17 +143,15 @@ def tmpl_api_primitives(t: TypeInfo) -> str:
 def tmpl_primitives(t: TypeInfo) -> str:
     compiled = ""
 
-    for title, parent in [(t.title, t.primitive_parent)]:#, (t.title_const, t.const_primitive_parent)]:
+    for title, parent in [(t.title, t.primitive_parent)]:
         compiled += f"""
 cdef class {title}({parent}):
 
     cdef:
         {t.managed_value} _type
-        {t.py_type} _value
 
     def __cinit__(self, value):  # TODO: Set the value in _value
-        self._value = self._sanitize(value, self._value)
-        self._type = {t.managed_value}(self._value)
+        self.update(value=value)
 
     def __hash__(self):
         return self._type.hash1()
@@ -161,9 +159,8 @@ cdef class {title}({parent}):
     def _to_python(self):
         return {t.f_to_core_val}(self._type)
 
-    def update_value(self, value) -> None:
-        self._value = self._sanitize(value, self._value)
-        self._type = {t.managed_value}(self._value)
+    def update(self, value) -> None:
+        self._type = {t.managed_value}(self._sanitize(value, self._to_python()))
 
     def bind_to_namespace(self, Namespace namespace, String name) -> None:
         cdef:
@@ -171,15 +168,14 @@ cdef class {title}({parent}):
             namespace_handle h = namespace._handle
 
         h.{t.f_bind}(nhandle, <{t.c_type}> self._value)
+
+    property python_value:
+        def __get__(self):
+            return self._to_python()
     """
 
-        if t.taxonomy == TypeInfo.MDS_INTEGRAL:
+        if t.is_integral:
             compiled += f"""
-    def __int__(self):
-        return self._value
-
-    # TODO: Arithmetic ops
-
     property MIN:
         def __get__(self):
             return {t.bounds.min}
@@ -188,6 +184,7 @@ cdef class {title}({parent}):
         def __get__(self):
             return {t.bounds.max} 
 """
+
     return compiled
 
 # =========================================================================
@@ -251,7 +248,7 @@ def tmpl_api_records(t: TypeInfo) -> str:
     EXTRA = ""
     compiled = ""
 
-    if t.use_atomic_math:
+    if t.is_arithmetic:
         EXTRA = f"""
         {t.c_type} add(const managed_record_handle&, {t.c_type})
         {t.c_type} sub(const managed_record_handle&, {t.c_type})
@@ -332,7 +329,7 @@ cdef class {t.title_record_field_reference}({t.title_const_record_field_referenc
         self._field_handle.write(self._record_handle, <{t.c_type}> (value))
 """
     
-    if t.use_atomic_math:
+    if t.is_arithmetic:
         compiled += f"""
     def __iadd__(self, other):
         self._field_handle.add(self._record_handle, <{t.c_type}> (other))
@@ -343,7 +340,7 @@ cdef class {t.title_record_field_reference}({t.title_const_record_field_referenc
     def __imul__(self, other):
         self._field_handle.mul(self._record_handle, <{t.c_type}> (other))
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         self._field_handle.div(self._record_handle, <{t.c_type}> (other))
 """
 
@@ -382,7 +379,7 @@ cdef class {t.title_record_member}(MDSRecordMemberBase):
     def write(self, value) -> None:
         self._field_ref().write(<{t.c_type}> value);
 """
-    if t.use_atomic_math:
+    if t.is_arithmetic:
         compiled += f"""
     def __iadd__(self, other):
         ref = self._field_ref()
@@ -396,7 +393,7 @@ cdef class {t.title_record_member}(MDSRecordMemberBase):
         ref = self._field_ref()
         ref *= other
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         ref = self._field_ref()
         ref /= other
 """
@@ -448,7 +445,7 @@ cdef class {t.title_array}({t.array_parent}):
         return retval
 """
 
-    if t.use_atomic_math:
+    if t.is_arithmetic:
         compiled += f"""
     def __iadd__(self, other):
         return self._handle.add(self._last_index, <{t.c_type}> other)
@@ -459,7 +456,7 @@ cdef class {t.title_array}({t.array_parent}):
     def __imul__(self, other):
         return self._handle.mul(self._last_index, <{t.c_type}> other)
 
-    def __idiv__(self, other):
+    def __itruediv__(self, other):
         return self._handle.div(self._last_index, <{t.c_type}> other)
 """
 
@@ -475,7 +472,7 @@ cdef class {t.title_array}({t.array_parent}):
 def tmpl_api_arrays(t: TypeInfo) -> str:
     EXTRA = ""
 
-    if t.use_atomic_math:
+    if t.is_arithmetic:
         EXTRA = f"""
         {t.c_type} add(const size_t&, const {t.c_type}&)
         {t.c_type} sub(const size_t&, const {t.c_type}&)
