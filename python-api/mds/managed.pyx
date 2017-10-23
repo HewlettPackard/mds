@@ -57,11 +57,11 @@ cdef class MDSObject(object):
         raise ConstError("Can't assign value to const field.")
 
     @classmethod
-    def from_namespace(cls, namespace: Namespace, path: PathTypes) -> cls:
+    def from_namespace(cls, namespace: Namespace, path: PathTypes):
         return NotImplemented
 
     def bind_to_namespace(self, namespace: Namespace, path: PathTypes) -> None:
-        return NotImplemented
+        pass
 
     property is_const:
         def __get__(self):
@@ -235,7 +235,7 @@ cdef class MDSIndexedObject(MDSObject):
         return NotImplemented
 
     def __setitem__(self, item, value):
-        return NotImplemented
+        pass
 
     def __iter__(self):
         self.__iter_idx = 0
@@ -356,6 +356,9 @@ cdef class BoolArray(MDSArrayBase):
     def __len__(self):
         return self._handle.size()
 
+    def __hash__(self):
+        return self._handle.hash1()
+
     def _to_python(self, index):
         return bool_to_core_val(self._handle.frozen_read(index))
 
@@ -394,6 +397,9 @@ cdef class ByteArray(MDSIntArrayBase):
 
     def __len__(self):
         return self._handle.size()
+
+    def __hash__(self):
+        return self._handle.hash1()
 
     def _to_python(self, index):
         return byte_to_core_val(self._handle.frozen_read(index))
@@ -442,6 +448,9 @@ cdef class UByteArray(MDSIntArrayBase):
     def __len__(self):
         return self._handle.size()
 
+    def __hash__(self):
+        return self._handle.hash1()
+
     def _to_python(self, index):
         return ubyte_to_core_val(self._handle.frozen_read(index))
 
@@ -488,6 +497,9 @@ cdef class ShortArray(MDSIntArrayBase):
 
     def __len__(self):
         return self._handle.size()
+
+    def __hash__(self):
+        return self._handle.hash1()
 
     def _to_python(self, index):
         return short_to_core_val(self._handle.frozen_read(index))
@@ -536,6 +548,9 @@ cdef class UShortArray(MDSIntArrayBase):
     def __len__(self):
         return self._handle.size()
 
+    def __hash__(self):
+        return self._handle.hash1()
+
     def _to_python(self, index):
         return ushort_to_core_val(self._handle.frozen_read(index))
 
@@ -582,6 +597,9 @@ cdef class IntArray(MDSIntArrayBase):
 
     def __len__(self):
         return self._handle.size()
+
+    def __hash__(self):
+        return self._handle.hash1()
 
     def _to_python(self, index):
         return int_to_core_val(self._handle.frozen_read(index))
@@ -630,6 +648,9 @@ cdef class UIntArray(MDSIntArrayBase):
     def __len__(self):
         return self._handle.size()
 
+    def __hash__(self):
+        return self._handle.hash1()
+
     def _to_python(self, index):
         return uint_to_core_val(self._handle.frozen_read(index))
 
@@ -676,6 +697,9 @@ cdef class LongArray(MDSIntArrayBase):
 
     def __len__(self):
         return self._handle.size()
+
+    def __hash__(self):
+        return self._handle.hash1()
 
     def _to_python(self, index):
         return long_to_core_val(self._handle.frozen_read(index))
@@ -724,6 +748,9 @@ cdef class ULongArray(MDSIntArrayBase):
     def __len__(self):
         return self._handle.size()
 
+    def __hash__(self):
+        return self._handle.hash1()
+
     def _to_python(self, index):
         return ulong_to_core_val(self._handle.frozen_read(index))
 
@@ -771,6 +798,9 @@ cdef class FloatArray(MDSFloatArrayBase):
     def __len__(self):
         return self._handle.size()
 
+    def __hash__(self):
+        return self._handle.hash1()
+
     def _to_python(self, index):
         return float_to_core_val(self._handle.frozen_read(index))
 
@@ -817,6 +847,9 @@ cdef class DoubleArray(MDSFloatArrayBase):
 
     def __len__(self):
         return self._handle.size()
+
+    def __hash__(self):
+        return self._handle.hash1()
 
     def _to_python(self, index):
         return double_to_core_val(self._handle.frozen_read(index))
@@ -951,7 +984,7 @@ cdef class Record(MDSObject):
             field, member_t = field_member_pair.field, field_member_pair.member
             self.__dict__[label] = member_t(record=self)
 
-    def bind_to_namespace(self, namespace: Namespace, String name) -> None:
+    def bind_to_namespace(self, Namespace namespace, String name) -> None:
         cdef:
             interned_string_handle nhandle = name._ish
             namespace_handle h = namespace._handle
@@ -963,7 +996,7 @@ cdef class Record(MDSObject):
         if not isinstance(ns, Namespace):
             raise TypeError('Need a `Namespace` object as first argument')
     
-        record = ns[args]
+        record = ns[path]
         retval = cls()
         # TODO: update retval's fields accordingly
 
@@ -1385,6 +1418,7 @@ cdef class MDSRecordFieldReferenceBase(MDSConstRecordFieldReferenceBase):
 
 # START INJECTION | tmpl_record_field_reference
 
+
 cdef class MDSConstBoolRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_bool_t _field_handle
@@ -1408,6 +1442,7 @@ cdef class MDSBoolRecordFieldReference(MDSConstBoolRecordFieldReference):
     
     def write(self, value):
         self._field_handle.write(self._record_handle, <bool> (value))
+
 
 cdef class MDSConstByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
@@ -1445,6 +1480,7 @@ cdef class MDSByteRecordFieldReference(MDSConstByteRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <int8_t> (other))
 
+
 cdef class MDSConstUByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_ubyte_t _field_handle
@@ -1480,6 +1516,7 @@ cdef class MDSUByteRecordFieldReference(MDSConstUByteRecordFieldReference):
 
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <uint8_t> (other))
+
 
 cdef class MDSConstShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
@@ -1517,6 +1554,7 @@ cdef class MDSShortRecordFieldReference(MDSConstShortRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <int16_t> (other))
 
+
 cdef class MDSConstUShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_ushort_t _field_handle
@@ -1552,6 +1590,7 @@ cdef class MDSUShortRecordFieldReference(MDSConstUShortRecordFieldReference):
 
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <uint16_t> (other))
+
 
 cdef class MDSConstIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
@@ -1589,6 +1628,7 @@ cdef class MDSIntRecordFieldReference(MDSConstIntRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <int32_t> (other))
 
+
 cdef class MDSConstUIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_uint_t _field_handle
@@ -1624,6 +1664,7 @@ cdef class MDSUIntRecordFieldReference(MDSConstUIntRecordFieldReference):
 
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <uint32_t> (other))
+
 
 cdef class MDSConstLongRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
@@ -1661,6 +1702,7 @@ cdef class MDSLongRecordFieldReference(MDSConstLongRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <int64_t> (other))
 
+
 cdef class MDSConstULongRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_ulong_t _field_handle
@@ -1697,6 +1739,7 @@ cdef class MDSULongRecordFieldReference(MDSConstULongRecordFieldReference):
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <uint64_t> (other))
 
+
 cdef class MDSConstFloatRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
         h_rfield_float_t _field_handle
@@ -1732,6 +1775,7 @@ cdef class MDSFloatRecordFieldReference(MDSConstFloatRecordFieldReference):
 
     def __idiv__(self, other):
         self._field_handle.div(self._record_handle, <float> (other))
+
 
 cdef class MDSConstDoubleRecordFieldReference(MDSConstRecordFieldReferenceBase):
     cdef:
@@ -2713,11 +2757,13 @@ cdef inline interned_string_handle __extract_ish(String s):
     cdef interned_string_handle retval = s._ish
     return retval
 
-cdef String __cast_to_mds_string(strings possible_str):
+cdef String __cast_to_mds_string(object possible_str):
+    if isinstance(possible_str, String):
+        return possible_str
     if isinstance(possible_str, str):
         return String(possible_str)
 
-    return possible_str
+    raise TypeError("`{}` is not a valid `str` type.".format(type(possible_str)))
 
 # =========================================================================
 #  Namespace
@@ -3082,17 +3128,17 @@ cdef class MDSNameBinding(MDSNameBindingBase):
         # TODO: This doesn't take a third param, plus are Primitives the same as ManagedTypes?
         mappings = {
             # START INJECTION | tmpl_namespace_mapping
-            mds.typing.bool: BoolMDSNameBinding,
-            mds.typing.byte: ByteMDSNameBinding,
-            mds.typing.ubyte: UByteMDSNameBinding,
-            mds.typing.short: ShortMDSNameBinding,
-            mds.typing.ushort: UShortMDSNameBinding,
-            mds.typing.int: IntMDSNameBinding,
-            mds.typing.uint: UIntMDSNameBinding,
-            mds.typing.long: LongMDSNameBinding,
-            mds.typing.ulong: ULongMDSNameBinding,
-            mds.typing.float: FloatMDSNameBinding,
-            mds.typing.double: DoubleMDSNameBinding,
+            mds.typing.bool: MDSBoolNameBinding,
+            mds.typing.byte: MDSByteNameBinding,
+            mds.typing.ubyte: MDSUByteNameBinding,
+            mds.typing.short: MDSShortNameBinding,
+            mds.typing.ushort: MDSUShortNameBinding,
+            mds.typing.int: MDSIntNameBinding,
+            mds.typing.uint: MDSUIntNameBinding,
+            mds.typing.long: MDSLongNameBinding,
+            mds.typing.ulong: MDSULongNameBinding,
+            mds.typing.float: MDSFloatNameBinding,
+            mds.typing.double: MDSDoubleNameBinding,
 
             # END INJECTION
         }
@@ -3152,7 +3198,7 @@ cdef class MDSTypedNameBinding(MDSNameBindingBase):
 
 # START INJECTION | tmpl_namespace_typed_bindings
 
-cdef class BoolNameBinding(MDSTypedNameBinding):
+cdef class MDSBoolNameBinding(MDSTypedNameBinding):
     cdef:
         h_mbool_t _type
 
@@ -3185,7 +3231,7 @@ cdef class BoolNameBinding(MDSTypedNameBinding):
         except:
             return False
 
-cdef class ByteNameBinding(MDSTypedNameBinding):
+cdef class MDSByteNameBinding(MDSTypedNameBinding):
     cdef:
         h_mbyte_t _type
 
@@ -3218,7 +3264,7 @@ cdef class ByteNameBinding(MDSTypedNameBinding):
         except:
             return False
 
-cdef class UByteNameBinding(MDSTypedNameBinding):
+cdef class MDSUByteNameBinding(MDSTypedNameBinding):
     cdef:
         h_mubyte_t _type
 
@@ -3251,7 +3297,7 @@ cdef class UByteNameBinding(MDSTypedNameBinding):
         except:
             return False
 
-cdef class ShortNameBinding(MDSTypedNameBinding):
+cdef class MDSShortNameBinding(MDSTypedNameBinding):
     cdef:
         h_mshort_t _type
 
@@ -3284,7 +3330,7 @@ cdef class ShortNameBinding(MDSTypedNameBinding):
         except:
             return False
 
-cdef class UShortNameBinding(MDSTypedNameBinding):
+cdef class MDSUShortNameBinding(MDSTypedNameBinding):
     cdef:
         h_mushort_t _type
 
@@ -3317,7 +3363,7 @@ cdef class UShortNameBinding(MDSTypedNameBinding):
         except:
             return False
 
-cdef class IntNameBinding(MDSTypedNameBinding):
+cdef class MDSIntNameBinding(MDSTypedNameBinding):
     cdef:
         h_mint_t _type
 
@@ -3350,7 +3396,7 @@ cdef class IntNameBinding(MDSTypedNameBinding):
         except:
             return False
 
-cdef class UIntNameBinding(MDSTypedNameBinding):
+cdef class MDSUIntNameBinding(MDSTypedNameBinding):
     cdef:
         h_muint_t _type
 
@@ -3383,7 +3429,7 @@ cdef class UIntNameBinding(MDSTypedNameBinding):
         except:
             return False
 
-cdef class LongNameBinding(MDSTypedNameBinding):
+cdef class MDSLongNameBinding(MDSTypedNameBinding):
     cdef:
         h_mlong_t _type
 
@@ -3416,7 +3462,7 @@ cdef class LongNameBinding(MDSTypedNameBinding):
         except:
             return False
 
-cdef class ULongNameBinding(MDSTypedNameBinding):
+cdef class MDSULongNameBinding(MDSTypedNameBinding):
     cdef:
         h_mulong_t _type
 
@@ -3449,7 +3495,7 @@ cdef class ULongNameBinding(MDSTypedNameBinding):
         except:
             return False
 
-cdef class FloatNameBinding(MDSTypedNameBinding):
+cdef class MDSFloatNameBinding(MDSTypedNameBinding):
     cdef:
         h_mfloat_t _type
 
@@ -3482,7 +3528,7 @@ cdef class FloatNameBinding(MDSTypedNameBinding):
         except:
             return False
 
-cdef class DoubleNameBinding(MDSTypedNameBinding):
+cdef class MDSDoubleNameBinding(MDSTypedNameBinding):
     cdef:
         h_mdouble_t _type
 
@@ -3540,6 +3586,9 @@ cdef class Bool(MDSPrimitiveBase):
         self._value = self._sanitize(value, self._value)
         self._type = mv_bool(self._value)
 
+    def __hash__(self):
+        return self._type.hash1()
+
     def _to_python(self):
         return bool_to_core_val(self._type)
 
@@ -3563,6 +3612,9 @@ cdef class Byte(MDSIntPrimitiveBase):
     def __cinit__(self, value):  # TODO: Set the value in _value
         self._value = self._sanitize(value, self._value)
         self._type = mv_byte(self._value)
+
+    def __hash__(self):
+        return self._type.hash1()
 
     def _to_python(self):
         return byte_to_core_val(self._type)
@@ -3601,6 +3653,9 @@ cdef class UByte(MDSIntPrimitiveBase):
         self._value = self._sanitize(value, self._value)
         self._type = mv_ubyte(self._value)
 
+    def __hash__(self):
+        return self._type.hash1()
+
     def _to_python(self):
         return ubyte_to_core_val(self._type)
 
@@ -3637,6 +3692,9 @@ cdef class Short(MDSIntPrimitiveBase):
     def __cinit__(self, value):  # TODO: Set the value in _value
         self._value = self._sanitize(value, self._value)
         self._type = mv_short(self._value)
+
+    def __hash__(self):
+        return self._type.hash1()
 
     def _to_python(self):
         return short_to_core_val(self._type)
@@ -3675,6 +3733,9 @@ cdef class UShort(MDSIntPrimitiveBase):
         self._value = self._sanitize(value, self._value)
         self._type = mv_ushort(self._value)
 
+    def __hash__(self):
+        return self._type.hash1()
+
     def _to_python(self):
         return ushort_to_core_val(self._type)
 
@@ -3711,6 +3772,9 @@ cdef class Int(MDSIntPrimitiveBase):
     def __cinit__(self, value):  # TODO: Set the value in _value
         self._value = self._sanitize(value, self._value)
         self._type = mv_int(self._value)
+
+    def __hash__(self):
+        return self._type.hash1()
 
     def _to_python(self):
         return int_to_core_val(self._type)
@@ -3749,6 +3813,9 @@ cdef class UInt(MDSIntPrimitiveBase):
         self._value = self._sanitize(value, self._value)
         self._type = mv_uint(self._value)
 
+    def __hash__(self):
+        return self._type.hash1()
+
     def _to_python(self):
         return uint_to_core_val(self._type)
 
@@ -3785,6 +3852,9 @@ cdef class Long(MDSIntPrimitiveBase):
     def __cinit__(self, value):  # TODO: Set the value in _value
         self._value = self._sanitize(value, self._value)
         self._type = mv_long(self._value)
+
+    def __hash__(self):
+        return self._type.hash1()
 
     def _to_python(self):
         return long_to_core_val(self._type)
@@ -3823,6 +3893,9 @@ cdef class ULong(MDSIntPrimitiveBase):
         self._value = self._sanitize(value, self._value)
         self._type = mv_ulong(self._value)
 
+    def __hash__(self):
+        return self._type.hash1()
+
     def _to_python(self):
         return ulong_to_core_val(self._type)
 
@@ -3860,6 +3933,9 @@ cdef class Float(MDSFloatPrimitiveBase):
         self._value = self._sanitize(value, self._value)
         self._type = mv_float(self._value)
 
+    def __hash__(self):
+        return self._type.hash1()
+
     def _to_python(self):
         return float_to_core_val(self._type)
 
@@ -3883,6 +3959,9 @@ cdef class Double(MDSFloatPrimitiveBase):
     def __cinit__(self, value):  # TODO: Set the value in _value
         self._value = self._sanitize(value, self._value)
         self._type = mv_double(self._value)
+
+    def __hash__(self):
+        return self._type.hash1()
 
     def _to_python(self):
         return double_to_core_val(self._type)

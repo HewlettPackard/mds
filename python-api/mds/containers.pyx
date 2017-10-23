@@ -216,7 +216,7 @@ cdef class PublicationResult(object):
         cdef vector[task_handle] handles = self._handle.redo_tasks_by_start_time()
 
         for handle in handles:
-            task_hash_val = hash_task(handle)
+            task_hash_val = handle.hash1()
             
             try:
                 tasks.append(task_map[task_hash_val])
@@ -596,7 +596,7 @@ cdef class Task(object):
 
 cdef inline Task_Init(task_handle handle):
     # TODO Remove me, DEBUG
-    print("Initializing task with hash {}".format(hash_task(handle)))
+    print("Initializing task with hash {}".format(handle.hash1()))
     result = Task()
     add_task_handle(result, handle)
     return result

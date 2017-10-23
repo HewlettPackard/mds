@@ -23,6 +23,7 @@ Application during this compilation process under terms of your choice,
 provided you also meet the terms and conditions of the Application license.
 """
 
+from libc.stdint cimport uint64_t
 from libcpp cimport bool
 from libcpp.vector cimport vector
 
