@@ -31,24 +31,28 @@ from unittest import TestLoader, TestResult
 
 import inject_wrappers as generate 
 
+# Enforce minimum Python version
+if sys.version_info < (3, 6):
+    raise RuntimeError('MDS PAPI requires a minimum of Python 3.6')
+    sys.exit(1)
+
+# Enforce requirement of Cython (for now)
 try:
     from Cython.Build import cythonize
     from Cython.Distutils import build_ext
 except ImportError:
-    print('You need Cython to compile the MDS Python API.', file=sys.stderr)
+    raise RuntimeError('You need Cython to compile the MDS Python API')
     sys.exit(1)
 
-# TODO: Test Python version
-
-DEBUG = True
+DEBUG = True  # TODO: Should check this at build time
 RUN_TESTS = False
 DIR_REPO = '/home/pughma/repo/'
 HEADER_DIRS = [
-    DIR_REPO + 'public/install/include',
-    DIR_REPO + 'mds-public/python-api/mds/include'
+    f'{DIR_REPO}public/install/include',
+    f'{DIR_REPO}mds-public/python-api/mds/include'
 ]
 ARGS = ['-std=c++14', '-MMD', '-MP', '-fmessage-length=0', '-mcx16']
-LIB_DIR = DIR_REPO + 'public/install/lib'
+LIB_DIR = f'{DIR_REPO}public/install/lib'
 LIBS = [f'{LIB_DIR}/lib{l}.a' for l in ['mds_core', 'mpgc', 'ruts']]
 UNDEF_MACROS = []
 MDS_PACKAGES = ['managed', 'containers', 'internal']
@@ -80,7 +84,7 @@ check_and_build_mds_core()
 generate.generate_and_inject_all_sources(dry_run=False)
 
 # Setup our package hierarchy
-extensions = [make_extension(f'mds.{e}') for e in MDS_PACKAGES]# + [cythonize(f) for f in SHARED_FILES]
+extensions = [make_extension(f'mds.{e}') for e in MDS_PACKAGES]
 
 setup(
     name='mds',
@@ -98,4 +102,3 @@ if RUN_TESTS:
     TESTS.run(result)
 
     print(result)
-

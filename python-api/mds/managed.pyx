@@ -1337,6 +1337,13 @@ cdef class MDSDoubleRecordField(MDSRecordFieldBase):
 
 ######################################################################### REFERENCES
 
+#TODO: Need record_fields for these:
+#      STRING,
+#      RECORD,
+#      BINDING, (?)
+#      ARRAY,
+#      NAMESPACE,
+
 cdef class MDSConstRecordFieldReferenceBase(MDSObject):
     cdef:
         managed_record_handle _record_handle
@@ -2747,18 +2754,19 @@ cdef class Path(object):
         else:
             self._ptr = Impl()
 
-    @staticmethod
-    def of(cpts: List[Path]) -> Path:
-        return Path(impl=Impl(cpts))
-
-    def is_absolute(self):
-        return self._ptr.is_absolute()
-
     def resolve(self, cpts: List[Path]) -> Path:
         return Path(impl=self._ptr.resolve(cpts))
 
     def __str__(self):
         return str(self._ptr)
+
+    @staticmethod
+    def of(cpts: List[Path]) -> Path:
+        return Path(impl=Impl(cpts))
+
+    property is_absolute:
+        def __get__(self):
+            return self._ptr.is_absolute
 
 
 cdef class Impl(object):
@@ -2772,32 +2780,22 @@ cdef class Impl(object):
         self._initial_ups = 0
         self._names = list()
 
-        self.extend(cpts)
+        if isinstance(cpts, list):
+            self.extend(cpts)
+        else:
+            self.append_cpt(cpts)
 
     def __str__(self):
-        printsep = self._absolutep
-        buff = ""
-
-        for i in range(self._initial_ups):
-            if printsep:
-                buff += __NAMESPACE_SEPARATOR
-
-            buff += ".."
-            printsep = True
-
-        for s in self._names:
-            if printsep:
-                buf += __NAMESPACE_SEPARATOR
-
-            buf += str(s)
-            printsep = True
-
-        return buff
+        delim = __NAMESPACE_SEPARATOR
+        compiled = delim if self.absolutep else ""
+        compiled += "..{delim}" * self.initial_ups
+        compiled += "{delim}".join(self.names)
+        return compiled
 
     def up_levels(self, size_t levels) -> None:
         current = len(self._names)
 
-        if not self._absolutep and (levels > current):
+        if not self.is_absolute and (levels > current):
             self._initial_ups += levels - current
 
     def reset_to_root(self) -> None:
@@ -2820,9 +2818,6 @@ cdef class Impl(object):
             self.up_levels(1)
         else:
             self._names.append(cpt)
-
-    def is_absolute(self):
-        return <bint> self._absolutep
 
     def extend(self, cpts: List[Path], absolute=False) -> None:
         if absolute:
@@ -2848,10 +2843,10 @@ cdef class Impl(object):
         if isinstance(cpt, Path):
             impl = cpt._ptr
 
-            if impl._absolutep:
+            if impl.is_absolute:
                 self.reset_to_root()
             else:
-                ups = impl._initial_ups
+                ups = impl.initial_ups
 
                 if ups:
                     self.up_levels(ups)
@@ -2872,6 +2867,10 @@ cdef class Impl(object):
 
             for name in parts:
                 self.append(name)
+
+    property is_absolute:
+        def __get__(self):
+            return <bint> self._absolutep
 
     property absolutep:
         def __get__(self):
@@ -2907,11 +2906,10 @@ cdef class Namespace(MDSObject):
         """
         So this is basically an amalgamation of at() and _at() in the CAPI
         """
-
         if isinstance(path, str) or isinstance(path, String):
             path = Path.of(path)
 
-        if path.is_absolute():
+        if path.is_absolute:
             raise IllegalPathException(path)
 
         return self.resolve_to_binding(path)
@@ -2921,7 +2919,7 @@ cdef class Namespace(MDSObject):
             Impl pi = p._ptr
             Namespace iptr = self
 
-        if p.is_absolute():
+        if p.is_absolute:
             iptr = Namespace.root()
 
         for i in range(pi.initial_ups):
@@ -2980,23 +2978,10 @@ cdef class Namespace(MDSObject):
         #       Where and how this is used.
         return Namespace.root()
 
-    def parent(self) -> Namespace:
-        # TODO: Const namespace?
-        if self.is_root():
-            return Namespace.root()
-
-        return self._parent
-
-    def name(self) -> String:
-        return self._name
-
-    def is_root(self):
-        return __namespaces_equal(self, Namespace.root()) # TODO Cython 0.27
-
     @staticmethod
     def from_path(path: PathTypes) -> Namespace:
         p = Path.of(path)
-        base = Namespace.root() if p.is_absolute() else Namespace.current()
+        base = Namespace.root() if p.is_absolute else Namespace.current()
         return base.resolve(p)
 
     @staticmethod
@@ -3028,6 +3013,19 @@ cdef class Namespace(MDSObject):
     # def get_current():
     #     # TODO: When is this set? Check the CAPI / JAPI
     #     return Namespace_Init(handle=current_namespace())
+
+    def parent(self) -> Namespace:
+        # TODO: Const namespace?
+        if self.is_root():
+            return Namespace.root()
+
+        return self._parent
+
+    def name(self) -> String:
+        return self._name
+
+    def is_root(self):
+        return __namespaces_equal(self, Namespace.root()) # TODO Cython 0.27
 
     property SEPARATOR:
         def __get__(self):

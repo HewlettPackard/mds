@@ -35,7 +35,7 @@ class ExampleRecord(Record, ident="PythonTest::ExampleRecord"):
     """
 
     @staticmethod
-    def schema() -> dict:
+    def schema():
         """
         This method *must* be overridden in Record-derived classes, and follow the
         following syntax for declaring the record schema.
@@ -52,7 +52,7 @@ class ExampleRecord(Record, ident="PythonTest::ExampleRecord"):
 class SimpleRecord(Record, ident="schema_SimpleRecords"):
 
     @staticmethod
-    def schema() -> dict:
+    def schema():
         return {
             "is_active": Record.declare_field(mds.typing.bool)
         }
@@ -61,7 +61,7 @@ class SimpleRecord(Record, ident="schema_SimpleRecords"):
 class LessSimpleRecord(Record, ident="schema_LessSimpleRecord"):
 
     @staticmethod
-    def schema() -> dict:
+    def schema():
         return {
             "is_active": Record.declare_field(mds.typing.bool),
             "numerator": Record.declare_field(mds.typing.float),

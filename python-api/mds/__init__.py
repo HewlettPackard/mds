@@ -127,9 +127,6 @@ class TypeInfo():
         return self.taxonomy in [self.MDS_INTEGRAL, self.MDS_FLOATING]
 
 
-# These types are the ones that this script will generate wrappers for
-# TODO Move to mds.__init__ ?
-
 class __MDSTypes(object):
     
     def __init__(self, *args, **kwargs):
@@ -166,13 +163,5 @@ class __MDSTypes(object):
     def mappings(self):
         return self.__repr.values()
 
+# Expose to programmers through this binding, mds.typing:
 typing = __MDSTypes()
-
-# TODO: Not sure that the developer needs to see all the wrapper gen'd stuff in TypeInfo
-
-#TODO: Need record_fields for these:
-#      STRING,
-#      RECORD,
-#      BINDING,
-#      ARRAY,
-#      NAMESPACE,
