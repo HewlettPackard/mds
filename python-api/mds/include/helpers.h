@@ -39,9 +39,9 @@
  *
  * Naming conventions:
  *
- *  - h_<T>_t             A handle for MDS API type T
- *  - h_m<T>_t            A managed type T handle from MDS
- *  - h_marray_<T>_t      A managed array of type T
+ *  - h_<T>_t       A handle for MDS API type T
+ *  - h_m<T>_t      A managed type T handle from MDS
+ *  - h_marray_<T>_t    A managed array of type T
  *
  *  Author(s):
  *
@@ -54,149 +54,126 @@ using h_task_t = ::mds::api::task_handle;
 using h_namespace_t = ::mds::api::namespace_handle;
 using ::mds::api::kind;
 
-namespace mds
-{
-    namespace python
-    {
-        typedef struct _py_callable_wrapper
-        {
-            PyObject *fn;
-            PyObject *args;
-        } py_callable_wrapper;
+namespace mds {
+  namespace python {
+    typedef struct _py_callable_wrapper {
+      PyObject *fn;
+      PyObject *args;
+    } py_callable_wrapper;
 
-        namespace tasks
-        {
-            static inline void initialize_base_task(void) 
-            {
-                // TODO: Double check this should be thread_local
-                static thread_local bool already_initialized = false;
+    namespace tasks {
+      static inline void initialize_base_task(void) {
+        // TODO: Double check this should be thread_local
+        static thread_local bool already_initialized = false;
 
-                if (! already_initialized)
-                {
-                    h_task_t::init_thread_base_task([]() {
-                        return h_task_t::default_task().pointer();
-                    });
+        if (! already_initialized) {
+          h_task_t::init_thread_base_task([]() {
+            return h_task_t::default_task().pointer();
+          });
 
-                    already_initialized = true;
-                }
-            }
+          already_initialized = true;
+        }
+      }
 
-            class TaskWrapper
-            {
-                private:
-                    h_task_t _handle;
+      class TaskWrapper {
+       private:
+        h_task_t _handle;
 
-                    static h_task_t &_current()
-                    {
-                        static thread_local h_task_t t = h_task_t::default_task();
-                        return t;
-                    }
-                public:
-                    TaskWrapper()
-                        : _handle{h_task_t::default_task()}
-                    {}
+        static h_task_t &_current() {
+          static thread_local h_task_t t = h_task_t::default_task();
+          return t;
+        }
+       public:
+        TaskWrapper()
+          : _handle{h_task_t::default_task()} {}
 
-                    TaskWrapper(h_task_t th)
-                        : _handle{th}
-                    {}
+        TaskWrapper(h_task_t th)
+          : _handle{th} {}
 
-                    class Establish
-                    {
-                      public:
-                        Establish(const h_task_t &t)
-                        {
-                            static size_t counter = 0;  // TODO DELETE 
-                            printf("[%lu] _current() - %lu\n", counter, _current().hash1());  // TODO DELETE 
-                            _current() = t;
-                            printf("[%lu] Establish() - %lu\n", counter++, t.hash1());  // TODO DELETE 
-                        }
+        class Establish {
+         public:
+          Establish(const h_task_t &t) {
+              static size_t counter = 0;  // TODO DELETE 
+            printf("[%lu] _current() - %lu\n", counter, _current().hash1());  // TODO DELETE 
+            _current() = t;
+            printf("[%lu] Establish() - %lu\n", counter++, t.hash1());  // TODO DELETE 
+          }
 
-                        ~Establish()
-                        {
-                            static size_t counter = 0;  // TODO DELETE 
-                            printf("[%lu] ~_current() - %lu\n", counter, _current().hash1());  // TODO DELETE 
-                            _current() = h_task_t::pop();
-                            printf("[%lu] ~Establish() - %lu\n", counter++, _current().hash1());   // TODO DELETE 
-                        }
-                    };
+          ~Establish() {
+            static size_t counter = 0;  // TODO DELETE 
+            printf("[%lu] ~_current() - %lu\n", counter, _current().hash1());  // TODO DELETE 
+            _current() = h_task_t::pop();
+            printf("[%lu] ~Establish() - %lu\n", counter++, _current().hash1());   // TODO DELETE 
+          }
+        };
 
-                    static h_task_t default_task()
-                    {
-                        initialize_base_task();
-                        return h_task_t::default_task();
-                    }
+        static h_task_t default_task() {
+          initialize_base_task();
+          return h_task_t::default_task();
+        }
 
-                    static h_task_t current()
-                    {
-                        return _current();
-                    }
+        static h_task_t current() {
+          return _current();
+        }
 
-                    void run(std::function<void(py_callable_wrapper)> &&fn,
-                             py_callable_wrapper arg)
-                    {
-                        initialize_base_task();
-                        std::forward<decltype(fn)>(fn)(arg);
-                    }
-            };
-        } // End mds::python::tasks
-        
-        namespace isoctxts
-        {
-            static inline PyObject *run_in_iso_ctxt(
-                    h_isoctxt_t &handle,
-                    std::function<PyObject*(py_callable_wrapper)> &&fn,
-                    py_callable_wrapper arg)
-            {
-                tasks::initialize_base_task();
-                // TODO: This is clearly all wrong, but just making the compiler happy for now
-                return std::forward<decltype(fn)>(fn)(arg);
-            };
-        } // End mds::python::isoctxt
+        void run(std::function<void(py_callable_wrapper)> &&fn,
+             py_callable_wrapper arg) {
+          initialize_base_task();
+          std::forward<decltype(fn)>(fn)(arg);
+        }
+      };
+    } // End mds::python::tasks
+    
+    namespace isoctxts {
+      static inline PyObject *run_in_iso_ctxt(
+        h_isoctxt_t &handle,
+        std::function<PyObject*(py_callable_wrapper)> &&fn,
+        py_callable_wrapper arg) {
+        tasks::initialize_base_task();
+        // TODO: This is clearly all wrong, but just making the compiler happy for now
+        return std::forward<decltype(fn)>(fn)(arg);
+      };
+    } // End mds::python::isoctxt
 
-        namespace types
-        {
-            #define _TYPE_WRAPPER_(K, name) \
-            using h_marray_##name##_t = mds::api::managed_array_handle<K>; \
-            using h_const_marray_##name##_t = mds::api::const_managed_array_handle<K>; \
-            using h_m##name##_t = mds::api::managed_type_handle_cp<K, true>; \
-            static inline h_marray_##name##_t create_##name##_marray(size_t n) \
-            { \
-                tasks::initialize_base_task(); \
-                static auto h = mds::api::managed_array_handle_by_kind<K>(); \
-                return h.create_array(n); \
-            } \
-            static inline h_const_marray_##name##_t create_const_##name##_marray(size_t n) \
-            { \
-                tasks::initialize_base_task(); \
-                static auto h = mds::api::managed_array_handle_by_kind<K>(); \
-                return h.create_array(n); \
-            }
+    namespace types {
+      #define _TYPE_WRAPPER_(K, name) \
+      using h_marray_##name##_t = mds::api::managed_array_handle<K>; \
+      using h_const_marray_##name##_t = mds::api::const_managed_array_handle<K>; \
+      using h_m##name##_t = mds::api::managed_type_handle_cp<K, true>; \
+      static inline h_marray_##name##_t create_##name##_marray(size_t n) { \
+        tasks::initialize_base_task(); \
+        static auto h = mds::api::managed_array_handle_by_kind<K>(); \
+        return h.create_array(n); \
+      } \
+      static inline h_const_marray_##name##_t create_const_##name##_marray(size_t n) { \
+        tasks::initialize_base_task(); \
+        static auto h = mds::api::managed_array_handle_by_kind<K>(); \
+        return h.create_array(n); \
+      }
 
-            _TYPE_WRAPPER_(kind::BOOL, bool)
-            _TYPE_WRAPPER_(kind::BYTE, byte)
-            _TYPE_WRAPPER_(kind::UBYTE, ubyte)
-            _TYPE_WRAPPER_(kind::SHORT, short)
-            _TYPE_WRAPPER_(kind::USHORT, ushort)
-            _TYPE_WRAPPER_(kind::INT, int)
-            _TYPE_WRAPPER_(kind::UINT, uint)
-            _TYPE_WRAPPER_(kind::LONG, long)
-            _TYPE_WRAPPER_(kind::ULONG, ulong)
-            _TYPE_WRAPPER_(kind::FLOAT, float)
-            _TYPE_WRAPPER_(kind::DOUBLE, double)
-            _TYPE_WRAPPER_(kind::RECORD, record)
-            _TYPE_WRAPPER_(kind::STRING, string)
+      _TYPE_WRAPPER_(kind::BOOL, bool)
+      _TYPE_WRAPPER_(kind::BYTE, byte)
+      _TYPE_WRAPPER_(kind::UBYTE, ubyte)
+      _TYPE_WRAPPER_(kind::SHORT, short)
+      _TYPE_WRAPPER_(kind::USHORT, ushort)
+      _TYPE_WRAPPER_(kind::INT, int)
+      _TYPE_WRAPPER_(kind::UINT, uint)
+      _TYPE_WRAPPER_(kind::LONG, long)
+      _TYPE_WRAPPER_(kind::ULONG, ulong)
+      _TYPE_WRAPPER_(kind::FLOAT, float)
+      _TYPE_WRAPPER_(kind::DOUBLE, double)
+      _TYPE_WRAPPER_(kind::RECORD, record)
+      _TYPE_WRAPPER_(kind::STRING, string)
 
-            // _TYPE_WRAPPER_(kind::ARRAY, array)
-            // _TYPE_WRAPPER_(kind::NAMESPACE, namespace)
-        } // End mds::python::types
-        namespace namespaces
-        {
-            static h_namespace_t &current_namespace()
-            {
-                static thread_local h_namespace_t ns = h_namespace_t::global();
-                return ns;
-            }
-        } // End mds::python::namespaces
-    } // End mds::python
+      // _TYPE_WRAPPER_(kind::ARRAY, array)
+      // _TYPE_WRAPPER_(kind::NAMESPACE, namespace)
+    } // End mds::python::types
+    namespace namespaces {
+      static h_namespace_t &current_namespace() {
+        static thread_local h_namespace_t ns = h_namespace_t::global();
+        return ns;
+      }
+    } // End mds::python::namespaces
+  } // End mds::python
 } // End mds
 

@@ -26,7 +26,7 @@ provided you also meet the terms and conditions of the Application license.
 import unittest
 
 import mds
-from mds.managed import Record
+from mds.managed import Record, declare_field
 
 class ExampleRecord(Record, ident="PythonTest::ExampleRecord"):
     """
@@ -44,8 +44,8 @@ class ExampleRecord(Record, ident="PythonTest::ExampleRecord"):
         will be available via cls.type_decl
         """
         return {
-            "is_active": Record.declare_field(mds.typing.bool),
-            "number_of_players": Record.declare_field(mds.typing.ushort)
+            "is_active": declare_field(mds.typing.primitives.bool),
+            "number_of_players": declare_field(mds.typing.primitives.ushort)
         }
 
 
@@ -54,7 +54,7 @@ class SimpleRecord(Record, ident="schema_SimpleRecords"):
     @staticmethod
     def schema():
         return {
-            "is_active": Record.declare_field(mds.typing.bool)
+            "is_active": declare_field(mds.typing.primitives.bool)
         }
 
 
@@ -63,9 +63,9 @@ class LessSimpleRecord(Record, ident="schema_LessSimpleRecord"):
     @staticmethod
     def schema():
         return {
-            "is_active": Record.declare_field(mds.typing.bool),
-            "numerator": Record.declare_field(mds.typing.float),
-            "denominator": Record.declare_field(mds.typing.double)
+            "is_active": declare_field(mds.typing.primitives.bool),
+            "numerator": declare_field(mds.typing.primitives.float),
+            "denominator": declare_field(mds.typing.primitives.double)
         }
 
 
@@ -80,11 +80,11 @@ class ComplexRecord(Record, ident="schema_ComplexRecord"):
     @staticmethod
     def schema() -> dict:
         return {
-            "is_active": Record.declare_field(mds.typing.bool),
-            "numerator": Record.declare_field(mds.typing.float),
-            "denominator": Record.declare_field(mds.typing.double),
-            "measurements": Record.declare_array_field(mds.typing.double),
-            "observers": Record.declare_const_array_field(mds.typing.record)
+            "is_active": declare_field(mds.typing.primitives.bool),
+            "numerator": declare_field(mds.typing.primitives.float),
+            "denominator": declare_field(mds.typing.primitives.double),
+            "measurements": declare_field(mds.typing.primitives.double),
+            "observers": declare_field(mds.typing.composites.record[SimpleRecord], const=True)
         }
 
 

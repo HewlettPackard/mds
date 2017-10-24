@@ -348,7 +348,7 @@ cdef class MDSFloatArrayBase(MDSArrayBase):
             return float
 
 
-# START INJECTION | tmpl_array
+# START INJECTION | tmpl_array(Primitives,Composites)
 
 cdef class BoolArray(MDSArrayBase):
 
@@ -1299,55 +1299,41 @@ cdef class Record(MDSObject):
         # TODO: Move this to a class param?
         raise TypeError("Derived `Record`s should return a `dict` detailing the schema here.")
 
-    @staticmethod
-    def declare_const_field(klass: type) -> MDSRecordFieldMemberPair:
-        """
-        Delegates to Record.declare_field; could be deleted, but here to map 1:1 to CAPI.
-        """
-        return Record.declare_field(klass, make_const=True)
 
-    @staticmethod
-    def declare_const_array_field(klass: type) -> MDSRecordFieldMemberPair:
-        """
-        Delegates to Record.declare_array_field;
-        """
-        return Record.declare_array_field(klass, make_const=True)
+def declare_field(type_decl: TypeInfo, const=False) -> MDSRecordFieldMemberPair:
+    """
+    This returns the derived RecordField for the combination of the arguments.
 
-    @staticmethod
-    def declare_field(klass: type, make_const=False) -> MDSRecordFieldMemberPair:
-        """
-        This returns the derived RecordField for the combination of the arguments.
+    TODO: This only works for primitives, will need adaptation for {String, Array, Record}
+    TODO: String-based hacking isn't neat, should make a dict using the generator,
+    but this works for now.
 
-        TODO: This only works for primitives, will need adaptation for {String, Array, Record}
-        TODO: String-based hacking isn't neat, should make a dict using the generator,
-        but this works for now.
+    Args:
+        type_decl:  TypeInfo, obtained from `mds.typing`
+        const: Bool, whether to make the associated RecordMember const or not
+    """
+    if not isinstance(type_decl, TypeInfo):
+        raise TypeError("First parameter needs to be a type from `mds.typing`")
 
-        Args:
-            klass:  TypeInfo, obtained from `mds.typing`
-            make_const: Bool, whether to make the associated RecordMember const or not
-        """
-        if not isinstance(klass, TypeInfo):
-            raise TypeError("First parameter needs to be a type from `mds.typing`")
+    # Now, let's see if it's known and of the correct lineage
+    field_t = globals()[type_decl.title_record_field]
+    assert issubclass(field_t, MDSRecordFieldBase)
 
-        # Now, let's see if it's known and of the correct lineage
-        field_t = globals()[klass.title_record_field]
-        assert issubclass(field_t, MDSRecordFieldBase)
+    if const:
+        identifier = type_decl.title_const_record_member
+        base = MDSConstRecordMemberBase
+    else:
+        identifier = type_decl.title_record_member
+        base = MDSRecordMemberBase
 
-        if make_const:
-            identifier = klass.title_const_record_member
-            base = MDSConstRecordMemberBase
-        else:
-            identifier = klass.title_record_member
-            base = MDSRecordMemberBase
+    member_t = globals()[identifier]
+    assert issubclass(member_t, base)
 
-        member_t = globals()[identifier]
-        assert issubclass(member_t, base)
+    # DEBUG
+    print(f"?> Making pair {field_t.__name__}, {member_t.__name__}")
 
-        # DEBUG
-        print(f"?> Making pair {field_t.__name__}, {member_t.__name__}")
-
-        # Unlike the CAPI we return both the instantiated field and a type for the member
-        return MDSRecordFieldMemberPair(field=field_t(), member=member_t)
+    # Unlike the CAPI we return both the instantiated field and a type for the member
+    return MDSRecordFieldMemberPair(field=field_t(), member=member_t)
 
 
 cdef class MDSManagedRecordType(MDSObject):
@@ -1362,39 +1348,6 @@ cdef class MDSManagedRecordType(MDSObject):
     @staticmethod
     def ensure_complete(klass: type) -> MDSConstRecordHandleWrapper:
         return klass.type_decl.ensure_created()
-
-    @staticmethod
-    def from_handle(handle: MDSConstRecordHandleWrapper) -> Record:
-  # static mds_ptr<R> from_handle(const Record::handle_t &h) {
-  #   if (!std::is_abstract<R>::value) {
-  #     /*
-  #      * If there are no virtual functions we might as well just create
-  #      * a new proxy object.  We could cache them, but this is probably
-  #      * at least as efficient.
-  #      */
-  #     return RecordCreator<R>::create_from_handle(h);
-  #   } else {
-  #     /*
-  #      * If there are virtual functions, we need to find the actual type
-  #      * for the record.
-  #      */
-  #     const_handle_t th = h.type();
-  #     /*
-  #      * If it's ours, we can just create it here.
-  #      */
-  #     if (th == ManagedType().handle()) {
-  #       return RecordCreator<R>::create_from_handle(h);
-  #     }
-  #     mds_ptr<Record> r = CreatorCache::create(th, h);
-  #     /*
-  #      * We should be guaranteed of at least finding *this* class.
-  #      */
-  #     assert(r != nullptr);
-  #     return r.static_pointer_cast<R>();
-  #   }
-  # }
-
-        pass
 
     def from_core(self, handle: MDSConstRecordHandleWrapper) -> Record:
   # mds_ptr<R> from_core(const Record::handle_t &val) const {
@@ -1476,7 +1429,7 @@ cdef class MDSRecordFieldBase(MDSObject):
     def get_reference_type(make_const=False) -> type:
         return None
 
-# START INJECTION | tmpl_record_field
+# START INJECTION | tmpl_record_field(Primitives,Composites,Arrays)
 
 cdef class MDSBoolRecordField(MDSRecordFieldBase):
     cdef:
@@ -1697,7 +1650,7 @@ cdef class MDSRecordFieldReferenceBase(MDSConstRecordFieldReferenceBase):
   #   return mtype().to_core(val);
   # }
 
-# START INJECTION | tmpl_record_field_reference
+# START INJECTION | tmpl_record_field_reference(Primitives,Composites,Arrays)
 
 
 cdef class MDSConstBoolRecordFieldReference(MDSConstRecordFieldReferenceBase):
@@ -2162,7 +2115,7 @@ cdef class MDSConstRecordMemberBase(MDSRecordMemberBase):
         self._throw_const_error()
 
 
-# START INJECTION | tmpl_record_member
+# START INJECTION | tmpl_record_member(Primitives,Composites,Arrays)
 
 cdef class MDSConstBoolRecordMember(MDSConstRecordMemberBase):
 
@@ -3456,7 +3409,7 @@ cdef class MDSNameBinding(MDSNameBindingBase):
 
     def as_type(self, t: TypeInfo) -> MDSTypedNameBinding:
         mappings = {
-            # START INJECTION | tmpl_namespace_mapping
+            # START INJECTION | tmpl_namespace_mapping(Primitives,Arrays,Composites)
             mds.typing.bool: MDSBoolNameBinding,
             mds.typing.byte: MDSByteNameBinding,
             mds.typing.ubyte: MDSUByteNameBinding,
@@ -3525,7 +3478,7 @@ cdef class MDSTypedNameBinding(MDSNameBindingBase):
         # the return value of the function is consistent with its name.
         pass
 
-# START INJECTION | tmpl_namespace_typed_bindings
+# START INJECTION | tmpl_namespace_typed_bindings(Primitives,Composites,Arrays)
 
 cdef class MDSBoolNameBinding(MDSTypedNameBinding):
     cdef:
@@ -3903,7 +3856,7 @@ cpdef inline is_record_type(obj):
 #  Primitives
 # =========================================================================
 
-# START INJECTION | tmpl_primitives
+# START INJECTION | tmpl_primitives(Primitives)
 
 cdef class Bool(MDSPrimitiveBase):
     cdef:

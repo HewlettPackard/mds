@@ -56,7 +56,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
         uint64_t hash1()
     
-# START INJECTION | tmpl_api_namespaces
+# START INJECTION | tmpl_api_namespaces(Primitives)
 
         bool lookup_bool "lookup<mds::api::kind::BOOL,mds::core::kind_type<mds::api::kind::BOOL>,false,true>"(interned_string_handle, const h_mbool_t&)
         h_marray_bool_t lookup_bool_array "lookup<mds::api::kind::BOOL,false,true>"(const interned_string_handle&, const h_array_bool_t&)

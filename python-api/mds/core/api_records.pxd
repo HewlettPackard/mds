@@ -93,7 +93,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
         uint64_t hash1()
 
-# START INJECTION | tmpl_api_records
+# START INJECTION | tmpl_api_records(Primitives,Composites,Arrays)
 
     cdef cppclass h_rfield_bool_t "mds::api::record_field_handle<mds::api::kind::BOOL>":
         h_rfield_bool_t()

@@ -28,53 +28,76 @@ import os
 import os.path
 import sys
 
-from typing import Iterable, List
 from collections import namedtuple
+from itertools import chain
+from typing import Dict, Iterable, List, Text
 
 import mds
 from mds import TypeInfo
 
-__generate_specializations = lambda fn: [fn(t) for t in mds.typing.mappings] + ['\n']
+TYPE_GROUPINGS = {
+    'Primitives': mds.typing.primitives,
+    'Composites': mds.typing.composites,
+    'Arrays': mds.typing.arrays
+}
+
 __ensure_is_list = lambda elem: [elem] if not isinstance(elem, list) else elem
 
-def find_and_inject(file_path: str, dry_run=True, generator_separator='|') -> None:
+Payload = namedtuple('Payload', ['fn', 'targets'])
+Target = namedtuple('Target', ['start', 'end', 'payload'])
+
+def get_injection_payload(line: Text) -> Payload:
+    line = line.split('|').pop().strip()
+    print(line)
+    # Now line is in the form tmpl_<id>([Group1, ...])
+    # We could use regex, but that seems like too much work.
+    line = line[:-1]
+    fn_name, groups = line.split('(')
+    groups = [TYPE_GROUPINGS[t] for t in groups.split(',')]
+
+    return Payload(
+        fn=globals()[fn_name],
+        targets=chain(*[x.items() for x in groups])
+    )
+
+
+def find_and_inject(file_path: str, dry_run=True) -> None:
     with open(file_path, "r") as fp:
         lines = [l for l in fp]
 
-    Target = namedtuple("Target", ["start", "end", "fn_name"])
-    targets = []
+    injection_points = []
     start = None
-    fn_name = None
+    payload = None
 
     for i, line in enumerate(lines):
-        if f"START INJECTION {generator_separator}" in line:
+        if "START INJECTION" in line:
             start = i + 1
-            fn_name = line.split(generator_separator).pop().strip()
+            payload = get_injection_payload(line)
         elif start is not None and "END INJECTION" in line:
-            targets.append(Target(start, i, fn_name))
-            start = fn_name = None
+            injection_points.append(
+                Target(start=start, end=i, payload=payload)
+            )
+            start = payload = None
 
-    if not targets:
+    if not injection_points:
         return
 
     # If we're here, we have at least 1 injection point.
-    # Let's assume we have N targets and L lines, progressing
+    # Let's assume we have N injection_points and L lines, progressing
     # and doing the injection i=1..N thru 1..L
     chunks = []
     start = 0
 
-    for target in targets:
-        chunks.extend(lines[start:target.start])
+    for point in injection_points:
+        chunks.extend(lines[start:point.start])
 
-        try:
-            injected = __generate_specializations(globals()[target.fn_name])
+        for label, type_info in point.payload.targets:
+            injected = point.payload.fn(type_info)
             
             if injected is not None:
-                chunks.extend(injected)
-        except KeyError:
-            print(f"The template function `{target.fn_name}` wasn't found.")
+                chunks.append(injected)
 
-        start = target.end
+        start = point.end
 
     chunks.extend(lines[start:])
 
@@ -144,11 +167,8 @@ def tmpl_api_primitives(t: TypeInfo) -> str:
     return compiled
 
 def tmpl_primitives(t: TypeInfo) -> str:
-    if not t.is_primitive:
-        return ""
-
     compiled = f"""
-cdef class {t.title}({t.primitive_parent}):
+cdef class {t.title}({t.PRIMITIVE}):
     cdef:
         {t.managed_value} _type
 
@@ -194,9 +214,6 @@ cdef class {t.title}({t.primitive_parent}):
 # =========================================================================
 
 def tmpl_api_namespaces(t: TypeInfo) -> str:
-    if not t.is_primitive:
-        return ""
-
     compiled = f"""
         {t.c_type} {t.f_lookup} "lookup<{t.kind},mds::core::kind_type<{t.kind}>,false,true>"(interned_string_handle, const {t.primitive}&)
         {t.managed_array} {t.f_lookup_array} "lookup<{t.kind},false,true>"(const interned_string_handle&, const {t.array}&)
@@ -206,19 +223,10 @@ def tmpl_api_namespaces(t: TypeInfo) -> str:
     return compiled
 
 def tmpl_namespace_mapping(t: TypeInfo) -> str:
-    if not t.is_primitive:
-        return ""
-
     compiled = f"            mds.typing.{t.api}: {t.title_name_binding},\n"
     return compiled
 
 def tmpl_namespace_typed_bindings(t: TypeInfo) -> str:
-    """
-    TODO: For arrays, should this be specialized?
-    """
-    if not t.is_primitive:
-        return ""
-
     compiled = f"""
 cdef class {t.title_name_binding}(MDSTypedNameBinding):
     cdef:
@@ -262,9 +270,6 @@ cdef class {t.title_name_binding}(MDSTypedNameBinding):
 def tmpl_api_records(t: TypeInfo) -> str:
     EXTRA = ""
     compiled = ""
-
-    if not t.is_primitive:
-        return ""
 
     if t.is_arithmetic:
         EXTRA = f"""
@@ -319,9 +324,6 @@ cdef class {t.title_record_field}(MDSRecordFieldBase):
     return compiled
 
 def tmpl_record_field_reference(t: TypeInfo) -> str:
-    if not t.is_primitive:
-        return ""
-
     compiled = f"""
 
 cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBase):
@@ -390,9 +392,6 @@ cdef class {t.title_record_field_reference}({t.title_const_record_field_referenc
     return compiled
 
 def tmpl_record_member(t: TypeInfo) -> str:
-    if not t.is_primitive:
-        return ""
-
     compiled = f"""
 cdef class {t.title_const_record_member}(MDSConstRecordMemberBase):
 """
@@ -478,11 +477,8 @@ cdef class {t.title_record_member}(MDSRecordMemberBase):
 # =========================================================================
 
 def tmpl_array(t: TypeInfo) -> str:
-    if t.is_array:  # Core doesn't support arrays of arrays (yet?)
-        return ""
-
     compiled = f"""
-cdef class {t.title_array}({t.array_parent}):
+cdef class {t.title_array}({t.ARRAY}):
 
     cdef {t.managed_array} _handle
     _primitive = {t.title}
@@ -555,8 +551,6 @@ cdef class {t.title_array}({t.array_parent}):
         pass
     elif t.is_record:
         pass
-    elif t.is_array:
-        pass
 
     compiled += f"""
     property dtype:
@@ -566,9 +560,6 @@ cdef class {t.title_array}({t.array_parent}):
     return compiled
 
 def tmpl_api_arrays(t: TypeInfo) -> str:
-    if t.is_array:  # Core doesn't support arrays of arrays (yet?)
-        return ""
-
     EXTRA = ""
 
     if t.is_arithmetic:
