@@ -441,4 +441,68 @@ cdef extern from "helpers.h" namespace "mds::python::types":
     h_marray_double_t create_double_marray(size_t)
     h_const_marray_double_t create_const_double_marray(size_t)    
 
+    cdef cppclass h_array_string_t "mds::api::array_type_handle<mds::api::kind::STRING>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_string_t create_array(size_t)
+        bool is_same_as(const h_array_string_t&)
+        uint64_t hash1()
+
+    cdef cppclass h_const_array_string_t "mds::api::const_array_type_handle<mds::api::kind::STRING>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_string_t create_array(size_t)
+        bool is_same_as(const h_const_array_string_t&)
+        uint64_t hash1()
+
+    cdef cppclass h_marray_string_t:
+        mv_string frozen_read(size_t)
+        mv_string write(size_t, mv_string)
+        size_t size()
+        bool has_value()
+        h_marray_base_t as_base()
+        uint64_t hash1()
+        
+
+    cdef cppclass h_const_marray_string_t:
+        mv_string frozen_read(size_t)
+        mv_string write(size_t, mv_string)
+        size_t size()
+        bool has_value()
+        h_marray_base_t as_base()
+        uint64_t hash1()
+
+    h_marray_string_t create_string_marray(size_t)
+    h_const_marray_string_t create_const_string_marray(size_t)    
+
+    cdef cppclass h_array_record_t "mds::api::array_type_handle<mds::api::kind::RECORD>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_record_t create_array(size_t)
+        bool is_same_as(const h_array_record_t&)
+        uint64_t hash1()
+
+    cdef cppclass h_const_array_record_t "mds::api::const_array_type_handle<mds::api::kind::RECORD>":
+        # const_managed_type_handle<K> element_type()
+        h_marray_record_t create_array(size_t)
+        bool is_same_as(const h_const_array_record_t&)
+        uint64_t hash1()
+
+    cdef cppclass h_marray_record_t:
+        mv_record frozen_read(size_t)
+        mv_record write(size_t, mv_record)
+        size_t size()
+        bool has_value()
+        h_marray_base_t as_base()
+        uint64_t hash1()
+        
+
+    cdef cppclass h_const_marray_record_t:
+        mv_record frozen_read(size_t)
+        mv_record write(size_t, mv_record)
+        size_t size()
+        bool has_value()
+        h_marray_base_t as_base()
+        uint64_t hash1()
+
+    h_marray_record_t create_record_marray(size_t)
+    h_const_marray_record_t create_const_record_marray(size_t)    
+
 # END INJECTION

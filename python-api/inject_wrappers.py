@@ -111,6 +111,9 @@ def generate_and_inject_all_sources(dry_run=True, root=os.getcwd(), exts=('pyx',
 # =========================================================================
 
 def tmpl_api_primitives(t: TypeInfo) -> str:
+    if not t.is_primitive:
+        return ""
+
     compiled = f"""
     # BEGIN {t.api}
     # TODO: (field_in)
@@ -141,6 +144,9 @@ def tmpl_api_primitives(t: TypeInfo) -> str:
     return compiled
 
 def tmpl_primitives(t: TypeInfo) -> str:
+    if not t.is_primitive:
+        return ""
+
     compiled = f"""
 cdef class {t.title}({t.primitive_parent}):
     cdef:
@@ -188,18 +194,31 @@ cdef class {t.title}({t.primitive_parent}):
 # =========================================================================
 
 def tmpl_api_namespaces(t: TypeInfo) -> str:
+    if not t.is_primitive:
+        return ""
+
     compiled = f"""
         {t.c_type} {t.f_lookup} "lookup<{t.kind},mds::core::kind_type<{t.kind}>,false,true>"(interned_string_handle, const {t.primitive}&)
         {t.managed_array} {t.f_lookup_array} "lookup<{t.kind},false,true>"(const interned_string_handle&, const {t.array}&)
-        bool bind_{t.api} "bind<{t.kind}>"(interned_string_handle, {t.c_type})
+        bool {t.f_bind} "bind<{t.kind}>"(interned_string_handle, {t.c_type})
+        # bool {t.f_bind_array} "bind<{t.kind}>"(interned_string_handle, {t.c_type})
     """
     return compiled
 
 def tmpl_namespace_mapping(t: TypeInfo) -> str:
+    if not t.is_primitive:
+        return ""
+
     compiled = f"            mds.typing.{t.api}: {t.title_name_binding},\n"
     return compiled
 
 def tmpl_namespace_typed_bindings(t: TypeInfo) -> str:
+    """
+    TODO: For arrays, should this be specialized?
+    """
+    if not t.is_primitive:
+        return ""
+
     compiled = f"""
 cdef class {t.title_name_binding}(MDSTypedNameBinding):
     cdef:
@@ -244,6 +263,9 @@ def tmpl_api_records(t: TypeInfo) -> str:
     EXTRA = ""
     compiled = ""
 
+    if not t.is_primitive:
+        return ""
+
     if t.is_arithmetic:
         EXTRA = f"""
         {t.c_type} add(const managed_record_handle&, {t.c_type})
@@ -274,6 +296,9 @@ def tmpl_api_records(t: TypeInfo) -> str:
     return compiled
 
 def tmpl_record_field(t: TypeInfo) -> str:
+    if not t.is_primitive:
+        return ""
+
     compiled = f"""
 cdef class {t.title_record_field}(MDSRecordFieldBase):
     cdef:
@@ -294,10 +319,9 @@ cdef class {t.title_record_field}(MDSRecordFieldBase):
     return compiled
 
 def tmpl_record_field_reference(t: TypeInfo) -> str:
-    """
-    TODO:
-        1. Change to python 3 annotation when upgrade to Cython 0.28
-    """
+    if not t.is_primitive:
+        return ""
+
     compiled = f"""
 
 cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBase):
@@ -309,7 +333,10 @@ cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBa
         self._record = record
         self._field_handle = {t.record_field}(field._handle)
         self._record_handle = managed_record_handle(record._handle)
+"""
 
+    if t.is_primitive:
+        compiled += f"""
     def read(self):
         cdef {t.c_type} retval = self._field_handle.frozen_read(self._record_handle)
         return retval
@@ -317,16 +344,36 @@ cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBa
     def peek(self):
         cdef {t.c_type} retval = self._field_handle.free_read(self._record_handle)
         return retval
+"""
+    elif t.is_string:
+        pass
+    elif t.is_record:
+        pass
+    elif t.is_array:
+        pass
 
+    compiled += f"""
 
 cdef class {t.title_record_field_reference}({t.title_const_record_field_reference}):
+"""
     
+    if t.is_primitive:
+        compiled += f"""
     def write(self, value):
         self._field_handle.write(self._record_handle, <{t.c_type}> (value))
 """
-    
+    elif t.is_string or t.is_record or t.is_array:
+        compiled += """
+    pass
+"""
+    elif t.is_record:
+        pass
+    elif t.is_array:
+        pass
+
     if t.is_arithmetic:
         compiled += f"""
+
     def __iadd__(self, other):
         self._field_handle.add(self._record_handle, <{t.c_type}> (other))
 
@@ -343,8 +390,15 @@ cdef class {t.title_record_field_reference}({t.title_const_record_field_referenc
     return compiled
 
 def tmpl_record_member(t: TypeInfo) -> str:
+    if not t.is_primitive:
+        return ""
+
     compiled = f"""
 cdef class {t.title_const_record_member}(MDSConstRecordMemberBase):
+"""
+
+    if t.is_primitive:
+        compiled += f"""
     cdef {t.c_type} _cached_val
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -360,9 +414,23 @@ cdef class {t.title_const_record_member}(MDSConstRecordMemberBase):
 
     def peek(self):
         return self.read()
+"""
+    elif t.is_string or t.is_record or t.is_array:
+        compiled += """
+    pass
+"""
+    elif t.is_record:
+        pass
+    elif t.is_array:
+        pass
+
+    compiled += f"""
 
 cdef class {t.title_record_member}(MDSRecordMemberBase):
+"""
 
+    if t.is_primitive:
+        compiled += f"""
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
         return {t.title_record_field}()[self]
 
@@ -375,6 +443,15 @@ cdef class {t.title_record_member}(MDSRecordMemberBase):
     def write(self, value) -> None:
         self._field_ref().write(<{t.c_type}> value);
 """
+    elif t.is_string or t.is_record or t.is_array:
+        compiled += """
+    pass
+"""
+    elif t.is_record:
+        pass
+    elif t.is_array:
+        pass
+
     if t.is_arithmetic:
         compiled += f"""
     def __iadd__(self, other):
@@ -401,6 +478,9 @@ cdef class {t.title_record_member}(MDSRecordMemberBase):
 # =========================================================================
 
 def tmpl_array(t: TypeInfo) -> str:
+    if t.is_array:  # Core doesn't support arrays of arrays (yet?)
+        return ""
+
     compiled = f"""
 cdef class {t.title_array}({t.array_parent}):
 
@@ -417,6 +497,24 @@ cdef class {t.title_array}({t.array_parent}):
     def __hash__(self):
         return self._handle.hash1()
 
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     {t.managed_array} handle = {t.f_lookup_array}(p._ish, {t.array}())
+
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
+
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
+"""
+
+    if t.is_arithmetic:
+        compiled += f"""
     def _numeric_bounds_check(self, value):
         prim = {t.title}(value)
         return prim.python_value
@@ -428,7 +526,7 @@ cdef class {t.title_array}({t.array_parent}):
         # Delegate bounds checking etc. to the primitive wrapper
         wrapped = self._primitive(value)
         self._handle.write(index, {t.managed_value}(value))
-    
+
     def copy(self):
         cdef:
             size_t i = 0
@@ -440,10 +538,7 @@ cdef class {t.title_array}({t.array_parent}):
             retval[i] = self[i]
 
         return retval
-"""
 
-    if t.is_arithmetic:
-        compiled += f"""
     def __iadd__(self, other):
         return self._handle.add(self._last_index, <{t.c_type}> other)
 
@@ -456,6 +551,12 @@ cdef class {t.title_array}({t.array_parent}):
     def __itruediv__(self, other):
         return self._handle.div(self._last_index, <{t.c_type}> other)
 """
+    elif t.is_string:
+        pass
+    elif t.is_record:
+        pass
+    elif t.is_array:
+        pass
 
     compiled += f"""
     property dtype:
@@ -465,6 +566,9 @@ cdef class {t.title_array}({t.array_parent}):
     return compiled
 
 def tmpl_api_arrays(t: TypeInfo) -> str:
+    if t.is_array:  # Core doesn't support arrays of arrays (yet?)
+        return ""
+
     EXTRA = ""
 
     if t.is_arithmetic:

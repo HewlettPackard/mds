@@ -32,6 +32,8 @@ from libcpp.vector cimport vector
 from collections import defaultdict
 from typing import Union, List, Optional, Iterable
 
+import threading
+
 from mds.core.api_strings cimport *
 from mds.core.api_arrays cimport *
 from mds.core.api_records cimport *
@@ -40,11 +42,9 @@ from mds.core.api_namespaces cimport *
 from mds.core.api_primitives cimport *
 
 import mds
+
 from mds import TypeInfo
-
-import threading
-
-cdef __LOCAL = threading.local()
+from mds.threading import MDSThreadLocalData
 
 initialize_base_task()
 
@@ -72,6 +72,22 @@ cdef class MDSObject(object):
                 raw_name = raw_name[3:]
 
             return raw_name.startswith("Const")
+
+cdef class MDSProxyObject(object):
+
+    def __init__(self, proxied: MDSObject):
+        self._proxied = proxied
+
+    def __getattr__(self, item):
+        return getattr(self._proxied, item)
+
+    def __setattr__(self, key, value):
+        if key.endswith("_proxied"):
+            super().__setattr__(key, value)
+        elif not hasattr(self._proxied, key):
+            raise AttributeError("'{}' has no attribute '{}'".format(type(self._proxied).__name__, key))
+        else:
+            setattr(self._proxied, key, value)
 
 # =========================================================================
 #  Errors & Exceptions
@@ -349,29 +365,20 @@ cdef class BoolArray(MDSArrayBase):
     def __hash__(self):
         return self._handle.hash1()
 
-    def _numeric_bounds_check(self, value):
-        prim = Bool(value)
-        return prim.python_value
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     h_marray_bool_t handle = lookup_bool_array(p._ish, h_array_bool_t())
 
-    def _to_python(self, index):
-        return bool_to_core_val(self._handle.frozen_read(index))
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
 
-    def _to_mds(self, index, value):
-        # Delegate bounds checking etc. to the primitive wrapper
-        wrapped = self._primitive(value)
-        self._handle.write(index, mv_bool(value))
-    
-    def copy(self):
-        cdef:
-            size_t i = 0
-            size_t n = len(self)
-
-        retval = BoolArray(length=len(self))
-
-        for i in range(n):
-            retval[i] = self[i]
-
-        return retval
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
 
     property dtype:
         def __get__(self):
@@ -392,6 +399,21 @@ cdef class ByteArray(MDSIntArrayBase):
     def __hash__(self):
         return self._handle.hash1()
 
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     h_marray_byte_t handle = lookup_byte_array(p._ish, h_array_byte_t())
+
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
+
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
+
     def _numeric_bounds_check(self, value):
         prim = Byte(value)
         return prim.python_value
@@ -403,7 +425,7 @@ cdef class ByteArray(MDSIntArrayBase):
         # Delegate bounds checking etc. to the primitive wrapper
         wrapped = self._primitive(value)
         self._handle.write(index, mv_byte(value))
-    
+
     def copy(self):
         cdef:
             size_t i = 0
@@ -447,6 +469,21 @@ cdef class UByteArray(MDSIntArrayBase):
     def __hash__(self):
         return self._handle.hash1()
 
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     h_marray_ubyte_t handle = lookup_ubyte_array(p._ish, h_array_ubyte_t())
+
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
+
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
+
     def _numeric_bounds_check(self, value):
         prim = UByte(value)
         return prim.python_value
@@ -458,7 +495,7 @@ cdef class UByteArray(MDSIntArrayBase):
         # Delegate bounds checking etc. to the primitive wrapper
         wrapped = self._primitive(value)
         self._handle.write(index, mv_ubyte(value))
-    
+
     def copy(self):
         cdef:
             size_t i = 0
@@ -502,6 +539,21 @@ cdef class ShortArray(MDSIntArrayBase):
     def __hash__(self):
         return self._handle.hash1()
 
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     h_marray_short_t handle = lookup_short_array(p._ish, h_array_short_t())
+
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
+
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
+
     def _numeric_bounds_check(self, value):
         prim = Short(value)
         return prim.python_value
@@ -513,7 +565,7 @@ cdef class ShortArray(MDSIntArrayBase):
         # Delegate bounds checking etc. to the primitive wrapper
         wrapped = self._primitive(value)
         self._handle.write(index, mv_short(value))
-    
+
     def copy(self):
         cdef:
             size_t i = 0
@@ -557,6 +609,21 @@ cdef class UShortArray(MDSIntArrayBase):
     def __hash__(self):
         return self._handle.hash1()
 
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     h_marray_ushort_t handle = lookup_ushort_array(p._ish, h_array_ushort_t())
+
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
+
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
+
     def _numeric_bounds_check(self, value):
         prim = UShort(value)
         return prim.python_value
@@ -568,7 +635,7 @@ cdef class UShortArray(MDSIntArrayBase):
         # Delegate bounds checking etc. to the primitive wrapper
         wrapped = self._primitive(value)
         self._handle.write(index, mv_ushort(value))
-    
+
     def copy(self):
         cdef:
             size_t i = 0
@@ -612,6 +679,21 @@ cdef class IntArray(MDSIntArrayBase):
     def __hash__(self):
         return self._handle.hash1()
 
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     h_marray_int_t handle = lookup_int_array(p._ish, h_array_int_t())
+
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
+
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
+
     def _numeric_bounds_check(self, value):
         prim = Int(value)
         return prim.python_value
@@ -623,7 +705,7 @@ cdef class IntArray(MDSIntArrayBase):
         # Delegate bounds checking etc. to the primitive wrapper
         wrapped = self._primitive(value)
         self._handle.write(index, mv_int(value))
-    
+
     def copy(self):
         cdef:
             size_t i = 0
@@ -667,6 +749,21 @@ cdef class UIntArray(MDSIntArrayBase):
     def __hash__(self):
         return self._handle.hash1()
 
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     h_marray_uint_t handle = lookup_uint_array(p._ish, h_array_uint_t())
+
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
+
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
+
     def _numeric_bounds_check(self, value):
         prim = UInt(value)
         return prim.python_value
@@ -678,7 +775,7 @@ cdef class UIntArray(MDSIntArrayBase):
         # Delegate bounds checking etc. to the primitive wrapper
         wrapped = self._primitive(value)
         self._handle.write(index, mv_uint(value))
-    
+
     def copy(self):
         cdef:
             size_t i = 0
@@ -722,6 +819,21 @@ cdef class LongArray(MDSIntArrayBase):
     def __hash__(self):
         return self._handle.hash1()
 
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     h_marray_long_t handle = lookup_long_array(p._ish, h_array_long_t())
+
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
+
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
+
     def _numeric_bounds_check(self, value):
         prim = Long(value)
         return prim.python_value
@@ -733,7 +845,7 @@ cdef class LongArray(MDSIntArrayBase):
         # Delegate bounds checking etc. to the primitive wrapper
         wrapped = self._primitive(value)
         self._handle.write(index, mv_long(value))
-    
+
     def copy(self):
         cdef:
             size_t i = 0
@@ -777,6 +889,21 @@ cdef class ULongArray(MDSIntArrayBase):
     def __hash__(self):
         return self._handle.hash1()
 
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     h_marray_ulong_t handle = lookup_ulong_array(p._ish, h_array_ulong_t())
+
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
+
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
+
     def _numeric_bounds_check(self, value):
         prim = ULong(value)
         return prim.python_value
@@ -788,7 +915,7 @@ cdef class ULongArray(MDSIntArrayBase):
         # Delegate bounds checking etc. to the primitive wrapper
         wrapped = self._primitive(value)
         self._handle.write(index, mv_ulong(value))
-    
+
     def copy(self):
         cdef:
             size_t i = 0
@@ -832,6 +959,21 @@ cdef class FloatArray(MDSFloatArrayBase):
     def __hash__(self):
         return self._handle.hash1()
 
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     h_marray_float_t handle = lookup_float_array(p._ish, h_array_float_t())
+
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
+
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
+
     def _numeric_bounds_check(self, value):
         prim = Float(value)
         return prim.python_value
@@ -843,7 +985,7 @@ cdef class FloatArray(MDSFloatArrayBase):
         # Delegate bounds checking etc. to the primitive wrapper
         wrapped = self._primitive(value)
         self._handle.write(index, mv_float(value))
-    
+
     def copy(self):
         cdef:
             size_t i = 0
@@ -887,6 +1029,21 @@ cdef class DoubleArray(MDSFloatArrayBase):
     def __hash__(self):
         return self._handle.hash1()
 
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     h_marray_double_t handle = lookup_double_array(p._ish, h_array_double_t())
+
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
+
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
+
     def _numeric_bounds_check(self, value):
         prim = Double(value)
         return prim.python_value
@@ -898,7 +1055,7 @@ cdef class DoubleArray(MDSFloatArrayBase):
         # Delegate bounds checking etc. to the primitive wrapper
         wrapped = self._primitive(value)
         self._handle.write(index, mv_double(value))
-    
+
     def copy(self):
         cdef:
             size_t i = 0
@@ -926,6 +1083,74 @@ cdef class DoubleArray(MDSFloatArrayBase):
     property dtype:
         def __get__(self):
             return mds.typing.double
+
+cdef class StringArray(MDSArrayBase):
+
+    cdef h_marray_string_t _handle
+    _primitive = String
+
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = create_string_marray(<size_t> length)
+
+    def __len__(self):
+        return self._handle.size()
+
+    def __hash__(self):
+        return self._handle.hash1()
+
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     h_marray_string_t handle = lookup_string_array(p._ish, h_array_string_t())
+
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
+
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
+
+    property dtype:
+        def __get__(self):
+            return mds.typing.string
+
+cdef class RecordArray(MDSArrayBase):
+
+    cdef h_marray_record_t _handle
+    _primitive = Record
+
+    def __cinit__(self, int length=0):
+        if length:
+            self._handle = create_record_marray(<size_t> length)
+
+    def __len__(self):
+        return self._handle.size()
+
+    def __hash__(self):
+        return self._handle.hash1()
+
+    @classmethod
+    def from_namespace(cls, Namespace namespace, path):
+        # cdef:
+        #     String p = __cast_to_mds_string(path)
+        #     h_marray_record_t handle = lookup_record_array(p._ish, h_array_record_t())
+
+        # retval = cls()
+        # retval._handle = handle
+        # return retval
+        # TODO: Re-enable when injection working correctly
+        pass
+
+    def bind_to_namespace(self, Namespace namespace):
+        pass  # TODO: See how these properly bind
+
+    property dtype:
+        def __get__(self):
+            return mds.typing.record
 
 # END INJECTION
 
@@ -1080,6 +1305,13 @@ cdef class Record(MDSObject):
         Delegates to Record.declare_field; could be deleted, but here to map 1:1 to CAPI.
         """
         return Record.declare_field(klass, make_const=True)
+
+    @staticmethod
+    def declare_const_array_field(klass: type) -> MDSRecordFieldMemberPair:
+        """
+        Delegates to Record.declare_array_field;
+        """
+        return Record.declare_array_field(klass, make_const=True)
 
     @staticmethod
     def declare_field(klass: type, make_const=False) -> MDSRecordFieldMemberPair:
@@ -1243,12 +1475,6 @@ cdef class MDSRecordFieldBase(MDSObject):
     @staticmethod
     def get_reference_type(make_const=False) -> type:
         return None
-
-# void declare(const mds_string &name, const api::record_type_handle rt) override {
-#     assert(_handle.is_null());
-#     const auto &ft = managed_type<T>().handle();
-#     _handle = ft.field_in(rt, name.handle(), true);
-#   }
 
 # START INJECTION | tmpl_record_field
 
@@ -1430,15 +1656,7 @@ cdef class MDSDoubleRecordField(MDSRecordFieldBase):
 
 # END INJECTION
 
-
 ######################################################################### REFERENCES
-
-#TODO: Need record_fields for these:
-#      STRING,
-#      RECORD,
-#      BINDING, (?)
-#      ARRAY,
-#      NAMESPACE,
 
 cdef class MDSConstRecordFieldReferenceBase(MDSObject):
     cdef:
@@ -1502,7 +1720,7 @@ cdef class MDSConstBoolRecordFieldReference(MDSConstRecordFieldReferenceBase):
 
 
 cdef class MDSBoolRecordFieldReference(MDSConstBoolRecordFieldReference):
-    
+
     def write(self, value):
         self._field_handle.write(self._record_handle, <bool> (value))
 
@@ -1527,9 +1745,10 @@ cdef class MDSConstByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
 
 
 cdef class MDSByteRecordFieldReference(MDSConstByteRecordFieldReference):
-    
+
     def write(self, value):
         self._field_handle.write(self._record_handle, <int8_t> (value))
+
 
     def __iadd__(self, other):
         self._field_handle.add(self._record_handle, <int8_t> (other))
@@ -1564,9 +1783,10 @@ cdef class MDSConstUByteRecordFieldReference(MDSConstRecordFieldReferenceBase):
 
 
 cdef class MDSUByteRecordFieldReference(MDSConstUByteRecordFieldReference):
-    
+
     def write(self, value):
         self._field_handle.write(self._record_handle, <uint8_t> (value))
+
 
     def __iadd__(self, other):
         self._field_handle.add(self._record_handle, <uint8_t> (other))
@@ -1601,9 +1821,10 @@ cdef class MDSConstShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
 
 
 cdef class MDSShortRecordFieldReference(MDSConstShortRecordFieldReference):
-    
+
     def write(self, value):
         self._field_handle.write(self._record_handle, <int16_t> (value))
+
 
     def __iadd__(self, other):
         self._field_handle.add(self._record_handle, <int16_t> (other))
@@ -1638,9 +1859,10 @@ cdef class MDSConstUShortRecordFieldReference(MDSConstRecordFieldReferenceBase):
 
 
 cdef class MDSUShortRecordFieldReference(MDSConstUShortRecordFieldReference):
-    
+
     def write(self, value):
         self._field_handle.write(self._record_handle, <uint16_t> (value))
+
 
     def __iadd__(self, other):
         self._field_handle.add(self._record_handle, <uint16_t> (other))
@@ -1675,9 +1897,10 @@ cdef class MDSConstIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
 
 
 cdef class MDSIntRecordFieldReference(MDSConstIntRecordFieldReference):
-    
+
     def write(self, value):
         self._field_handle.write(self._record_handle, <int32_t> (value))
+
 
     def __iadd__(self, other):
         self._field_handle.add(self._record_handle, <int32_t> (other))
@@ -1712,9 +1935,10 @@ cdef class MDSConstUIntRecordFieldReference(MDSConstRecordFieldReferenceBase):
 
 
 cdef class MDSUIntRecordFieldReference(MDSConstUIntRecordFieldReference):
-    
+
     def write(self, value):
         self._field_handle.write(self._record_handle, <uint32_t> (value))
+
 
     def __iadd__(self, other):
         self._field_handle.add(self._record_handle, <uint32_t> (other))
@@ -1749,9 +1973,10 @@ cdef class MDSConstLongRecordFieldReference(MDSConstRecordFieldReferenceBase):
 
 
 cdef class MDSLongRecordFieldReference(MDSConstLongRecordFieldReference):
-    
+
     def write(self, value):
         self._field_handle.write(self._record_handle, <int64_t> (value))
+
 
     def __iadd__(self, other):
         self._field_handle.add(self._record_handle, <int64_t> (other))
@@ -1786,9 +2011,10 @@ cdef class MDSConstULongRecordFieldReference(MDSConstRecordFieldReferenceBase):
 
 
 cdef class MDSULongRecordFieldReference(MDSConstULongRecordFieldReference):
-    
+
     def write(self, value):
         self._field_handle.write(self._record_handle, <uint64_t> (value))
+
 
     def __iadd__(self, other):
         self._field_handle.add(self._record_handle, <uint64_t> (other))
@@ -1823,9 +2049,10 @@ cdef class MDSConstFloatRecordFieldReference(MDSConstRecordFieldReferenceBase):
 
 
 cdef class MDSFloatRecordFieldReference(MDSConstFloatRecordFieldReference):
-    
+
     def write(self, value):
         self._field_handle.write(self._record_handle, <float> (value))
+
 
     def __iadd__(self, other):
         self._field_handle.add(self._record_handle, <float> (other))
@@ -1860,9 +2087,10 @@ cdef class MDSConstDoubleRecordFieldReference(MDSConstRecordFieldReferenceBase):
 
 
 cdef class MDSDoubleRecordFieldReference(MDSConstDoubleRecordFieldReference):
-    
+
     def write(self, value):
         self._field_handle.write(self._record_handle, <double> (value))
+
 
     def __iadd__(self, other):
         self._field_handle.add(self._record_handle, <double> (other))
@@ -1937,6 +2165,7 @@ cdef class MDSConstRecordMemberBase(MDSRecordMemberBase):
 # START INJECTION | tmpl_record_member
 
 cdef class MDSConstBoolRecordMember(MDSConstRecordMemberBase):
+
     cdef bool _cached_val
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -1953,6 +2182,7 @@ cdef class MDSConstBoolRecordMember(MDSConstRecordMemberBase):
     def peek(self):
         return self.read()
 
+
 cdef class MDSBoolRecordMember(MDSRecordMemberBase):
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -1968,6 +2198,7 @@ cdef class MDSBoolRecordMember(MDSRecordMemberBase):
         self._field_ref().write(<bool> value);
 
 cdef class MDSConstByteRecordMember(MDSConstRecordMemberBase):
+
     cdef int8_t _cached_val
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -1983,6 +2214,7 @@ cdef class MDSConstByteRecordMember(MDSConstRecordMemberBase):
 
     def peek(self):
         return self.read()
+
 
 cdef class MDSByteRecordMember(MDSRecordMemberBase):
 
@@ -2015,6 +2247,7 @@ cdef class MDSByteRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstUByteRecordMember(MDSConstRecordMemberBase):
+
     cdef uint8_t _cached_val
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -2030,6 +2263,7 @@ cdef class MDSConstUByteRecordMember(MDSConstRecordMemberBase):
 
     def peek(self):
         return self.read()
+
 
 cdef class MDSUByteRecordMember(MDSRecordMemberBase):
 
@@ -2062,6 +2296,7 @@ cdef class MDSUByteRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstShortRecordMember(MDSConstRecordMemberBase):
+
     cdef int16_t _cached_val
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -2077,6 +2312,7 @@ cdef class MDSConstShortRecordMember(MDSConstRecordMemberBase):
 
     def peek(self):
         return self.read()
+
 
 cdef class MDSShortRecordMember(MDSRecordMemberBase):
 
@@ -2109,6 +2345,7 @@ cdef class MDSShortRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstUShortRecordMember(MDSConstRecordMemberBase):
+
     cdef uint16_t _cached_val
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -2124,6 +2361,7 @@ cdef class MDSConstUShortRecordMember(MDSConstRecordMemberBase):
 
     def peek(self):
         return self.read()
+
 
 cdef class MDSUShortRecordMember(MDSRecordMemberBase):
 
@@ -2156,6 +2394,7 @@ cdef class MDSUShortRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstIntRecordMember(MDSConstRecordMemberBase):
+
     cdef int32_t _cached_val
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -2171,6 +2410,7 @@ cdef class MDSConstIntRecordMember(MDSConstRecordMemberBase):
 
     def peek(self):
         return self.read()
+
 
 cdef class MDSIntRecordMember(MDSRecordMemberBase):
 
@@ -2203,6 +2443,7 @@ cdef class MDSIntRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstUIntRecordMember(MDSConstRecordMemberBase):
+
     cdef uint32_t _cached_val
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -2218,6 +2459,7 @@ cdef class MDSConstUIntRecordMember(MDSConstRecordMemberBase):
 
     def peek(self):
         return self.read()
+
 
 cdef class MDSUIntRecordMember(MDSRecordMemberBase):
 
@@ -2250,6 +2492,7 @@ cdef class MDSUIntRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstLongRecordMember(MDSConstRecordMemberBase):
+
     cdef int64_t _cached_val
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -2265,6 +2508,7 @@ cdef class MDSConstLongRecordMember(MDSConstRecordMemberBase):
 
     def peek(self):
         return self.read()
+
 
 cdef class MDSLongRecordMember(MDSRecordMemberBase):
 
@@ -2297,6 +2541,7 @@ cdef class MDSLongRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstULongRecordMember(MDSConstRecordMemberBase):
+
     cdef uint64_t _cached_val
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -2312,6 +2557,7 @@ cdef class MDSConstULongRecordMember(MDSConstRecordMemberBase):
 
     def peek(self):
         return self.read()
+
 
 cdef class MDSULongRecordMember(MDSRecordMemberBase):
 
@@ -2344,6 +2590,7 @@ cdef class MDSULongRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstFloatRecordMember(MDSConstRecordMemberBase):
+
     cdef float _cached_val
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -2359,6 +2606,7 @@ cdef class MDSConstFloatRecordMember(MDSConstRecordMemberBase):
 
     def peek(self):
         return self.read()
+
 
 cdef class MDSFloatRecordMember(MDSRecordMemberBase):
 
@@ -2391,6 +2639,7 @@ cdef class MDSFloatRecordMember(MDSRecordMemberBase):
         ref /= other
 
 cdef class MDSConstDoubleRecordMember(MDSConstRecordMemberBase):
+
     cdef double _cached_val
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -2406,6 +2655,7 @@ cdef class MDSConstDoubleRecordMember(MDSConstRecordMemberBase):
 
     def peek(self):
         return self.read()
+
 
 cdef class MDSDoubleRecordMember(MDSRecordMemberBase):
 
@@ -2994,6 +3244,23 @@ cdef class Impl(object):
             return self._initial_ups
 
 
+cdef class MDSCurrentNamespaceProxy(MDSProxyObject):
+    """
+    TODO: Manage the thread-local current Namespace
+    """
+
+    def __getattr__(self, item):
+        return getattr(self._proxied, item)
+
+    def __setattr__(self, key, value):
+        if key.endswith("_proxied"):
+            super().__setattr__(key, value)
+        elif not hasattr(self._proxied, key):
+            raise AttributeError("'{}' has no attribute '{}'".format(type(self._proxied).__name__, key))
+        else:
+            setattr(self._proxied, key, value)
+
+
 cdef class Namespace(MDSObject):
     cdef:
         namespace_handle _handle
@@ -3082,10 +3349,10 @@ cdef class Namespace(MDSObject):
         return __NAMESPACE_ROOT
 
     @staticmethod
-    def current():
+    def current() -> MDSCurrentNamespaceProxy:
         # TODO: This originally passes back a reference, so it can be updated. See
         #       Where and how this is used.
-        return Namespace.root()
+        return MDSCurrentNamespaceProxy()
 
     @staticmethod
     def from_path(path: PathTypes) -> Namespace:

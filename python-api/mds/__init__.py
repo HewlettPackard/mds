@@ -38,12 +38,15 @@ class TypeInfo():
     MDS_CONST_PRIM_INTEGRAL = "MDSConstIntPrimitiveBase"
     MDS_CONST_PRIM_FLOATING = "MDSConstFloatPrimitiveBase"
 
-    MDS_BASE, MDS_INTEGRAL, MDS_FLOATING = range(3)
+    MDS_BASE, MDS_INTEGRAL, MDS_FLOATING, MDS_STRING, MDS_ARRAY, MDS_RECORD = range(6)
 
     MDS_TAXONOMY = {
         MDS_BASE: Taxonomy(MDS_PRIM_BASE, MDS_ARRAY_BASE, MDS_CONST_PRIM_BASE, MDS_CONST_ARRAY_BASE),
         MDS_INTEGRAL: Taxonomy(MDS_PRIM_INTEGRAL, MDS_ARRAY_INTEGRAL, MDS_CONST_PRIM_INTEGRAL, MDS_CONST_ARRAY_INTEGRAL),
-        MDS_FLOATING: Taxonomy(MDS_PRIM_FLOATING, MDS_ARRAY_FLOATING, MDS_CONST_PRIM_FLOATING, MDS_CONST_ARRAY_FLOATING)
+        MDS_FLOATING: Taxonomy(MDS_PRIM_FLOATING, MDS_ARRAY_FLOATING, MDS_CONST_PRIM_FLOATING, MDS_CONST_ARRAY_FLOATING),
+        MDS_STRING: Taxonomy(None, MDS_ARRAY_BASE, None, MDS_CONST_ARRAY_BASE),
+        MDS_ARRAY: Taxonomy(None, None, None, None),
+        MDS_RECORD: Taxonomy(None, MDS_ARRAY_BASE, None, MDS_CONST_ARRAY_BASE)
     }
 
     MDS_INTEGRAL_BOUNDS = dict()
@@ -51,9 +54,20 @@ class TypeInfo():
     def __repr__(self):
         return f'<MDS Type: {self.title} ({self.kind})>'
 
-    def __init__(self, api: str, c_type: str, taxonomy: Taxonomy, py_type: type, dtype_extra=None):
+    def __init__(
+            self, api: str,
+            c_type: str,
+            taxonomy: Taxonomy,
+            py_type: type,
+            is_array: bool=False,
+            is_record: bool=False,
+            is_string: bool=False,
+        ):
         self.api = api
         self.title = api.title()
+        self.is_array = is_array
+        self.is_record = is_record
+        self.is_string = is_string
 
         if self.title.startswith('U'):
             self.title = api[:2].upper() + api[2:]
@@ -78,7 +92,6 @@ class TypeInfo():
         self.py_type_t = py_type
         self.py_type = py_type.__name__
         self.taxonomy = taxonomy
-        self.dtype_extra = dtype_extra
 
         # MDS core aliases (masking templated types)
         self.primitive = f"h_m{api}_t"
@@ -126,12 +139,20 @@ class TypeInfo():
     def is_arithmetic(self):
         return self.taxonomy in [self.MDS_INTEGRAL, self.MDS_FLOATING]
 
+    @property
+    def is_primitive(self):
+        return not self.is_array and not self.is_record and not self.is_string
+
+    @property
+    def is_complex(self):
+        return not self.is_primitive
+
 
 class __MDSTypes(object):
     
     def __init__(self, *args, **kwargs):
         self.__repr = {
-            "bool": TypeInfo("bool", "bool", TypeInfo.MDS_BASE, bool, "True"),
+            "bool": TypeInfo("bool", "bool", TypeInfo.MDS_BASE, bool),
             "byte": TypeInfo("byte", "int8_t", TypeInfo.MDS_INTEGRAL, int),
             "ubyte": TypeInfo("ubyte", "uint8_t", TypeInfo.MDS_INTEGRAL, int),
             "short": TypeInfo("short", "int16_t", TypeInfo.MDS_INTEGRAL, int),
@@ -141,7 +162,10 @@ class __MDSTypes(object):
             "long": TypeInfo("long", "int64_t", TypeInfo.MDS_INTEGRAL, int),
             "ulong": TypeInfo("ulong", "uint64_t", TypeInfo.MDS_INTEGRAL, int),
             "float": TypeInfo("float", "float", TypeInfo.MDS_FLOATING, float),
-            "double": TypeInfo("double", "double", TypeInfo.MDS_FLOATING, float)
+            "double": TypeInfo("double", "double", TypeInfo.MDS_FLOATING, float),
+            "string": TypeInfo("string", "String", TypeInfo.MDS_STRING, str, is_string=True),
+            "array": TypeInfo("array", "", TypeInfo.MDS_ARRAY, list, is_array=True),
+            "record": TypeInfo("record", "Record", TypeInfo.MDS_RECORD, object, is_record=True)
         }
         self.__available = set(self.__repr.keys())
         super().__init__(*args, **kwargs)

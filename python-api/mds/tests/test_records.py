@@ -82,7 +82,9 @@ class ComplexRecord(Record, ident="schema_ComplexRecord"):
         return {
             "is_active": Record.declare_field(mds.typing.bool),
             "numerator": Record.declare_field(mds.typing.float),
-            "denominator": Record.declare_field(mds.typing.double)
+            "denominator": Record.declare_field(mds.typing.double),
+            "measurements": Record.declare_array_field(mds.typing.double),
+            "observers": Record.declare_const_array_field(mds.typing.record)
         }
 
 

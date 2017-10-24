@@ -31,6 +31,9 @@ from libcpp.memory cimport unique_ptr, make_unique
 from mds.core.api_tasks cimport *
 from mds.core.api_isolation_contexts cimport *
 
+from mds.managed import MDSProxyObject
+from mds.threading import MDSThreadLocalData
+
 from datetime import datetime, timedelta
 from threading import local
 
@@ -458,6 +461,12 @@ cdef inline _py_callable_wrapper _wrap(object fn, object args):
 # =========================================================================
 #  Tasks
 # =========================================================================
+
+class MDSCurrentTaskProxy(MDSProxyObject):
+    """
+    TODO: Manage thread-local allocation here
+    """
+    pass
 
 cdef class Task(object):
     """
