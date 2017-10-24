@@ -23,7 +23,59 @@ Application during this compilation process under terms of your choice,
 provided you also meet the terms and conditions of the Application license.
 """
 
-from threading import *
+from threading import Thread, local
+from typing import Dict, Text, Union
 
-class MDSThread(Thread):
-    pass
+from mds.containers import Task
+from mds.managed import Namespace
+
+ThreadLocalDataTypes = Union[Task, Namespace]
+CurrentDict = Dict[Text, ThreadLocalDataTypes]
+
+
+class MDSThreadData(object):
+
+    STORE = threading.local()
+
+    def __init__(self):
+        local_data = MDSThreadData.STORE
+
+        if not hasattr(local_data, "current") or not local_data.current:
+            local_data.current = {
+                "task" = Task.get_current(),
+                "namespace" = Namespace.get_current()
+            }
+
+    @property
+    def current() -> CurrentDict:
+        return MDSThreadData.STORE.current
+
+    def set_from_child(self, other: CurrentDict):
+        # We want to make sure a child thread can only set the context once.
+        local_data = MDSThreadData.STORE
+
+        if not hasattr(local_data, "set") or local_data.set == False:
+            local_data.set = True
+            local_data.current = other
+
+    def reset(self) -> None:
+        local_data = MDSThreadData.STORE
+        local_data.set = False
+        local_data.current.clear()
+
+
+class ChildThread(Thread):
+    
+    def __init__(self, *args, **kwargs):
+        self.parent_current = MDSThreadData().current
+        super().__init__(*args, **kwargs)
+
+    def run(self):
+        # Update the thread-local stuff
+        MDSThreadData().set_from_child(self.parent_current)
+
+        # Now call up the MRO to invoke the call
+        super().run()
+
+        # TODO: Ask Evan if this is a good idea?
+        # MDSThreadData().reset()
