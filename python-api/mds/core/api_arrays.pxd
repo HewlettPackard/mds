@@ -504,5 +504,4 @@ cdef extern from "helpers.h" namespace "mds::python::types":
 
     h_marray_record_t create_record_marray(size_t)
     h_const_marray_record_t create_const_record_marray(size_t)    
-
 # END INJECTION

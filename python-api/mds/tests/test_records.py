@@ -84,7 +84,7 @@ class ComplexRecord(Record, ident="schema_ComplexRecord"):
             "numerator": declare_field(mds.typing.primitives.float),
             "denominator": declare_field(mds.typing.primitives.double),
             "measurements": declare_field(mds.typing.primitives.double),
-            "observers": declare_field(mds.typing.composites.record[SimpleRecord], const=True)
+            "observers": declare_field(mds.typing.composites.record[SimpleRecord], make_const=True)
         }
 
 

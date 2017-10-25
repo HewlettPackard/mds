@@ -328,6 +328,5 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef h_const_mdouble_t const_managed_double_type_handle "mds::api::managed_type_handle<mds::api::kind::DOUBLE>"()
     double double_to_core_val "mds::api::to_core_val<mds::api::kind::DOUBLE>" (const mv_double&)
 
-
 # END INJECTION
 

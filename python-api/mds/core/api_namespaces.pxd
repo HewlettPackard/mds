@@ -112,8 +112,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_marray_double_t lookup_double_array "lookup<mds::api::kind::DOUBLE,false,true>"(const interned_string_handle&, const h_array_double_t&)
         bool bind_double "bind<mds::api::kind::DOUBLE>"(interned_string_handle, double)
         # bool bind_double_array "bind<mds::api::kind::DOUBLE>"(interned_string_handle, double)
-    
-# END INJECTION
+                                                                                            # END INJECTION
 
         managed_record_handle lookup(interned_string_handle, record_type_handle)
         # int8_t lookup_byte "lookup<mds::api::kind::BYTE,mds::core::kind_type<mds::api::kind::BYTE>,false,true>"(interned_string_handle, const h_mbyte_t&)
