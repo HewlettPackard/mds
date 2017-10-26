@@ -94,47 +94,47 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
 # START INJECTION | tmpl_api_namespaces_arrays(Arrays)
 
-        h_marray_bool_t lookup_bool_array "lookup<mds::api::kind::BOOL,false,false>"(const h_istring_t&, const h_marray_bool_t&) except+
+        h_marray_bool_t lookup_bool_array "lookup<mds::api::kind::BOOL,false,false>"(const h_istring_t&, const h_array_bool_t&) except+
         bool bind_bool_array "bind<mds::api::kind::ARRAY>"(h_istring_t, h_marray_bool_t)
 
-        h_marray_byte_t lookup_byte_array "lookup<mds::api::kind::BYTE,false,false>"(const h_istring_t&, const h_marray_byte_t&) except+
+        h_marray_byte_t lookup_byte_array "lookup<mds::api::kind::BYTE,false,false>"(const h_istring_t&, const h_array_byte_t&) except+
         bool bind_byte_array "bind<mds::api::kind::ARRAY>"(h_istring_t, h_marray_byte_t)
 
-        h_marray_ubyte_t lookup_ubyte_array "lookup<mds::api::kind::UBYTE,false,false>"(const h_istring_t&, const h_marray_ubyte_t&) except+
+        h_marray_ubyte_t lookup_ubyte_array "lookup<mds::api::kind::UBYTE,false,false>"(const h_istring_t&, const h_array_ubyte_t&) except+
         bool bind_ubyte_array "bind<mds::api::kind::ARRAY>"(h_istring_t, h_marray_ubyte_t)
 
-        h_marray_short_t lookup_short_array "lookup<mds::api::kind::SHORT,false,false>"(const h_istring_t&, const h_marray_short_t&) except+
+        h_marray_short_t lookup_short_array "lookup<mds::api::kind::SHORT,false,false>"(const h_istring_t&, const h_array_short_t&) except+
         bool bind_short_array "bind<mds::api::kind::ARRAY>"(h_istring_t, h_marray_short_t)
 
-        h_marray_ushort_t lookup_ushort_array "lookup<mds::api::kind::USHORT,false,false>"(const h_istring_t&, const h_marray_ushort_t&) except+
+        h_marray_ushort_t lookup_ushort_array "lookup<mds::api::kind::USHORT,false,false>"(const h_istring_t&, const h_array_ushort_t&) except+
         bool bind_ushort_array "bind<mds::api::kind::ARRAY>"(h_istring_t, h_marray_ushort_t)
 
-        h_marray_int_t lookup_int_array "lookup<mds::api::kind::INT,false,false>"(const h_istring_t&, const h_marray_int_t&) except+
+        h_marray_int_t lookup_int_array "lookup<mds::api::kind::INT,false,false>"(const h_istring_t&, const h_array_int_t&) except+
         bool bind_int_array "bind<mds::api::kind::ARRAY>"(h_istring_t, h_marray_int_t)
 
-        h_marray_uint_t lookup_uint_array "lookup<mds::api::kind::UINT,false,false>"(const h_istring_t&, const h_marray_uint_t&) except+
+        h_marray_uint_t lookup_uint_array "lookup<mds::api::kind::UINT,false,false>"(const h_istring_t&, const h_array_uint_t&) except+
         bool bind_uint_array "bind<mds::api::kind::ARRAY>"(h_istring_t, h_marray_uint_t)
 
-        h_marray_long_t lookup_long_array "lookup<mds::api::kind::LONG,false,false>"(const h_istring_t&, const h_marray_long_t&) except+
+        h_marray_long_t lookup_long_array "lookup<mds::api::kind::LONG,false,false>"(const h_istring_t&, const h_array_long_t&) except+
         bool bind_long_array "bind<mds::api::kind::ARRAY>"(h_istring_t, h_marray_long_t)
 
-        h_marray_ulong_t lookup_ulong_array "lookup<mds::api::kind::ULONG,false,false>"(const h_istring_t&, const h_marray_ulong_t&) except+
+        h_marray_ulong_t lookup_ulong_array "lookup<mds::api::kind::ULONG,false,false>"(const h_istring_t&, const h_array_ulong_t&) except+
         bool bind_ulong_array "bind<mds::api::kind::ARRAY>"(h_istring_t, h_marray_ulong_t)
 
-        h_marray_float_t lookup_float_array "lookup<mds::api::kind::FLOAT,false,false>"(const h_istring_t&, const h_marray_float_t&) except+
+        h_marray_float_t lookup_float_array "lookup<mds::api::kind::FLOAT,false,false>"(const h_istring_t&, const h_array_float_t&) except+
         bool bind_float_array "bind<mds::api::kind::ARRAY>"(h_istring_t, h_marray_float_t)
 
-        h_marray_double_t lookup_double_array "lookup<mds::api::kind::DOUBLE,false,false>"(const h_istring_t&, const h_marray_double_t&) except+
+        h_marray_double_t lookup_double_array "lookup<mds::api::kind::DOUBLE,false,false>"(const h_istring_t&, const h_array_double_t&) except+
         bool bind_double_array "bind<mds::api::kind::ARRAY>"(h_istring_t, h_marray_double_t)
 
-        h_marray_string_t lookup_string_array "lookup<mds::api::kind::STRING,false,false>"(const h_istring_t&, const h_marray_string_t&) except+
+        h_marray_string_t lookup_string_array "lookup<mds::api::kind::STRING,false,false>"(const h_istring_t&, const h_array_string_t&) except+
         bool bind_string_array "bind<mds::api::kind::ARRAY>"(h_istring_t, h_marray_string_t)
 
-        h_marray_record_t lookup_record_array "lookup<mds::api::kind::RECORD,false,false>"(const h_istring_t&, const h_marray_record_t&) except+
+        h_marray_record_t lookup_record_array "lookup<mds::api::kind::RECORD,false,false>"(const h_istring_t&, const h_array_record_t&) except+
         bool bind_record_array "bind<mds::api::kind::ARRAY>"(h_istring_t, h_marray_record_t)
 # END INJECTION
 
-        h_marray_string_t lookup_string_array "lookup<mds::api::kind::STRING,false,true>"(const h_istring_t&, const h_array_string_t&) except+
-        h_marray_record_t lookup_record_array "lookup<mds::api::kind::RECORD,false,true>"(const h_istring_t&, const h_array_record_t&) except+
+        # h_marray_string_t lookup_string_array "lookup<mds::api::kind::STRING,false,true>"(const h_istring_t&, const h_array_string_t&) except+
+        # h_marray_record_t lookup_record_array "lookup<mds::api::kind::RECORD,false,true>"(const h_istring_t&, const h_array_record_t&) except+
 
 ctypedef namespace_handle h_namespace_t

@@ -451,7 +451,7 @@ cdef class BoolArray(MDSArrayBase):
             h_marray_bool_t handle
 
         try:
-            handle = nhandle.lookup_bool_array(ish, h_marray_bool_t())
+            handle = nhandle.lookup_bool_array(ish, h_array_bool_t())
             retval = BoolArray()
             retval._handle = handle
             return retval
@@ -489,7 +489,7 @@ cdef class ByteArray(MDSIntArrayBase):
             h_marray_byte_t handle
 
         try:
-            handle = nhandle.lookup_byte_array(ish, h_marray_byte_t())
+            handle = nhandle.lookup_byte_array(ish, h_array_byte_t())
             retval = ByteArray()
             retval._handle = handle
             return retval
@@ -563,7 +563,7 @@ cdef class UByteArray(MDSIntArrayBase):
             h_marray_ubyte_t handle
 
         try:
-            handle = nhandle.lookup_ubyte_array(ish, h_marray_ubyte_t())
+            handle = nhandle.lookup_ubyte_array(ish, h_array_ubyte_t())
             retval = UByteArray()
             retval._handle = handle
             return retval
@@ -637,7 +637,7 @@ cdef class ShortArray(MDSIntArrayBase):
             h_marray_short_t handle
 
         try:
-            handle = nhandle.lookup_short_array(ish, h_marray_short_t())
+            handle = nhandle.lookup_short_array(ish, h_array_short_t())
             retval = ShortArray()
             retval._handle = handle
             return retval
@@ -711,7 +711,7 @@ cdef class UShortArray(MDSIntArrayBase):
             h_marray_ushort_t handle
 
         try:
-            handle = nhandle.lookup_ushort_array(ish, h_marray_ushort_t())
+            handle = nhandle.lookup_ushort_array(ish, h_array_ushort_t())
             retval = UShortArray()
             retval._handle = handle
             return retval
@@ -785,7 +785,7 @@ cdef class IntArray(MDSIntArrayBase):
             h_marray_int_t handle
 
         try:
-            handle = nhandle.lookup_int_array(ish, h_marray_int_t())
+            handle = nhandle.lookup_int_array(ish, h_array_int_t())
             retval = IntArray()
             retval._handle = handle
             return retval
@@ -859,7 +859,7 @@ cdef class UIntArray(MDSIntArrayBase):
             h_marray_uint_t handle
 
         try:
-            handle = nhandle.lookup_uint_array(ish, h_marray_uint_t())
+            handle = nhandle.lookup_uint_array(ish, h_array_uint_t())
             retval = UIntArray()
             retval._handle = handle
             return retval
@@ -933,7 +933,7 @@ cdef class LongArray(MDSIntArrayBase):
             h_marray_long_t handle
 
         try:
-            handle = nhandle.lookup_long_array(ish, h_marray_long_t())
+            handle = nhandle.lookup_long_array(ish, h_array_long_t())
             retval = LongArray()
             retval._handle = handle
             return retval
@@ -1007,7 +1007,7 @@ cdef class ULongArray(MDSIntArrayBase):
             h_marray_ulong_t handle
 
         try:
-            handle = nhandle.lookup_ulong_array(ish, h_marray_ulong_t())
+            handle = nhandle.lookup_ulong_array(ish, h_array_ulong_t())
             retval = ULongArray()
             retval._handle = handle
             return retval
@@ -1081,7 +1081,7 @@ cdef class FloatArray(MDSFloatArrayBase):
             h_marray_float_t handle
 
         try:
-            handle = nhandle.lookup_float_array(ish, h_marray_float_t())
+            handle = nhandle.lookup_float_array(ish, h_array_float_t())
             retval = FloatArray()
             retval._handle = handle
             return retval
@@ -1155,7 +1155,7 @@ cdef class DoubleArray(MDSFloatArrayBase):
             h_marray_double_t handle
 
         try:
-            handle = nhandle.lookup_double_array(ish, h_marray_double_t())
+            handle = nhandle.lookup_double_array(ish, h_array_double_t())
             retval = DoubleArray()
             retval._handle = handle
             return retval
@@ -2330,7 +2330,8 @@ cdef class MDSConstBoolArrayRecordFieldReference(MDSConstRecordFieldReferenceBas
 
     def read(self):
         cdef:
-            h_marray_bool_t handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            h_marray_bool_t handle = downcast_marray_bool(mbah)
             BoolArray retval = BoolArray()
 
         retval._handle = handle
@@ -2338,7 +2339,8 @@ cdef class MDSConstBoolArrayRecordFieldReference(MDSConstRecordFieldReferenceBas
 
     def peek(self):
         cdef:
-            h_marray_bool_t handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            h_marray_bool_t handle = downcast_marray_bool(mbah)
             BoolArray retval = BoolArray()
 
         retval._handle = handle
@@ -2364,7 +2366,8 @@ cdef class MDSConstByteArrayRecordFieldReference(MDSConstRecordFieldReferenceBas
 
     def read(self):
         cdef:
-            h_marray_byte_t handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            h_marray_byte_t handle = downcast_marray_byte(mbah)
             ByteArray retval = ByteArray()
 
         retval._handle = handle
@@ -2372,7 +2375,8 @@ cdef class MDSConstByteArrayRecordFieldReference(MDSConstRecordFieldReferenceBas
 
     def peek(self):
         cdef:
-            h_marray_byte_t handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            h_marray_byte_t handle = downcast_marray_byte(mbah)
             ByteArray retval = ByteArray()
 
         retval._handle = handle
@@ -2398,7 +2402,8 @@ cdef class MDSConstUByteArrayRecordFieldReference(MDSConstRecordFieldReferenceBa
 
     def read(self):
         cdef:
-            h_marray_ubyte_t handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            h_marray_ubyte_t handle = downcast_marray_ubyte(mbah)
             UByteArray retval = UByteArray()
 
         retval._handle = handle
@@ -2406,7 +2411,8 @@ cdef class MDSConstUByteArrayRecordFieldReference(MDSConstRecordFieldReferenceBa
 
     def peek(self):
         cdef:
-            h_marray_ubyte_t handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            h_marray_ubyte_t handle = downcast_marray_ubyte(mbah)
             UByteArray retval = UByteArray()
 
         retval._handle = handle
@@ -2432,7 +2438,8 @@ cdef class MDSConstShortArrayRecordFieldReference(MDSConstRecordFieldReferenceBa
 
     def read(self):
         cdef:
-            h_marray_short_t handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            h_marray_short_t handle = downcast_marray_short(mbah)
             ShortArray retval = ShortArray()
 
         retval._handle = handle
@@ -2440,7 +2447,8 @@ cdef class MDSConstShortArrayRecordFieldReference(MDSConstRecordFieldReferenceBa
 
     def peek(self):
         cdef:
-            h_marray_short_t handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            h_marray_short_t handle = downcast_marray_short(mbah)
             ShortArray retval = ShortArray()
 
         retval._handle = handle
@@ -2466,7 +2474,8 @@ cdef class MDSConstUShortArrayRecordFieldReference(MDSConstRecordFieldReferenceB
 
     def read(self):
         cdef:
-            h_marray_ushort_t handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            h_marray_ushort_t handle = downcast_marray_ushort(mbah)
             UShortArray retval = UShortArray()
 
         retval._handle = handle
@@ -2474,7 +2483,8 @@ cdef class MDSConstUShortArrayRecordFieldReference(MDSConstRecordFieldReferenceB
 
     def peek(self):
         cdef:
-            h_marray_ushort_t handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            h_marray_ushort_t handle = downcast_marray_ushort(mbah)
             UShortArray retval = UShortArray()
 
         retval._handle = handle
@@ -2500,7 +2510,8 @@ cdef class MDSConstIntArrayRecordFieldReference(MDSConstRecordFieldReferenceBase
 
     def read(self):
         cdef:
-            h_marray_int_t handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            h_marray_int_t handle = downcast_marray_int(mbah)
             IntArray retval = IntArray()
 
         retval._handle = handle
@@ -2508,7 +2519,8 @@ cdef class MDSConstIntArrayRecordFieldReference(MDSConstRecordFieldReferenceBase
 
     def peek(self):
         cdef:
-            h_marray_int_t handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            h_marray_int_t handle = downcast_marray_int(mbah)
             IntArray retval = IntArray()
 
         retval._handle = handle
@@ -2534,7 +2546,8 @@ cdef class MDSConstUIntArrayRecordFieldReference(MDSConstRecordFieldReferenceBas
 
     def read(self):
         cdef:
-            h_marray_uint_t handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            h_marray_uint_t handle = downcast_marray_uint(mbah)
             UIntArray retval = UIntArray()
 
         retval._handle = handle
@@ -2542,7 +2555,8 @@ cdef class MDSConstUIntArrayRecordFieldReference(MDSConstRecordFieldReferenceBas
 
     def peek(self):
         cdef:
-            h_marray_uint_t handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            h_marray_uint_t handle = downcast_marray_uint(mbah)
             UIntArray retval = UIntArray()
 
         retval._handle = handle
@@ -2568,7 +2582,8 @@ cdef class MDSConstLongArrayRecordFieldReference(MDSConstRecordFieldReferenceBas
 
     def read(self):
         cdef:
-            h_marray_long_t handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            h_marray_long_t handle = downcast_marray_long(mbah)
             LongArray retval = LongArray()
 
         retval._handle = handle
@@ -2576,7 +2591,8 @@ cdef class MDSConstLongArrayRecordFieldReference(MDSConstRecordFieldReferenceBas
 
     def peek(self):
         cdef:
-            h_marray_long_t handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            h_marray_long_t handle = downcast_marray_long(mbah)
             LongArray retval = LongArray()
 
         retval._handle = handle
@@ -2602,7 +2618,8 @@ cdef class MDSConstULongArrayRecordFieldReference(MDSConstRecordFieldReferenceBa
 
     def read(self):
         cdef:
-            h_marray_ulong_t handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            h_marray_ulong_t handle = downcast_marray_ulong(mbah)
             ULongArray retval = ULongArray()
 
         retval._handle = handle
@@ -2610,7 +2627,8 @@ cdef class MDSConstULongArrayRecordFieldReference(MDSConstRecordFieldReferenceBa
 
     def peek(self):
         cdef:
-            h_marray_ulong_t handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            h_marray_ulong_t handle = downcast_marray_ulong(mbah)
             ULongArray retval = ULongArray()
 
         retval._handle = handle
@@ -2636,7 +2654,8 @@ cdef class MDSConstFloatArrayRecordFieldReference(MDSConstRecordFieldReferenceBa
 
     def read(self):
         cdef:
-            h_marray_float_t handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            h_marray_float_t handle = downcast_marray_float(mbah)
             FloatArray retval = FloatArray()
 
         retval._handle = handle
@@ -2644,7 +2663,8 @@ cdef class MDSConstFloatArrayRecordFieldReference(MDSConstRecordFieldReferenceBa
 
     def peek(self):
         cdef:
-            h_marray_float_t handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            h_marray_float_t handle = downcast_marray_float(mbah)
             FloatArray retval = FloatArray()
 
         retval._handle = handle
@@ -2670,7 +2690,8 @@ cdef class MDSConstDoubleArrayRecordFieldReference(MDSConstRecordFieldReferenceB
 
     def read(self):
         cdef:
-            h_marray_double_t handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            h_marray_double_t handle = downcast_marray_double(mbah)
             DoubleArray retval = DoubleArray()
 
         retval._handle = handle
@@ -2678,7 +2699,8 @@ cdef class MDSConstDoubleArrayRecordFieldReference(MDSConstRecordFieldReferenceB
 
     def peek(self):
         cdef:
-            h_marray_double_t handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            h_marray_double_t handle = downcast_marray_double(mbah)
             DoubleArray retval = DoubleArray()
 
         retval._handle = handle
@@ -2704,7 +2726,8 @@ cdef class MDSConstStringArrayRecordFieldReference(MDSConstRecordFieldReferenceB
 
     def read(self):
         cdef:
-            h_marray_string_t handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            h_marray_string_t handle = downcast_marray_string(mbah)
             StringArray retval = StringArray()
 
         retval._handle = handle
@@ -2712,7 +2735,8 @@ cdef class MDSConstStringArrayRecordFieldReference(MDSConstRecordFieldReferenceB
 
     def peek(self):
         cdef:
-            h_marray_string_t handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            h_marray_string_t handle = downcast_marray_string(mbah)
             StringArray retval = StringArray()
 
         retval._handle = handle
@@ -2738,7 +2762,8 @@ cdef class MDSConstRecordArrayRecordFieldReference(MDSConstRecordFieldReferenceB
 
     def read(self):
         cdef:
-            h_marray_record_t handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            h_marray_record_t handle = downcast_marray_record(mbah)
             RecordArray retval = RecordArray()
 
         retval._handle = handle
@@ -2746,7 +2771,8 @@ cdef class MDSConstRecordArrayRecordFieldReference(MDSConstRecordFieldReferenceB
 
     def peek(self):
         cdef:
-            h_marray_record_t handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            h_marray_record_t handle = downcast_marray_record(mbah)
             RecordArray retval = RecordArray()
 
         retval._handle = handle
@@ -4498,7 +4524,7 @@ cdef class MDSTypedNameBinding(MDSNameBindingBase):
         pass
 
     def check(self):
-        self.get() is not None
+        return self.get() is not None
 
 
 cdef class MDSStringNameBinding(MDSTypedNameBinding):
@@ -4735,12 +4761,11 @@ cdef class MDSDoubleNameBinding(MDSTypedNameBinding):
 # START INJECTION | tmpl_namespace_typed_array_bindings(Arrays)
 
 cdef class MDSBoolArrayNameBinding(MDSTypedNameBinding):
-    cdef h_marray_bool_t _type
 
     def get(self) -> Optional[BoolArray]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            h_marray_bool_t thandle = self._type
+            h_array_bool_t thandle
             h_marray_bool_t retrieved
             BoolArray retval = BoolArray()
             namespace_handle h = self._namespace._handle
@@ -4759,12 +4784,11 @@ cdef class MDSBoolArrayNameBinding(MDSTypedNameBinding):
         h.bind_bool_array(nhandle, val._handle)
 
 cdef class MDSByteArrayNameBinding(MDSTypedNameBinding):
-    cdef h_marray_byte_t _type
 
     def get(self) -> Optional[ByteArray]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            h_marray_byte_t thandle = self._type
+            h_array_byte_t thandle
             h_marray_byte_t retrieved
             ByteArray retval = ByteArray()
             namespace_handle h = self._namespace._handle
@@ -4783,12 +4807,11 @@ cdef class MDSByteArrayNameBinding(MDSTypedNameBinding):
         h.bind_byte_array(nhandle, val._handle)
 
 cdef class MDSUByteArrayNameBinding(MDSTypedNameBinding):
-    cdef h_marray_ubyte_t _type
 
     def get(self) -> Optional[UByteArray]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            h_marray_ubyte_t thandle = self._type
+            h_array_ubyte_t thandle
             h_marray_ubyte_t retrieved
             UByteArray retval = UByteArray()
             namespace_handle h = self._namespace._handle
@@ -4807,12 +4830,11 @@ cdef class MDSUByteArrayNameBinding(MDSTypedNameBinding):
         h.bind_ubyte_array(nhandle, val._handle)
 
 cdef class MDSShortArrayNameBinding(MDSTypedNameBinding):
-    cdef h_marray_short_t _type
 
     def get(self) -> Optional[ShortArray]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            h_marray_short_t thandle = self._type
+            h_array_short_t thandle
             h_marray_short_t retrieved
             ShortArray retval = ShortArray()
             namespace_handle h = self._namespace._handle
@@ -4831,12 +4853,11 @@ cdef class MDSShortArrayNameBinding(MDSTypedNameBinding):
         h.bind_short_array(nhandle, val._handle)
 
 cdef class MDSUShortArrayNameBinding(MDSTypedNameBinding):
-    cdef h_marray_ushort_t _type
 
     def get(self) -> Optional[UShortArray]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            h_marray_ushort_t thandle = self._type
+            h_array_ushort_t thandle
             h_marray_ushort_t retrieved
             UShortArray retval = UShortArray()
             namespace_handle h = self._namespace._handle
@@ -4855,12 +4876,11 @@ cdef class MDSUShortArrayNameBinding(MDSTypedNameBinding):
         h.bind_ushort_array(nhandle, val._handle)
 
 cdef class MDSIntArrayNameBinding(MDSTypedNameBinding):
-    cdef h_marray_int_t _type
 
     def get(self) -> Optional[IntArray]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            h_marray_int_t thandle = self._type
+            h_array_int_t thandle
             h_marray_int_t retrieved
             IntArray retval = IntArray()
             namespace_handle h = self._namespace._handle
@@ -4879,12 +4899,11 @@ cdef class MDSIntArrayNameBinding(MDSTypedNameBinding):
         h.bind_int_array(nhandle, val._handle)
 
 cdef class MDSUIntArrayNameBinding(MDSTypedNameBinding):
-    cdef h_marray_uint_t _type
 
     def get(self) -> Optional[UIntArray]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            h_marray_uint_t thandle = self._type
+            h_array_uint_t thandle
             h_marray_uint_t retrieved
             UIntArray retval = UIntArray()
             namespace_handle h = self._namespace._handle
@@ -4903,12 +4922,11 @@ cdef class MDSUIntArrayNameBinding(MDSTypedNameBinding):
         h.bind_uint_array(nhandle, val._handle)
 
 cdef class MDSLongArrayNameBinding(MDSTypedNameBinding):
-    cdef h_marray_long_t _type
 
     def get(self) -> Optional[LongArray]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            h_marray_long_t thandle = self._type
+            h_array_long_t thandle
             h_marray_long_t retrieved
             LongArray retval = LongArray()
             namespace_handle h = self._namespace._handle
@@ -4927,12 +4945,11 @@ cdef class MDSLongArrayNameBinding(MDSTypedNameBinding):
         h.bind_long_array(nhandle, val._handle)
 
 cdef class MDSULongArrayNameBinding(MDSTypedNameBinding):
-    cdef h_marray_ulong_t _type
 
     def get(self) -> Optional[ULongArray]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            h_marray_ulong_t thandle = self._type
+            h_array_ulong_t thandle
             h_marray_ulong_t retrieved
             ULongArray retval = ULongArray()
             namespace_handle h = self._namespace._handle
@@ -4951,12 +4968,11 @@ cdef class MDSULongArrayNameBinding(MDSTypedNameBinding):
         h.bind_ulong_array(nhandle, val._handle)
 
 cdef class MDSFloatArrayNameBinding(MDSTypedNameBinding):
-    cdef h_marray_float_t _type
 
     def get(self) -> Optional[FloatArray]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            h_marray_float_t thandle = self._type
+            h_array_float_t thandle
             h_marray_float_t retrieved
             FloatArray retval = FloatArray()
             namespace_handle h = self._namespace._handle
@@ -4975,12 +4991,11 @@ cdef class MDSFloatArrayNameBinding(MDSTypedNameBinding):
         h.bind_float_array(nhandle, val._handle)
 
 cdef class MDSDoubleArrayNameBinding(MDSTypedNameBinding):
-    cdef h_marray_double_t _type
 
     def get(self) -> Optional[DoubleArray]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            h_marray_double_t thandle = self._type
+            h_array_double_t thandle
             h_marray_double_t retrieved
             DoubleArray retval = DoubleArray()
             namespace_handle h = self._namespace._handle
@@ -4999,12 +5014,11 @@ cdef class MDSDoubleArrayNameBinding(MDSTypedNameBinding):
         h.bind_double_array(nhandle, val._handle)
 
 cdef class MDSStringArrayNameBinding(MDSTypedNameBinding):
-    cdef h_marray_string_t _type
 
     def get(self) -> Optional[StringArray]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            h_marray_string_t thandle = self._type
+            h_array_string_t thandle
             h_marray_string_t retrieved
             StringArray retval = StringArray()
             namespace_handle h = self._namespace._handle
@@ -5023,12 +5037,11 @@ cdef class MDSStringArrayNameBinding(MDSTypedNameBinding):
         h.bind_string_array(nhandle, val._handle)
 
 cdef class MDSRecordArrayNameBinding(MDSTypedNameBinding):
-    cdef h_marray_record_t _type
 
     def get(self) -> Optional[RecordArray]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            h_marray_record_t thandle = self._type
+            h_array_record_t thandle
             h_marray_record_t retrieved
             RecordArray retval = RecordArray()
             namespace_handle h = self._namespace._handle

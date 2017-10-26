@@ -615,8 +615,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_rfield_array_bool_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
         h_rfield_array_bool_t()
         h_rfield_array_bool_t(h_rfield_array_bool_t&)
-        h_marray_bool_t free_read(const managed_record_handle&)
-        h_marray_bool_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_bool_t&)
@@ -631,8 +631,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_const_rfield_array_bool_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
         h_const_rfield_array_bool_t()
         h_const_rfield_array_bool_t(h_const_rfield_array_bool_t&)
-        h_marray_bool_t free_read(const managed_record_handle&)
-        h_marray_bool_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_bool_t&)
@@ -647,8 +647,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_rfield_array_byte_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
         h_rfield_array_byte_t()
         h_rfield_array_byte_t(h_rfield_array_byte_t&)
-        h_marray_byte_t free_read(const managed_record_handle&)
-        h_marray_byte_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_byte_t&)
@@ -663,8 +663,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_const_rfield_array_byte_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
         h_const_rfield_array_byte_t()
         h_const_rfield_array_byte_t(h_const_rfield_array_byte_t&)
-        h_marray_byte_t free_read(const managed_record_handle&)
-        h_marray_byte_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_byte_t&)
@@ -679,8 +679,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_rfield_array_ubyte_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
         h_rfield_array_ubyte_t()
         h_rfield_array_ubyte_t(h_rfield_array_ubyte_t&)
-        h_marray_ubyte_t free_read(const managed_record_handle&)
-        h_marray_ubyte_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_ubyte_t&)
@@ -695,8 +695,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_const_rfield_array_ubyte_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
         h_const_rfield_array_ubyte_t()
         h_const_rfield_array_ubyte_t(h_const_rfield_array_ubyte_t&)
-        h_marray_ubyte_t free_read(const managed_record_handle&)
-        h_marray_ubyte_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_ubyte_t&)
@@ -711,8 +711,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_rfield_array_short_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
         h_rfield_array_short_t()
         h_rfield_array_short_t(h_rfield_array_short_t&)
-        h_marray_short_t free_read(const managed_record_handle&)
-        h_marray_short_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_short_t&)
@@ -727,8 +727,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_const_rfield_array_short_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
         h_const_rfield_array_short_t()
         h_const_rfield_array_short_t(h_const_rfield_array_short_t&)
-        h_marray_short_t free_read(const managed_record_handle&)
-        h_marray_short_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_short_t&)
@@ -743,8 +743,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_rfield_array_ushort_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
         h_rfield_array_ushort_t()
         h_rfield_array_ushort_t(h_rfield_array_ushort_t&)
-        h_marray_ushort_t free_read(const managed_record_handle&)
-        h_marray_ushort_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_ushort_t&)
@@ -759,8 +759,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_const_rfield_array_ushort_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
         h_const_rfield_array_ushort_t()
         h_const_rfield_array_ushort_t(h_const_rfield_array_ushort_t&)
-        h_marray_ushort_t free_read(const managed_record_handle&)
-        h_marray_ushort_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_ushort_t&)
@@ -775,8 +775,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_rfield_array_int_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
         h_rfield_array_int_t()
         h_rfield_array_int_t(h_rfield_array_int_t&)
-        h_marray_int_t free_read(const managed_record_handle&)
-        h_marray_int_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_int_t&)
@@ -791,8 +791,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_const_rfield_array_int_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
         h_const_rfield_array_int_t()
         h_const_rfield_array_int_t(h_const_rfield_array_int_t&)
-        h_marray_int_t free_read(const managed_record_handle&)
-        h_marray_int_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_int_t&)
@@ -807,8 +807,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_rfield_array_uint_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
         h_rfield_array_uint_t()
         h_rfield_array_uint_t(h_rfield_array_uint_t&)
-        h_marray_uint_t free_read(const managed_record_handle&)
-        h_marray_uint_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_uint_t&)
@@ -823,8 +823,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_const_rfield_array_uint_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
         h_const_rfield_array_uint_t()
         h_const_rfield_array_uint_t(h_const_rfield_array_uint_t&)
-        h_marray_uint_t free_read(const managed_record_handle&)
-        h_marray_uint_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_uint_t&)
@@ -839,8 +839,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_rfield_array_long_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
         h_rfield_array_long_t()
         h_rfield_array_long_t(h_rfield_array_long_t&)
-        h_marray_long_t free_read(const managed_record_handle&)
-        h_marray_long_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_long_t&)
@@ -855,8 +855,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_const_rfield_array_long_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
         h_const_rfield_array_long_t()
         h_const_rfield_array_long_t(h_const_rfield_array_long_t&)
-        h_marray_long_t free_read(const managed_record_handle&)
-        h_marray_long_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_long_t&)
@@ -871,8 +871,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_rfield_array_ulong_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
         h_rfield_array_ulong_t()
         h_rfield_array_ulong_t(h_rfield_array_ulong_t&)
-        h_marray_ulong_t free_read(const managed_record_handle&)
-        h_marray_ulong_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_ulong_t&)
@@ -887,8 +887,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_const_rfield_array_ulong_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
         h_const_rfield_array_ulong_t()
         h_const_rfield_array_ulong_t(h_const_rfield_array_ulong_t&)
-        h_marray_ulong_t free_read(const managed_record_handle&)
-        h_marray_ulong_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_ulong_t&)
@@ -903,8 +903,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_rfield_array_float_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
         h_rfield_array_float_t()
         h_rfield_array_float_t(h_rfield_array_float_t&)
-        h_marray_float_t free_read(const managed_record_handle&)
-        h_marray_float_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_float_t&)
@@ -919,8 +919,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_const_rfield_array_float_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
         h_const_rfield_array_float_t()
         h_const_rfield_array_float_t(h_const_rfield_array_float_t&)
-        h_marray_float_t free_read(const managed_record_handle&)
-        h_marray_float_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_float_t&)
@@ -935,8 +935,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_rfield_array_double_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
         h_rfield_array_double_t()
         h_rfield_array_double_t(h_rfield_array_double_t&)
-        h_marray_double_t free_read(const managed_record_handle&)
-        h_marray_double_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_double_t&)
@@ -951,8 +951,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_const_rfield_array_double_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
         h_const_rfield_array_double_t()
         h_const_rfield_array_double_t(h_const_rfield_array_double_t&)
-        h_marray_double_t free_read(const managed_record_handle&)
-        h_marray_double_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_double_t&)
@@ -967,8 +967,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_rfield_array_string_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
         h_rfield_array_string_t()
         h_rfield_array_string_t(h_rfield_array_string_t&)
-        h_marray_string_t free_read(const managed_record_handle&)
-        h_marray_string_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_string_t&)
@@ -983,8 +983,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_const_rfield_array_string_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
         h_const_rfield_array_string_t()
         h_const_rfield_array_string_t(h_const_rfield_array_string_t&)
-        h_marray_string_t free_read(const managed_record_handle&)
-        h_marray_string_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_string_t&)
@@ -999,8 +999,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_rfield_array_record_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
         h_rfield_array_record_t()
         h_rfield_array_record_t(h_rfield_array_record_t&)
-        h_marray_record_t free_read(const managed_record_handle&)
-        h_marray_record_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_record_t&)
@@ -1015,8 +1015,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass h_const_rfield_array_record_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
         h_const_rfield_array_record_t()
         h_const_rfield_array_record_t(h_const_rfield_array_record_t&)
-        h_marray_record_t free_read(const managed_record_handle&)
-        h_marray_record_t frozen_read(const managed_record_handle&)
+        h_marray_base_t free_read(const managed_record_handle&)
+        h_marray_base_t frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const h_marray_record_t&)

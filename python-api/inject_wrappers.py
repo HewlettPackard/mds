@@ -60,7 +60,6 @@ def get_injection_payload(line: Text) -> Payload:
         targets=chain(*[x.items() for x in groups])
     )
 
-
 def find_and_inject(file_path: str, dry_run=True) -> None:
     with open(file_path, "r") as fp:
         lines = [l for l in fp]
@@ -218,7 +217,7 @@ def tmpl_api_namespaces_primitives(t: MDSPrimitiveTypeInfo) -> str:
 
 def tmpl_api_namespaces_arrays(t: MDSArrayTypeInfo) -> str:
     compiled = f"""
-        {t.managed_array} {t.f_lookup} "lookup<{t.elt.kind},false,false>"(const h_istring_t&, const {t.managed_array}&) except+
+        {t.managed_array} {t.f_lookup} "lookup<{t.elt.kind},false,false>"(const h_istring_t&, const {t.array}&) except+
         bool {t.f_bind} "bind<{t.kind}>"(h_istring_t, {t.managed_array})
 """
     return compiled
@@ -254,12 +253,11 @@ cdef class {t.title_name_binding}(MDSTypedNameBinding):
 def tmpl_namespace_typed_array_bindings(t: MDSArrayTypeInfo) -> str:
     compiled = f"""
 cdef class {t.title_name_binding}(MDSTypedNameBinding):
-    cdef {t.managed_array} _type
 
     def get(self) -> Optional[{t.title}]:
         cdef:
             interned_string_handle nhandle = self._name._ish
-            {t.managed_array} thandle = self._type
+            {t.array} thandle
             {t.managed_array} retrieved
             {t.title} retval = {t.title}()
             namespace_handle h = self._namespace._handle
@@ -286,6 +284,7 @@ cdef class {t.title_name_binding}(MDSTypedNameBinding):
 def tmpl_api_records(t: MDSTypeInfo) -> str:
     EXTRA = ""
     compiled = ""
+    read_val = "h_marray_base_t" if isinstance(t, MDSArrayTypeInfo) else t.c_type
 
     if t.is_arithmetic:
         EXTRA = f"""
@@ -301,8 +300,8 @@ def tmpl_api_records(t: MDSTypeInfo) -> str:
     cdef cppclass {wrapper_name} "mds::api::{prefix}record_field_handle<{t.kind}>":
         {wrapper_name}()
         {wrapper_name}({wrapper_name}&)
-        {t.c_type} free_read(const managed_record_handle&)
-        {t.c_type} frozen_read(const managed_record_handle&)
+        {read_val} free_read(const managed_record_handle&)
+        {read_val} frozen_read(const managed_record_handle&)
 
         bool has_value(const managed_record_handle&)
         bool write_initial(const managed_record_handle&,const {t.c_type}&)
@@ -402,7 +401,6 @@ cdef class {t.title_record_field_reference}({t.title_const_record_field_referenc
 
     return compiled
 
-
 def tmpl_record_field_reference_arrays(t: MDSArrayTypeInfo) -> str:
     compiled = f"""
 
@@ -418,7 +416,8 @@ cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBa
 
     def read(self):
         cdef:
-            {t.managed_array} handle = self._field_handle.frozen_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.frozen_read(self._record_handle)
+            {t.managed_array} handle = {t.f_downcast_marray}(mbah)
             {t.title} retval = {t.title}()
 
         retval._handle = handle
@@ -426,7 +425,8 @@ cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBa
 
     def peek(self):
         cdef:
-            {t.managed_array} handle = self._field_handle.free_read(self._record_handle)
+            h_marray_base_t mbah = self._field_handle.free_read(self._record_handle)
+            {t.managed_array} handle = {t.f_downcast_marray}(mbah)
             {t.title} retval = {t.title}()
 
         retval._handle = handle
@@ -581,7 +581,7 @@ cdef class {t.title_array}({t.ARRAY}):
             {t.managed_array} handle
 
         try:
-            handle = nhandle.{t.f_lookup_array}(ish, {t.managed_array}())
+            handle = nhandle.{t.f_lookup_array}(ish, {t.array}())
             retval = {t.title_array}()
             retval._handle = handle
             return retval
@@ -685,6 +685,10 @@ def tmpl_api_arrays(t: MDSTypeInfo) -> str:
     {t.managed_array} {t.f_create_array}(size_t)
     {t.const_managed_array} {t.f_create_const_array}(size_t)    
 """
+    return compiled
+
+def tmpl_array_downcast(t: MDSTypeInfo) -> str:
+    compiled = f"    {t.managed_array} {t.f_downcast_marray}(h_marray_base_t&)\n"
     return compiled
 
 # =========================================================================

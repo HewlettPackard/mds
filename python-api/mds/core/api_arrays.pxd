@@ -32,9 +32,9 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         h_array_type_base_t()
         bool is_same_as(const h_array_type_base_t&)
 
-    cdef cppclass h_marray_base_t "managed_array_base_handle":
+cdef extern from "helpers.h":  # This is managed_array_base_type, only works like this(?)
+    cdef cppclass h_marray_base_t:
         h_marray_base_t()
-        # TODO uniform_key uuid()
 
 cdef extern from "helpers.h" namespace "mds::python::types":
 # START INJECTION | tmpl_api_arrays(Primitives,Composites)
@@ -621,4 +621,20 @@ cdef extern from "helpers.h" namespace "mds::python::types":
 
     h_marray_record_t create_record_marray(size_t)
     h_const_marray_record_t create_const_record_marray(size_t)    
+# END INJECTION
+
+# START INJECTION | tmpl_array_downcast(Primitives,Composites)
+    h_marray_bool_t downcast_marray_bool(h_marray_base_t&)
+    h_marray_byte_t downcast_marray_byte(h_marray_base_t&)
+    h_marray_ubyte_t downcast_marray_ubyte(h_marray_base_t&)
+    h_marray_short_t downcast_marray_short(h_marray_base_t&)
+    h_marray_ushort_t downcast_marray_ushort(h_marray_base_t&)
+    h_marray_int_t downcast_marray_int(h_marray_base_t&)
+    h_marray_uint_t downcast_marray_uint(h_marray_base_t&)
+    h_marray_long_t downcast_marray_long(h_marray_base_t&)
+    h_marray_ulong_t downcast_marray_ulong(h_marray_base_t&)
+    h_marray_float_t downcast_marray_float(h_marray_base_t&)
+    h_marray_double_t downcast_marray_double(h_marray_base_t&)
+    h_marray_string_t downcast_marray_string(h_marray_base_t&)
+    h_marray_record_t downcast_marray_record(h_marray_base_t&)
 # END INJECTION

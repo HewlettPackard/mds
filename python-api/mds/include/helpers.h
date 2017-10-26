@@ -52,6 +52,7 @@
 using h_isoctxt_t = ::mds::api::iso_context_handle;
 using h_task_t = ::mds::api::task_handle;
 using h_namespace_t = ::mds::api::namespace_handle;
+using h_marray_base_t = ::mds::api::managed_array_base_handle;
 using ::mds::api::kind;
 
 namespace mds {
@@ -136,19 +137,25 @@ namespace mds {
     } // End mds::python::isoctxt
 
     namespace types {
+      #define _ARRAY_ALIAS_(name) h_marray_##name##_t
+      #define _CONST_ARRAY_ALIAS_(name) h_const_marray_##name##_t
       #define _TYPE_WRAPPER_(K, name) \
-      using h_marray_##name##_t = mds::api::managed_array_handle<K>; \
-      using h_const_marray_##name##_t = mds::api::const_managed_array_handle<K>; \
+      using _ARRAY_ALIAS_(name) = mds::api::managed_array_handle<K>; \
+      using _CONST_ARRAY_ALIAS_(name) = mds::api::const_managed_array_handle<K>; \
       using h_m##name##_t = mds::api::managed_type_handle_cp<K, true>; \
-      static inline h_marray_##name##_t create_##name##_marray(size_t n) { \
+      static inline _ARRAY_ALIAS_(name) create_##name##_marray(size_t n) { \
         tasks::initialize_base_task(); \
         static auto h = mds::api::managed_array_handle_by_kind<K>(); \
         return h.create_array(n); \
       } \
-      static inline h_const_marray_##name##_t create_const_##name##_marray(size_t n) { \
+      static inline _CONST_ARRAY_ALIAS_(name) create_const_##name##_marray(size_t n) { \
         tasks::initialize_base_task(); \
         static auto h = mds::api::managed_array_handle_by_kind<K>(); \
         return h.create_array(n); \
+      } \
+      static _ARRAY_ALIAS_(name) downcast_marray_##name (const h_marray_base_t &mabh) { \
+        _ARRAY_ALIAS_(name) mah = _ARRAY_ALIAS_(name)(mabh.pointer()->template downcast<K>(), mabh.view()); \
+        return mah; \
       }
 
       _TYPE_WRAPPER_(kind::BOOL, bool)

@@ -46,6 +46,8 @@ class MDSTypeInfo():
         self.const_record_field = f"h_const_rfield_{api}_t"
         self.const_array_record_field = f"h_const_rfield_array_{self.api}_t"
 
+        self.f_downcast_marray = f"downcast_marray_{api}"
+
         self.kind = "mds::api::kind::{}".format(api.upper())
         self.f_create_array = f"create_{api}_marray"
         self.f_create_const_array = f"create_const_{api}_marray"
