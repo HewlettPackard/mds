@@ -35,6 +35,7 @@ class MDSTypeInfo():
         self.managed_array = f"h_marray_{api}_t"
         self.f_managed_type_handle = f"managed_{api}_type_handle"
         self.record_field = f"h_rfield_{api}_t"
+        self.array_record_field = f"h_rfield_array_{self.api}_t"
 
         # MDS core aliases (masking const templated types)
         self.const_primitive = f"h_const_m{api}_t"
@@ -43,6 +44,7 @@ class MDSTypeInfo():
         self.const_managed_array = f"h_const_marray_{api}_t"
         self.f_const_managed_type_handle = f"const_managed_{api}_type_handle"
         self.const_record_field = f"h_const_rfield_{api}_t"
+        self.const_array_record_field = f"h_const_rfield_array_{self.api}_t"
 
         self.kind = "mds::api::kind::{}".format(api.upper())
         self.f_create_array = f"create_{api}_marray"
@@ -180,15 +182,15 @@ class MDSArrayTypeInfo(MDSCompositeTypeInfo):
 
     QUALIFIER = "arrays"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, primitive=None):
+        super().__init__(primitive.api)
         self.c_type = self.managed_array
-
-        # self.kind = "mds::api::kind::ARRAY"
-        # self.title = self._format_title(self.api.title() + "Array")
+        self.elt = primitive
+        self.kind = "mds::api::kind::ARRAY"
+        # self.title = self._format_title(self.api.title())
         # self.title_const = f"{_CONST}{self.title}"
         # self.title_name_binding = f"{_MDS}{self.title}NameBinding"
-        self.f_bind = f"bind_{self.api}_array"
+        self.f_bind = self.f_bind_array
 
         # self.title_record_field = f"{_MDS}{self.title}RecordField"
         # self.title_record_field_reference = f"{_MDS}{self.title}RecordFieldReference"
@@ -202,7 +204,8 @@ class MDSArrayTypeInfo(MDSCompositeTypeInfo):
         # self.managed_value = f"mv_{api}"
         # self.managed_array = f"h_marray_{api}_t"
         # self.f_managed_type_handle = f"managed_{api}_type_handle"
-        # self.record_field = f"h_rfield_{api}_t"
+        self.record_field = self.array_record_field
+        self.const_record_field = self.const_array_record_field
 
         # # MDS core aliases (masking const templated types)
         # self.const_primitive = f"h_const_m{api}_t"
@@ -219,6 +222,7 @@ class MDSArrayTypeInfo(MDSCompositeTypeInfo):
         # self.f_bind_array = f"bind_{api}_array"
         # self.f_lookup = f"lookup_{api}"
         # self.f_lookup_array = f"lookup_{api}_array"
+        self.f_lookup = self.f_lookup_array
         # self.f_to_core_val = f"{api}_to_core_val"
 
     def _format_title(self, title: Text) -> Text:
@@ -276,7 +280,7 @@ class _MDSArrayTypes(_MDSTypesBase):
         data = dict()
 
         for api, t_info in chain(_MDSPrimitiveTypes().items(), _MDSCompositeTypes().items()):
-            data[t_info.api] = MDSArrayTypeInfo(t_info.api)
+            data[t_info.api] = MDSArrayTypeInfo(primitive=t_info)
 
         super().__init__(data)
 

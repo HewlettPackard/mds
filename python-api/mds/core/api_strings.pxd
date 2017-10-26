@@ -54,6 +54,24 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool operator>(managed_string_handle other)
         bool operator>=(managed_string_handle other)
 
+    cdef cppclass const_managed_string_handle:
+        const_managed_string_handle()
+        const_managed_string_handle(interned_string_handle ish)
+
+        char_type at(size_t i)
+        string utf8()
+
+        size_t size()
+        size_t length()
+        uint64_t hash1()
+
+        bool operator==(const_managed_string_handle other)
+        bool operator!=(const_managed_string_handle other)
+        bool operator<(const_managed_string_handle other)
+        bool operator<=(const_managed_string_handle other)
+        bool operator>(const_managed_string_handle other)
+        bool operator>=(const_managed_string_handle other)
+
 cdef inline interned_string_handle convert_py_to_ish(value):
     cdef string msg
     
@@ -68,3 +86,6 @@ cdef inline interned_string_handle convert_py_to_ish(value):
 
     return intern(msg)
 
+ctypedef managed_string_handle h_mstring_t
+ctypedef const_managed_string_handle h_const_mstring_t
+ctypedef interned_string_handle h_istring_t

@@ -27,7 +27,7 @@ from libc.stdint cimport *
 from libcpp cimport bool
 
 from mds.core.api_records cimport *
-
+from mds.core.api_strings cimport h_istring_t, interned_string_handle
 
 cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     # TODO Not sure these guys are correct, or are the same as below...
@@ -44,10 +44,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 # START INJECTION | tmpl_api_primitives(Primitives)
 
     # BEGIN bool
-    # TODO: (field_in)
-    # Throws incompatible_type_ex if the field exists but is of the wrong type
-    # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-    # is true, and the record type is fully created.
+    # field_in:
+    #  * Throws incompatible_type_ex if the field exists but is of the wrong type
+    #  * Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+    #    is true, and the record type is fully created.
 
     cdef cppclass mv_bool "mds::api::api_type<mds::api::kind::BOOL>":
         mv_bool()
@@ -70,10 +70,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
 
     # BEGIN byte
-    # TODO: (field_in)
-    # Throws incompatible_type_ex if the field exists but is of the wrong type
-    # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-    # is true, and the record type is fully created.
+    # field_in:
+    #  * Throws incompatible_type_ex if the field exists but is of the wrong type
+    #  * Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+    #    is true, and the record type is fully created.
 
     cdef cppclass mv_byte "mds::api::api_type<mds::api::kind::BYTE>":
         mv_byte()
@@ -96,10 +96,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
 
     # BEGIN ubyte
-    # TODO: (field_in)
-    # Throws incompatible_type_ex if the field exists but is of the wrong type
-    # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-    # is true, and the record type is fully created.
+    # field_in:
+    #  * Throws incompatible_type_ex if the field exists but is of the wrong type
+    #  * Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+    #    is true, and the record type is fully created.
 
     cdef cppclass mv_ubyte "mds::api::api_type<mds::api::kind::UBYTE>":
         mv_ubyte()
@@ -122,10 +122,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
 
     # BEGIN short
-    # TODO: (field_in)
-    # Throws incompatible_type_ex if the field exists but is of the wrong type
-    # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-    # is true, and the record type is fully created.
+    # field_in:
+    #  * Throws incompatible_type_ex if the field exists but is of the wrong type
+    #  * Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+    #    is true, and the record type is fully created.
 
     cdef cppclass mv_short "mds::api::api_type<mds::api::kind::SHORT>":
         mv_short()
@@ -148,10 +148,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
 
     # BEGIN ushort
-    # TODO: (field_in)
-    # Throws incompatible_type_ex if the field exists but is of the wrong type
-    # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-    # is true, and the record type is fully created.
+    # field_in:
+    #  * Throws incompatible_type_ex if the field exists but is of the wrong type
+    #  * Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+    #    is true, and the record type is fully created.
 
     cdef cppclass mv_ushort "mds::api::api_type<mds::api::kind::USHORT>":
         mv_ushort()
@@ -174,10 +174,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
 
     # BEGIN int
-    # TODO: (field_in)
-    # Throws incompatible_type_ex if the field exists but is of the wrong type
-    # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-    # is true, and the record type is fully created.
+    # field_in:
+    #  * Throws incompatible_type_ex if the field exists but is of the wrong type
+    #  * Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+    #    is true, and the record type is fully created.
 
     cdef cppclass mv_int "mds::api::api_type<mds::api::kind::INT>":
         mv_int()
@@ -200,10 +200,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
 
     # BEGIN uint
-    # TODO: (field_in)
-    # Throws incompatible_type_ex if the field exists but is of the wrong type
-    # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-    # is true, and the record type is fully created.
+    # field_in:
+    #  * Throws incompatible_type_ex if the field exists but is of the wrong type
+    #  * Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+    #    is true, and the record type is fully created.
 
     cdef cppclass mv_uint "mds::api::api_type<mds::api::kind::UINT>":
         mv_uint()
@@ -226,10 +226,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
 
     # BEGIN long
-    # TODO: (field_in)
-    # Throws incompatible_type_ex if the field exists but is of the wrong type
-    # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-    # is true, and the record type is fully created.
+    # field_in:
+    #  * Throws incompatible_type_ex if the field exists but is of the wrong type
+    #  * Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+    #    is true, and the record type is fully created.
 
     cdef cppclass mv_long "mds::api::api_type<mds::api::kind::LONG>":
         mv_long()
@@ -252,10 +252,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
 
     # BEGIN ulong
-    # TODO: (field_in)
-    # Throws incompatible_type_ex if the field exists but is of the wrong type
-    # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-    # is true, and the record type is fully created.
+    # field_in:
+    #  * Throws incompatible_type_ex if the field exists but is of the wrong type
+    #  * Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+    #    is true, and the record type is fully created.
 
     cdef cppclass mv_ulong "mds::api::api_type<mds::api::kind::ULONG>":
         mv_ulong()
@@ -278,10 +278,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
 
     # BEGIN float
-    # TODO: (field_in)
-    # Throws incompatible_type_ex if the field exists but is of the wrong type
-    # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-    # is true, and the record type is fully created.
+    # field_in:
+    #  * Throws incompatible_type_ex if the field exists but is of the wrong type
+    #  * Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+    #    is true, and the record type is fully created.
 
     cdef cppclass mv_float "mds::api::api_type<mds::api::kind::FLOAT>":
         mv_float()
@@ -304,10 +304,10 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
 
 
     # BEGIN double
-    # TODO: (field_in)
-    # Throws incompatible_type_ex if the field exists but is of the wrong type
-    # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-    # is true, and the record type is fully created.
+    # field_in:
+    #  * Throws incompatible_type_ex if the field exists but is of the wrong type
+    #  * Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+    #    is true, and the record type is fully created.
 
     cdef cppclass mv_double "mds::api::api_type<mds::api::kind::DOUBLE>":
         mv_double()

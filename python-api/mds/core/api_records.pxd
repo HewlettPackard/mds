@@ -27,8 +27,7 @@ from libc.stdint cimport *
 from libcpp cimport bool
 
 from mds.core.api_arrays cimport *
-from mds.core.api_strings cimport interned_string_handle, managed_string_handle
-from mds.core.api_records cimport managed_record_handle
+from mds.core.api_strings cimport h_istring_t, h_mstring_t, managed_string_handle
 
 cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass managed_record_handle:
@@ -50,7 +49,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         record_type_handle(const_managed_record_handle&)
 
         managed_record_handle create_record()
-        interned_string_handle name()
+        h_istring_t name()
 
         bool is_created()
         bool is_null()
@@ -61,11 +60,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle super_type()
         const_record_type_handle ensure_created()
         @staticmethod
-        const_record_type_handle find(const interned_string_handle&)
+        const_record_type_handle find(const h_istring_t&)
         @staticmethod
-        record_type_handle declare(const interned_string_handle&)
+        record_type_handle declare(const h_istring_t&)
         @staticmethod
-        record_type_handle declare(const interned_string_handle&, const_record_type_handle&)
+        record_type_handle declare(const h_istring_t&, const_record_type_handle&)
 
         uint64_t hash1()
 
@@ -76,7 +75,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle(const_managed_record_handle&)
 
         managed_record_handle create_record()
-        interned_string_handle name()
+        h_istring_t name()
 
         bool is_created()
         bool is_null()
@@ -87,11 +86,11 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         const_record_type_handle super_type()
         const_record_type_handle ensure_created()
         @staticmethod
-        const_record_type_handle find(const interned_string_handle&)
+        const_record_type_handle find(const h_istring_t&)
         @staticmethod
-        record_type_handle declare(const interned_string_handle&)
+        record_type_handle declare(const h_istring_t&)
         @staticmethod
-        record_type_handle declare(const interned_string_handle&, const_record_type_handle&)
+        record_type_handle declare(const h_istring_t&, const_record_type_handle&)
 
         uint64_t hash1()
 
@@ -108,7 +107,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         bool write(const managed_record_handle&, const bool&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
@@ -124,7 +123,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         bool write(const managed_record_handle&, const bool&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
@@ -140,7 +139,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         int8_t write(const managed_record_handle&, const int8_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         int8_t add(const managed_record_handle&, int8_t)
         int8_t sub(const managed_record_handle&, int8_t)
@@ -161,7 +160,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         int8_t write(const managed_record_handle&, const int8_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         int8_t add(const managed_record_handle&, int8_t)
         int8_t sub(const managed_record_handle&, int8_t)
@@ -182,7 +181,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         uint8_t write(const managed_record_handle&, const uint8_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         uint8_t add(const managed_record_handle&, uint8_t)
         uint8_t sub(const managed_record_handle&, uint8_t)
@@ -203,7 +202,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         uint8_t write(const managed_record_handle&, const uint8_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         uint8_t add(const managed_record_handle&, uint8_t)
         uint8_t sub(const managed_record_handle&, uint8_t)
@@ -224,7 +223,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         int16_t write(const managed_record_handle&, const int16_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         int16_t add(const managed_record_handle&, int16_t)
         int16_t sub(const managed_record_handle&, int16_t)
@@ -245,7 +244,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         int16_t write(const managed_record_handle&, const int16_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         int16_t add(const managed_record_handle&, int16_t)
         int16_t sub(const managed_record_handle&, int16_t)
@@ -266,7 +265,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         uint16_t write(const managed_record_handle&, const uint16_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         uint16_t add(const managed_record_handle&, uint16_t)
         uint16_t sub(const managed_record_handle&, uint16_t)
@@ -287,7 +286,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         uint16_t write(const managed_record_handle&, const uint16_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         uint16_t add(const managed_record_handle&, uint16_t)
         uint16_t sub(const managed_record_handle&, uint16_t)
@@ -308,7 +307,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         int32_t write(const managed_record_handle&, const int32_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         int32_t add(const managed_record_handle&, int32_t)
         int32_t sub(const managed_record_handle&, int32_t)
@@ -329,7 +328,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         int32_t write(const managed_record_handle&, const int32_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         int32_t add(const managed_record_handle&, int32_t)
         int32_t sub(const managed_record_handle&, int32_t)
@@ -350,7 +349,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         uint32_t write(const managed_record_handle&, const uint32_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         uint32_t add(const managed_record_handle&, uint32_t)
         uint32_t sub(const managed_record_handle&, uint32_t)
@@ -371,7 +370,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         uint32_t write(const managed_record_handle&, const uint32_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         uint32_t add(const managed_record_handle&, uint32_t)
         uint32_t sub(const managed_record_handle&, uint32_t)
@@ -392,7 +391,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         int64_t write(const managed_record_handle&, const int64_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         int64_t add(const managed_record_handle&, int64_t)
         int64_t sub(const managed_record_handle&, int64_t)
@@ -413,7 +412,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         int64_t write(const managed_record_handle&, const int64_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         int64_t add(const managed_record_handle&, int64_t)
         int64_t sub(const managed_record_handle&, int64_t)
@@ -434,7 +433,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         uint64_t write(const managed_record_handle&, const uint64_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         uint64_t add(const managed_record_handle&, uint64_t)
         uint64_t sub(const managed_record_handle&, uint64_t)
@@ -455,7 +454,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         uint64_t write(const managed_record_handle&, const uint64_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         uint64_t add(const managed_record_handle&, uint64_t)
         uint64_t sub(const managed_record_handle&, uint64_t)
@@ -476,7 +475,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         float write(const managed_record_handle&, const float&)
-        interned_string_handle name()
+        h_istring_t name()
         
         float add(const managed_record_handle&, float)
         float sub(const managed_record_handle&, float)
@@ -497,7 +496,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         float write(const managed_record_handle&, const float&)
-        interned_string_handle name()
+        h_istring_t name()
         
         float add(const managed_record_handle&, float)
         float sub(const managed_record_handle&, float)
@@ -518,7 +517,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         double write(const managed_record_handle&, const double&)
-        interned_string_handle name()
+        h_istring_t name()
         
         double add(const managed_record_handle&, double)
         double sub(const managed_record_handle&, double)
@@ -539,7 +538,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         double write(const managed_record_handle&, const double&)
-        interned_string_handle name()
+        h_istring_t name()
         
         double add(const managed_record_handle&, double)
         double sub(const managed_record_handle&, double)
@@ -560,7 +559,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         managed_string_handle write(const managed_record_handle&, const managed_string_handle&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
@@ -576,7 +575,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         managed_string_handle write(const managed_record_handle&, const managed_string_handle&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
@@ -592,7 +591,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         managed_record_handle write(const managed_record_handle&, const managed_record_handle&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
@@ -608,14 +607,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         managed_record_handle write(const managed_record_handle&, const managed_record_handle&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_rfield_bool_t "mds::api::record_field_handle<mds::api::kind::BOOL>":
-        h_rfield_bool_t()
-        h_rfield_bool_t(h_rfield_bool_t&)
+    cdef cppclass h_rfield_array_bool_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
+        h_rfield_array_bool_t()
+        h_rfield_array_bool_t(h_rfield_array_bool_t&)
         h_marray_bool_t free_read(const managed_record_handle&)
         h_marray_bool_t frozen_read(const managed_record_handle&)
 
@@ -624,14 +623,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_bool_t write(const managed_record_handle&, const h_marray_bool_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_const_rfield_bool_t "mds::api::const_record_field_handle<mds::api::kind::BOOL>":
-        h_const_rfield_bool_t()
-        h_const_rfield_bool_t(h_const_rfield_bool_t&)
+    cdef cppclass h_const_rfield_array_bool_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
+        h_const_rfield_array_bool_t()
+        h_const_rfield_array_bool_t(h_const_rfield_array_bool_t&)
         h_marray_bool_t free_read(const managed_record_handle&)
         h_marray_bool_t frozen_read(const managed_record_handle&)
 
@@ -640,14 +639,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_bool_t write(const managed_record_handle&, const h_marray_bool_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_rfield_byte_t "mds::api::record_field_handle<mds::api::kind::BYTE>":
-        h_rfield_byte_t()
-        h_rfield_byte_t(h_rfield_byte_t&)
+    cdef cppclass h_rfield_array_byte_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
+        h_rfield_array_byte_t()
+        h_rfield_array_byte_t(h_rfield_array_byte_t&)
         h_marray_byte_t free_read(const managed_record_handle&)
         h_marray_byte_t frozen_read(const managed_record_handle&)
 
@@ -656,14 +655,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_byte_t write(const managed_record_handle&, const h_marray_byte_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_const_rfield_byte_t "mds::api::const_record_field_handle<mds::api::kind::BYTE>":
-        h_const_rfield_byte_t()
-        h_const_rfield_byte_t(h_const_rfield_byte_t&)
+    cdef cppclass h_const_rfield_array_byte_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
+        h_const_rfield_array_byte_t()
+        h_const_rfield_array_byte_t(h_const_rfield_array_byte_t&)
         h_marray_byte_t free_read(const managed_record_handle&)
         h_marray_byte_t frozen_read(const managed_record_handle&)
 
@@ -672,14 +671,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_byte_t write(const managed_record_handle&, const h_marray_byte_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_rfield_ubyte_t "mds::api::record_field_handle<mds::api::kind::UBYTE>":
-        h_rfield_ubyte_t()
-        h_rfield_ubyte_t(h_rfield_ubyte_t&)
+    cdef cppclass h_rfield_array_ubyte_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
+        h_rfield_array_ubyte_t()
+        h_rfield_array_ubyte_t(h_rfield_array_ubyte_t&)
         h_marray_ubyte_t free_read(const managed_record_handle&)
         h_marray_ubyte_t frozen_read(const managed_record_handle&)
 
@@ -688,14 +687,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_ubyte_t write(const managed_record_handle&, const h_marray_ubyte_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_const_rfield_ubyte_t "mds::api::const_record_field_handle<mds::api::kind::UBYTE>":
-        h_const_rfield_ubyte_t()
-        h_const_rfield_ubyte_t(h_const_rfield_ubyte_t&)
+    cdef cppclass h_const_rfield_array_ubyte_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
+        h_const_rfield_array_ubyte_t()
+        h_const_rfield_array_ubyte_t(h_const_rfield_array_ubyte_t&)
         h_marray_ubyte_t free_read(const managed_record_handle&)
         h_marray_ubyte_t frozen_read(const managed_record_handle&)
 
@@ -704,14 +703,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_ubyte_t write(const managed_record_handle&, const h_marray_ubyte_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_rfield_short_t "mds::api::record_field_handle<mds::api::kind::SHORT>":
-        h_rfield_short_t()
-        h_rfield_short_t(h_rfield_short_t&)
+    cdef cppclass h_rfield_array_short_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
+        h_rfield_array_short_t()
+        h_rfield_array_short_t(h_rfield_array_short_t&)
         h_marray_short_t free_read(const managed_record_handle&)
         h_marray_short_t frozen_read(const managed_record_handle&)
 
@@ -720,14 +719,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_short_t write(const managed_record_handle&, const h_marray_short_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_const_rfield_short_t "mds::api::const_record_field_handle<mds::api::kind::SHORT>":
-        h_const_rfield_short_t()
-        h_const_rfield_short_t(h_const_rfield_short_t&)
+    cdef cppclass h_const_rfield_array_short_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
+        h_const_rfield_array_short_t()
+        h_const_rfield_array_short_t(h_const_rfield_array_short_t&)
         h_marray_short_t free_read(const managed_record_handle&)
         h_marray_short_t frozen_read(const managed_record_handle&)
 
@@ -736,14 +735,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_short_t write(const managed_record_handle&, const h_marray_short_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_rfield_ushort_t "mds::api::record_field_handle<mds::api::kind::USHORT>":
-        h_rfield_ushort_t()
-        h_rfield_ushort_t(h_rfield_ushort_t&)
+    cdef cppclass h_rfield_array_ushort_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
+        h_rfield_array_ushort_t()
+        h_rfield_array_ushort_t(h_rfield_array_ushort_t&)
         h_marray_ushort_t free_read(const managed_record_handle&)
         h_marray_ushort_t frozen_read(const managed_record_handle&)
 
@@ -752,14 +751,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_ushort_t write(const managed_record_handle&, const h_marray_ushort_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_const_rfield_ushort_t "mds::api::const_record_field_handle<mds::api::kind::USHORT>":
-        h_const_rfield_ushort_t()
-        h_const_rfield_ushort_t(h_const_rfield_ushort_t&)
+    cdef cppclass h_const_rfield_array_ushort_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
+        h_const_rfield_array_ushort_t()
+        h_const_rfield_array_ushort_t(h_const_rfield_array_ushort_t&)
         h_marray_ushort_t free_read(const managed_record_handle&)
         h_marray_ushort_t frozen_read(const managed_record_handle&)
 
@@ -768,14 +767,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_ushort_t write(const managed_record_handle&, const h_marray_ushort_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_rfield_int_t "mds::api::record_field_handle<mds::api::kind::INT>":
-        h_rfield_int_t()
-        h_rfield_int_t(h_rfield_int_t&)
+    cdef cppclass h_rfield_array_int_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
+        h_rfield_array_int_t()
+        h_rfield_array_int_t(h_rfield_array_int_t&)
         h_marray_int_t free_read(const managed_record_handle&)
         h_marray_int_t frozen_read(const managed_record_handle&)
 
@@ -784,14 +783,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_int_t write(const managed_record_handle&, const h_marray_int_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_const_rfield_int_t "mds::api::const_record_field_handle<mds::api::kind::INT>":
-        h_const_rfield_int_t()
-        h_const_rfield_int_t(h_const_rfield_int_t&)
+    cdef cppclass h_const_rfield_array_int_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
+        h_const_rfield_array_int_t()
+        h_const_rfield_array_int_t(h_const_rfield_array_int_t&)
         h_marray_int_t free_read(const managed_record_handle&)
         h_marray_int_t frozen_read(const managed_record_handle&)
 
@@ -800,14 +799,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_int_t write(const managed_record_handle&, const h_marray_int_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_rfield_uint_t "mds::api::record_field_handle<mds::api::kind::UINT>":
-        h_rfield_uint_t()
-        h_rfield_uint_t(h_rfield_uint_t&)
+    cdef cppclass h_rfield_array_uint_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
+        h_rfield_array_uint_t()
+        h_rfield_array_uint_t(h_rfield_array_uint_t&)
         h_marray_uint_t free_read(const managed_record_handle&)
         h_marray_uint_t frozen_read(const managed_record_handle&)
 
@@ -816,14 +815,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_uint_t write(const managed_record_handle&, const h_marray_uint_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_const_rfield_uint_t "mds::api::const_record_field_handle<mds::api::kind::UINT>":
-        h_const_rfield_uint_t()
-        h_const_rfield_uint_t(h_const_rfield_uint_t&)
+    cdef cppclass h_const_rfield_array_uint_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
+        h_const_rfield_array_uint_t()
+        h_const_rfield_array_uint_t(h_const_rfield_array_uint_t&)
         h_marray_uint_t free_read(const managed_record_handle&)
         h_marray_uint_t frozen_read(const managed_record_handle&)
 
@@ -832,14 +831,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_uint_t write(const managed_record_handle&, const h_marray_uint_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_rfield_long_t "mds::api::record_field_handle<mds::api::kind::LONG>":
-        h_rfield_long_t()
-        h_rfield_long_t(h_rfield_long_t&)
+    cdef cppclass h_rfield_array_long_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
+        h_rfield_array_long_t()
+        h_rfield_array_long_t(h_rfield_array_long_t&)
         h_marray_long_t free_read(const managed_record_handle&)
         h_marray_long_t frozen_read(const managed_record_handle&)
 
@@ -848,14 +847,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_long_t write(const managed_record_handle&, const h_marray_long_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_const_rfield_long_t "mds::api::const_record_field_handle<mds::api::kind::LONG>":
-        h_const_rfield_long_t()
-        h_const_rfield_long_t(h_const_rfield_long_t&)
+    cdef cppclass h_const_rfield_array_long_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
+        h_const_rfield_array_long_t()
+        h_const_rfield_array_long_t(h_const_rfield_array_long_t&)
         h_marray_long_t free_read(const managed_record_handle&)
         h_marray_long_t frozen_read(const managed_record_handle&)
 
@@ -864,14 +863,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_long_t write(const managed_record_handle&, const h_marray_long_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_rfield_ulong_t "mds::api::record_field_handle<mds::api::kind::ULONG>":
-        h_rfield_ulong_t()
-        h_rfield_ulong_t(h_rfield_ulong_t&)
+    cdef cppclass h_rfield_array_ulong_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
+        h_rfield_array_ulong_t()
+        h_rfield_array_ulong_t(h_rfield_array_ulong_t&)
         h_marray_ulong_t free_read(const managed_record_handle&)
         h_marray_ulong_t frozen_read(const managed_record_handle&)
 
@@ -880,14 +879,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_ulong_t write(const managed_record_handle&, const h_marray_ulong_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_const_rfield_ulong_t "mds::api::const_record_field_handle<mds::api::kind::ULONG>":
-        h_const_rfield_ulong_t()
-        h_const_rfield_ulong_t(h_const_rfield_ulong_t&)
+    cdef cppclass h_const_rfield_array_ulong_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
+        h_const_rfield_array_ulong_t()
+        h_const_rfield_array_ulong_t(h_const_rfield_array_ulong_t&)
         h_marray_ulong_t free_read(const managed_record_handle&)
         h_marray_ulong_t frozen_read(const managed_record_handle&)
 
@@ -896,14 +895,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_ulong_t write(const managed_record_handle&, const h_marray_ulong_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_rfield_float_t "mds::api::record_field_handle<mds::api::kind::FLOAT>":
-        h_rfield_float_t()
-        h_rfield_float_t(h_rfield_float_t&)
+    cdef cppclass h_rfield_array_float_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
+        h_rfield_array_float_t()
+        h_rfield_array_float_t(h_rfield_array_float_t&)
         h_marray_float_t free_read(const managed_record_handle&)
         h_marray_float_t frozen_read(const managed_record_handle&)
 
@@ -912,14 +911,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_float_t write(const managed_record_handle&, const h_marray_float_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_const_rfield_float_t "mds::api::const_record_field_handle<mds::api::kind::FLOAT>":
-        h_const_rfield_float_t()
-        h_const_rfield_float_t(h_const_rfield_float_t&)
+    cdef cppclass h_const_rfield_array_float_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
+        h_const_rfield_array_float_t()
+        h_const_rfield_array_float_t(h_const_rfield_array_float_t&)
         h_marray_float_t free_read(const managed_record_handle&)
         h_marray_float_t frozen_read(const managed_record_handle&)
 
@@ -928,14 +927,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_float_t write(const managed_record_handle&, const h_marray_float_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_rfield_double_t "mds::api::record_field_handle<mds::api::kind::DOUBLE>":
-        h_rfield_double_t()
-        h_rfield_double_t(h_rfield_double_t&)
+    cdef cppclass h_rfield_array_double_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
+        h_rfield_array_double_t()
+        h_rfield_array_double_t(h_rfield_array_double_t&)
         h_marray_double_t free_read(const managed_record_handle&)
         h_marray_double_t frozen_read(const managed_record_handle&)
 
@@ -944,14 +943,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_double_t write(const managed_record_handle&, const h_marray_double_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_const_rfield_double_t "mds::api::const_record_field_handle<mds::api::kind::DOUBLE>":
-        h_const_rfield_double_t()
-        h_const_rfield_double_t(h_const_rfield_double_t&)
+    cdef cppclass h_const_rfield_array_double_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
+        h_const_rfield_array_double_t()
+        h_const_rfield_array_double_t(h_const_rfield_array_double_t&)
         h_marray_double_t free_read(const managed_record_handle&)
         h_marray_double_t frozen_read(const managed_record_handle&)
 
@@ -960,14 +959,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_double_t write(const managed_record_handle&, const h_marray_double_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_rfield_string_t "mds::api::record_field_handle<mds::api::kind::STRING>":
-        h_rfield_string_t()
-        h_rfield_string_t(h_rfield_string_t&)
+    cdef cppclass h_rfield_array_string_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
+        h_rfield_array_string_t()
+        h_rfield_array_string_t(h_rfield_array_string_t&)
         h_marray_string_t free_read(const managed_record_handle&)
         h_marray_string_t frozen_read(const managed_record_handle&)
 
@@ -976,14 +975,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_string_t write(const managed_record_handle&, const h_marray_string_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_const_rfield_string_t "mds::api::const_record_field_handle<mds::api::kind::STRING>":
-        h_const_rfield_string_t()
-        h_const_rfield_string_t(h_const_rfield_string_t&)
+    cdef cppclass h_const_rfield_array_string_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
+        h_const_rfield_array_string_t()
+        h_const_rfield_array_string_t(h_const_rfield_array_string_t&)
         h_marray_string_t free_read(const managed_record_handle&)
         h_marray_string_t frozen_read(const managed_record_handle&)
 
@@ -992,14 +991,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_string_t write(const managed_record_handle&, const h_marray_string_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_rfield_record_t "mds::api::record_field_handle<mds::api::kind::RECORD>":
-        h_rfield_record_t()
-        h_rfield_record_t(h_rfield_record_t&)
+    cdef cppclass h_rfield_array_record_t "mds::api::record_field_handle<mds::api::kind::ARRAY>":
+        h_rfield_array_record_t()
+        h_rfield_array_record_t(h_rfield_array_record_t&)
         h_marray_record_t free_read(const managed_record_handle&)
         h_marray_record_t frozen_read(const managed_record_handle&)
 
@@ -1008,14 +1007,14 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_record_t write(const managed_record_handle&, const h_marray_record_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 
-    cdef cppclass h_const_rfield_record_t "mds::api::const_record_field_handle<mds::api::kind::RECORD>":
-        h_const_rfield_record_t()
-        h_const_rfield_record_t(h_const_rfield_record_t&)
+    cdef cppclass h_const_rfield_array_record_t "mds::api::const_record_field_handle<mds::api::kind::ARRAY>":
+        h_const_rfield_array_record_t()
+        h_const_rfield_array_record_t(h_const_rfield_array_record_t&)
         h_marray_record_t free_read(const managed_record_handle&)
         h_marray_record_t frozen_read(const managed_record_handle&)
 
@@ -1024,9 +1023,13 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         bool is_null()
 
         h_marray_record_t write(const managed_record_handle&, const h_marray_record_t&)
-        interned_string_handle name()
+        h_istring_t name()
         
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 # END INJECTION
 
+ctypedef managed_record_handle h_mrecord_t
+ctypedef const_managed_record_handle h_const_mrecord_t
+ctypedef record_type_handle h_rtype_t
+ctypedef const_record_type_handle h_const_rtype_t

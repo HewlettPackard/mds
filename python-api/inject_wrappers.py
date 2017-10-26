@@ -33,7 +33,7 @@ from itertools import chain
 from typing import Dict, Iterable, List, Text
 
 import mds
-from mds import MDSTypeInfo
+from mds import MDSTypeInfo, MDSPrimitiveTypeInfo, MDSArrayTypeInfo
 
 TYPE_GROUPINGS = {
     'Primitives': mds.typing.primitives,
@@ -136,10 +136,10 @@ def generate_and_inject_all_sources(dry_run=True, root=os.getcwd(), exts=('pyx',
 def tmpl_api_primitives(t: MDSTypeInfo) -> str:
     compiled = f"""
     # BEGIN {t.api}
-    # TODO: (field_in)
-    # Throws incompatible_type_ex if the field exists but is of the wrong type
-    # Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
-    # is true, and the record type is fully created.
+    # field_in:
+    #  * Throws incompatible_type_ex if the field exists but is of the wrong type
+    #  * Throws unmodifiable_record_type_ex if the field doesn't exist, create_if_absent
+    #    is true, and the record type is fully created.
 
     cdef cppclass {t.managed_value} "mds::api::api_type<{t.kind}>":
         {t.managed_value}()
@@ -203,31 +203,34 @@ cdef class {t.title}({t.PRIMITIVE}):
         def __get__(self):
             return {t.bounds.max} 
 """
-
     return compiled
 
 # =========================================================================
 #  Namespaces
 # =========================================================================
 
-def tmpl_api_namespaces(t: MDSTypeInfo) -> str:
+def tmpl_api_namespaces_primitives(t: MDSPrimitiveTypeInfo) -> str:
     compiled = f"""
-        {t.c_type} {t.f_lookup} "lookup<{t.kind},mds::core::kind_type<{t.kind}>,false,true>"(interned_string_handle, const {t.primitive}&)
-        {t.managed_array} {t.f_lookup_array} "lookup<{t.kind},false,true>"(const interned_string_handle&, const {t.array}&)
-        bool {t.f_bind} "bind<{t.kind}>"(interned_string_handle, {t.c_type})
-        # bool {t.f_bind_array} "bind<{t.kind}>"(interned_string_handle, {t.c_type})
-    """
+        {t.c_type} {t.f_lookup} "lookup<{t.kind},mds::core::kind_type<{t.kind}>,false,false>"(h_istring_t, const {t.primitive}&) except+
+        bool {t.f_bind} "bind<{t.kind}>"(h_istring_t, {t.c_type})
+"""
+    return compiled
+
+def tmpl_api_namespaces_arrays(t: MDSArrayTypeInfo) -> str:
+    compiled = f"""
+        {t.managed_array} {t.f_lookup} "lookup<{t.elt.kind},false,false>"(const h_istring_t&, const {t.managed_array}&) except+
+        bool {t.f_bind} "bind<{t.kind}>"(h_istring_t, {t.managed_array})
+"""
     return compiled
 
 def tmpl_namespace_mapping(t: MDSTypeInfo) -> str:
     compiled = f"            {t.dtype}: {t.title_name_binding},\n"
     return compiled
 
-def tmpl_namespace_typed_primitive_bindings(t: MDSTypeInfo) -> str:
+def tmpl_namespace_typed_primitive_bindings(t: MDSPrimitiveTypeInfo) -> str:
     compiled = f"""
 cdef class {t.title_name_binding}(MDSTypedNameBinding):
-    cdef:
-        {t.primitive} _type
+    cdef {t.primitive} _type
 
     def get(self) -> Optional[{t.title}]:
         cdef:
@@ -245,58 +248,34 @@ cdef class {t.title_name_binding}(MDSTypedNameBinding):
             namespace_handle h = self._namespace._handle
 
         h.{t.f_bind}(nhandle, <{t.c_type}> val.python_type)
-
-    def check(self):
-        cdef:
-            interned_string_handle nhandle = self._name._ish
-            {t.primitive} thandle = self._type
-            namespace_handle h = self._namespace._handle
-
-        try:
-            h.{t.f_lookup}(nhandle, thandle)
-            return True
-        except:
-            return False
 """
     return compiled
 
-def tmpl_namespace_typed_array_bindings(t: MDSTypeInfo) -> str:
+def tmpl_namespace_typed_array_bindings(t: MDSArrayTypeInfo) -> str:
     compiled = f"""
 cdef class {t.title_name_binding}(MDSTypedNameBinding):
-    cdef:
-        {t.primitive} _type
+    cdef {t.managed_array} _type
 
     def get(self) -> Optional[{t.title}]:
-        # cdef:
-        #     interned_string_handle nhandle = self._name._ish
-        #     {t.primitive} thandle = self._type
-        #     namespace_handle h = self._namespace._handle
-        # try:
-        #     return {t.title}(h.{t.f_lookup}(nhandle, thandle))
-        # except:  # unbound_name_ex
-        #     return None
-        return None
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            {t.managed_array} thandle = self._type
+            {t.managed_array} retrieved
+            {t.title} retval = {t.title}()
+            namespace_handle h = self._namespace._handle
+        try:
+            retrieved = h.{t.f_lookup_array}(nhandle, thandle)
+            retval._handle = retrieved
+            return retval
+        except:  # unbound_name_ex
+            return None
 
     def bind(self, {t.title} val) -> None:
-        # cdef:
-        #     interned_string_handle nhandle = self._name._ish
-        #     namespace_handle h = self._namespace._handle
+        cdef:
+            interned_string_handle nhandle = self._name._ish
+            namespace_handle h = self._namespace._handle
 
-        # h.{t.f_bind}(nhandle, <{t.c_type}> val.python_type)
-        return None
-
-    def check(self):
-        # cdef:
-        #     interned_string_handle nhandle = self._name._ish
-        #     {t.primitive} thandle = self._type
-        #     namespace_handle h = self._namespace._handle
-
-        # try:
-        #     h.{t.f_lookup}(nhandle, thandle)
-        #     return True
-        # except:
-        #     return False
-        return None
+        h.{t.f_bind}(nhandle, val._handle)
 """
     return compiled
 
@@ -330,14 +309,14 @@ def tmpl_api_records(t: MDSTypeInfo) -> str:
         bool is_null()
 
         {t.c_type} write(const managed_record_handle&, const {t.c_type}&)
-        interned_string_handle name()
+        h_istring_t name()
         {EXTRA}
         const_record_type_handle rec_type()
         #const_type_handle_for<K> field_type()
 """
     return compiled
 
-def tmpl_record_field(t: MDSTypeInfo) -> str:
+def tmpl_record_field_primitives(t: MDSPrimitiveTypeInfo) -> str:
     compiled = f"""
 cdef class {t.title_record_field}(MDSRecordFieldBase):
     cdef:
@@ -345,7 +324,7 @@ cdef class {t.title_record_field}(MDSRecordFieldBase):
 
     def declare(self, String name, MDSRecordTypeDeclaration rt):
         assert self._handle.is_null()
-        print("?> Attempting to get a handle from {t.const_primitive}.field_in")
+        print("?> Attempting to get a handle from {t.const_array}.field_in")
         self._handle = {t.record_field}({t.const_primitive}().field_in(rt._declared_type, name._ish, True))
 
     @staticmethod
@@ -357,7 +336,27 @@ cdef class {t.title_record_field}(MDSRecordFieldBase):
 """
     return compiled
 
-def tmpl_record_field_reference(t: MDSTypeInfo) -> str:
+def tmpl_record_field_arrays(t: MDSArrayTypeInfo) -> str:
+    compiled = f"""
+cdef class {t.title_record_field}(MDSRecordFieldBase):
+    cdef:
+        {t.record_field} _handle
+
+    def declare(self, String name, MDSRecordTypeDeclaration rt):
+        assert self._handle.is_null()
+        print("?> Attempting to get a handle from {t.const_primitive}.field_in")
+        self._handle = {t.record_field}({t.const_array}().field_in(rt._declared_type, name._ish, True))
+
+    @staticmethod
+    def get_reference_type(make_const=False) -> type:
+        if make_const:
+            return {t.title_const_record_field_reference}
+
+        return {t.title_record_field_reference}
+"""
+    return compiled
+
+def tmpl_record_field_reference_primitives(t: MDSPrimitiveTypeInfo) -> str:
     compiled = f"""
 
 cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBase):
@@ -369,10 +368,7 @@ cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBa
         self._record = record
         self._field_handle = {t.record_field}(field._handle)
         self._record_handle = managed_record_handle(record._handle)
-"""
 
-    if t.is_primitive:
-        compiled += f"""
     def read(self):
         cdef {t.c_type} retval = self._field_handle.frozen_read(self._record_handle)
         return retval
@@ -380,21 +376,12 @@ cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBa
     def peek(self):
         cdef {t.c_type} retval = self._field_handle.free_read(self._record_handle)
         return retval
-"""
 
-    compiled += f"""
 
 cdef class {t.title_record_field_reference}({t.title_const_record_field_reference}):
-"""
-    
-    if t.is_primitive:
-        compiled += f"""
+
     def write(self, value):
         self._field_handle.write(self._record_handle, <{t.c_type}> (value))
-"""
-    elif t.is_composite:
-        compiled += """
-    pass
 """
 
     if t.is_arithmetic:
@@ -415,13 +402,51 @@ cdef class {t.title_record_field_reference}({t.title_const_record_field_referenc
 
     return compiled
 
-def tmpl_record_member(t: MDSTypeInfo) -> str:
+
+def tmpl_record_field_reference_arrays(t: MDSArrayTypeInfo) -> str:
     compiled = f"""
-cdef class {t.title_const_record_member}(MDSConstRecordMemberBase):
+
+cdef class {t.title_const_record_field_reference}(MDSConstRecordFieldReferenceBase):
+    cdef:
+        {t.record_field} _field_handle
+        Record _record
+
+    def __cinit__(self, {t.title_record_field} field, Record record):
+        self._record = record
+        self._field_handle = {t.record_field}(field._handle)
+        self._record_handle = managed_record_handle(record._handle)
+
+    def read(self):
+        cdef:
+            {t.managed_array} handle = self._field_handle.frozen_read(self._record_handle)
+            {t.title} retval = {t.title}()
+
+        retval._handle = handle
+        return retval
+
+    def peek(self):
+        cdef:
+            {t.managed_array} handle = self._field_handle.free_read(self._record_handle)
+            {t.title} retval = {t.title}()
+
+        retval._handle = handle
+        return retval
+
+
+cdef class {t.title_record_field_reference}({t.title_const_record_field_reference}):
+
+    def write(self, {t.title} value):
+        cdef {t.managed_array} handle = value._handle
+        self._field_handle.write(self._record_handle, handle)
 """
 
-    if t.is_primitive:
-        compiled += f"""
+    return compiled
+
+
+def tmpl_record_member_primitives(t: MDSPrimitiveTypeInfo) -> str:
+    compiled = f"""
+cdef class {t.title_const_record_member}(MDSConstRecordMemberBase):
+
     cdef {t.c_type} _cached_val
 
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
@@ -435,21 +460,59 @@ cdef class {t.title_const_record_member}(MDSConstRecordMemberBase):
 
         return self._cached_val
 
-    def peek(self):
-        return self.read()
-"""
-    elif t.is_composite:
-        compiled += """
-    pass
+cdef class {t.title_record_member}(MDSRecordMemberBase):
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return {t.title_record_field}()[self]
+
+    def read(self):
+        return self._field_ref().read()
+
+    def write(self, value) -> None:
+        self._field_ref().write(<{t.c_type}> value);
 """
 
-    compiled += f"""
+    if t.is_arithmetic:
+        compiled += f"""
+    def __iadd__(self, other):
+        ref = self._field_ref()
+        ref += other
+
+    def __isub__(self, other):
+        ref = self._field_ref()
+        ref -= other
+
+    def __imul__(self, other):
+        ref = self._field_ref()
+        ref *= other
+
+    def __itruediv__(self, other):
+        ref = self._field_ref()
+        ref /= other
+"""
+
+    return compiled
+
+def tmpl_record_member_arrays(t: MDSArrayTypeInfo) -> str:
+    compiled = f"""
+cdef class {t.title_const_record_member}(MDSConstRecordMemberBase):
+    cdef {t.title} _cached_val
+
+    def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
+        return {t.title_record_field}()[self]
+
+    def read(self) -> {t.title}:
+        cdef {t.record_field} handle
+
+        if not self._is_cached:
+            field_ref = self._field_ref()
+            self._cached_val = field_ref.read()
+            self._is_cached = True
+
+        return self._cached_value
 
 cdef class {t.title_record_member}(MDSRecordMemberBase):
-"""
 
-    if t.is_primitive:
-        compiled += f"""
     def _field_ref(self) -> MDSConstRecordFieldReferenceBase:
         return {t.title_record_field}()[self]
 
@@ -460,11 +523,7 @@ cdef class {t.title_record_member}(MDSRecordMemberBase):
         return self._field_ref().peek()
 
     def write(self, value) -> None:
-        self._field_ref().write(<{t.c_type}> value);
-"""
-    elif t.is_composite:
-        compiled += """
-    pass
+        self._field_ref().write(value);
 """
 
     if t.is_arithmetic:
@@ -492,7 +551,7 @@ cdef class {t.title_record_member}(MDSRecordMemberBase):
 #  Arrays
 # =========================================================================
 
-def tmpl_array(t: MDSTypeInfo) -> str:
+def tmpl_array_primitives(t: MDSPrimitiveTypeInfo) -> str:
     compiled = f"""
 cdef class {t.title_array}({t.ARRAY}):
 
@@ -514,16 +573,20 @@ cdef class {t.title_array}({t.ARRAY}):
             return {t.dtype}
 
     @classmethod
-    def from_namespace(cls, Namespace namespace, path):
-        # cdef:
-        #     String p = __cast_to_mds_string(path)
-        #     {t.managed_array} handle = {t.f_lookup_array}(p._ish, {t.array}())
+    def from_namespace(cls, Namespace namespace, path) -> Optional[{t.title_array}]:
+        cdef:
+            String p = __cast_to_mds_string(path)
+            interned_string_handle ish = p._ish
+            namespace_handle nhandle = namespace._handle
+            {t.managed_array} handle
 
-        # retval = cls()
-        # retval._handle = handle
-        # return retval
-        # TODO: Re-enable when injection working correctly
-        pass
+        try:
+            handle = nhandle.{t.f_lookup_array}(ish, {t.managed_array}())
+            retval = {t.title_array}()
+            retval._handle = handle
+            return retval
+        except:
+            return None
 
     def bind_to_namespace(self, Namespace namespace):
         pass  # TODO: See how these properly bind
@@ -567,10 +630,6 @@ cdef class {t.title_array}({t.ARRAY}):
     def __itruediv__(self, other):
         return self._handle.div(self._last_index, <{t.c_type}> other)
 """
-    elif t.is_string:
-        pass
-    elif t.is_record:
-        pass
 
     return compiled
 
@@ -586,18 +645,26 @@ def tmpl_api_arrays(t: MDSTypeInfo) -> str:
 """
     compiled = f"""
     cdef cppclass {t.array} "mds::api::array_type_handle<{t.kind}>":
-        # const_managed_type_handle<K> element_type()
+        {t.array}()
+        {t.array}({t.array}&)
         {t.managed_array} create_array(size_t)
+        # {t.const_primitive} element_type()
         bool is_same_as(const {t.array}&)
         uint64_t hash1()
+        {t.array_record_field} field_in(record_type_handle&, interned_string_handle&, bool) except+
 
     cdef cppclass {t.const_array} "mds::api::const_array_type_handle<{t.kind}>":
-        # const_managed_type_handle<K> element_type()
+        {t.const_array}()
+        {t.const_array}({t.const_array}&)
         {t.managed_array} create_array(size_t)
+        # {t.const_primitive} element_type()
         bool is_same_as(const {t.const_array}&)
         uint64_t hash1()
+        {t.array_record_field} field_in(record_type_handle&, interned_string_handle&, bool) except+
 
     cdef cppclass {t.managed_array}:
+        {t.managed_array}()
+        {t.managed_array}({t.managed_array}&)
         {t.managed_value} frozen_read(size_t)
         {t.managed_value} write(size_t, {t.managed_value})
         size_t size()
@@ -605,8 +672,9 @@ def tmpl_api_arrays(t: MDSTypeInfo) -> str:
         h_marray_base_t as_base()
         uint64_t hash1()
         {EXTRA}
-
     cdef cppclass {t.const_managed_array}:
+        {t.const_managed_array}()
+        {t.const_managed_array}({t.managed_array}&)
         {t.managed_value} frozen_read(size_t)
         {t.managed_value} write(size_t, {t.managed_value})
         size_t size()
