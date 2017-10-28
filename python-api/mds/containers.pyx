@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+2# -*- coding: utf-8 -*-
 """
 Managed Data Structures
 Copyright © 2017 Hewlett Packard Enterprise Development Company LP.
@@ -36,7 +36,7 @@ from mds.threading import MDSThreadData
 
 from datetime import datetime, timedelta
 from threading import local
-from typing import Any, Dict, Callable, List, Text, Iterable, Sequence
+from typing import Any, Dict, Callable, List, Text, Type, Iterable, Sequence
 
 # Call this on module load
 initialize_base_task()
@@ -49,7 +49,7 @@ class PublishFailed(Exception):
     pass
 
 
-class Controls(object):
+class Condition(object):
 
     class _ControlBase(object):
 
@@ -127,6 +127,9 @@ class Controls(object):
             self._conclusion = datetime.now() + conclusion
 
 
+Controls = Iterable[Controls._ControlBase]
+
+
 class OptionsBase(object):
 
     T = IsolationContext
@@ -135,8 +138,7 @@ class OptionsBase(object):
         self._opts = [x for x in conds]
 
     @classmethod
-    def check(cls, cs: Sequence[Controls._ControlBase], arg: Any):
-        # TODO when is Arg called, what conditions would take it?
+    def check(cls, cs: Controls, arg: Any):
         for control in cs:
             if control(arg):
                 return True
@@ -146,7 +148,7 @@ class OptionsBase(object):
     def add(self, other: OptionsBase) -> None:
         self._opts.extend(other._opts)
 
-    def controls(self):
+    def controls(self) -> Controls:
         # TODO: Is this returning funcs of results thereof? I think the former.
         # std::vector<control_type> controls() const {
         #   std::vector<control_type> res;
@@ -158,8 +160,7 @@ class OptionsBase(object):
         #   }
         #   return res;
         # }
-        pass
-
+        return self._opt.copy()
 
 class RerunOptions(OptionsBase):
     pass
@@ -672,38 +673,19 @@ cdef class IsolationContext(object):
         return res.first
 
     def call_read_only(self, fn: Callable, args=tuple()):
-    # template <typename Fn, typename...Args>
-    # auto call_read_only(Fn &&fn, Args&&...args) {
-    #   return create_nested_read_only().call(std::forward<Fn>(fn),
-    #                                        std::forward<Args>(args)...);
-    # }
-        return self.create_nested().call(fn, args)
+        return self.create_nested('read_only', snapshot=False).call(fn, args)
 
-    # template <typename Fn, typename...Args>
-    # auto call_detached(Fn &&fn, Args&&...args) {
-    #   return create_nested_detached().call(std::forward<Fn>(fn),
-    #                                        std::forward<Args>(args)...);
-    # }
+    def call_detached(self, fn: Callable, args=tuple()):
+        return self.create_nested('detached', snapshot=False).call(fn, args)
 
-    # template <typename Fn, typename...Args>
-    # auto call_in_detached_snapshot(Fn &&fn, Args&&...args) {
-    #   return create_detached_snapshot().call(std::forward<Fn>(fn),
-    #                                        std::forward<Args>(args)...);
-    # }
+    def call_in_detached_snapshot(self, fn: Callable, args=tuple()):
+        return self.create_nested('detached', snapshot=True).call(fn, args)
 
-    # template <typename Fn, typename...Args>
-    # auto call_in_snapshot(Fn &&fn, Args&&...args) {
-    #   return create_snapshot().call(std::forward<Fn>(fn),
-    #                                 std::forward<Args>(args)...);
-    # }
+    def call_in_snapshot(self, fn: Callable, args=tuple()):
+        return self.create_nested('publishable', snapshot=True).call(fn, args)
 
-
-    # template <typename Fn, typename...Args>
-    # auto call_in_read_only_snapshot(Fn &&fn, Args&&...args) {
-    #   return create_read_only_snapshot().call(std::forward<Fn>(fn),
-    #                                           std::forward<Args>(args)...);
-    # }
-
+    def call_in_read_only_snapshot(self, fn: Callable, args=tuple()):
+        return self.create_nested('read_only', snapshot=True).call(fn, args)
 
     @staticmethod
     def get_global() -> IsolationContext:
