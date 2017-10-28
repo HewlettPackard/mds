@@ -172,8 +172,6 @@ namespace mds {
       _TYPE_WRAPPER_(kind::RECORD, record)
       _TYPE_WRAPPER_(kind::STRING, string)
 
-      // _TYPE_WRAPPER_(kind::ARRAY, array)
-      // _TYPE_WRAPPER_(kind::NAMESPACE, namespace)
     } // End mds::python::types
     namespace namespaces {
       static h_namespace_t &current_namespace() {
