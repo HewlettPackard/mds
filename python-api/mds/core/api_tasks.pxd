@@ -33,12 +33,12 @@ from mds.core.api_helpers cimport *
 cdef extern from "helpers.h" namespace "mds::python::tasks":
     cdef cppclass TaskWrapper:
         TaskWrapper() nogil except +
-        TaskWrapper(task_handle) nogil except +
 
         void run(void(*)(_py_callable_wrapper), _py_callable_wrapper) except+ 
 
         @staticmethod
-        task_handle current()
+        task_handle get_current()
+        void set_current(task_handle)
 
 cdef extern from "helpers.h" namespace "mds::python::tasks::TaskWrapper" nogil:
     cdef cppclass Establish:

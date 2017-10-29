@@ -399,19 +399,6 @@ cdef inline PublicationResult_Init(publication_attempt_handle handle):
     result._handle = handle
     return result
 
-# cdef class Use(object):
-#     cdef:
-#         unique_ptr[Establish] _establish
-#         task_handle _handle
-
-#     def __cinit__(self, IsolationContext ctxt):
-#         self._handle = ctxt._handle.push_prevailing()
-#         self._establish = make_unique[Establish](self._handle)
-
-#     def __dealloc__(self):
-#         if hash(Task.get_current()) != hash(Task_Init(self._handle)):
-#             raise RuntimeError("Improper stack discipline.")
-
 # =========================================================================
 #  Isolation Contexts
 # =========================================================================
@@ -484,7 +471,6 @@ cdef class IsolationContext(object):
         if not pr.successful:
             controls = resolve_opts.controls()
 
-            # TODO: Implement these *Options and see why .check is static
             while ResolveOptions.check(controls, pr) and pr.resolve(reports):
                 pr = self.try_publish()
 
@@ -493,20 +479,10 @@ cdef class IsolationContext(object):
 
         return pr
 
-    # def use(self):
-    #     return Use(self)
-
     def call(self, fn: Callable, args=tuple()) -> object:
-        this_context = self.use()
-        # So this Use struct in the CAPI lends its constructor / desconstructor for
-        # the context. Why do I even need to delegate to in_isoctxt?
-        #         template <typename Fn, typename...Args>
-        # inline
-        # auto iso_ctxt::call(Fn&& fn, Args&&...args) {
-        #   use tc{*this};
-        #   return std::forward<Fn>(fn)(std::forward<Args>(args)...);
-        # }
-        return in_isoctxt(self._handle, fn, args) 
+        cdef Use tc = Use(self._handle)
+        # return in_isoctxt(self._handle, fn, args)
+        return fn(*args)
 
     def run(self, fn: Callable) -> 'IsolationContext':
         self.call(fn)
@@ -761,21 +737,21 @@ cdef inline IsolationContext_Init(iso_context_handle handle):
     result._handle = handle
     return result
 
-cdef inline object _isoctxt_execution_wrapper(_py_callable_wrapper wrapped):
-    cdef:
-        object fn = <object> wrapped.fn
-        object args = <object> wrapped.args
+# cdef inline object _isoctxt_execution_wrapper(_py_callable_wrapper wrapped):
+#     cdef:
+#         object fn = <object> wrapped.fn
+#         object args = <object> wrapped.args
    
-    return fn(*args)
+#     return fn(*args)
 
-cdef inline object in_isoctxt(iso_context_handle ich, object fn, object args):
-    return run_in_iso_ctxt(ich, &_isoctxt_execution_wrapper, _wrap(fn, args))
+# cdef inline object in_isoctxt(iso_context_handle ich, object fn, object args):
+#     return run_in_iso_ctxt(ich, &_isoctxt_execution_wrapper, _wrap(fn, args))
 
-cdef inline _py_callable_wrapper _wrap(object fn, object args):
-    cdef _py_callable_wrapper py_wrap
-    py_wrap.fn = <PyObject *> fn
-    py_wrap.args = <PyObject *> args
-    return py_wrap
+# cdef inline _py_callable_wrapper _wrap(object fn, object args):
+#     cdef _py_callable_wrapper py_wrap
+#     py_wrap.fn = <PyObject *> fn
+#     py_wrap.args = <PyObject *> args
+#     return py_wrap
 
 # =========================================================================
 #  Tasks
@@ -858,7 +834,7 @@ cdef class Task(object):
         
         if target is not None:
             self._expired = False
-            add_task_handle(self, TaskWrapper.current().get_context().push_prevailing())
+            add_task_handle(self, TaskWrapper.get_current().get_context().push_prevailing())
             self._ctxt = self._handle.get_context()
         else:
             self._expired = True
@@ -931,55 +907,44 @@ cdef class Task(object):
     #   return _current();
     # }
 
-    # void remember_and_call(std::function<void()> &&fn);
-    # void
-    # task::remember_and_call(function<void()> &&fn) {
-    #   shared_ptr<task_func_map> tfm = ctm.get(context());
-    #   shared_ptr<info> i = make_shared<info>(std::move(fn));
-    #   tfm->set(*this, i);
-    #   _establish e(*this);
-    #   (i->function)();
-    # }
 
-    # struct _establish {
-    #   _establish(const task &t) {
-    #     _current() = t;
-    #   }
-    #   ~_establish() {
-    #     _current() = handle_type::pop();
-    #   }
-    # };
+    def establish_and_run(self, fn: Callable, args=tuple()) -> object:
+        """
+        Call (and return from) any callable object not bound to this Task
+        """
+        return __establish_and_run(self, fn, args)
 
-    # template <typename Fn, typename...Args>
-    # auto establish_and_run(Fn&& fn, Args&&...args) const;
-
-
-    # def run(self) -> None:
-    #     if not self.expired:
-    #         IsolationContext.redoable_tasks.add_task_to_context(
-    #             self.isolation_context, self
-    #         )
+    def run(self) -> None:
+        """
+        This is roughly equivalent to remember_and_call(Fn) in the CAPI
+        except we don't store the payload in a task::info object; instead
+        it's stored within this, and we delegate to establish_and_run
+        """
+        if not self.expired:
+            IsolationContext.redoable_tasks.add_task_to_context(
+                self.isolation_context, self
+            )
                 
-    #         __in_task(self._handle, self._target, self._args)
+            self.establish_and_run(self._target, self._args)
 
-    # def expire(self) -> None:
-    #     """
-    #     Expires the ``Task``, this does a number of things:
+    def expire(self) -> None:
+        """
+        Expires the 'Task', this does a number of things:
 
-    #         1. Release the callable ``fn`` and associated arguments ``args``
-    #         2. Prohibits further calls
-    #         3. Removes internal references to this Task, allowing safe release
+            1. Release the callable 'fn' and associated arguments 'args'
+            2. Prohibits further calls
+            3. Removes internal references to this Task, allowing safe release
 
-    #     This operation is irreversible.
-    #     """
-    #     if self._expired:
-    #         return
+        This operation is irreversible.
+        """
+        if self._expired:
+            return
         
-    #     self._expired = True
-    #     self._target = None
-    #     self._args = None
-    #     # TODO: With ptr management, drop the handle pointer (-> nullptr)
-    #     IsolationContext.redoable_tasks.expunge(self)
+        self._expired = True
+        self._target = None
+        self._args = None
+
+        IsolationContext.redoable_tasks.expunge(self)
 
 
   # inline void task::as_task(std::function<void()> fn) {
@@ -1052,20 +1017,21 @@ cdef class Task(object):
         def __get__(self):
             return self._expired
 
-cdef object __establish_and_run(Task t, object fn, object args):
-    ...
-
 
 def for_each_in_tasks(list iterable, object fn):
     map(iterable, Task.task_fn(fn))
-
 
 cdef inline Task_Init(task_handle handle):
     # TODO Remove me, DEBUG
     print("Initializing task with hash {}".format(handle.hash1()))
     result = Task()
-    add_task_handle(result, handle)
+    result._handle = handle
     return result
+
+cdef object __establish_and_run(Task t, object fn, object args):
+    initialize_base_task()
+    cdef Establish c(_handle.push())  # struct _establish => Establish
+    return fn(*args)
 
 cdef inline add_task_handle(Task task, task_handle handle):
     task._handle = handle
@@ -1073,24 +1039,24 @@ cdef inline add_task_handle(Task task, task_handle handle):
 cdef inline update_context_handle_in_task(Task task, IsolationContext ctxt):
     task._ctxt = ctxt._handle
 
-cdef inline void _task_execution_wrapper(_py_callable_wrapper wrapped):
-    """
-    This is the wrapper function that Cython uses to generate the appropriate
-    C++ that uses the Py*{Eval,CallObject}(py_callable, py_tuple) boilerplate.
-    """
-    cdef:
-        object fn = <object> wrapped.fn
-        object args = <object> wrapped.args
+# cdef inline void _task_execution_wrapper(_py_callable_wrapper wrapped):
+#     """
+#     This is the wrapper function that Cython uses to generate the appropriate
+#     C++ that uses the Py*{Eval,CallObject}(py_callable, py_tuple) boilerplate.
+#     """
+#     cdef:
+#         object fn = <object> wrapped.fn
+#         object args = <object> wrapped.args
    
-    fn(*args)
+#     fn(*args)
 
-cdef inline void __in_task(task_handle th, object fn, object args):
-    """
-    Delegate the running of this tasklet through to the compiled library, need
-    to wrap things up nicely for Cython to generate the appropriate code.
-    """
-    cdef TaskWrapper task_wrap = TaskWrapper(th)
-    task_wrap.run(&_task_execution_wrapper, _wrap(fn, args))
+# cdef inline void __in_task(task_handle th, object fn, object args):
+#     """
+#     Delegate the running of this tasklet through to the compiled library, need
+#     to wrap things up nicely for Cython to generate the appropriate code.
+#     """
+#     cdef TaskWrapper task_wrap = TaskWrapper(th)
+#     task_wrap.run(&_task_execution_wrapper, _wrap(fn, args))
 
 cdef inline _task_add_dependent(Task first, Task second):
     first._handle.add_dependent(second._handle)

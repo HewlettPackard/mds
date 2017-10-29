@@ -38,6 +38,9 @@ cdef extern from "helpers.h" namespace "mds::python::isoctxts":
         _py_callable_wrapper
     ) except+ 
 
+    cdef cppclass Use:
+        Use(iso_context_handle)
+
 # enum classes not (yet) supported, workaround, first declare classes:
 cdef extern from "core/core_fwd.h" namespace "mds::core" nogil:
     cdef cppclass view_type:
