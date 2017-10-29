@@ -125,15 +125,6 @@ namespace mds {
     } // End mds::python::tasks
     
     namespace isoctxts {
-      static inline PyObject *run_in_iso_ctxt(
-        h_isoctxt_t &handle,
-        std::function<PyObject*(py_callable_wrapper)> &&fn,
-        py_callable_wrapper arg) {
-        tasks::initialize_base_task();
-        // TODO: This is clearly all wrong, but just making the compiler happy for now
-        return std::forward<decltype(fn)>(fn)(arg);
-      };
-
       class Use : tasks::TaskWrapper::Establish {
         Use(const h_isoctxt_t &c)
           : tasks::TaskWrapper::Establish([&c](){

@@ -40,6 +40,8 @@ cdef extern from "helpers.h" namespace "mds::python::tasks":
         task_handle get_current()
         void set_current(task_handle)
 
+    void initialize_base_task() nogil
+
 cdef extern from "helpers.h" namespace "mds::python::tasks::TaskWrapper" nogil:
     cdef cppclass Establish:
         Establish(const task_handle&) except +

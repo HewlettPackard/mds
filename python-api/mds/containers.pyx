@@ -42,12 +42,15 @@ from typing import Any, Dict, Callable, List, Text, Type, Iterable, Sequence
 initialize_base_task()
 
 # =========================================================================
-#  Publication Reports & Options
+#  Exceptions
 # =========================================================================
 
 class PublishFailed(Exception):
     pass
 
+# =========================================================================
+#  Options
+# =========================================================================
 
 class Condition(object):
 
@@ -160,7 +163,7 @@ class OptionsBase(object):
         #   }
         #   return res;
         # }
-        return self._opt.copy()
+        return self._opts.copy()
 
 class RerunOptions(OptionsBase):
     pass
@@ -176,43 +179,9 @@ def rerun(conds: Iterable[Callable]) -> RerunOptions:
 def resolve(conds: Iterable[Callable]) -> ResolveOptions:
     return ResolveOptions(conds)
 
-
-cdef class ContextTaskMapping(dict):
-
-    def add_task_to_context(self, ctxt : IsolationContext, task: Task):
-        assert isinstance(ctxt, IsolationContext) and isinstance(task, Task)
-
-        if ctxt not in self:
-            self[ctxt] = dict()
-
-        self[ctxt][hash(task)] = task
-
-    def context_has_task(self, ctxt: IsolationContext, task: Task):
-        try:
-            return hash(task) in self[ctxt]
-        except Exception:
-            return False
-
-    def get_context_task_map(self, ctxt: IsolationContext):
-        assert isinstance(ctxt, IsolationContext)
-
-        try:
-            return self[ctxt]
-        except Exception:
-            return None
-
-    def expunge(self, target: Task):
-        hash_val = hash(target)
-
-        for isoctxt, task_map in self.items():
-            try:
-                del task_map[hash_val]
-            except KeyError:
-                continue
-
-            if not task_map:  # If it's now empty, dump it
-                del self[isoctxt]   
-
+# =========================================================================
+#  Publication Reports
+# =========================================================================
 
 class PublishReport(object):
     cdef bint _succeeded
@@ -292,20 +261,6 @@ cdef class PublicationResult(object):
 
     def prepare_for_redo(self):
         return self._handle.prepare_for_redo()
-
-    # TODO: Declaration in iso_ctxt.h, where is def?
-    # def redo(self, Task task):
-    #     isoctxt = task.isolation_context
-    #     redoable = IsolationContext.redoable_tasks
-    #     tasks = redoable.get_context_task_map(isoctxt).values()
-
-    #     # TODO CLARIFY Is checking this map purely to make sure there's something there?
-    #     if not tasks:
-    #         return False
-    #     # TODO elif task in tasks?
-    #     # NOTE Don't see why this was rerun before, and not just straight run..
-    #     task.run()
-    #     return True
 
     def redo_tasks_by_start_time(self) -> List[Task]:
         cdef:
@@ -403,6 +358,43 @@ cdef inline PublicationResult_Init(publication_attempt_handle handle):
 #  Isolation Contexts
 # =========================================================================
 
+cdef class ContextTaskMapping(dict):
+
+    def add_task_to_context(self, ctxt: IsolationContext, task: Task) -> None:
+        assert isinstance(ctxt, IsolationContext) and isinstance(task, Task)
+
+        if ctxt not in self:
+            self[ctxt] = dict()
+
+        self[ctxt][hash(task)] = task
+
+    def context_has_task(self, ctxt: IsolationContext, task: Task):  # -> bool
+        try:
+            return hash(task) in self[ctxt]
+        except Exception:
+            return False
+
+    def get_context_task_map(self, ctxt: IsolationContext) -> Dict[int, Task]:
+        assert isinstance(ctxt, IsolationContext)
+
+        try:
+            return self[ctxt]
+        except Exception:
+            return None
+
+    def expunge(self, target: Task) -> None:
+        hash_val = hash(target)
+
+        for isoctxt, task_map in self.items():
+            try:
+                del task_map[hash_val]
+            except KeyError:
+                continue
+
+            if not task_map:  # If it's now empty, dump it
+                del self[isoctxt]   
+
+
 cdef __REDOABLE_TASKS = ContextTaskMapping()
 
 cdef void __kinds_check(str kind):
@@ -481,25 +473,14 @@ cdef class IsolationContext(object):
 
     def call(self, fn: Callable, args=tuple()) -> object:
         cdef Use tc = Use(self._handle)
-        # return in_isoctxt(self._handle, fn, args)
         return fn(*args)
 
     def run(self, fn: Callable) -> 'IsolationContext':
         self.call(fn)
         return self
 
-    def bind(self, fn: Callable):  # TODO: Implement
-        # template <typename Ret, typename...Args>
-        # auto bind(const std::function<Ret(Args...)> &fn) {
-        #   iso_ctxt me = *this;
-        #   return [=](Args&&...args) {
-        #     ensure_thread_initialized();
-        #     return me.call([&]{
-        #         return fn(std::forward<Args>(args)...);
-        #     });
-        #   };
-        # }
-        pass
+    def bind(self, fn: Callable) -> MDSIsolationContextBindWrapper:
+        return MDSIsolationContextBindWrapper(fn, self)
 
     @classmethod
     def bind_to_current(cls, fn: Callable)
@@ -529,11 +510,7 @@ cdef class IsolationContext(object):
         masked_fn = fn
         child = self.create_nested(kind, snapshot)
 
-    #   if (mt != mod_type::publishable) {
-    #     return std::make_pair(child.call(masked_fn, std::forward<Args>(args)...),
-    #                           true);
-    #   }
-        if mt != mod_type.publishable:  # Not consistent nor implemented
+        if kind != 'publishable':
             return tuple([child.call(masked_fn, args), True])
 
         reports.reset()
@@ -623,7 +600,7 @@ cdef class IsolationContext(object):
     # }
                                      
 
-    def call_isolated_nothrow(self, params):
+    def call_isolated_nothrow(self, *args, **kwargs) -> Optional[object]:
         # template <typename...Xs>
         # auto call_isolated_nothrow(Xs&&...params) {
         #   return get_opts_and_call_isolated(mod_type::publishable, view_type::live,
@@ -634,10 +611,12 @@ cdef class IsolationContext(object):
         reports = ReportOptions()
         in_snapshot = False
 
+        # Update kwargs dict here
+
         return self.get_opts_and_call_isolated('publishable', in_snapshot, rerun, resolve, reports, params)
 
 
-    def call_isolated(self, params):
+    def call_isolated(self, *args, **kwargs) -> Optional[object]:
         # template <typename...Xs>
         # auto call_isolated(Xs&&...params) {
         #   auto res = call_isolated_nothrow(std::forward<Xs>(params)...);
@@ -648,19 +627,19 @@ cdef class IsolationContext(object):
 
         return res.first
 
-    def call_read_only(self, fn: Callable, args=tuple()):
+    def call_read_only(self, fn: Callable, args=tuple()) -> Optional[object]:
         return self.create_nested('read_only', snapshot=False).call(fn, args)
 
-    def call_detached(self, fn: Callable, args=tuple()):
+    def call_detached(self, fn: Callable, args=tuple()) -> Optional[object]:
         return self.create_nested('detached', snapshot=False).call(fn, args)
 
-    def call_in_detached_snapshot(self, fn: Callable, args=tuple()):
+    def call_in_detached_snapshot(self, fn: Callable, args=tuple()) -> Optional[object]:
         return self.create_nested('detached', snapshot=True).call(fn, args)
 
-    def call_in_snapshot(self, fn: Callable, args=tuple()):
+    def call_in_snapshot(self, fn: Callable, args=tuple()) -> Optional[object]:
         return self.create_nested('publishable', snapshot=True).call(fn, args)
 
-    def call_in_read_only_snapshot(self, fn: Callable, args=tuple()):
+    def call_in_read_only_snapshot(self, fn: Callable, args=tuple()) -> Optional[object]:
         return self.create_nested('read_only', snapshot=True).call(fn, args)
 
     @staticmethod
@@ -715,6 +694,17 @@ cdef class IsolationContext(object):
             return __REDOABLE_TASKS
 
 
+class MDSIsolationContextBindWrapper(object):
+
+    def __init__(self, fn: Callable, ctxt: IsolationContext):
+        self._fn = fn
+        self._ctxt = ctxt
+
+    def __call__(self, *args):
+        Task.initialize_base_task()
+        return self._ctxt.call(fn, args)
+
+
 def isolated(params):
     return IsolationContext.get_current().call_isolated(params)
 
@@ -737,22 +727,6 @@ cdef inline IsolationContext_Init(iso_context_handle handle):
     result._handle = handle
     return result
 
-# cdef inline object _isoctxt_execution_wrapper(_py_callable_wrapper wrapped):
-#     cdef:
-#         object fn = <object> wrapped.fn
-#         object args = <object> wrapped.args
-   
-#     return fn(*args)
-
-# cdef inline object in_isoctxt(iso_context_handle ich, object fn, object args):
-#     return run_in_iso_ctxt(ich, &_isoctxt_execution_wrapper, _wrap(fn, args))
-
-# cdef inline _py_callable_wrapper _wrap(object fn, object args):
-#     cdef _py_callable_wrapper py_wrap
-#     py_wrap.fn = <PyObject *> fn
-#     py_wrap.args = <PyObject *> args
-#     return py_wrap
-
 # =========================================================================
 #  Tasks
 # =========================================================================
@@ -766,7 +740,7 @@ class MDSCurrentTaskProxy(MDSProxyObject):
 class ComputedVal(object):
     class TaskComputedBase(object):
 
-        def get(self):
+        def get(self) -> None:
             pass
 
     class Unpublishable(TaskComputedBase):
@@ -774,49 +748,18 @@ class ComputedVal(object):
         def __init__(self, fn: Callable):
             self._val = None
 
-        def get(self):
+        def get(self) -> Any:
             return self._val
 
     def __init__(self, fn: Callable=None, rhs: TaskComputedBase=None):
         self._tc = TaskComputedBase() if rhs is None else rhs._tc
 
-    def get(self):
-        return self._tc->get()
+    def get(self) -> Any:
+        return self._tc.get()
 
     @staticmethod
     def computed(fn: Callable) -> 'ComputedVal':
         return ComputedVal(fn=fn)
-
-
-# class task::info {
-#   mutable std::mutex _mutex;
-#   vector<pfr_fn_type> _prepare_for_redo;
-# public:
-#   task_fn_type function;
-
-#   info(task_fn_type &&fn)
-#     : function(move(fn))
-#   {}
-
-#   bool needs_prepare_for_redo() const {
-#     return !_prepare_for_redo.empty();
-#   }
-
-#   void on_prepare_for_redo(pfr_fn_type fn) {
-#     lock_guard<mutex> lock(_mutex);
-#     _prepare_for_redo.push_back(fn);
-#   }
-
-#   bool prepare_for_redo(const task &t) const {
-#     lock_guard<mutex> lock(_mutex);
-#     for (const auto &fn : _prepare_for_redo) {
-#       if (!fn(t)) {
-#         return false;
-#       }
-#     }
-#     return true;
-#   }
-# };
 
 
 cdef class Task(object):
@@ -824,6 +767,7 @@ cdef class Task(object):
         tuple _args
         object _target
         bint _expired
+        list _prepare_for_redo
         task_handle _handle
         iso_context_handle _ctxt
 
@@ -831,6 +775,7 @@ cdef class Task(object):
         Task.initialize_base_task()
         self._target = target
         self._args = args
+        self._prepare_for_redo = list()
         
         if target is not None:
             self._expired = False
@@ -872,43 +817,20 @@ cdef class Task(object):
     def cannot_redo(self) -> None:
         self._handle.cannot_redo()
 
-    def needs_prepare_for_redo(self):
-        pass
-        # TODO Check info in iso_ctxt.cpp
+    def prepare_for_redo(self, task: 'Task'):  # -> bool
+        for fn in self._prepare_for_redo:
+            if not fn(task):
+                return False
+
+        return True
+
+    def needs_prepare_for_redo(self):  # -> bool
+        return len(self._prepare_for_redo) != 0
 
     def on_prepare_for_redo(self, fn: Callable):
-        # TODO: This delegates to task_info in iso_ctxt.cpp
-        # task::on_prepare_for_redo(const task::pfr_fn_type &fn) {
-        #   shared_ptr<info> i = lookup_info();
-        #   if (i == nullptr) {
-        #     /*
-        #      * We can't redo, so don't bother preparing
-        #      */
-        #     return;
-        #   }
-        #   i->on_prepare_for_redo(fn);
-        # }
-        pass
+        self._prepare_for_redo.append(fn)
 
-    # std::shared_ptr<info> get_info() const;
-    # std::shared_ptr<info> lookup_info() const;
-    # static void as_task(std::function<void()> fn);
-
-    # template <typename Fn>
-    # constexpr static auto task_fn(Fn &&fn) {
-    #   return [fn=std::forward<Fn>(fn)](auto...args) mutable {
-    #     as_task([=]() mutable {
-    #         fn(args...);
-    #       });
-    #   };
-    # }
-
-    # static task current() {
-    #   return _current();
-    # }
-
-
-    def establish_and_run(self, fn: Callable, args=tuple()) -> object:
+    def establish_and_run(self, fn: Callable, args=tuple()) -> Optional[object]:
         """
         Call (and return from) any callable object not bound to this Task
         """
@@ -946,57 +868,45 @@ cdef class Task(object):
 
         IsolationContext.redoable_tasks.expunge(self)
 
+    def as_task(self, fn: Callable, args=tuple()) -> None:
+        """
+        Wraps callable object 'fn' which takes the arguments in 'args'
+        within a Task.
 
-  # inline void task::as_task(std::function<void()> fn) {
-  #   task ct = _current();
-  #   iso_ctxt cc = ct.context();
-  #   if (cc.is_publishable()) {
-  #     ensure_thread_initialized();
-  #     task nt = handle_type::push_new();
-  #     nt._ctxt = cc._handle;
-  #     nt.remember_and_call(std::move(fn));
-  #   } else {
-  #     std::cout << "Context " << cc << " not publishable" << std::endl;
-  #     fn();
-  #   }
-  # }
+        The callable 'fn' will be stored and evaulated in order to attempt
+        a successful publication, where the current IsolationContext is
+        publishable.
 
+        If the current 'IsolationContext' is not publishable, the supplied
+        function 'fn' will simply be executed with no attempts for redoing
+        being possible.
+        """
+        current_task = Task.get_current()
+        current_isoctxt = current_task.isolation_context
 
-    # def as_task(self, fn: Callable, args: Iterable[Any]) -> None:
-    #     """
-    #     Wraps callable object ``fn`` which takes the arguments in ``args``
-    #     within a Task.
+        if current_isoctxt.is_publishable:
+            task = Task(fn, args)
+            update_context_handle_in_task(task, current_isoctxt)
+            task.run()
+        else:
+            print("Context not publishable")
+            fn(*args)
 
-    #     The callable ``fn`` will be stored and evaulated in order to attempt
-    #     a successful publication, where the current IsolationContext is
-    #     publishable.
+    @staticmethod
+    def task_fn(self, fn: Callable) -> MDSTaskFnWrapper:
+        """
+        In the CAPI this returned a lambda, we do the same. Args are supplied when called.
+        """
+        return MDSTaskFnWrapper(fn)
 
-    #     If the current ``IsolationContext`` is not publishable, the supplied
-    #     function ``fn`` will simply be executed with no attempts for redoing
-    #     being possible.
-    #     """
-    #     current_task = Task.get_current()
-    #     current_isoctxt = current_task.isolation_context
+    @staticmethod
+    def get_current() -> Task:
+        """
+        Returns a Task object for the thread-relative current task.
+        """
+        return Task_Init(TaskWrapper.current()) 
 
-    #     if current_isoctxt.is_publishable:
-    #         task = Task(fn, args)
-    #         update_context_handle_in_task(task, current_isoctxt)
-    #         task.run()
-    #     else:
-    #         # TODO: Warning here
-    #         print("Context not publishable")
-    #         fn(*args)    
-
-
-
-    # @staticmethod
-    # def get_current() -> Task:
-    #     """
-    #     Returns a Task object for the thread-relative current task.
-    #     """
-    #     return Task_Init(TaskWrapper.current()) 
-
-    def context(self) -> IsolationContext:  # TODO: Duplicate of property
+    def context(self) -> IsolationContext:  # NOTE: Duplicate of property
         return self.isolation_context
 
     property isolation_context:
@@ -1016,6 +926,15 @@ cdef class Task(object):
     property expired:
         def __get__(self):
             return self._expired
+
+
+class MDSTaskFnWrapper(object):
+
+    def __init__(self, fn: Callable):
+        self._fn = fn
+
+    def __call__(self, *args, **kwargs):
+        return Task.as_task(self._fn,  *args, **kwargs)
 
 
 def for_each_in_tasks(list iterable, object fn):
@@ -1038,25 +957,6 @@ cdef inline add_task_handle(Task task, task_handle handle):
 
 cdef inline update_context_handle_in_task(Task task, IsolationContext ctxt):
     task._ctxt = ctxt._handle
-
-# cdef inline void _task_execution_wrapper(_py_callable_wrapper wrapped):
-#     """
-#     This is the wrapper function that Cython uses to generate the appropriate
-#     C++ that uses the Py*{Eval,CallObject}(py_callable, py_tuple) boilerplate.
-#     """
-#     cdef:
-#         object fn = <object> wrapped.fn
-#         object args = <object> wrapped.args
-   
-#     fn(*args)
-
-# cdef inline void __in_task(task_handle th, object fn, object args):
-#     """
-#     Delegate the running of this tasklet through to the compiled library, need
-#     to wrap things up nicely for Cython to generate the appropriate code.
-#     """
-#     cdef TaskWrapper task_wrap = TaskWrapper(th)
-#     task_wrap.run(&_task_execution_wrapper, _wrap(fn, args))
 
 cdef inline _task_add_dependent(Task first, Task second):
     first._handle.add_dependent(second._handle)
