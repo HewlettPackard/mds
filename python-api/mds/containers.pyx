@@ -288,7 +288,7 @@ cdef class PublicationResult(object):
         def __get__(self):
             return <bint> self._handle.succeeded()
 
-cdef inline PublicationResult_Init(publication_attempt_handle handle):
+cdef PublicationResult_Init(publication_attempt_handle handle):
     initialize_base_task()
     result = PublicationResult()
     result._handle = handle
@@ -321,7 +321,7 @@ cdef class IsolationContext(object):
     def __hash__(self):
         return self._handle.hash1()
 
-    cdef inline __create_child(self, str kind, bool snapshot):
+    cdef __create_child(self, str kind, bool snapshot):
         cdef:
             iso_context_handle handle
             str k_live = "live"

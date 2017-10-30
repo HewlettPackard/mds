@@ -83,6 +83,9 @@ namespace mds {
           return t;
         }
        public:
+        TaskWrapper(h_task_t &t) {
+          _current() = t;
+        };
         TaskWrapper() = default;
 
         class Establish {
@@ -107,7 +110,7 @@ namespace mds {
           return h_task_t::default_task();
         }
 
-        static h_task_t get_current() {
+        static h_task_t current() {
           return _current();
         }
 
@@ -135,10 +138,10 @@ namespace mds {
       };
 
       class Use : tasks::TaskWrapper::Establish {
-        Use(const h_isoctxt_t &c)
+        Use(h_isoctxt_t &c)
           : tasks::TaskWrapper::Establish([&c](){
               mds::python::tasks::initialize_base_task();
-              return c.handle().push_prevailing();
+              return c.push_prevailing();
             }()) {}
         Use(const Use &) = delete;
         Use(Use &&) = delete;

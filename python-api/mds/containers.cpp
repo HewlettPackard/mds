@@ -844,7 +844,6 @@ struct __pyx_vtabstruct_3mds_10containers_IsolationContext {
   PyObject *(*__pyx___create_child)(struct __pyx_obj_3mds_10containers_IsolationContext *, PyObject *, bool);
 };
 static struct __pyx_vtabstruct_3mds_10containers_IsolationContext *__pyx_vtabptr_3mds_10containers_IsolationContext;
-static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_16IsolationContext___create_child(struct __pyx_obj_3mds_10containers_IsolationContext *, PyObject *, bool);
 
 /* --- Runtime support code (head) --- */
 /* Refnanny.proto */
@@ -1384,7 +1383,7 @@ static PyTypeObject *__Pyx_ImportType(const char *module_name, const char *class
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
-static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_16IsolationContext___create_child(struct __pyx_obj_3mds_10containers_IsolationContext *__pyx_v_self, PyObject *__pyx_v_kind, bool __pyx_v_snapshot); /* proto*/
+static PyObject *__pyx_f_3mds_10containers_16IsolationContext___create_child(struct __pyx_obj_3mds_10containers_IsolationContext *__pyx_v_self, PyObject *__pyx_v_kind, bool __pyx_v_snapshot); /* proto*/
 
 /* Module declarations from 'libc.string' */
 
@@ -1422,7 +1421,7 @@ static PyTypeObject *__pyx_ptype_3mds_10containers_Use = 0;
 static PyTypeObject *__pyx_ptype_3mds_10containers_IsolationContext = 0;
 static PyTypeObject *__pyx_ptype_3mds_10containers_Task = 0;
 static PyObject *__pyx_v_3mds_10containers___REDOABLE_TASKS = 0;
-static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_PublicationResult_Init(mds::api::publication_attempt_handle); /*proto*/
+static PyObject *__pyx_f_3mds_10containers_PublicationResult_Init(mds::api::publication_attempt_handle); /*proto*/
 static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_IsolationContext_Init(mds::api::iso_context_handle); /*proto*/
 static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers__isoctxt_execution_wrapper(mds::python::_py_callable_wrapper); /*proto*/
 static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_in_isoctxt(mds::api::iso_context_handle, PyObject *, PyObject *); /*proto*/
@@ -5627,7 +5626,7 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_9succeeded___get
  *         def __get__(self):
  *             return <bint> self._handle.succeeded()             # <<<<<<<<<<<<<<
  * 
- * cdef inline PublicationResult_Init(publication_attempt_handle handle):
+ * cdef PublicationResult_Init(publication_attempt_handle handle):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyBool_FromLong((__pyx_v_self->_handle.succeeded() != 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 289, __pyx_L1_error)
@@ -5765,12 +5764,12 @@ static PyObject *__pyx_pf_3mds_10containers_17PublicationResult_18__setstate_cyt
 /* "mds/containers.pyx":291
  *             return <bint> self._handle.succeeded()
  * 
- * cdef inline PublicationResult_Init(publication_attempt_handle handle):             # <<<<<<<<<<<<<<
+ * cdef PublicationResult_Init(publication_attempt_handle handle):             # <<<<<<<<<<<<<<
  *     initialize_base_task()
  *     result = PublicationResult()
  */
 
-static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_PublicationResult_Init(mds::api::publication_attempt_handle __pyx_v_handle) {
+static PyObject *__pyx_f_3mds_10containers_PublicationResult_Init(mds::api::publication_attempt_handle __pyx_v_handle) {
   struct __pyx_obj_3mds_10containers_PublicationResult *__pyx_v_result = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -5779,7 +5778,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_PublicationResult_Init(
 
   /* "mds/containers.pyx":292
  * 
- * cdef inline PublicationResult_Init(publication_attempt_handle handle):
+ * cdef PublicationResult_Init(publication_attempt_handle handle):
  *     initialize_base_task()             # <<<<<<<<<<<<<<
  *     result = PublicationResult()
  *     result._handle = handle
@@ -5787,7 +5786,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_PublicationResult_Init(
   mds::python::tasks::initialize_base_task();
 
   /* "mds/containers.pyx":293
- * cdef inline PublicationResult_Init(publication_attempt_handle handle):
+ * cdef PublicationResult_Init(publication_attempt_handle handle):
  *     initialize_base_task()
  *     result = PublicationResult()             # <<<<<<<<<<<<<<
  *     result._handle = handle
@@ -5822,7 +5821,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_PublicationResult_Init(
   /* "mds/containers.pyx":291
  *             return <bint> self._handle.succeeded()
  * 
- * cdef inline PublicationResult_Init(publication_attempt_handle handle):             # <<<<<<<<<<<<<<
+ * cdef PublicationResult_Init(publication_attempt_handle handle):             # <<<<<<<<<<<<<<
  *     initialize_base_task()
  *     result = PublicationResult()
  */
@@ -6183,7 +6182,7 @@ static Py_hash_t __pyx_pf_3mds_10containers_16IsolationContext___hash__(struct _
  *     def __hash__(self):
  *         return self._handle.hash1()             # <<<<<<<<<<<<<<
  * 
- *     cdef inline __create_child(self, str kind, bool snapshot):
+ *     cdef __create_child(self, str kind, bool snapshot):
  */
   __pyx_r = __pyx_v_self->_handle.hash1();
   goto __pyx_L0;
@@ -6206,12 +6205,12 @@ static Py_hash_t __pyx_pf_3mds_10containers_16IsolationContext___hash__(struct _
 /* "mds/containers.pyx":324
  *         return self._handle.hash1()
  * 
- *     cdef inline __create_child(self, str kind, bool snapshot):             # <<<<<<<<<<<<<<
+ *     cdef __create_child(self, str kind, bool snapshot):             # <<<<<<<<<<<<<<
  *         cdef:
  *             iso_context_handle handle
  */
 
-static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_16IsolationContext___create_child(struct __pyx_obj_3mds_10containers_IsolationContext *__pyx_v_self, PyObject *__pyx_v_kind, bool __pyx_v_snapshot) {
+static PyObject *__pyx_f_3mds_10containers_16IsolationContext___create_child(struct __pyx_obj_3mds_10containers_IsolationContext *__pyx_v_self, PyObject *__pyx_v_kind, bool __pyx_v_snapshot) {
   mds::api::iso_context_handle __pyx_v_handle;
   PyObject *__pyx_v_k_live = 0;
   PyObject *__pyx_v_k_read_only = 0;
@@ -6526,7 +6525,7 @@ static CYTHON_INLINE PyObject *__pyx_f_3mds_10containers_16IsolationContext___cr
   /* "mds/containers.pyx":324
  *         return self._handle.hash1()
  * 
- *     cdef inline __create_child(self, str kind, bool snapshot):             # <<<<<<<<<<<<<<
+ *     cdef __create_child(self, str kind, bool snapshot):             # <<<<<<<<<<<<<<
  *         cdef:
  *             iso_context_handle handle
  */
@@ -6757,7 +6756,7 @@ static PyObject *__pyx_pf_3mds_10containers_16IsolationContext_2create_child(str
   __Pyx_XDECREF(__pyx_r);
   if (!(likely(PyUnicode_CheckExact(__pyx_v_kind))||((__pyx_v_kind) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "unicode", Py_TYPE(__pyx_v_kind)->tp_name), 0))) __PYX_ERR(0, 363, __pyx_L1_error)
   __pyx_t_8 = __Pyx_PyObject_IsTrue(__pyx_v_snapshot); if (unlikely((__pyx_t_8 == ((bool)-1)) && PyErr_Occurred())) __PYX_ERR(0, 363, __pyx_L1_error)
-  __pyx_t_4 = __pyx_f_3mds_10containers_16IsolationContext___create_child(__pyx_v_self, ((PyObject*)__pyx_v_kind), __pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 363, __pyx_L1_error)
+  __pyx_t_4 = ((struct __pyx_vtabstruct_3mds_10containers_IsolationContext *)__pyx_v_self->__pyx_vtab)->__pyx___create_child(__pyx_v_self, ((PyObject*)__pyx_v_kind), __pyx_t_8); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 363, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
