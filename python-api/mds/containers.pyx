@@ -23,11 +23,6 @@ Application during this compilation process under terms of your choice,
 provided you also meet the terms and conditions of the Application license.
 """
 
-from cpython.ref cimport PyObject
-
-from cython.operator cimport dereference as deref
-from libcpp.memory cimport unique_ptr, make_unique
-
 from mds.core.api_tasks cimport *
 from mds.core.api_isolation_contexts cimport *
 
@@ -141,7 +136,7 @@ class OptionsBase(object):
         self._opts = [x for x in conds]
 
     @classmethod
-    def check(cls, cs: Controls, arg: Any):
+    def check(cls, cs: Controls, arg: Any):  # -> bool
         for control in cs:
             if control(arg):
                 return True
@@ -152,17 +147,6 @@ class OptionsBase(object):
         self._opts.extend(other._opts)
 
     def controls(self) -> Controls:
-        # TODO: Is this returning funcs of results thereof? I think the former.
-        # std::vector<control_type> controls() const {
-        #   std::vector<control_type> res;
-        #   if (!opts.empty()) {
-        #     res.reserve(opts.size());
-        #     for (const opt_type &opt : opts) {
-        #       res.push_back(opt());
-        #     }
-        #   }
-        #   return res;
-        # }
         return self._opts.copy()
 
 class RerunOptions(OptionsBase):
@@ -210,33 +194,28 @@ class PublishReport(object):
 
 class ReportOptions(object):
 
-    def __delegate(self, fn: Callable, args: Sequence=tuple()) -> None:
-        # TODO: Work out exactly what's being returned here
-        # template <typename Fn, typename...Args>
-        # void delegate(Fn&& fn, Args&&...args) const {
-        #   std::for_each(_reports.begin(), _reports.end(),
-        #                 [fn=std::forward<Fn>(fn), &args...](const auto &rp) {
-        #                   (rp.get()->*fn)(args...);
-        #                 });
-        # }
-        for rp in self._reports:
-            pass
-
     def __init__(self, reports: Iterable[PublishReport]):
         self._reports = reports.copy()
+
+    def __delegate(self, fn: Callable, args: Sequence=tuple()) -> None:
+        """
+        Call the relevant (bound) function of the PublishReport on each
+        of the stored reports.
+        """
+        for rp in self._reports:
+            fn(rp, *args)
 
     def add(self, other: ReportOptions) -> None:
         self._reports.extend(other._reports)
 
-    # TODO: Not sure what the semantics are here, come back and think through
     def reset(self) -> None:
         self.__delegate(PublishReport.reset)
 
     def before_run(self, ctxt: IsolationContext) -> None:
-        self.__delegate(PublishReport.before_run, ctxt)
+        self.__delegate(PublishReport.before_run, (ctxt,))
 
     def before_resolve(self, pr: PublicationResult) -> None:
-        self.__delegate(PublishReport.before_resolve, pr)
+        self.__delegate(PublishReport.before_resolve, (pr,))
 
     def note_success(self):
         self.__delegate(PublishReport.note_success)
@@ -403,6 +382,7 @@ cdef void __kinds_check(str kind):
     if kind not in kinds:
         raise TypeError(f"`kind` must be a `str` value from {kinds}")
 
+
 cdef class IsolationContext(object):
 
     cdef iso_context_handle _handle
@@ -410,9 +390,11 @@ cdef class IsolationContext(object):
     def __hash__(self):
         return self._handle.hash1()
 
-    def __richcmp__(self, other):
-        # TODO Check String
-        pass
+    def __richcmp__(a, b, op):
+        if op == 2:  # ==
+            return a._handle == b._handle
+        elif op == 3:  # !=
+            return a._handle != b._handle
 
     cdef inline __create_child(self, str kind, bint snapshot):
         cdef:
@@ -483,8 +465,8 @@ cdef class IsolationContext(object):
         return MDSIsolationContextBindWrapper(fn, self)
 
     @classmethod
-    def bind_to_current(cls, fn: Callable)
-        cls.get_current().bind(fn)
+    def bind_to_current(cls, fn: Callable) -> MDSIsolationContextBindWrapper:
+        return cls.get_current().bind(fn)
 
     def call_isolated__2(self,
         resolve_opts: ResolveOptions,
@@ -520,7 +502,7 @@ cdef class IsolationContext(object):
             controls = rerun_opts.controls()
 
             while not res[1] and RerunOptions.check(controls, child):
-                child = create_nested(mt, vt) # TODO Broken
+                child = self.create_nested(kind, snapshot)
                 res = child.call_isolated__2(resolve_opts, reports, masked_fn, args)
 
         if res[1]:
@@ -530,97 +512,36 @@ cdef class IsolationContext(object):
 
         return res
 
-    def get_opts_and_call_isolated(self):
-        pass
+    def get_opts_and_call_isolated(
+        self,
+        kind: str,
+        snapshot: bool,
+        rerun_opts: RerunOptions,
+        resolve_opts: ResolveOptions,
+        report_opts: ReportOptions,
+        fn: Callable,
+        args=tuple()
+    ):
+        return self.call_isolated__(kind, snapshot, rerun_opts, resolve_opts, report_opts, fn, args)                       
 
-    # template <typename...Xs>
-    # auto get_opts_and_call_isolated(mod_type mt, view_type vt,
-    #                                 rerun_opts &rerun,
-    #                                 resolve_opts &resolve,
-    #                                 report_opts &reports,
-    #                                 mod_type mt2, Xs&&...params) {
-    #   return get_opts_and_call_isolated(mt2, vt, rerun, resolve, reports,
-    #                                     std::forward<Xs>(params)...);
-    # }
-                                     
-    # template <typename...Xs>
-    # auto get_opts_and_call_isolated(mod_type mt, view_type vt,
-    #                                 rerun_opts &rerun,
-    #                                 resolve_opts &resolve,
-    #                                 report_opts &reports,
-    #                                 view_type vt2, Xs&&...params) {
-    #   return get_opts_and_call_isolated(mt, vt2, rerun, resolve, reports,
-    #                                     std::forward<Xs>(params)...);
-    # }
-                                     
-    # template <typename...Xs>
-    # auto get_opts_and_call_isolated(mod_type mt, view_type vt,
-    #                                 rerun_opts &rerun,
-    #                                 resolve_opts &resolve,
-    #                                 report_opts &reports,
-    #                                 const rerun_opts opts, Xs&&...params) {
-    #   rerun.add(opts);
-    #   return get_opts_and_call_isolated(mt, vt, rerun, resolve, reports,
-    #                                     std::forward<Xs>(params)...);
-    # }
-                                     
-    # template <typename...Xs>
-    # auto get_opts_and_call_isolated(mod_type mt, view_type vt,
-    #                                 rerun_opts &rerun,
-    #                                 resolve_opts &resolve,
-    #                                 report_opts &reports,
-    #                                 const resolve_opts opts, Xs&&...params) {
-    #   resolve.add(opts);
-    #   return get_opts_and_call_isolated(mt, vt, rerun, resolve, reports,
-    #                                     std::forward<Xs>(params)...);
-    # }
-                                     
-
-    # template <typename...Xs>
-    # auto get_opts_and_call_isolated(mod_type mt, view_type vt,
-    #                                 rerun_opts &rerun,
-    #                                 resolve_opts &resolve,
-    #                                 report_opts &reports,
-    #                                 const report_opts opts, Xs&&...params) {
-    #   reports.add(opts);
-    #   return get_opts_and_call_isolated(mt, vt, rerun, resolve, reports,
-    #                                     std::forward<Xs>(params)...);
-    # }
-                                     
-
-    # template <typename Fn, typename...Args>
-    # auto get_opts_and_call_isolated(mod_type mt, view_type vt,
-    #                                 rerun_opts &rerun,
-    #                                 resolve_opts &resolve,
-    #                                 report_opts &reports,
-    #                                 Fn&& fn, Args&&...args)
-    # {
-    #   return call_isolated__(mt, vt, rerun, resolve, reports,
-    #                          std::forward<Fn>(fn), std::forward<Args>(args)...);
-    # }
-                                     
-
-    def call_isolated_nothrow(self, *args, **kwargs) -> Optional[object]:
-        # template <typename...Xs>
-        # auto call_isolated_nothrow(Xs&&...params) {
-        #   return get_opts_and_call_isolated(mod_type::publishable, view_type::live,
-        #                                     rerun, resolve, reports,
-        #                                     std::forward<Xs>(params)...);
+    def call_isolated_nothrow(self, fn: Callable, args=tuple(), *args, **kwargs) -> Optional[object]:
         rerun = RerunOptions()
         resolve = ResolveOptions()
         reports = ReportOptions()
-        in_snapshot = False
+        snapshot = False
 
-        # Update kwargs dict here
+        if 'rerun_opts' in kwargs:
+            kwargs['rerun_opts'] = rerun
+        if 'resolve_opts' in kwargs:
+            kwargs['resolve_opts'] = resolve
+        if 'snapshot' in kwargs:
+            kwargs['snapshot'] = snapshot
 
-        return self.get_opts_and_call_isolated('publishable', in_snapshot, rerun, resolve, reports, params)
+        return self.get_opts_and_call_isolated('publishable', in_snapshot, rerun, resolve, reports, fn, args, *args, **kwargs)
 
 
     def call_isolated(self, *args, **kwargs) -> Optional[object]:
-        # template <typename...Xs>
-        # auto call_isolated(Xs&&...params) {
-        #   auto res = call_isolated_nothrow(std::forward<Xs>(params)...);
-        res = call_isolated_nothrow(params):
+        res = self.call_isolated_nothrow(*args, **kwargs):
 
         if not res[0]:
             raise PublishFailed()
@@ -760,6 +681,40 @@ class ComputedVal(object):
     @staticmethod
     def computed(fn: Callable) -> 'ComputedVal':
         return ComputedVal(fn=fn)
+
+    class Publishable(TaskComputedBase):
+        """
+        This is missing weak ptr stuff, but should resolve
+        """
+
+        def __init__(self):
+            self._task = None
+
+        def set_task(self, fn: Callable) -> None:
+            self._task = Task.get_current()
+            self._val = fn(self._val)
+
+        def get(self) -> object:
+            if self._task is not None:
+                self._task.add_dependent(Task.get_current())
+
+            # NOTE: Not sure about this...
+            # task t = _task.lock();
+            # if (t != nullptr) {
+            #     t.add_dependent(task::current());
+            # }
+            # return _val;
+            return self._val
+
+    def create_concrete(self, fn: Callable) -> TaskComputedBase:
+        ctxt = IsolationContext.get_current()
+
+        if ctxt.is_publishable:
+            res = Publishable()
+            res.set_task(fn)
+            return res
+        else:
+            return Unpublishable(fn)
 
 
 cdef class Task(object):
