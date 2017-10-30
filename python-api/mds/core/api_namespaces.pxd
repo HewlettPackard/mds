@@ -30,9 +30,6 @@ from mds.core.api_primitives cimport *
 from mds.core.api_records cimport h_mrecord_t, h_rtype_t
 from mds.core.api_strings cimport h_istring_t, h_mstring_t, interned_string_handle
 
-cdef extern from "helpers.h" namespace "mds::python::namespaces" nogil:
-    namespace_handle &current_namespace()
-
 cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
     cdef cppclass namespace_handle:
         namespace_handle()

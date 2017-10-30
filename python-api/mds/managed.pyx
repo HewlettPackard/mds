@@ -4235,23 +4235,6 @@ cdef class Impl(object):
             return self._initial_ups
 
 
-cdef class MDSCurrentNamespaceProxy(MDSProxyObject):
-    """
-    TODO: Manage the thread-local current Namespace
-    """
-
-    def __getattr__(self, item):
-        return getattr(self._proxied, item)
-
-    def __setattr__(self, key, value):
-        if key.endswith("_proxied"):
-            super().__setattr__(key, value)
-        elif not hasattr(self._proxied, key):
-            raise AttributeError("'{}' has no attribute '{}'".format(type(self._proxied).__name__, key))
-        else:
-            setattr(self._proxied, key, value)
-
-
 cdef class Namespace(MDSObject):
     cdef:
         namespace_handle _handle
@@ -4340,10 +4323,8 @@ cdef class Namespace(MDSObject):
         return __NAMESPACE_ROOT
 
     @staticmethod
-    def current() -> MDSCurrentNamespaceProxy:
-        # TODO: This originally passes back a reference, so it can be updated. See
-        #       Where and how this is used.
-        return MDSCurrentNamespaceProxy()
+    def current() -> Namespace:
+        return MDSThreadLocalData.current_namespace
 
     @staticmethod
     def from_path(path: PathTypes) -> Namespace:

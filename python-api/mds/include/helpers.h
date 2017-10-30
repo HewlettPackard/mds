@@ -78,18 +78,12 @@ namespace mds {
 
       class TaskWrapper {
        private:
-        h_task_t _handle;
-
         static h_task_t &_current() {
           static thread_local h_task_t t = h_task_t::default_task();
           return t;
         }
        public:
-        TaskWrapper()
-          : _handle{h_task_t::default_task()} {}
-
-        TaskWrapper(h_task_t th)
-          : _handle{th} {}
+        TaskWrapper() = default;
 
         class Establish {
          public:
@@ -113,8 +107,13 @@ namespace mds {
           return h_task_t::default_task();
         }
 
-        static h_task_t current() {
+        static h_task_t get_current() {
           return _current();
+        }
+
+
+        static void set_current(h_task_t &other) {
+          _current() = other;
         }
 
         void run(std::function<void(py_callable_wrapper)> &&fn,
@@ -133,6 +132,16 @@ namespace mds {
         tasks::initialize_base_task();
         // TODO: This is clearly all wrong, but just making the compiler happy for now
         return std::forward<decltype(fn)>(fn)(arg);
+      };
+
+      class Use : tasks::TaskWrapper::Establish {
+        Use(const h_isoctxt_t &c)
+          : tasks::TaskWrapper::Establish([&c](){
+              mds::python::tasks::initialize_base_task();
+              return c.handle().push_prevailing();
+            }()) {}
+        Use(const Use &) = delete;
+        Use(Use &&) = delete;
       };
     } // End mds::python::isoctxt
 
@@ -172,15 +181,7 @@ namespace mds {
       _TYPE_WRAPPER_(kind::RECORD, record)
       _TYPE_WRAPPER_(kind::STRING, string)
 
-      // _TYPE_WRAPPER_(kind::ARRAY, array)
-      // _TYPE_WRAPPER_(kind::NAMESPACE, namespace)
     } // End mds::python::types
-    namespace namespaces {
-      static h_namespace_t &current_namespace() {
-        static thread_local h_namespace_t ns = h_namespace_t::global();
-        return ns;
-      }
-    } // End mds::python::namespaces
   } // End mds::python
 } // End mds
 

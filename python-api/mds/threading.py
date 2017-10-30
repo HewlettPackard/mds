@@ -42,13 +42,30 @@ class MDSThreadData(object):
 
         if not hasattr(local_data, "current") or not local_data.current:
             local_data.current = {
-                "task" = Task.get_current(),
-                "namespace" = Namespace.get_current()
+                "task" = Task(),  # TODO: Initialize with top-level-task
+                "namespace" = Namespace.root()
             }
 
     @property
-    def current() -> CurrentDict:
-        return MDSThreadData.STORE.current
+    def current(self) -> CurrentDict:
+        return MDSThreadData().STORE.current
+
+    @classmethod
+    def current_namespace(cls) -> Namespace:
+        return cls().current['namespace']
+
+    @classmethod
+    def set_current_namespace(cls, ns: Namespace) -> None:
+        cls().current['namespace'] = ns
+
+    @classmethod
+    def current_task(cls) -> Task:
+        return cls().current['task']
+
+    @classmethod
+    def set_current_task(cls, t: Task) -> None:
+        # TODO: Pull in changes from fixedcontainers and set this with _establish
+        cls().current['task'] = t
 
     def set_from_child(self, other: CurrentDict):
         # We want to make sure a child thread can only set the context once.
@@ -76,6 +93,3 @@ class ChildThread(Thread):
 
         # Now call up the MRO to invoke the call
         super().run()
-
-        # TODO: Ask Evan if this is a good idea?
-        # MDSThreadData().reset()
