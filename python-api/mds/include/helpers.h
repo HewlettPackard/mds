@@ -57,14 +57,8 @@ using ::mds::api::kind;
 
 namespace mds {
   namespace python {
-    typedef struct _py_callable_wrapper {
-      PyObject *fn;
-      PyObject *args;
-    } py_callable_wrapper;
-
     namespace tasks {
       static inline void initialize_base_task(void) {
-        // TODO: Double check this should be thread_local
         static thread_local bool already_initialized = false;
 
         if (! already_initialized) {
@@ -83,13 +77,14 @@ namespace mds {
           return t;
         }
        public:
-        TaskWrapper(h_task_t &t) {
-          _current() = t;
-        };
         TaskWrapper() = default;
 
         class Establish {
          public:
+          Establish() {// This is here to make Cython happy for stack-allocated objects; should never be invoked.
+            throw std::runtime_error("Shouldn't be able to instantiate Establish with no h_task_t");
+          }
+
           Establish(const h_task_t &t) {
               static size_t counter = 0;  // TODO DELETE 
             printf("[%lu] _current() - %lu\n", counter, _current().hash1());  // TODO DELETE 
@@ -110,41 +105,27 @@ namespace mds {
           return h_task_t::default_task();
         }
 
-        static h_task_t current() {
+        static h_task_t get_current() {
           return _current();
         }
 
-
         static void set_current(h_task_t &other) {
           _current() = other;
-        }
-
-        void run(std::function<void(py_callable_wrapper)> &&fn,
-             py_callable_wrapper arg) {
-          initialize_base_task();
-          std::forward<decltype(fn)>(fn)(arg);
         }
       };
     } // End mds::python::tasks
     
     namespace isoctxts {
-      static inline PyObject *run_in_iso_ctxt(
-        h_isoctxt_t &handle,
-        std::function<PyObject*(py_callable_wrapper)> &&fn,
-        py_callable_wrapper arg) {
-        tasks::initialize_base_task();
-        // TODO: This is clearly all wrong, but just making the compiler happy for now
-        return std::forward<decltype(fn)>(fn)(arg);
-      };
-
       class Use : tasks::TaskWrapper::Establish {
+       public:
         Use(h_isoctxt_t &c)
           : tasks::TaskWrapper::Establish([&c](){
-              mds::python::tasks::initialize_base_task();
+              ::mds::python::tasks::initialize_base_task();
               return c.push_prevailing();
             }()) {}
-        Use(const Use &) = delete;
-        Use(Use &&) = delete;
+        Use() { // This is here to make Cython happy for stack-allocated objects; should never be invoked.
+          throw std::runtime_error("Shouldn't be able to instantiate Use with no h_isoctxt_t");
+        }
       };
     } // End mds::python::isoctxt
 

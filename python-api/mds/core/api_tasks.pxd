@@ -27,21 +27,22 @@ from libcpp cimport bool
 from libc.stdint cimport uint64_t
 
 from mds.core.api_isolation_contexts cimport iso_context_handle
-from mds.core.api_helpers cimport *
-
 
 cdef extern from "helpers.h" namespace "mds::python::tasks":
     cdef cppclass TaskWrapper:
         TaskWrapper() nogil except +
-        TaskWrapper(task_handle) nogil except +
 
         void run(void(*)(_py_callable_wrapper), _py_callable_wrapper) except+ 
 
         @staticmethod
-        task_handle current()
+        task_handle get_current()
+        void set_current(task_handle)
+
+    void initialize_base_task() nogil
 
 cdef extern from "helpers.h" namespace "mds::python::tasks::TaskWrapper" nogil:
     cdef cppclass Establish:
+        Establish()
         Establish(const task_handle&) except +
 
 cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
@@ -64,6 +65,8 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         void add_dependent(const task_handle&)
         void always_redo()
         void cannot_redo()
+
+        bool is_null()
 
         uint64_t hash1()
         uint64_t hash2()

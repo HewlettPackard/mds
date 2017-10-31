@@ -35,12 +35,13 @@ from typing import Dict, Iterable, List, Optional, Text, Union
 import mds
 from mds import MDSTypeInfo, MDSArrayTypeInfo
 from mds.threading import MDSThreadLocalData
-from mds.core.api_strings cimport *
+
 from mds.core.api_arrays cimport *
-from mds.core.api_records cimport *
-from mds.core.api_helpers cimport initialize_base_task
 from mds.core.api_namespaces cimport *
 from mds.core.api_primitives cimport *
+from mds.core.api_records cimport *
+from mds.core.api_strings cimport *
+from mds.core.api_tasks cimport initialize_base_task
 
 initialize_base_task()
 
@@ -343,6 +344,7 @@ cdef class MDSFloatArrayBase(MDSArrayBase):
         def __get__(self):
             return float
 
+# TODO: Finish impl
 cdef class RecordArray(MDSArrayBase):
 
     cdef h_marray_record_t _handle
@@ -382,6 +384,7 @@ cdef class RecordArray(MDSArrayBase):
         pass  # TODO: See how these properly bind
 
 
+# TODO: Finish impl
 cdef class StringArray(MDSArrayBase):
 
     cdef h_marray_string_t _handle
@@ -4481,6 +4484,7 @@ cdef class MDSNameBinding(MDSNameBindingBase):
         return Namespace_Init(handle=ch, parent=self._namespace, name=self._name)
 
     def bind(self, value: MDSPrimitiveBase):
+        # TODO: What should be bind-able?
         # cdef:
         #     interned_string_handle nhandle = self._name._ish
         #     namespace_handle h = self._namespace._handle
@@ -5414,5 +5418,4 @@ cdef class Double(MDSFloatPrimitiveBase):
     property dtype:
         def __get__(self):
             return mds.typing.primitives.double
-
-# END IN
+                                                        # END INJECTI
