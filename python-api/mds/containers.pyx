@@ -31,7 +31,7 @@ from mds.threading import MDSThreadData
 
 from datetime import datetime, timedelta
 from threading import local
-from typing import Any, Dict, Callable, List, Text, Type, Iterable, Sequence
+from typing import Any, Dict, Callable, List, Text, Type, Iterable, Sequence, Tuple, Optional
 
 # Call this on module load
 initialize_base_task()
@@ -168,9 +168,8 @@ def resolve(conds: Iterable[Callable]) -> ResolveOptions:
 # =========================================================================
 
 class PublishReport(object):
-    cdef bint _succeeded
 
-    def __cinit__(self):
+    def __init__(self):
         self._succeeded = False
 
     def succeeded(self):
@@ -248,11 +247,10 @@ cdef class PublicationResult(object):
 
         for handle in handles:
             task_hash_val = handle.hash1()
-            
-            try:
-                tasks.append(task_map[task_hash_val])
-            except Exception:
-                continue
+            found_task = __REDOABLE_TASKS.find_task(task_hash_val)
+
+            if found_task is not None:
+                tasks.append(found_task)
 
         return tasks
 
@@ -297,7 +295,7 @@ cdef class PublicationResult(object):
         if need_task_prepare:
             t1_task = ctxt.top_level_task
 
-            if not __establish_and_run(task=t1_task, fn=worker, args=(tasks,)):
+            if not __establish_and_run(t1_task, worker, (tasks,)):
                 return False
 
         if not self.prepare_for_redo():
@@ -371,7 +369,16 @@ cdef class ContextTaskMapping(dict):
                 continue
 
             if not task_map:  # If it's now empty, dump it
-                del self[isoctxt]   
+                del self[isoctxt]
+
+    def find_task(self, target_hash: int) -> Optional[Task]:
+        for isoctxt, task_map in self.items():
+            try:
+                return task_map[target_hash]
+            except KeyError:
+                continue
+
+        return None
 
 
 cdef __REDOABLE_TASKS = ContextTaskMapping()
@@ -470,25 +477,25 @@ cdef class IsolationContext(object):
 
     def call_isolated__2(self,
         resolve_opts: ResolveOptions,
-        report_opts: ReportOptions,
+        reports: ReportOptions,
         fn: Callable,
         args: Sequence=tuple()
-    ) -> Tuple[Any, bool]:
+    ) -> Tuple[Any, Any]:
         reports.before_run(self)
         val = self.call(fn, args)
-        worked = publish(resolve_opts, reports)
+        worked = self.publish(resolve_opts, reports)
         return tuple([val, worked])
     
     def call_isolated__(
         self,
         kind: Text, #mt: ModType,
-        snapshot: bool, #vt: ViewType,
+        bint snapshot, #vt: ViewType,
         rerun_opts: RerunOptions,
         resolve_opts: ResolveOptions,
         reports: ReportOptions,
         fn: Callable,
-        args: Sequece=tuple()
-    ) -> Tuple[Any, bool]:
+        args=tuple()
+    ) -> Tuple[Any, Any]:
         masked_fn = fn
         child = self.create_nested(kind, snapshot)
 
@@ -515,7 +522,7 @@ cdef class IsolationContext(object):
     def get_opts_and_call_isolated(
         self,
         kind: str,
-        snapshot: bool,
+        bint snapshot,
         rerun_opts: RerunOptions,
         resolve_opts: ResolveOptions,
         report_opts: ReportOptions,
@@ -524,7 +531,7 @@ cdef class IsolationContext(object):
     ):
         return self.call_isolated__(kind, snapshot, rerun_opts, resolve_opts, report_opts, fn, args)                       
 
-    def call_isolated_nothrow(self, fn: Callable, args=tuple(), *args, **kwargs) -> Optional[object]:
+    def call_isolated_nothrow(self, fn: Callable, args=tuple(), **kwargs) -> Optional[object]:
         rerun = RerunOptions()
         resolve = ResolveOptions()
         reports = ReportOptions()
@@ -537,11 +544,11 @@ cdef class IsolationContext(object):
         if 'snapshot' in kwargs:
             kwargs['snapshot'] = snapshot
 
-        return self.get_opts_and_call_isolated('publishable', in_snapshot, rerun, resolve, reports, fn, args, *args, **kwargs)
+        return self.get_opts_and_call_isolated('publishable', in_snapshot, rerun, resolve, reports, fn, args, **kwargs)
 
 
     def call_isolated(self, *args, **kwargs) -> Optional[object]:
-        res = self.call_isolated_nothrow(*args, **kwargs):
+        res = self.call_isolated_nothrow(*args, **kwargs)
 
         if not res[0]:
             raise PublishFailed()
@@ -569,7 +576,7 @@ cdef class IsolationContext(object):
 
     @staticmethod
     def get_current() -> IsolationContext:
-        return IsolationContext_Init(TaskWrapper.current().get_context())
+        return IsolationContext_Init(TaskWrapper.get_current().get_context())
 
     @staticmethod
     def get_for_process() -> IsolationContext:
@@ -623,7 +630,7 @@ class MDSIsolationContextBindWrapper(object):
 
     def __call__(self, *args):
         Task.initialize_base_task()
-        return self._ctxt.call(fn, args)
+        return self._ctxt.call(self._fn, args)
 
 
 def isolated(params):
@@ -673,7 +680,7 @@ class ComputedVal(object):
             return self._val
 
     def __init__(self, fn: Callable=None, rhs: TaskComputedBase=None):
-        self._tc = TaskComputedBase() if rhs is None else rhs._tc
+        self._tc = ComputedVal.TaskComputedBase() if rhs is None else rhs._tc
 
     def get(self) -> Any:
         return self._tc.get()
@@ -710,11 +717,11 @@ class ComputedVal(object):
         ctxt = IsolationContext.get_current()
 
         if ctxt.is_publishable:
-            res = Publishable()
+            res = ComputedVal.Publishable()
             res.set_task(fn)
             return res
         else:
-            return Unpublishable(fn)
+            return ComputedVal.Unpublishable(fn)
 
 
 cdef class Task(object):
@@ -859,7 +866,7 @@ cdef class Task(object):
         """
         Returns a Task object for the thread-relative current task.
         """
-        return Task_Init(TaskWrapper.current()) 
+        return Task_Init(TaskWrapper.get_current()) 
 
     def context(self) -> IsolationContext:  # NOTE: Duplicate of property
         return self.isolation_context
@@ -869,7 +876,7 @@ cdef class Task(object):
             if self._handle.is_null():
                 return IsolationContext()
 
-            if self._ctxt._handle.is_null():
+            if self._ctxt.is_null():
                 self._ctxt = self._handle.get_context()
 
             return IsolationContext_Init(self._ctxt)
@@ -902,9 +909,9 @@ cdef inline Task_Init(task_handle handle):
     result._handle = handle
     return result
 
-cdef object __establish_and_run(Task t, object fn, object args):
+cdef object __establish_and_run(Task task, object fn, object args):
     initialize_base_task()
-    cdef Establish c(_handle.push())  # struct _establish => Establish
+    cdef Establish c = Establish(task._handle.push())  # struct _establish => Establish
     return fn(*args)
 
 cdef inline add_task_handle(Task task, task_handle handle):

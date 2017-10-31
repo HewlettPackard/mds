@@ -87,6 +87,10 @@ namespace mds {
 
         class Establish {
          public:
+          Establish() {// This is here to make Cython happy for stack-allocated objects; should never be invoked.
+            throw std::runtime_error("Shouldn't be able to instantiate Establish with no h_task_t");
+          }
+
           Establish(const h_task_t &t) {
               static size_t counter = 0;  // TODO DELETE 
             printf("[%lu] _current() - %lu\n", counter, _current().hash1());  // TODO DELETE 
@@ -126,13 +130,15 @@ namespace mds {
     
     namespace isoctxts {
       class Use : tasks::TaskWrapper::Establish {
-        Use(const h_isoctxt_t &c)
+       public:
+        Use(h_isoctxt_t &c)
           : tasks::TaskWrapper::Establish([&c](){
-              initialize_base_task();
-              return c.handle().push_prevailing();
+              ::mds::python::tasks::initialize_base_task();
+              return c.push_prevailing();
             }()) {}
-        Use(const Use &) = delete;
-        Use(Use &&) = delete;
+        Use() { // This is here to make Cython happy for stack-allocated objects; should never be invoked.
+          throw std::runtime_error("Shouldn't be able to instantiate Use with no h_isoctxt_t");
+        }
       };
     } // End mds::python::isoctxt
 

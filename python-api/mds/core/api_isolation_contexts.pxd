@@ -28,17 +28,10 @@ from libcpp cimport bool
 from libcpp.vector cimport vector
 
 from mds.core.api_tasks cimport task_handle
-from mds.core.api_helpers cimport *
 
 cdef extern from "helpers.h" namespace "mds::python::isoctxts":
-    @staticmethod
-    cdef inline object run_in_iso_ctxt(
-        iso_context_handle&,
-        object(*)(_py_callable_wrapper),
-        _py_callable_wrapper
-    ) except+ 
-
     cdef cppclass Use:
+        Use()
         Use(iso_context_handle)
 
 # enum classes not (yet) supported, workaround, first declare classes:
@@ -50,14 +43,14 @@ cdef extern from "core/core_fwd.h" namespace "mds::core" nogil:
         pass
 
 # Then, tread the classes as namespaces and make the appropriate declarations:
-cdef extern from "core/core_fwd.h" namespace "view_type" nogil:
-    cdef view_type live
-    cdef view_type snapshot
+# cdef extern from "core/core_fwd.h" namespace "view_type" nogil:
+#     cdef view_type live
+#     cdef view_type snapshot
 
-cdef extern from "core/core_fwd.h" namespace "mod_type" nogil:
-    cdef mod_type publishable
-    cdef mod_type detached
-    cdef mod_type read_only
+# cdef extern from "core/core_fwd.h" namespace "mod_type" nogil:
+#     cdef mod_type publishable
+#     cdef mod_type detached
+#     cdef mod_type read_only
 
 # Start actually importing the classes and methods we're going to need:
 cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
@@ -78,6 +71,7 @@ cdef extern from "mds_core_api.h" namespace "mds::api" nogil:
         iso_context_handle()
         iso_context_handle(const iso_context_handle)
 
+        bool is_null()
         bool is_snapshot()
         bool is_read_only()
         bool is_publishable()

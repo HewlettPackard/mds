@@ -35,12 +35,13 @@ from typing import Dict, Iterable, List, Optional, Text, Union
 import mds
 from mds import MDSTypeInfo, MDSArrayTypeInfo
 from mds.threading import MDSThreadLocalData
-from mds.core.api_strings cimport *
+
 from mds.core.api_arrays cimport *
-from mds.core.api_records cimport *
-from mds.core.api_helpers cimport initialize_base_task
 from mds.core.api_namespaces cimport *
 from mds.core.api_primitives cimport *
+from mds.core.api_records cimport *
+from mds.core.api_strings cimport *
+from mds.core.api_tasks cimport initialize_base_task
 
 initialize_base_task()
 
@@ -5436,6 +5437,4 @@ cdef class Double(MDSFloatPrimitiveBase):
     property dtype:
         def __get__(self):
             return mds.typing.primitives.double
-
-# END INJECTION
-
+                                                        # END INJECTI
