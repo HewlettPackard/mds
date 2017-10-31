@@ -1269,9 +1269,11 @@ cdef class Record(MDSObject):
     def __init__(self):
         self._register_fields()
 
-    # TODO Cython .27
-    # def __eq__(self):
-    #     pass
+    def __richcmp__(a, b, op):
+        if op == 2:  # ==
+            return a._handle == b._handle
+        elif op == 3:  # !=
+            return a._handle != b._handle
 
     @classmethod
     def __init_subclass__(cls, ident: str, **kwargs):
