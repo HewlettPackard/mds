@@ -132,10 +132,16 @@ namespace mds {
     namespace types {
       #define _ARRAY_ALIAS_(name) h_marray_##name##_t
       #define _CONST_ARRAY_ALIAS_(name) h_const_marray_##name##_t
-      #define _TYPE_WRAPPER_(K, name) \
+      #define _MTYPE_HANDLE_(K) mds::api::managed_type_handle_cp<K, false>
+      #define _CONST_MTYPE_HANDLE_(K) mds::api::managed_type_handle_cp<K, true>
+      #define _MRECORD_HANDLE_ managed_record_handle_cp<false>
+      #define _CONST_MRECORD_HANDLE_ managed_record_handle_cp<true>
+      #define _MSTRING_HANDLE_ managed_string_handle_cp<false>
+      #define _CONST_MSTRING_HANDLE_ managed_string_handle_cp<true>
+      #define _TYPE_WRAPPER_(K, name, handle) \
       using _ARRAY_ALIAS_(name) = mds::api::managed_array_handle<K>; \
       using _CONST_ARRAY_ALIAS_(name) = mds::api::const_managed_array_handle<K>; \
-      using h_m##name##_t = mds::api::managed_type_handle_cp<K, true>; \
+      using h_m##name##_t = handle; \
       static inline _ARRAY_ALIAS_(name) create_##name##_marray(size_t n) { \
         tasks::initialize_base_task(); \
         static auto h = mds::api::managed_array_handle_by_kind<K>(); \
@@ -151,19 +157,19 @@ namespace mds {
         return mah; \
       }
 
-      _TYPE_WRAPPER_(kind::BOOL, bool)
-      _TYPE_WRAPPER_(kind::BYTE, byte)
-      _TYPE_WRAPPER_(kind::UBYTE, ubyte)
-      _TYPE_WRAPPER_(kind::SHORT, short)
-      _TYPE_WRAPPER_(kind::USHORT, ushort)
-      _TYPE_WRAPPER_(kind::INT, int)
-      _TYPE_WRAPPER_(kind::UINT, uint)
-      _TYPE_WRAPPER_(kind::LONG, long)
-      _TYPE_WRAPPER_(kind::ULONG, ulong)
-      _TYPE_WRAPPER_(kind::FLOAT, float)
-      _TYPE_WRAPPER_(kind::DOUBLE, double)
-      _TYPE_WRAPPER_(kind::RECORD, record)
-      _TYPE_WRAPPER_(kind::STRING, string)
+      _TYPE_WRAPPER_(kind::BOOL, bool, _MTYPE_HANDLE_(kind::BOOL))
+      _TYPE_WRAPPER_(kind::BYTE, byte, _MTYPE_HANDLE_(kind::BYTE))
+      _TYPE_WRAPPER_(kind::UBYTE, ubyte, _MTYPE_HANDLE_(kind::UBYTE))
+      _TYPE_WRAPPER_(kind::SHORT, short, _MTYPE_HANDLE_(kind::SHORT))
+      _TYPE_WRAPPER_(kind::USHORT, ushort, _MTYPE_HANDLE_(kind::USHORT))
+      _TYPE_WRAPPER_(kind::INT, int, _MTYPE_HANDLE_(kind::INT))
+      _TYPE_WRAPPER_(kind::UINT, uint, _MTYPE_HANDLE_(kind::UINT))
+      _TYPE_WRAPPER_(kind::LONG, long, _MTYPE_HANDLE_(kind::LONG))
+      _TYPE_WRAPPER_(kind::ULONG, ulong, _MTYPE_HANDLE_(kind::ULONG))
+      _TYPE_WRAPPER_(kind::FLOAT, float, _MTYPE_HANDLE_(kind::FLOAT))
+      _TYPE_WRAPPER_(kind::DOUBLE, double, _MTYPE_HANDLE_(kind::DOUBLE))
+      _TYPE_WRAPPER_(kind::RECORD, record, _MRECORD_HANDLE_)
+      _TYPE_WRAPPER_(kind::STRING, string, _MSTRING_HANDLE_)
 
     } // End mds::python::types
   } // End mds::python
