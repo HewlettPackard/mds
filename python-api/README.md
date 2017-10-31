@@ -4,11 +4,15 @@ Authors: Matt Pugh, Evan Kirshenbaum, Lokesh Gidra, and Susan Spence.
 
 ## Development Status
 
-As this is the first iteration of the PAPI, bugs and oversights are likely to come up. MDS encourages an active development community, and patches are welcome.
+As this is the first iteration of the PAPI, bugs and oversights are likely to come up. MDS encourages an active development community, and patches are welcome. This release is therefore opened as experimental and is known to not be stable due to the following issues:
 
 ### Known Issues:
 
-1. There is currently a bug in the `Record` implementation stopping its use. A fix for this is planned and should be implemented soon.
+1. There is currently a bug in the `Record` implementation stopping its use. This is due to the automated generation of wrappers and not taking into consideration the distinction of type declarations for Records as being the types, and Record itself not being an MDS-type. A fix for this is currently being implemented. This affects:
+   1. Record instantiation
+   2. RecordArray instantiation
+   3. Record fields that are either Records or RecordArrays
+2. Primary API document still being rewritten for Python
 
 ## Introduction
 
@@ -31,9 +35,9 @@ This MDS Python API (PAPI) extension provides the necessary bindings for to deve
 The following are required to use the PAPI:
 
 * Python 3.6 or greater
-* GCC
+* GCC versions supported by MDS
 * Linux
-* Cython 0.27 or greater
+* Cython 0.26 or greater
 
 ## License
 
@@ -44,10 +48,14 @@ The PAPI follows the licensing of MDS itself, which is detailed in the root of t
 Navigate to this directory within your terminal of choice, and run:
 
 ~~~bash
-python setup.py build_ext install
+python setup.py install
 ~~~
 
-This will automatically compile MDS if not already found in the expected location.
+This will automatically compile MDS if not already found in the expected location. To build in-place for debugging and development:
+
+```
+python setup.py build_ext -i
+```
 
 ## Usage
 
